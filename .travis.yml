@@ -6,6 +6,9 @@ android:
     - platform-tools
     - build-tools-24.0.2
     - android-24
+    
+before_script:
+ - chmod +x gradlew
 
 script:
    - ./gradlew build connectedCheck
