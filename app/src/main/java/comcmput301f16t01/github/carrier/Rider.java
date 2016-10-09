@@ -5,4 +5,8 @@ package comcmput301f16t01.github.carrier;
  */
 public class Rider extends User {
 
+    public Rider(String username) {
+        super( username );
+    }
+
 }
