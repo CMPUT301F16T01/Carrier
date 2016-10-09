@@ -10,5 +10,9 @@ public class Request {
     public int ACCEPTED = 2;        // One or more drivers have accepted the request.
     public int CONFIRMED = 3;       // The user has chosen a driver and accepted one request.
     public int COMPLETE = 4;        // The user has gotten to their destination (and payed?)
+
+    public Request(Rider rider, Location start, Location end) {
+
+    }
     // TODO confirm these as the states for a Request.
 }

@@ -2,7 +2,7 @@ package comcmput301f16t01.github.carrier;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * AHASJDFHASKJFHD:KAJSHFIEUASOBFOUIBEFGOAUBGVOIAWHFOUIHAWFOUHAWFOUH
@@ -19,10 +19,29 @@ public class RequestsTests {
     }
 
     /**
-     * TODO fix name of test
+     * As a rider, I want to see current requests I have open.
+     * Related: US 01.02.01
      */
     @Test
     public void seeOpenRequests() {
+        Rider riderOne = new Rider( "username" );
+        Request request = new Request( riderOne, new Location(), new Location() );
+        RequestController rc = new RequestController();
+        rc.addRequest( request );
+
+        assertEquals( "There should only be one request returned.",
+                1, rc.getRequests( riderOne ).size() );
+
+        // Add a request to ensure we get back specific requests of a user.
+        rc.addRequest( new Request( new Rider( "otherRider" ), new Location(), new Location() ));
+
+        // Ensures that we still only get one request for our user, with a second user in the system
+        assertEquals( "There should only be one request returned.",
+                1, rc.getRequests( riderOne ).size() );
+
+        // Checks if the request put in is the same that returns
+        assertEquals( "getRequests should return requests for a specified user",
+                request, rc.getRequests( riderOne ).get( 0 ) );
 
     }
 
