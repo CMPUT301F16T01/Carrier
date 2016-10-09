@@ -1,5 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -7,8 +9,13 @@ import static org.junit.Assert.*;
 /**
  * AHASJDFHASKJFHD:KAJSHFIEUASOBFOUIBEFGOAUBGVOIAWHFOUIHAWFOUHAWFOUH
  */
-
 public class RequestsTests {
+
+    @After
+    public void clean() {
+        RequestController rc = new RequestController();
+        rc.reset();
+    }
 
     /**
      * TODO fix name of test
@@ -43,6 +50,8 @@ public class RequestsTests {
         assertEquals( "getRequests should return requests for a specified user",
                 request, rc.getRequests( riderOne ).get( 0 ) );
 
+        // TODO include "get open requests? or just check if .isOpen() (?)
+
     }
 
     /**
@@ -54,11 +63,28 @@ public class RequestsTests {
     }
 
     /**
-     * TODO fix name of test
+     * As a rider, I want to cancel requests.
+     * Related: US 01.04.01
      */
     @Test
-    public void test_01_04_01() {
-        assertTrue(true);
+    public void riderCancelRequests() {
+        Rider riderOne = new Rider( "username" );
+        Request request1 = new Request( riderOne, new Location(), new Location() );
+        Request request2 = new Request( riderOne, new Location(), new Location() );
+
+        assertNotEquals( "The requests cannot be considered equal for this test",
+                request1, request2 );
+
+        RequestController rc = new RequestController();
+        rc.addRequest( request1 );
+        rc.addRequest( request2 );
+
+        rc.cancelRequest( riderOne, request2 );
+
+        assertEquals( "The request should be init to open",
+                Request.OPEN, request1.getStatus() );
+        assertEquals( "This request should be closed",
+                Request.CANCELLED, request2.getStatus() );
     }
 
     /**
