@@ -14,8 +14,13 @@ public class RequestsTests {
      * TODO fix name of test
      */
     @Test
-    public void test_01_01_01() {
-        assertTrue(true);
+    public void riderRequest() {
+        Rider rider = new Rider("Kieter");
+        Request request = new Request(rider, new Location(), new Location());
+        RequestController rc = new RequestController();
+        rc.addRequest(request);
+
+        assertTrue("Request made and request in controller aren't the same");
     }
 
     /**
