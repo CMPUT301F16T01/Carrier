@@ -1,12 +1,77 @@
 package comcmput301f16t01.github.carrier;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 /**
- * Created by kiete on 10/7/2016.
+ * AHASJDFHASKJFHD:KAJSHFIEUASOBFOUIBEFGOAUBGVOIAWHFOUIHAWFOUHAWFOUH
  */
 
-public class RequestsTests extends TestCase {
-    //US 01.01.01 As a rider, I want to request rides between two locations
+public class RequestsTests {
+
+    /**
+     * TODO fix name of test
+     */
+    @Test
+    public void test_01_01_01() {
+        assertTrue(true);
+    }
+
+    /**
+     * TODO fix name of test
+     */
+    @Test
+    public void seeOpenRequests() {
+
+    }
+
+    /**
+     * TODO fix name of test
+     */
+    @Test
+    public void test_01_03_01() {
+        assertTrue(true);
+    }
+
+    /**
+     * TODO fix name of test
+     */
+    @Test
+    public void test_01_04_01() {
+        assertTrue(true);
+    }
+
+    /**
+     * TODO fix name of test
+     */
+    @Test
+    public void test_01_05_01() {
+        assertTrue(true);
+    }
+
+    /**
+     * TODO fix name of test
+     */
+    @Test
+    public void test_01_06_01() {
+        assertTrue(true);
+    }
+
+    /**
+     * TODO fix name of test
+     */
+    @Test
+    public void test_01_07_01() {
+        assertTrue(true);
+    }
+
+    /**
+     * TODO fix name of test
+     */
+    @Test
+    public void test_01_08_01() {
+        assertTrue(true);
+    }
 
 }
