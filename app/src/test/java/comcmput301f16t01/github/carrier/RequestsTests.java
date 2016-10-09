@@ -18,7 +18,7 @@ public class RequestsTests {
     }
 
     /**
-     * TODO fix name of test
+     *  As a rider, I want to request rides between two locations.
      */
     @Test
     public void riderRequest() {
@@ -27,7 +27,7 @@ public class RequestsTests {
         RequestController rc = new RequestController();
         rc.addRequest(request);
 
-        assertTrue("Request made and request in controller aren't the same");
+        assertTrue("Request made and request in controller aren't the same", request.equals(rc.getRequests(rider).get(0)));
     }
 
     /**
