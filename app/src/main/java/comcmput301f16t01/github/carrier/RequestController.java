@@ -48,4 +48,13 @@ public class RequestController {
         return new ArrayList<Collection>();
 
     }
+
+    /**
+     *
+     */
+    public void reset() {
+    }
+
+    public void cancelRequest(Rider rider, Request request) {
+    }
 }
