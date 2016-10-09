@@ -101,11 +101,18 @@ public class RequestsTests {
     }
 
     /**
-     * TODO fix name of test
+     * 	As a rider, I want an estimate of a fair fare to offer to drivers.
+     * 	Related: US 01.06.01
      */
     @Test
-    public void test_01_06_01() {
-        assertTrue(true);
+    public void getFareEstimate() {
+        Rider riderOne = new Rider( "username" );
+        Location start = new Location();
+        Location end = new Location();
+        Request request = new Request( riderOne, start, end );
+        FareCalculator fareCalc = new FareCalculator( start, end );
+        assertEquals( "A request should get a fare estimate",
+                request.getFareEstimate(), fareCalc.getEstimate()  );
     }
 
     /**

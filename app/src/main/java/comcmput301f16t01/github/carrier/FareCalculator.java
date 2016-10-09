@@ -15,4 +15,8 @@ public class FareCalculator {
     public FareCalculator( Location start, Location end ) {
         // TODO calculate a fare. (this is not for project part 2)
     }
+
+    public int getEstimate() {
+        return 0;
+    }
 }
