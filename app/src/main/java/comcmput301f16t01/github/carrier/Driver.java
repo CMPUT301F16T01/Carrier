@@ -9,7 +9,7 @@ package comcmput301f16t01.github.carrier;
  */
 public class Driver extends User {
 
-    public Driver() {
-        super();
+    public Driver(String username) {
+        super( username );
     }
 }

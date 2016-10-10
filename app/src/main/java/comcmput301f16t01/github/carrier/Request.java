@@ -1,5 +1,8 @@
 package comcmput301f16t01.github.carrier;
 
+import java.util.ArrayList;
+import java.util.BitSet;
+
 /**
  * Represents a request for a ride.
  */
@@ -30,6 +33,10 @@ public class Request {
         return fareCalc.getEstimate();
     }
 
+    public ArrayList<Driver> getOffers() {
+        return new ArrayList<Driver>();
+    }
+
     public Rider getRider() {
         return this.rider;
     }
@@ -45,5 +52,6 @@ public class Request {
     public void notifyRider() {
 
     }
+
     // TODO confirm these as the states for a Request.
 }

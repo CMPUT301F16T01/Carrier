@@ -109,8 +109,10 @@ public class RequestsTests {
     public void riderContactDriver() {
         Rider rider = new Rider("Sarah");
         Driver driver = new Driver("Mandy");
-        driver.setEmail("mandy@mandy.com");
-        driver.setPhone = ("1234567890");
+        String email = "mandy@mandy.com";
+        driver.setEmail( email );
+        String phone = "1234567890";
+        driver.setPhone(phone);
 
         Request request = new Request(rider, new Location(), new Location());
         RequestController rc = new RequestController();
@@ -118,11 +120,14 @@ public class RequestsTests {
 
         // Adds a driver to the request, meaning that the request was accepted by a driver/drivers
         // In this case, just a single driver.
-        request.addDriver(driver);
-
+        rc.addDriver(request ,driver);
         // The rider is able to access the driver's phone/email as long as they are non-empty.
-        assertTrue("There's no email.", request.getRiders().get(0).getEmail != "");
-        assertTrue("There's no phone #.", request.getRiders().get(0).getPhone != "");
+        assertEquals("The driver email doesn't match what was input",
+                request.getOffers().get(0).getEmail());
+        assertEquals("The driver phone number doesn't match what was input",
+                phone, request.getOffers().get(0).getPhone() );
+
+        // TODO consider the case with more than one driver
     }
 
     /**
@@ -136,8 +141,11 @@ public class RequestsTests {
         Location end = new Location();
         Request request = new Request( riderOne, start, end );
         FareCalculator fareCalc = new FareCalculator( start, end );
-        assertEquals( "A request should get a fare estimate",
+        assertEquals( "A request should have a fare estimate",
                 request.getFareEstimate(), fareCalc.getEstimate()  );
+
+        assertNotEquals( "The fare estimate should not be 0.",
+                0, request.getFareEstimate());
     }
 
     /**
@@ -158,11 +166,35 @@ public class RequestsTests {
     }
 
     /**
-     * TODO fix name of test
+     * As a rider, I want to confirm a driver's acceptance.
+     * Related: US 01.08.01
      */
     @Test
-    public void test_01_08_01() {
-        assertTrue(true);
+    public void riderAcceptsDriver() {
+        Rider riderOne = new Rider( "username" );
+        Driver driverOne = new Driver( "username2" );
+        Driver driverTwo = new Driver( "username3" );
+        RequestController rc = new RequestController();
+        Request request = new Request( riderOne, new Location(), new Location() );
+        rc.addRequest( request );
+        rc.addDriver( request, driverOne );
+        rc.addDriver( request, driverTwo );
+
+        assertEquals( "There should be two offers on this request",
+                2, request.getOffers().size() );
+
+        rc.acceptDriver( request, driverTwo );
+
+        assertEquals( "The status of the request should be CONFIRMED",
+                Request.CONFIRMED, request.getStatus() );
+
+        try {
+            Driver testDriver =  new Driver( "Mr. FailYourTests" );
+            rc.addDriver( request, testDriver );
+            fail( "You should not be able to add a driver to a request if it is CONFIRMED." );
+        } catch (Exception e) {
+            assertTrue( true );
+        }
     }
 
 }
