@@ -18,11 +18,17 @@ public class RequestsTests {
     }
 
     /**
-     * TODO fix name of test
+     *  As a rider, I want to request rides between two locations.
+     *  Related: US 01.01.01
      */
     @Test
-    public void test_01_01_01() {
-        assertTrue(true);
+    public void riderRequest() {
+        Rider rider = new Rider("Kieter");
+        Request request = new Request(rider, new Location(), new Location());
+        RequestController rc = new RequestController();
+        rc.addRequest(request);
+
+        assertTrue("Request made and request in controller aren't the same", request.equals(rc.getRequests(rider).get(0)));
     }
 
     /**
@@ -55,11 +61,19 @@ public class RequestsTests {
     }
 
     /**
-     * TODO fix name of test
+     * As a rider, I want to be notified if my request is accepted.
+     * Related: US 01.03.01
      */
     @Test
-    public void test_01_03_01() {
-        assertTrue(true);
+    public void acceptedRequestNotification() {
+        Rider rider = new Rider("Bennett");
+        Request request = new Request( rider, new Location(), new Location());
+        RequestController rc = new RequestController();
+        rc.addRequest(request);
+
+        // Ensures that we've done something with the fact that a driver has accepted the
+        // rider's request.
+        assertTrue(rider.getNotify());
     }
 
     /**
@@ -88,11 +102,32 @@ public class RequestsTests {
     }
 
     /**
-     * TODO fix name of test
+     * As a rider, I want to be able to phone or email the driver who accepted a request.
+     * US 01.05.01
      */
     @Test
-    public void test_01_05_01() {
-        assertTrue(true);
+    public void RiderContactDriver() {
+        Rider rider = new Rider("Sarah");
+        Driver driver = new Driver("Mandy");
+        String email = "mandy@mandy.com";
+        driver.setEmail( email );
+        String phone = "1234567890";
+        driver.setPhone(phone);
+
+        Request request = new Request(rider, new Location(), new Location());
+        RequestController rc = new RequestController();
+        rc.addRequest(request);
+
+        // Adds a driver to the request, meaning that the request was accepted by a driver/drivers
+        // In this case, just a single driver.
+        rc.addDriver(request ,driver);
+        // The rider is able to access the driver's phone/email as long as they are non-empty.
+        assertEquals("The driver email doesn't match what was input",
+                request.getOffers().get(0).getEmail());
+        assertEquals("The driver phone number doesn't match what was input",
+                phone, request.getOffers().get(0).getPhone() );
+
+        // TODO consider the case with more than one driver
     }
 
     /**
@@ -108,6 +143,9 @@ public class RequestsTests {
         FareCalculator fareCalc = new FareCalculator( start, end );
         assertEquals( "A request should have a fare estimate",
                 request.getFareEstimate(), fareCalc.getEstimate()  );
+
+        assertNotEquals( "The fare estimate should not be 0.",
+                0, request.getFareEstimate());
     }
 
     /**
