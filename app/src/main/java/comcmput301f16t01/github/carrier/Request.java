@@ -13,6 +13,7 @@ public class Request {
     static final int CANCELLED = 9;        // The user has gotten to their destination (and payed?)
 
     private int status = OPEN;
+    private Rider rider;
     private Location start;
     private Location end;
 
@@ -27,6 +28,22 @@ public class Request {
     public int getFareEstimate() {
         FareCalculator fareCalc = new FareCalculator( start, end );
         return fareCalc.getEstimate();
+    }
+
+    public Rider getRider() {
+        return this.rider;
+    }
+
+    public Location getStart() {
+        return this.start;
+    }
+
+    public Location getEnd() {
+        return this.end;
+    }
+
+    public void notifyRider() {
+
     }
     // TODO confirm these as the states for a Request.
 }

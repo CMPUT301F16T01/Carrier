@@ -19,6 +19,7 @@ public class RequestsTests {
 
     /**
      *  As a rider, I want to request rides between two locations.
+     *  Related: US 01.01.01
      */
     @Test
     public void riderRequest() {
@@ -60,10 +61,18 @@ public class RequestsTests {
     }
 
     /**
-     * TODO fix name of test
+     * As a rider, I want to be notified if my request is accepted.
      */
     @Test
-    public void test_01_03_01() {
+    public void acceptedRequestNotification() {
+        Rider rider = new Rider("Bennett");
+        Request request = new Request( rider, new Location(), new Location());
+        RequestController rc = new RequestController();
+        rc.addRequest(request);
+
+        if (rc.getRequests(rider).get(0).getStatus() == Request.ACCEPTED) {
+            rc.getRequests(rider).get(0).notifyRider();
+        }
         assertTrue(true);
     }
 

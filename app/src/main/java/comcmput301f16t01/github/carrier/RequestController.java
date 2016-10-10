@@ -44,8 +44,8 @@ public class RequestController {
      * @param rider
      * @return
      */
-    public ArrayList<Collection> getRequests(Rider rider) {
-        return new ArrayList<Collection>();
+    public ArrayList<Request> getRequests(Rider rider) {
+        return new ArrayList<Request>();
 
     }
 
