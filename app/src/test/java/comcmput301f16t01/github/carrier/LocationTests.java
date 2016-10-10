@@ -28,12 +28,9 @@ public class LocationTests {
     public void riderChooseRequestLocation() {
         Rider rider = new Rider("Mandy");
         // TODO better way to get current location (using location manager perhaps?)
-        Location currentLocation = new Location();
 
         // gets current location
         Location startLocation = new Location();
-
-        assertEquals("Current location should match startLocation", currentLocation, startLocation);
 
         // user moves pin for start location
         startLocation.setLocation(latitude1, longitude1);
