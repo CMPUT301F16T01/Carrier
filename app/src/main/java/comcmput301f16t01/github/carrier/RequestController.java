@@ -63,4 +63,10 @@ public class RequestController {
 
     public void acceptDriver(Request request, Driver driver) {
     }
+
+    public void completeRequest(Request request) {
+    }
+
+    public void payForRequest(Request request) {
+    }
 }
