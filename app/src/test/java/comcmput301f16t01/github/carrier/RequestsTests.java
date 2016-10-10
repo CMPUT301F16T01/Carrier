@@ -106,7 +106,7 @@ public class RequestsTests {
         Location end = new Location();
         Request request = new Request( riderOne, start, end );
         FareCalculator fareCalc = new FareCalculator( start, end );
-        assertEquals( "A request should get a fare estimate",
+        assertEquals( "A request should have a fare estimate",
                 request.getFareEstimate(), fareCalc.getEstimate()  );
     }
 
@@ -119,11 +119,35 @@ public class RequestsTests {
     }
 
     /**
-     * TODO fix name of test
+     * As a rider, I want to confirm a driver's acceptance.
+     * Related: US 01.08.01
      */
     @Test
-    public void test_01_08_01() {
-        assertTrue(true);
+    public void riderAcceptsDriver() {
+        Rider riderOne = new Rider( "username" );
+        Driver driverOne = new Driver( "username2" );
+        Driver driverTwo = new Driver( "username3" );
+        RequestController rc = new RequestController();
+        Request request = new Request( riderOne, new Location(), new Location() );
+        rc.addRequest( request );
+        rc.addDriver( request, driverOne );
+        rc.addDriver( request, driverTwo );
+
+        assertEquals( "There should be two offers on this request",
+                2, request.getOffers().size() );
+
+        rc.acceptDriver( request, driverTwo );
+
+        assertEquals( "The status of the request should be CONFIRMED",
+                Request.CONFIRMED, request.getStatus() );
+
+        try {
+            Driver testDriver =  new Driver( "Mr. FailYourTests" );
+            rc.addDriver( request, testDriver );
+            fail( "You should not be able to add a driver to a request if it is CONFIRMED." );
+        } catch (Exception e) {
+            assertTrue( true );
+        }
     }
 
 }

@@ -1,5 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
+import java.util.ArrayList;
+
 /**
  * Represents a request for a ride.
  */
@@ -28,5 +30,8 @@ public class Request {
         FareCalculator fareCalc = new FareCalculator( start, end );
         return fareCalc.getEstimate();
     }
-    // TODO confirm these as the states for a Request.
+
+    public ArrayList<Driver> getOffers() {
+        return new ArrayList<Driver>();
+    }
 }

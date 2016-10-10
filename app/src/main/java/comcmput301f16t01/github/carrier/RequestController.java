@@ -57,4 +57,10 @@ public class RequestController {
 
     public void cancelRequest(Rider rider, Request request) {
     }
+
+    public void addDriver(Request request, Driver driverTwo) {
+    }
+
+    public void acceptDriver(Request request, Driver driver) {
+    }
 }
