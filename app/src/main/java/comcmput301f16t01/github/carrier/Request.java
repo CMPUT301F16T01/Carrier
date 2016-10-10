@@ -13,7 +13,8 @@ public class Request {
     static final int ACCEPTED = 2;        // One or more drivers have accepted the request.
     static final int CONFIRMED = 3;       // The user has chosen a driver and accepted one request.
     static final int COMPLETE = 4;        // The user has gotten to their destination (and payed?)
-    static final int CANCELLED = 9;        // The user has gotten to their destination (and payed?)
+    static final int PAID = 7;
+    static final int CANCELLED = 9;        // The user has cancelled their request
 
     private int status = OPEN;
     private Rider rider;

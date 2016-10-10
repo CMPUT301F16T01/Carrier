@@ -10,7 +10,7 @@ public class Rider extends User {
         super( username );
     }
 
-    public boolean getNotify() {
+    public boolean hasNotification() {
         return notify;
     }
 }

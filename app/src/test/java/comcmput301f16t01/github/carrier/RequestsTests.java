@@ -26,9 +26,19 @@ public class RequestsTests {
         Rider rider = new Rider("Kieter");
         Request request = new Request(rider, new Location(), new Location());
         RequestController rc = new RequestController();
+
+        // assert there is no requests for this rider
+        assertEquals( "There should be no requests in the requestController",
+                0, rc.getRequests(rider).size() );
+
         rc.addRequest(request);
 
-        assertTrue("Request made and request in controller aren't the same", request.equals(rc.getRequests(rider).get(0)));
+        // assert there is one request
+        assertEquals( "There should be no requests in the requestController",
+                1, rc.getRequests(rider).size() );
+
+        assertTrue("Request made and request in controller aren't the same",
+                request.equals(rc.getRequests(rider).get(0)));
     }
 
     /**
@@ -69,11 +79,17 @@ public class RequestsTests {
         Rider rider = new Rider("Bennett");
         Request request = new Request(rider, new Location(), new Location());
         RequestController rc = new RequestController();
+
         rc.addRequest(request);
+        rc.addDriver( request, new Driver("Kieter (not really)"));
+
+        assertEquals( "The request should be accepted",
+                Request.ACCEPTED, request.getStatus() );
 
         // Ensures that we've done something with the fact that a driver has accepted the
         // rider's request.
-        assertTrue(rider.getNotify());
+        assertTrue( "The rider should be notified that they have gotten a driver for their request",
+                rider.hasNotification());
     }
 
     /**
@@ -121,7 +137,8 @@ public class RequestsTests {
         // Adds a driver to the request, meaning that the request was accepted by a driver/drivers
         // In this case, just a single driver.
         rc.addDriver(request, driver);
-        // The rider is able to access the driver's phone/email as long as they are non-empty.
+
+        // The rider is able to access the driver's phone/email we input
         assertEquals("The driver email doesn't match what was input",
                 request.getOffers().get(0).getEmail());
         assertEquals("The driver phone number doesn't match what was input",
@@ -155,14 +172,22 @@ public class RequestsTests {
     public void confirmCompletionAndPay() {
         Rider rider = new Rider("Michael");
         Driver driver = new Driver("Protein Powder");
-        Location start = new Location();
-        Location end = new Location();
         Request request = new Request(rider, new Location(), new Location());
-        assertTrue(true);
 
         RequestController rc = new RequestController();
         rc.addDriver(request, driver);
-        assertEquals(4, request.getStatus());
+
+        rc.acceptDriver( request, driver );
+
+        rc.completeRequest( request );
+
+        assertEquals( "The request should be set to complete",
+                Request.COMPLETE, request.getStatus());
+
+        rc.payForRequest( request );
+
+        assertEquals( "The request should be paid for now.",
+                Request.PAID, request.getStatus());
     }
 
     /**
