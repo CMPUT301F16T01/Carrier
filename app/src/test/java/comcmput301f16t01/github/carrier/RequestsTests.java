@@ -154,7 +154,7 @@ public class RequestsTests {
     @Test
     public void confirmCompletionAndPay() {
         Rider rider = new Rider("Michael");
-        Driver driver = new Driver("Protein Powder")
+        Driver driver = new Driver("Protein Powder");
         Location start = new Location();
         Location end = new Location();
         Request request = new Request(rider, new Location(), new Location());
