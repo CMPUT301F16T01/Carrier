@@ -106,7 +106,7 @@ public class RequestsTests {
      * US 01.05.01
      */
     @Test
-    public void RiderContactDriver() {
+    public void riderContactDriver() {
         Rider rider = new Rider("Sarah");
         Driver driver = new Driver("Mandy");
         driver.setEmail("mandy@mandy.com");
@@ -141,11 +141,20 @@ public class RequestsTests {
     }
 
     /**
-     * TODO fix name of test
+     * As a rider, I want to confirm the completion of a request and enable payment
      */
     @Test
-    public void test_01_07_01() {
+    public void confirmCompletionAndPay() {
+        Rider rider = new Rider("Michael");
+        Driver driver = new Driver("Protein Powder")
+        Location start = new Location();
+        Location end = new Location();
+        Request request = new Request(rider, new Location(), new Location());
         assertTrue(true);
+
+        RequestController rc = new RequestController();
+        rc.addDriver(request, driver);
+        assertEquals(4, request.getStatus());
     }
 
     /**
