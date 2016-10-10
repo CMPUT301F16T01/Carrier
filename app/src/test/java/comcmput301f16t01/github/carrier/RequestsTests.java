@@ -70,10 +70,7 @@ public class RequestsTests {
         RequestController rc = new RequestController();
         rc.addRequest(request);
 
-        if (rc.getRequests(rider).get(0).getStatus() == Request.ACCEPTED) {
-            rc.getRequests(rider).get(0).notifyRider();
-        }
-        assertTrue(true);
+        assertTrue(rc.getRequests(rider).get(0).getRider().getNotify());
     }
 
     /**
