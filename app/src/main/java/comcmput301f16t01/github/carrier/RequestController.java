@@ -46,7 +46,6 @@ public class RequestController {
      */
     public ArrayList<Request> getRequests(Rider rider) {
         return new ArrayList<Request>();
-
     }
 
     /**
