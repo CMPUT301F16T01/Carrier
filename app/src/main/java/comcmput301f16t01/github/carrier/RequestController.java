@@ -94,6 +94,7 @@ public class RequestController {
     /**
      * Is used to provide a driver with a list of the requests that they have accepted.
      * @param driver The driver who is requesting the list of the requests they have accepted
+     *               but the rider has no confimed their choice in driver.
      * @return An ArrayList of requests that the driver has accepted.
      */
     public ArrayList<Request> getPendingRequests(Driver driver) {
