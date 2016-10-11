@@ -85,7 +85,7 @@ public class RequestController {
 
     /**
      * Is used to provide a driver with a list of all open requests.
-     * @return An array list of open requests
+     * @return An array list of open requests.
      */
     public ArrayList<Request> getOpenRequests(){
         return new ArrayList<Request>();
@@ -108,5 +108,14 @@ public class RequestController {
      */
     public ArrayList<Driver> getDrivers(Request request) {
         return new ArrayList<Driver>();
+    }
+
+    /**
+     * Provides a list of requests that are available for a driver to accept.
+     * @return an arraylist of requests that a driver is able to accept.
+     * @See getOpenRequests
+     */
+    public ArrayList<Request> getAvailableRequests(){
+        return new ArrayList<Request>();
     }
 }
