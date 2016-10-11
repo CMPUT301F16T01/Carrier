@@ -24,7 +24,7 @@ public class AcceptingTests {
         assertTrue("Get open request is not return any open requests", rc.getOpenRequests().size() == 1);
         rc.addDriver(request, driver);
         assertTrue("The request is being updated when it shouldn't", rc.getOpenRequests().size() == 1);
-        assertTrue("The request has not been marked as accepted by the driver.", rc.getAcceptedRequests(driver).size() == 1);
+        assertTrue("The request has not been marked as accepted by the driver.", rc.getPendingRequests(driver).size() == 1);
 
 
 
@@ -34,6 +34,19 @@ public class AcceptingTests {
     /**
      * (US 05.02.01) As a driver, I want to view a list of things I have accepted that are pending, each request with its description, and locations.
      */
+    @Test
+    public void driverPendingAccepts(){
+        Rider rider = new Rider("Mike");
+        Request request = new Request(rider, new Location(), new Location());
+        RequestController rc = new RequestController();
+        rc.addRequest(request);
+        Driver driver = new Driver("Cole");
+        assertTrue("Get open request is not return any open requests", rc.getOpenRequests().size() == 1);
+        rc.addDriver(request, driver);
+        assertTrue("The request is being updated when it shouldn't", rc.getOpenRequests().size() == 1);
+        assertTrue("The request has not been marked as accepted by the driver.", rc.getDrivers(request).size() == 1);
+        assertTrue("Driver is not able to view their pending requests .", rc.getPendingRequests(driver).size() == 1);
+        assertTrue("Request in pending requests is not the same.", rc.getPendingRequests(driver).get(0).equals(request));
 
 
     }

@@ -96,7 +96,7 @@ public class RequestController {
      * @param driver The driver who is requesting the list of the requests they have accepted
      * @return An ArrayList of requests that the driver has accepted.
      */
-    public ArrayList<Request> getAcceptedRequests(Driver driver) {
+    public ArrayList<Request> getPendingRequests(Driver driver) {
         return  new ArrayList<Request>();
     }
 
