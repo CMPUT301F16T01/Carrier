@@ -47,13 +47,40 @@ public class AcceptingTests {
         assertTrue("The request has not been marked as accepted by the driver.", rc.getDrivers(request).size() == 1);
         assertTrue("Driver is not able to view their pending requests .", rc.getPendingRequests(driver).size() == 1);
         assertTrue("Request in pending requests is not the same.", rc.getPendingRequests(driver).get(0).equals(request));
-
+        assertEquals("The request is not being updated to pending", Request.ACCEPTED, request.getStatus());
 
     }
     /**
      * (US 05.03.01) As a driver, I want to see if my acceptance was accepted.
      */
+    @Test
+    public void driverAcceptedRequests(){
+        Rider rider = new Rider("Josh");
+        Driver driver = new Driver("Kevin");
+        Request request = new Request(rider, new Location(), new Location());
+        RequestController rc = new RequestController();
+        rc.addRequest(request);
+        rc.addDriver(request, driver);
+        rc.acceptDriver(request, driver);
+        assertTrue("Driver has been added to the request as the confirmed driver", rc.getConfirmedDriver(request).equals(driver));
+        assertFalse("The request is still available to be accepted by other drivers", rc.getAvailableRequests().contains(request));
+        assertEquals("The request is not being updated to confirmed", Request.CONFIRMED, request.getStatus());
+
+    }
     /**
      * (US 05.04.01) As a driver, I want to be notified if my ride offer was accepted.
      */
+    @Test
+    public void notifyDriver(){
+        Rider rider = new Rider("Josh");
+        Driver driver = new Driver("Kevin");
+        Request request = new Request(rider, new Location(), new Location());
+        RequestController rc = new RequestController();
+        rc.addRequest(request);
+        rc.addDriver(request,driver);
+        rc.acceptDriver(request,driver);
+        assertTrue("Driver is not being notified about accepted ride offers.", driver.hasNotifications());
+
+
+    }
 }

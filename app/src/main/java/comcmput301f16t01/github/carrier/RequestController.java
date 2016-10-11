@@ -66,7 +66,8 @@ public class RequestController {
     }
 
     /**
-     * Is used to show that the user has accepted the provided driver/
+     * Is used to show that the user has accepted the provided driver. The accepted driver should
+     * have been added with addDriver() before being accepted.
      * @param request The request that is being modified
      * @param driver The driver that is being accepted
      */
@@ -116,5 +117,15 @@ public class RequestController {
      */
     public ArrayList<Request> getAvailableRequests(){
         return new ArrayList<Request>();
+    }
+
+    /**
+     * Will return the driver that has been confirmed by the rider.
+     * @param request The request that we are getting the confirmed driver for
+     * @return Returns the confirmed driver for the request
+     *
+     */
+    public Driver getConfirmedDriver(Request request){
+        return new Driver("Unamed");
     }
 }
