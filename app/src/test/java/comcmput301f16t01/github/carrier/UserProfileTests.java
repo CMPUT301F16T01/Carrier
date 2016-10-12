@@ -46,21 +46,21 @@ public class UserProfileTests {
      */
     @Test
     public void editRiderInfo() {
-        Rider riderOne = new Rider("start username");
-        riderOne.setEmail("start email");
-        riderOne.setPhone("start phone");
+        UserController uc = new UserController();
+        uc.getLoggedInRider().setEmail("start email");
+        uc.getLoggedInRider().setPhone("start phone");
 
-        assertTrue(riderOne.getUsername().equals("start username"));
-        assertTrue(riderOne.getEmail().equals("start email"));
-        assertTrue(riderOne.getPhone().equals("start phone"));
+        assertTrue(uc.getLoggedInRider().getUsername().equals("start username"));
+        assertTrue(uc.getLoggedInRider().getEmail().equals("start email"));
+        assertTrue(uc.getLoggedInRider().getPhone().equals("start phone"));
 
-        riderOne.setUsername("another username");
-        riderOne.setEmail("another email");
-        riderOne.setPhone("another phone");
+        uc.getLoggedInRider().setUsername("another username");
+        uc.getLoggedInRider().setEmail("another email");
+        uc.getLoggedInRider().setPhone("another phone");
 
-        assertTrue(riderOne.getUsername().equals("another username"));
-        assertTrue(riderOne.getEmail().equals("another email"));
-        assertTrue(riderOne.getPhone().equals("another phone"));
+        assertTrue(uc.getLoggedInRider().getUsername().equals("another username"));
+        assertTrue(uc.getLoggedInRider().getEmail().equals("another email"));
+        assertTrue(uc.getLoggedInRider().getPhone().equals("another phone"));
 
     }
 
@@ -70,21 +70,21 @@ public class UserProfileTests {
      */
     @Test
     public void editDriverInfo() {
-        Driver driverOne = new Driver("start username");
-        driverOne.setEmail("start email");
-        driverOne.setPhone("start phone");
+        UserController uc = new UserController();
+        uc.getLoggedInDriver().setEmail("start email");
+        uc.getLoggedInDriver().setPhone("start phone");
 
-        assertTrue(driverOne.getUsername().equals("start username"));
-        assertTrue(driverOne.getEmail().equals("start email"));
-        assertTrue(driverOne.getPhone().equals("start phone"));
+        assertTrue(uc.getLoggedInDriver().getUsername().equals("start username"));
+        assertTrue(uc.getLoggedInDriver().getEmail().equals("start email"));
+        assertTrue(uc.getLoggedInDriver().getPhone().equals("start phone"));
 
-        driverOne.setUsername("another username");
-        driverOne.setEmail("another email");
-        driverOne.setPhone("another phone");
+        uc.getLoggedInDriver().setUsername("another username");
+        uc.getLoggedInDriver().setEmail("another email");
+        uc.getLoggedInDriver().setPhone("another phone");
 
-        assertTrue(driverOne.getUsername().equals("another username"));
-        assertTrue(driverOne.getEmail().equals("another email"));
-        assertTrue(driverOne.getPhone().equals("another phone"));
+        assertTrue(uc.getLoggedInDriver().getUsername().equals("another username"));
+        assertTrue(uc.getLoggedInDriver().getEmail().equals("another email"));
+        assertTrue(uc.getLoggedInDriver().getPhone().equals("another phone"));
 
     }
 
