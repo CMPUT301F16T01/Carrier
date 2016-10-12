@@ -27,10 +27,7 @@ public class StatusTests {
         rc.addRequest(request);
         assertEquals("The status of the request should be OPEN",
                 Request.OPEN, request.getStatus());
-
-
     }
-
 
     /**
      * As a rider or driver, I want to see the status of a request that I am involved in
@@ -48,12 +45,7 @@ public class StatusTests {
         rc.addDriver(request, driver);
         assertEquals("The status of the request should be ACCEPTED",
                 Request.ACCEPTED, request.getStatus());
-
-
     }
-
-
-
 
     /**
      * As a rider or driver, I want to see the status of a request that I am involved in
@@ -72,8 +64,6 @@ public class StatusTests {
         rc.acceptDriver(request, driver);
         assertEquals("The status of the request should be CONFIRMED",
                 Request.CONFIRMED, request.getStatus());
-
-
     }
 
     /**
@@ -94,8 +84,6 @@ public class StatusTests {
         rc.completeRequest(request);
         assertEquals("The status of the request should be COMPLETE",
                 Request.COMPLETE, request.getStatus());
-
-
     }
 
     /**
@@ -117,8 +105,6 @@ public class StatusTests {
         rc.payForRequest(request);
         assertEquals("The status of the request should be PAID",
                 Request.PAID, request.getStatus());
-
-
     }
 
     /**
@@ -142,12 +128,7 @@ public class StatusTests {
         rc.cancelRequest(rider, request);
         assertEquals("The status of the request should be CANCELLED",
                 Request.CANCELLED, request.getStatus());
-
-
     }
 
-
-
-
-
+    
 }
