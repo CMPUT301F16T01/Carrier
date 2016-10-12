@@ -113,6 +113,7 @@ public class StatusTests {
         rc.addRequest(request);
         rc.addDriver(request, driver);
         rc.acceptDriver(request, driver);
+        rc.completeRequest(request);
         rc.payForRequest(request);
         assertEquals("The status of the request should be PAID",
                 Request.PAID, request.getStatus());
@@ -136,8 +137,9 @@ public class StatusTests {
         rc.addDriver(request, driver);
         rc.acceptDriver(request, driver);
         //can not be paid for or completed to be cancelled
+        //rc.completeRequest(request);
         //rc.payForRequest(request);
-        //rc.cancelRequest(rider, request);
+        rc.cancelRequest(rider, request);
         assertEquals("The status of the request should be CANCELLED",
                 Request.CANCELLED, request.getStatus());
 
