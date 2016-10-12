@@ -8,9 +8,5 @@ import java.util.ArrayList;
 
 public class RiderList {
 
-    protected ArrayList<Rider> riders = null;
 
-    public Rider getRider(Integer position) {
-        return riders.get(position);
-    }
 }

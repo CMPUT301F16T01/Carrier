@@ -8,9 +8,5 @@ import java.util.ArrayList;
 
 public class DriverList {
 
-    protected ArrayList<Driver> drivers = null;
 
-    public Driver getDriver(Integer position) {
-        return drivers.get(position);
-    }
 }

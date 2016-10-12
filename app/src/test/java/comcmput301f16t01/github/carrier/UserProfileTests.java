@@ -47,20 +47,20 @@ public class UserProfileTests {
     @Test
     public void editRiderInfo() {
         UserController uc = new UserController();
-        uc.getLoggedInRider().setEmail("start email");
-        uc.getLoggedInRider().setPhone("start phone");
+        uc.getLoggedInUser().setEmail("start email");
+        uc.getLoggedInUser().setPhone("start phone");
 
-        assertTrue(uc.getLoggedInRider().getUsername().equals("start username"));
-        assertTrue(uc.getLoggedInRider().getEmail().equals("start email"));
-        assertTrue(uc.getLoggedInRider().getPhone().equals("start phone"));
+        assertTrue(uc.getLoggedInUser().getUsername().equals("start username"));
+        assertTrue(uc.getLoggedInUser().getEmail().equals("start email"));
+        assertTrue(uc.getLoggedInUser().getPhone().equals("start phone"));
 
-        uc.getLoggedInRider().setUsername("another username");
-        uc.getLoggedInRider().setEmail("another email");
-        uc.getLoggedInRider().setPhone("another phone");
+        uc.getLoggedInUser().setUsername("another username");
+        uc.getLoggedInUser().setEmail("another email");
+        uc.getLoggedInUser().setPhone("another phone");
 
-        assertTrue(uc.getLoggedInRider().getUsername().equals("another username"));
-        assertTrue(uc.getLoggedInRider().getEmail().equals("another email"));
-        assertTrue(uc.getLoggedInRider().getPhone().equals("another phone"));
+        assertTrue(uc.getLoggedInUser().getUsername().equals("another username"));
+        assertTrue(uc.getLoggedInUser().getEmail().equals("another email"));
+        assertTrue(uc.getLoggedInUser().getPhone().equals("another phone"));
 
     }
 
@@ -71,20 +71,20 @@ public class UserProfileTests {
     @Test
     public void editDriverInfo() {
         UserController uc = new UserController();
-        uc.getLoggedInDriver().setEmail("start email");
-        uc.getLoggedInDriver().setPhone("start phone");
+        uc.getLoggedInUser().setEmail("start email");
+        uc.getLoggedInUser().setPhone("start phone");
 
-        assertTrue(uc.getLoggedInDriver().getUsername().equals("start username"));
-        assertTrue(uc.getLoggedInDriver().getEmail().equals("start email"));
-        assertTrue(uc.getLoggedInDriver().getPhone().equals("start phone"));
+        assertTrue(uc.getLoggedInUser().getUsername().equals("start username"));
+        assertTrue(uc.getLoggedInUser().getEmail().equals("start email"));
+        assertTrue(uc.getLoggedInUser().getPhone().equals("start phone"));
 
-        uc.getLoggedInDriver().setUsername("another username");
-        uc.getLoggedInDriver().setEmail("another email");
-        uc.getLoggedInDriver().setPhone("another phone");
+        uc.getLoggedInUser().setUsername("another username");
+        uc.getLoggedInUser().setEmail("another email");
+        uc.getLoggedInUser().setPhone("another phone");
 
-        assertTrue(uc.getLoggedInDriver().getUsername().equals("another username"));
-        assertTrue(uc.getLoggedInDriver().getEmail().equals("another email"));
-        assertTrue(uc.getLoggedInDriver().getPhone().equals("another phone"));
+        assertTrue(uc.getLoggedInUser().getUsername().equals("another username"));
+        assertTrue(uc.getLoggedInUser().getEmail().equals("another email"));
+        assertTrue(uc.getLoggedInUser().getPhone().equals("another phone"));
 
     }
 
@@ -99,14 +99,14 @@ public class UserProfileTests {
     public void showUsernameIfyouAreRider() {
         Rider you = new Rider("you");
         Request request = new Request(you, new Location(), new Location());
-        RequestController rc = new RequestController();
+        UserController uc = new UserController();
         Driver driver = new Driver("Mandy");
-        driver.setEmail("email");
+
+
+        uc.setEmail(driver, "email");
+        uc.setPhone(driver, "phone");
         driver.setPhone("phone");
 
-        rc.addRequest(request);
-        rc.addDriver(request, driver);
-        rc.acceptDriver(request, driver);
 
         assertTrue(request.getOffers().get(0).getEmail().equals("email"));
         assertTrue(request.getOffers().get(0).getPhone().equals("phone"));
@@ -125,14 +125,11 @@ public class UserProfileTests {
     public void showUsernameIfyouAreDriver() {
         Rider rider = new Rider("Sarah");
         Request request = new Request(rider, new Location(), new Location());
-        RequestController rc = new RequestController();
+        UserController uc = new UserController();
         Driver you = new Driver("you");
-        rider.setEmail("email");
-        rider.setPhone("phone");
-
-        rc.addRequest(request);
-        rc.addDriver(request, you);
-        rc.acceptDriver(request, you);
+        
+        uc.setEmail(rider, "email");
+        uc.setPhone(rider, "phone");
 
         assertTrue(request.getRider().getEmail().equals("email"));
         assertTrue(request.getRider().getPhone().equals("phone"));

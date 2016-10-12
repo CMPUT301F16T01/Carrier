@@ -16,8 +16,7 @@ import java.util.ArrayList;
 public class UserController {
     private static RiderList riderList = null;
     private static DriverList driverList = null;
-    private static Integer loggedInRiderPosition = null;
-    private static Integer loggedInDriverPosition = null;
+    private static User loggedInUser = null;
 
 
     public UserController() {
@@ -73,31 +72,25 @@ public class UserController {
         return false;
     }
 
-    public void setLoggedInRider(Integer position){
-        loggedInRiderPosition = position;
+
+    public void setLoggedInUser(User user){
+        loggedInUser = user;
     }
 
-    public Rider getLoggedInRider(){
-        return riderList.getRider(loggedInDriverPosition);
+    public User getLoggedInUser(){
+        return loggedInUser;
     }
 
-    public void LogOutRider() {
-        loggedInRiderPosition=null;
-    }
-
-    public void setLoggedInDriver(Integer position){
-        loggedInDriverPosition = position;
-    }
-
-    public Driver getLoggedInDriver(){
-        return driverList.getDriver(loggedInDriverPosition);
-    }
-
-    public void LogOutDriver() {
-        loggedInDriverPosition=null;
+    public void LogOutUser() {
+        loggedInUser=null;
     }
 
 
+    public void setEmail(User user, String email) {
+        user.setEmail(email);
+    }
 
-
+    public void setPhone(User user, String phone) {
+        user.setPhone(phone);
+    }
 }
