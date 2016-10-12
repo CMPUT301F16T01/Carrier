@@ -2,7 +2,6 @@ package comcmput301f16t01.github.carrier;
 
 import org.junit.After;
 import org.junit.Test;
-
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
@@ -56,7 +55,6 @@ public class SearchingTests {
         rc.addRequest(request2);
         rc.addRequest(request3);
 
-        Driver driver = new Driver("Amber");
         Location driverLocation = new Location(latitude4, longitude4);
         // this method should return a list of locations, sorted based on proximity
         // for now I'm assuming there are limits on how far away a request can be to be included in this list
