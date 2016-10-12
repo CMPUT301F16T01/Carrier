@@ -6,13 +6,13 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class LocationTests {
-    // U of A
-    static final double latitude1 = 113;
-    static final double longitude1 = 53.5;
+    // University of Alberta, Edmonton
+    static final double latitude1 = 53.5232;
+    static final double longitude1 = 113.5263;
 
-    // somewhere in Columbus, OH
-    static final double latitude2 = 40.1;
-    static final double longitude2 = -82.9;
+    // somewhere in London, Ontario
+    static final double latitude2 = 42.9870;
+    static final double longitude2 = 81.2432;
 
     @After
     public void clean() {

@@ -68,4 +68,8 @@ public class RequestController {
 
     public void payForRequest(Request request) {
     }
+
+    public ArrayList<Request> searchByLocation(Location location) {
+        return new ArrayList<>();
+    }
 }
