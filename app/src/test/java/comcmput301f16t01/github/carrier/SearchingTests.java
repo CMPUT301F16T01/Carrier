@@ -35,6 +35,8 @@ public class SearchingTests {
      */
     @Test
     public void testDriverSearchByLocation() {
+        ArrayList<Request> requests;
+
         Rider rider1 = new Rider("Mandy");
         Location startLocation1 = new Location();
         Location endLocation1 = new Location(latitude1, longitude1);
@@ -59,12 +61,26 @@ public class SearchingTests {
         // this method should return a list of requests, sorted based on proximity of start location
         // for now I'm assuming there are limits on how far away a request can be to be included in this list
         // TODO would it be better to use ArrayList<Request> or requestList
-        ArrayList<Request> requests = rc.searchByLocation(driverLocation);
+        requests = rc.searchByLocation(driverLocation);
         assertTrue("Search did not return 2 requests", requests.size() == 2);
         // check that the requests are ordered properly
         assertEquals("Closest request incorrect", request1, requests.get(0));
         assertEquals("2nd closest request incorrect", request3, requests.get(1));
         assertFalse("Search returned location out of range", requests.contains(request2));
+
+        // TODO clarify our terminology...should this return open or accepted requests
+        Driver driver = new Driver("Amber");
+        rc.addDriver(request1, driver);
+        rc.acceptDriver(request1, driver);
+
+        // request1 should no longer be included in the search results
+        requests = rc.searchByLocation(driverLocation);
+        assertTrue("Search did not return 1 request", requests.size() == 1);
+        // check that the requests are ordered properly
+        assertEquals("Closest request incorrect", request3, requests.get(0));
+        assertFalse("Search returned non-open request", requests.contains(request1));
+        assertFalse("Search returned location out of range", requests.contains(request2));
+
     }
 
     /**
@@ -73,6 +89,8 @@ public class SearchingTests {
      */
     @Test
     public void testDriverSearchByKeyword() {
+        ArrayList<Request> requests;
+
         Rider rider1 = new Rider("Mandy");
         Location startLocation1 = new Location();
         Location endLocation1 = new Location(latitude1, longitude1);
@@ -102,13 +120,34 @@ public class SearchingTests {
         String query3 = "downtown";
 
         // TODO should we allow the capability to search more than one keyword?
-        ArrayList<Request> requests1 = rc.searchByKeyword(query1);
-        assertTrue("Search did not return 2 requests", requests1.size() == 2);
+        requests = rc.searchByKeyword(query1);
+        assertTrue("Search did not return 2 requests", requests.size() == 2);
+        requests = rc.searchByKeyword(query2);
+        assertTrue("Search did not return 1 request", requests.size() == 1);
+        requests = rc.searchByKeyword(query3);
+        assertTrue("Search returned requests", requests.size() == 0);
 
-        ArrayList<Request> requests2 = rc.searchByKeyword(query2);
-        assertTrue("Search did not return 1 request", requests2.size() == 1);
+        Driver driver = new Driver("Amber");
+        rc.addDriver(request1, driver);
+        rc.acceptDriver(request1, driver);
 
-        ArrayList<Request> requests3 = rc.searchByKeyword(query3);
-        assertTrue("Search returned requests", requests3.size() == 0);
+        // request1 should no longer be included in search results
+        requests = rc.searchByKeyword(query1);
+        assertTrue("Search did not return 2 requests", requests.size() == 2);
+        requests = rc.searchByKeyword(query2);
+        assertTrue("Search returned requests", requests.size() == 0);
+        requests = rc.searchByKeyword(query3);
+        assertTrue("Search returned requests", requests.size() == 0);
+
+        rc.addDriver(request2, driver);
+        rc.acceptDriver(request2, driver);
+
+        // request1 and request2 should no longer be included in search results
+        requests = rc.searchByKeyword(query1);
+        assertTrue("Search did not return 1 requests", requests.size() == 1);
+        requests = rc.searchByKeyword(query2);
+        assertTrue("Search returned requests", requests.size() == 0);
+        requests = rc.searchByKeyword(query3);
+        assertTrue("Search returned requests", requests.size() == 0);
     }
 }
