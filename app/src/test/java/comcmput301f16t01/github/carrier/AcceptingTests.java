@@ -1,7 +1,5 @@
 package comcmput301f16t01.github.carrier;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -21,10 +19,13 @@ public class AcceptingTests {
         RequestController rc = new RequestController();
         rc.addRequest(request);
         Driver driver = new Driver("Cole");
+        // Check to see if there is an open request.
         assertTrue("Get open request is not returning any open requests", rc.getOpenRequests().size() == 1);
         rc.addDriver(request, driver);
-        assertTrue("The request is being updated when it shouldn't", rc.getOpenRequests().size() == 1);
-        assertTrue("The request has not been marked as accepted by the driver.", rc.getPendingRequests(driver).size() == 1);
+        // Check to see if the request is still labelled as open when it should be labelled as offered.
+        // So it should no longer be in open.
+        assertTrue("The request is not being updated when it should.", rc.getOpenRequests().size() == 0);
+        assertTrue("The request has not been marked as offered by the driver.", rc.getOfferedRequests(driver).size() == 1);
     }
 
     /**
@@ -44,10 +45,10 @@ public class AcceptingTests {
         Request request1 = new Request(rider, new Location(), new Location());
         rc.addRequest(request1);
         rc.addDriver(request1,driver1);
-        assertFalse("Two drivers share pending requests when they shouldn't", rc.getPendingRequests(driver).equals(rc.getPendingRequests(driver1)));
+        assertFalse("Two drivers share pending requests when they shouldn't", rc.getOfferedRequests(driver).equals(rc.getOfferedRequests(driver1)));
         assertTrue("The request has not been marked as accepted by the driver.", request.getAcceptedDrivers().contains(driver));
-        assertTrue("Driver is not able to view their pending requests .", rc.getPendingRequests(driver).size() == 1);
-        assertTrue("Request in pending requests is not the same.", rc.getPendingRequests(driver).get(0).equals(request));
+        assertTrue("Driver is not able to view their pending requests .", rc.getOfferedRequests(driver).size() == 1);
+        assertTrue("Request in pending requests is not the same.", rc.getOfferedRequests(driver).get(0).equals(request));
         assertEquals("The request is not being updated to pending", Request.ACCEPTED, request.getStatus());
     }
     /**

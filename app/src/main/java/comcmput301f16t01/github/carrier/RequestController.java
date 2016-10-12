@@ -92,19 +92,19 @@ public class RequestController {
     }
 
     /**
-     * Is used to provide a driver with a list of the requests that they have accepted.
-     * @param driver The driver who is requesting the list of the requests they have accepted
+     * Is used to provide a driver with a list of the requests that the driver has offered to give a ride.
+     * @param driver The driver who is requesting the list of the requests they have offered
      *               but the rider has no confirmed their choice in driver.
-     * @return An ArrayList of requests that the driver has accepted.
+     * @return An ArrayList of requests that the driver has offered to give a ride on.
      */
-    public ArrayList<Request> getPendingRequests(Driver driver) {
+    public ArrayList<Request> getOfferedRequests(Driver driver) {
         return  new ArrayList<Request>();
     }
 
-    /** Will be used to get a list of drivers that the user can choose to accept as there driver
+    /** Will be used to get a list of drivers that the user can choose to confirm as there driver
      *
      * @param request The request that is being queried for a list of drivers.
-     * @return An ArrayList of drivers that have accepted every request.
+     * @return An ArrayList of drivers that have offered to give a ride on the request.
      */
     public ArrayList<Driver> getDrivers(Request request) {
         return new ArrayList<Driver>();
