@@ -119,13 +119,5 @@ public class RequestController {
         return new ArrayList<Request>();
     }
 
-    /**
-     * Will return the driver that has been confirmed by the rider.
-     * @param request The request that we are getting the confirmed driver for
-     * @return Returns the confirmed driver for the request
-     *
-     */
-    public Driver getConfirmedDriver(Request request){
-        return new Driver("Unamed");
-    }
+
 }

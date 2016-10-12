@@ -54,5 +54,13 @@ public class Request {
 
     }
 
+    public Driver getConfirmedDriver() {
+        return new Driver("Test");
+    }
+
+    public ArrayList<Driver> getAcceptedDrivers() {
+        return new ArrayList<Driver>();
+    }
+
     // TODO confirm these as the states for a Request.
 }
