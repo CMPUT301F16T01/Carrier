@@ -43,7 +43,12 @@ public class AcceptingTests {
         Driver driver = new Driver("Cole");
         assertTrue("Get open request is not returning any open requests", rc.getOpenRequests().size() == 1);
         rc.addDriver(request, driver);
-        assertTrue("The request is being updated when it shouldn't", rc.getOpenRequests().size() == 1);
+        // Add another driver to compare
+        Driver driver1 = new Driver("WASD");
+        Request request1 = new Request(rider, new Location(), new Location());
+        rc.addRequest(request1);
+        rc.addDriver(request1,driver1);
+        assertFalse("Two drivers share pending requests when they shouldn't", rc.getPendingRequests(driver).equals(rc.getPendingRequests(driver1)));
         assertTrue("The request has not been marked as accepted by the driver.", request.getAcceptedDrivers().contains(driver));
         assertTrue("Driver is not able to view their pending requests .", rc.getPendingRequests(driver).size() == 1);
         assertTrue("Request in pending requests is not the same.", rc.getPendingRequests(driver).get(0).equals(request));
