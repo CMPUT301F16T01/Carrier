@@ -1,7 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
 import org.junit.Test;
-
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -15,27 +15,52 @@ public class UserProfileTests {
      * Related: US 03.01.01
      */
     @Test
-    public void uniqueUsername() {
+    public void uniqueRiderUsername() {
+        UserController uc = new UserController();
+
         Rider riderOne = new Rider("username");
-        Request request = new Request(riderOne, new Location(), new Location());
-        RequestController rc = new RequestController();
-        rc.addRequest(request);
+        assertTrue(uc.uniqueRiderUsername(riderOne));
 
-        assertEquals("There should only be one request returned.",
-                1, rc.getRequests(riderOne).size());
+        Rider riderTwo = new Rider("username");
+        assertFalse(uc.uniqueRiderUsername(riderTwo));
+    }
 
-        // Add a request to ensure we get back specific requests of a user.
-        rc.addRequest(new Request(new Rider("otherRider"), new Location(), new Location()));
+    /**
+     * As a user, I want a profile with a unique username and my contact information.
+     * Related: US 03.01.01
+     */
+    @Test
+    public void uniqueDriverUsername() {
+        UserController uc = new UserController();
 
-        // Ensures that we still only get one request for our user, with a second user in the system
-        assertEquals("There should only be one request returned.",
-                1, rc.getRequests(riderOne).size());
+        Driver driverOne = new Driver("username");
+        assertTrue(uc.uniqueDriverUsername(driverOne));
 
-        // Checks if the request put in is the same that returns
-        assertEquals("getRequests should return requests for a specified user",
-                request, rc.getRequests(riderOne).get(0));
+        Driver driverTwo = new Driver("username");
+        assertFalse(uc.uniqueDriverUsername(driverTwo));
+    }
 
-        // TODO include "get open requests? or just check if .isOpen() (?)
+    /**
+     * As a user, I want to edit the contact information in my profile.
+     * Related: US 03.02.01
+     */
+    @Test
+    public void editRiderInfo() {
+        Rider riderOne = new Rider("start username");
+        riderOne.setEmail("start email");
+        riderOne.setPhone("start phone");
+
+        assertTrue(riderOne.getUsername().equals("start username"));
+        assertTrue(riderOne.getEmail().equals("start email"));
+        assertTrue(riderOne.getPhone().equals("start phone"));
+
+        riderOne.setUsername("another username");
+        riderOne.setEmail("another email");
+        riderOne.setPhone("another phone");
+
+        assertTrue(riderOne.getUsername().equals("another username"));
+        assertTrue(riderOne.getEmail().equals("another email"));
+        assertTrue(riderOne.getPhone().equals("another phone"));
 
     }
 
@@ -44,18 +69,73 @@ public class UserProfileTests {
      * Related: US 03.02.01
      */
     @Test
-    public void editInfo() {
+    public void editDriverInfo() {
+        Driver driverOne = new Driver("start username");
+        driverOne.setEmail("start email");
+        driverOne.setPhone("start phone");
 
+        assertTrue(driverOne.getUsername().equals("start username"));
+        assertTrue(driverOne.getEmail().equals("start email"));
+        assertTrue(driverOne.getPhone().equals("start phone"));
+
+        driverOne.setUsername("another username");
+        driverOne.setEmail("another email");
+        driverOne.setPhone("another phone");
+
+        assertTrue(driverOne.getUsername().equals("another username"));
+        assertTrue(driverOne.getEmail().equals("another email"));
+        assertTrue(driverOne.getPhone().equals("another phone"));
 
     }
 
     /**
      * As a user, I want to, when a username is presented for a thing, retrieve and show its contact information.
      * Related: US 03.03.01
+     *
+     * a rider will only ever see other drivers usernames. Therefore when they are going through
+     * the request we just have to find the first driver and give up that info
      */
     @Test
-    public void showUsername() {
+    public void showUsernameIfyouAreRider() {
+        Rider you = new Rider("you");
+        Request request = new Request(you, new Location(), new Location());
+        RequestController rc = new RequestController();
+        Driver driver = new Driver("Mandy");
+        driver.setEmail("email");
+        driver.setPhone("phone");
 
+        rc.addRequest(request);
+        rc.addDriver(request, driver);
+        rc.acceptDriver(request, driver);
+
+        assertTrue(request.getOffers().get(0).getEmail().equals("email"));
+        assertTrue(request.getOffers().get(0).getPhone().equals("phone"));
+
+    }
+
+
+    /**
+     * As a user, I want to, when a username is presented for a thing, retrieve and show its contact information.
+     * Related: US 03.03.01
+     *
+     * a driver will only ever see other riders usernames. Therefore when they are going through
+     * the request we just have to find the rider and give up that info
+     */
+    @Test
+    public void showUsernameIfyouAreDriver() {
+        Rider rider = new Rider("Sarah");
+        Request request = new Request(rider, new Location(), new Location());
+        RequestController rc = new RequestController();
+        Driver you = new Driver("you");
+        rider.setEmail("email");
+        rider.setPhone("phone");
+
+        rc.addRequest(request);
+        rc.addDriver(request, you);
+        rc.acceptDriver(request, you);
+
+        assertTrue(request.getRider().getEmail().equals("email"));
+        assertTrue(request.getRider().getPhone().equals("phone"));
 
     }
 
