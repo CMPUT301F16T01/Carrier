@@ -29,6 +29,10 @@ public class Request {
         return status;
     }
 
+    public void setStatus(int status) {
+
+    }
+
     public int getFareEstimate() {
         FareCalculator fareCalc = new FareCalculator( start, end );
         return fareCalc.getEstimate();
