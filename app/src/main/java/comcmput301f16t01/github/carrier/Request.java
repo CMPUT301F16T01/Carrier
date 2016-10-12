@@ -9,7 +9,6 @@ import java.util.BitSet;
 public class Request {
     // These are not static because they will be used with an instance of Request?
     // i.e. request.setStatus( request.OPEN );
-    static final int NOTHING = 0;         // There has not been any requests made
     static final int OPEN = 1;            // A user has made the request but no drivers have accepted.
     static final int ACCEPTED = 2;        // One or more drivers have accepted the request.
     static final int CONFIRMED = 3;       // The user has chosen a driver and accepted one request.
