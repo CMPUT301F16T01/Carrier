@@ -106,7 +106,7 @@ public class UserProfileTests {
 
         rc.addRequest(request);
         rc.addDriver(request, driver);
-        rc.acceptDriver(request, driver);
+        rc.confirmDriver(request, driver);
 
         assertTrue(request.getOffers().get(0).getEmail().equals("email"));
         assertTrue(request.getOffers().get(0).getPhone().equals("phone"));
@@ -132,7 +132,7 @@ public class UserProfileTests {
 
         rc.addRequest(request);
         rc.addDriver(request, you);
-        rc.acceptDriver(request, you);
+        rc.confirmDriver(request, you);
 
         assertTrue(request.getRider().getEmail().equals("email"));
         assertTrue(request.getRider().getPhone().equals("phone"));
