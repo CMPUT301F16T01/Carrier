@@ -72,4 +72,8 @@ public class RequestController {
     public ArrayList<Request> searchByLocation(Location location) {
         return new ArrayList<>();
     }
+
+    public ArrayList<Request> searchByKeyword(String query) {
+        return new ArrayList<>();
+    }
 }

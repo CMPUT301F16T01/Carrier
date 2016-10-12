@@ -38,17 +38,17 @@ public class SearchingTests {
         Rider rider1 = new Rider("Mandy");
         Location startLocation1 = new Location();
         Location endLocation1 = new Location(latitude1, longitude1);
-        Request request1 = new Request(rider1, startLocation1, endLocation1);
+        Request request1 = new Request(rider1, startLocation1, endLocation1, "");
 
         Rider rider2 = new Rider("Abigail");
         Location startLocation2 = new Location();
         Location endLocation2 = new Location(latitude2, longitude2);
-        Request request2 = new Request(rider2, startLocation2, endLocation2);
+        Request request2 = new Request(rider2, startLocation2, endLocation2, "");
 
         Rider rider3 = new Rider("Alison");
         Location startLocation3 = new Location();
         Location endLocation3 = new Location(latitude3, longitude3);
-        Request request3 = new Request(rider3, startLocation3, endLocation3);
+        Request request3 = new Request(rider3, startLocation3, endLocation3, "");
 
         RequestController rc = new RequestController();
         rc.addRequest(request1);
@@ -56,7 +56,7 @@ public class SearchingTests {
         rc.addRequest(request3);
 
         Location driverLocation = new Location(latitude4, longitude4);
-        // this method should return a list of locations, sorted based on proximity
+        // this method should return a list of requests, sorted based on proximity of start location
         // for now I'm assuming there are limits on how far away a request can be to be included in this list
         // TODO would it be better to use ArrayList<Request> or requestList
         ArrayList<Request> requests = rc.searchByLocation(driverLocation);
@@ -73,6 +73,42 @@ public class SearchingTests {
      */
     @Test
     public void testDriverSearchByKeyword() {
+        Rider rider1 = new Rider("Mandy");
+        Location startLocation1 = new Location();
+        Location endLocation1 = new Location(latitude1, longitude1);
+        String description1 = "Need to get to Whyte Ave for work";
+        Request request1 = new Request(rider1, startLocation1, endLocation1, description1);
 
+        Rider rider2 = new Rider("Abigail");
+        Location startLocation2 = new Location();
+        Location endLocation2 = new Location(latitude2, longitude2);
+        String description2 = "Going home from the bar";
+        Request request2 = new Request(rider2, startLocation2, endLocation2, description2);
+
+        Rider rider3 = new Rider("Alison");
+        Location startLocation3 = new Location();
+        Location endLocation3 = new Location(latitude3, longitude3);
+        String description3 = "Going home from school";
+        Request request3 = new Request(rider3, startLocation3, endLocation3, description3);
+
+        RequestController rc = new RequestController();
+        rc.addRequest(request1);
+        rc.addRequest(request2);
+        rc.addRequest(request3);
+
+        // this method should return a list of requests based on keywords in the request description
+        String query1 = "home";
+        String query2 = "whyte"; // should not be case-dependent
+        String query3 = "downtown";
+
+        // TODO should we allow the capability to search more than one keyword?
+        ArrayList<Request> requests1 = rc.searchByKeyword(query1);
+        assertTrue("Search did not return 2 requests", requests1.size() == 2);
+
+        ArrayList<Request> requests2 = rc.searchByKeyword(query2);
+        assertTrue("Search did not return 1 request", requests2.size() == 1);
+
+        ArrayList<Request> requests3 = rc.searchByKeyword(query3);
+        assertTrue("Search returned requests", requests3.size() == 0);
     }
 }

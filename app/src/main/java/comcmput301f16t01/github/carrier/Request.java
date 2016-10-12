@@ -20,8 +20,9 @@ public class Request {
     private Rider rider;
     private Location start;
     private Location end;
+    private String description;
 
-    public Request(Rider rider, Location start, Location end) {
+    public Request(Rider rider, Location start, Location end, String description) {
 
     }
 

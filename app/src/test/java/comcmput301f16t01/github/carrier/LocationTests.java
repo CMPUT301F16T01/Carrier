@@ -36,7 +36,7 @@ public class LocationTests {
         startLocation.setLocation(latitude1, longitude1);
         Location endLocation = new Location(latitude2, longitude2);
 
-        Request request = new Request(rider, startLocation, endLocation);
+        Request request = new Request(rider, startLocation, endLocation, "");
 
         assertEquals("Start location latitude should match", startLocation.getLatitude(), request.getStart().getLatitude());
         assertEquals("Start location longitude should match", startLocation.getLongitude(), request.getStart().getLongitude());
@@ -54,7 +54,7 @@ public class LocationTests {
         Rider rider = new Rider("Mike");
         Location startLocation = new Location();
         Location endLocation = new Location();
-        Request request = new Request(rider, startLocation, endLocation);
+        Request request = new Request(rider, startLocation, endLocation, "");
 
         Location start = request.getStart();
         Location end = request.getEnd();

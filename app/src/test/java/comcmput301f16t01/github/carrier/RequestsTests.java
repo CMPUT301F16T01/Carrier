@@ -1,7 +1,6 @@
 package comcmput301f16t01.github.carrier;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -24,7 +23,7 @@ public class RequestsTests {
     @Test
     public void riderRequest() {
         Rider rider = new Rider("Kieter");
-        Request request = new Request(rider, new Location(), new Location());
+        Request request = new Request(rider, new Location(), new Location(), "");
         RequestController rc = new RequestController();
 
         // assert there is no requests for this rider
@@ -48,7 +47,7 @@ public class RequestsTests {
     @Test
     public void seeOpenRequests() {
         Rider riderOne = new Rider("username");
-        Request request = new Request(riderOne, new Location(), new Location());
+        Request request = new Request(riderOne, new Location(), new Location(), "");
         RequestController rc = new RequestController();
         rc.addRequest(request);
 
@@ -56,7 +55,7 @@ public class RequestsTests {
                 1, rc.getRequests(riderOne).size());
 
         // Add a request to ensure we get back specific requests of a user.
-        rc.addRequest(new Request(new Rider("otherRider"), new Location(), new Location()));
+        rc.addRequest(new Request(new Rider("otherRider"), new Location(), new Location(), ""));
 
         // Ensures that we still only get one request for our user, with a second user in the system
         assertEquals("There should only be one request returned.",
@@ -77,7 +76,7 @@ public class RequestsTests {
     @Test
     public void acceptedRequestNotification() {
         Rider rider = new Rider("Bennett");
-        Request request = new Request(rider, new Location(), new Location());
+        Request request = new Request(rider, new Location(), new Location(), "");
         RequestController rc = new RequestController();
 
         rc.addRequest(request);
@@ -99,8 +98,8 @@ public class RequestsTests {
     @Test
     public void riderCancelRequests() {
         Rider riderOne = new Rider("username");
-        Request request1 = new Request(riderOne, new Location(), new Location());
-        Request request2 = new Request(riderOne, new Location(), new Location());
+        Request request1 = new Request(riderOne, new Location(), new Location(), "");
+        Request request2 = new Request(riderOne, new Location(), new Location(), "");
 
         assertNotEquals("The requests cannot be considered equal for this test",
                 request1, request2);
@@ -130,7 +129,7 @@ public class RequestsTests {
         String phone = "1234567890";
         driver.setPhone(phone);
 
-        Request request = new Request(rider, new Location(), new Location());
+        Request request = new Request(rider, new Location(), new Location(), "");
         RequestController rc = new RequestController();
         rc.addRequest(request);
 
@@ -156,7 +155,7 @@ public class RequestsTests {
         Rider riderOne = new Rider("username");
         Location start = new Location();
         Location end = new Location();
-        Request request = new Request(riderOne, start, end);
+        Request request = new Request(riderOne, start, end, "");
         FareCalculator fareCalc = new FareCalculator(start, end);
         assertEquals("A request should have a fare estimate",
                 request.getFareEstimate(), fareCalc.getEstimate());
@@ -172,7 +171,7 @@ public class RequestsTests {
     public void confirmCompletionAndPay() {
         Rider rider = new Rider("Michael");
         Driver driver = new Driver("Protein Powder");
-        Request request = new Request(rider, new Location(), new Location());
+        Request request = new Request(rider, new Location(), new Location(), "");
 
         RequestController rc = new RequestController();
         rc.addDriver(request, driver);
@@ -200,7 +199,7 @@ public class RequestsTests {
         Driver driverOne = new Driver("username2");
         Driver driverTwo = new Driver("username3");
         RequestController rc = new RequestController();
-        Request request = new Request(riderOne, new Location(), new Location());
+        Request request = new Request(riderOne, new Location(), new Location(), "");
         rc.addRequest(request);
         rc.addDriver(request, driverOne);
         rc.addDriver(request, driverTwo);
