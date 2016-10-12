@@ -107,6 +107,12 @@ public class UserProfileTests {
         uc.setPhone(driver, "phone");
         driver.setPhone("phone");
 
+<<<<<<< HEAD
+=======
+        rc.addRequest(request);
+        rc.addDriver(request, driver);
+        rc.confirmDriver(request, driver);
+>>>>>>> 8b94d48256d8b590e32d79731ae494f5351c9d3b
 
         assertTrue(request.getOffers().get(0).getEmail().equals("email"));
         assertTrue(request.getOffers().get(0).getPhone().equals("phone"));
@@ -127,9 +133,18 @@ public class UserProfileTests {
         Request request = new Request(rider, new Location(), new Location());
         UserController uc = new UserController();
         Driver you = new Driver("you");
+<<<<<<< HEAD
         
         uc.setEmail(rider, "email");
         uc.setPhone(rider, "phone");
+=======
+        rider.setEmail("email");
+        rider.setPhone("phone");
+
+        rc.addRequest(request);
+        rc.addDriver(request, you);
+        rc.confirmDriver(request, you);
+>>>>>>> 8b94d48256d8b590e32d79731ae494f5351c9d3b
 
         assertTrue(request.getRider().getEmail().equals("email"));
         assertTrue(request.getRider().getPhone().equals("phone"));
