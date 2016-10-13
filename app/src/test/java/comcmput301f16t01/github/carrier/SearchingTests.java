@@ -9,19 +9,19 @@ import static org.junit.Assert.*;
 public class SearchingTests {
     // University of Alberta, Edmonton
     static final double latitude1 = 53.5232;
-    static final double longitude1 = 113.5263;
+    static final double longitude1 = -113.5263;
 
     // somewhere in London, Ontario
     static final double latitude2 = 42.9870;
-    static final double longitude2 = 81.2432;
+    static final double longitude2 = -81.2432;
 
-    // somewhere in Calgary, Alberta
-    static final double latitude3 = 51.0486;
-    static final double longitude3 = 114.0708;
+    // somewhere in St. Albert, Alberta
+    static final double latitude3 = 53.6305;
+    static final double longitude3 = -113.6256;
 
     // somewhere in Edmonton, Alberta
     static final double latitude4 = 53.5444;
-    static final double longitude4 = 113.4909;
+    static final double longitude4 = -113.4909;
 
     @After
     public void clean() {
@@ -71,7 +71,7 @@ public class SearchingTests {
         // TODO clarify our terminology...should this return open or accepted requests
         Driver driver = new Driver("Amber");
         rc.addDriver(request1, driver);
-        rc.acceptDriver(request1, driver);
+        rc.confirmDriver(request1, driver);
 
         // request1 should no longer be included in the search results
         requests = rc.searchByLocation(driverLocation);
@@ -128,7 +128,7 @@ public class SearchingTests {
 
         Driver driver = new Driver("Amber");
         rc.addDriver(request1, driver);
-        rc.acceptDriver(request1, driver);
+        rc.confirmDriver(request1, driver);
 
         // request1 should no longer be included in search results
         requests = rc.searchByKeyword(query1);
@@ -139,7 +139,7 @@ public class SearchingTests {
         assertTrue("Search returned requests", requests.size() == 0);
 
         rc.addDriver(request2, driver);
-        rc.acceptDriver(request2, driver);
+        rc.confirmDriver(request2, driver);
 
         // request1 and request2 should no longer be included in search results
         requests = rc.searchByKeyword(query1);

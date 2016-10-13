@@ -80,10 +80,27 @@ public class RequestController {
     public void payForRequest(Request request) {
     }
 
+    /**
+     * Is used to search open requests by a location submitted by a driver. The search results
+     * should return an ordered list with priority given to requests that begin in closest
+     * proximity to the driver-submitted location. Search results are limited to a range of
+     * locations that are within a reasonable distance to the driver-submitted location.
+     * @param location The location submitted by the user to query by
+     * @return Returns the search results
+     */
     public ArrayList<Request> searchByLocation(Location location) {
         return new ArrayList<>();
     }
 
+    /**
+     * Is used to search open requests by a keyword query submitted by a driver. The query string
+     * should not be case-dependent. The search matches the query string to the request description
+     * to determine whether a request should be included in the search results or not.
+     * @param query
+     * @return Returns the search results
+     */
+    // TODO consider having these search results sorted by location and limited to a location range
+    //   this will require us to compare against the driver's current location...how do we get that?
     public ArrayList<Request> searchByKeyword(String query) {
         return new ArrayList<>();
     }
