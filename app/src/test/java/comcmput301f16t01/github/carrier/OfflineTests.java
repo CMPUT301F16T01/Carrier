@@ -22,7 +22,8 @@ public class OfflineTests {
      * US 08.01.01 As an driver, I want to see requests that I already accepted while offline.
      */
     @Test
-    public void OfflineSeeRequestsTest() {
+    public void OfflineSeeDriverOffersTest() {
+        // Setting up
         Rider rider = new Rider("Kieter");
         Driver driver = new Driver("Baenett");
         Request request = new Request(rider, new Location(), new Location());
@@ -38,7 +39,7 @@ public class OfflineTests {
         sc.setOnline(false);
 
 
-        // The offered requests offline are the same as the ones made online
+        // Tests that the offered requests offline are the same as the ones made online
         assertEquals( "Driver could not get the requests he offered to fulfill while offline",
                 request, rc.getOfferedRequests(driver).get(0));
 
@@ -46,11 +47,21 @@ public class OfflineTests {
 
     /**
      * US 08.02.01 As a rider, I want to see requests that I have made while offline.
-
      */
     @Test
-    public void test_08_02_01() {
+    public void OfflineSeeDriver() {
+        // Setting up
+        Rider rider = new Rider("Kieter");
+        Driver driver = new Driver("Baenett");
+        Request request = new Request(rider, new Location(), new Location());
+        RequestController rc = new RequestController();
 
+        // Going offline
+        SyncController sc = new SyncController();
+        sc.setOnline(false);
+
+        // Tests that the requests the rider made online persist offline (they are the same)
+        assertEquals("Rider could not get the requests they made", request, rc.getRequests(rider).get(0));
     }
 
     /**
