@@ -117,7 +117,8 @@ public class UserProfileTests {
     @Test
     public void showUsernameIfyouAreRider() {
         Rider you = new Rider("you");
-        Request request = new Request(you, new Location(), new Location());
+        String description = "thing";
+        Request request = new Request(you, new Location(), new Location(), description);
         UserController uc = new UserController();
         Driver driver = new Driver("Mandy");
         uc.addDriver(driver);
@@ -146,7 +147,8 @@ public class UserProfileTests {
     @Test
     public void showUsernameIfyouAreDriver() {
         Rider rider = new Rider("Sarah");
-        Request request = new Request(rider, new Location(), new Location());
+        String description = "thing";
+        Request request = new Request(rider, new Location(), new Location(), description);
         UserController uc = new UserController();
         Driver you = new Driver("you");
         uc.addDriver(you);

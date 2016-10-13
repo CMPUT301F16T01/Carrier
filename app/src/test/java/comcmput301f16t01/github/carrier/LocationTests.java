@@ -6,13 +6,13 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class LocationTests {
-    // U of A
-    static final double latitude1 = 113;
-    static final double longitude1 = 53.5;
+    // University of Alberta, Edmonton
+    static final double latitude1 = 53.5232;
+    static final double longitude1 = 113.5263;
 
-    // somewhere in Columbus, OH
-    static final double latitude2 = 40.1;
-    static final double longitude2 = -82.9;
+    // somewhere in London, Ontario
+    static final double latitude2 = 42.9870;
+    static final double longitude2 = 81.2432;
 
     @After
     public void clean() {
@@ -36,7 +36,7 @@ public class LocationTests {
         startLocation.setLocation(latitude1, longitude1);
         Location endLocation = new Location(latitude2, longitude2);
 
-        Request request = new Request(rider, startLocation, endLocation);
+        Request request = new Request(rider, startLocation, endLocation, "");
 
         assertEquals("Start location latitude should match", startLocation.getLatitude(), request.getStart().getLatitude());
         assertEquals("Start location longitude should match", startLocation.getLongitude(), request.getStart().getLongitude());
@@ -54,7 +54,7 @@ public class LocationTests {
         Rider rider = new Rider("Mike");
         Location startLocation = new Location();
         Location endLocation = new Location();
-        Request request = new Request(rider, startLocation, endLocation);
+        Request request = new Request(rider, startLocation, endLocation, "");
 
         Location start = request.getStart();
         Location end = request.getEnd();
