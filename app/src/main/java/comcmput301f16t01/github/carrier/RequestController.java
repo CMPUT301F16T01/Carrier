@@ -80,7 +80,6 @@ public class RequestController {
     public void payForRequest(Request request) {
     }
 
-
     /**
      * Is used to provide a driver with a list of all open requests.
      * @return An array list of open requests.
