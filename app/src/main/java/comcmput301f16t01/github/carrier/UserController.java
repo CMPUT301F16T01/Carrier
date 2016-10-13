@@ -73,24 +73,20 @@ public class UserController {
     }
 
 
-    public void setLoggedInUser(User user){
-        loggedInUser = user;
-    }
-
-    public User getLoggedInUser(){
-        return loggedInUser;
-    }
-
-    public void LogOutUser() {
-        loggedInUser=null;
-    }
-
-
     public void setEmail(User user, String email) {
         user.setEmail(email);
     }
 
     public void setPhone(User user, String phone) {
         user.setPhone(phone);
+    }
+
+    public void setUsername(User user, String username) { user.setUsername(username);
+    }
+
+    public void addDriver(Driver driver) {
+    }
+
+    public void addRider(Rider rider) {
     }
 }
