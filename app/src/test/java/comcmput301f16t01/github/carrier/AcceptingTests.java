@@ -38,7 +38,6 @@ public class AcceptingTests {
         Location start = new Location();
         Location end = new Location();
         Request request = new Request(rider, start, end);
-
         RequestController rc = new RequestController();
         rc.addRequest(request);
         String description = "This description.";
@@ -67,6 +66,7 @@ public class AcceptingTests {
         // Check to make sure that the request is labelled as offered.
         assertEquals("The request is not being updated to pending", Request.OFFERED, request.getStatus());
     }
+
     /**
      * (US 05.03.01) As a driver, I want to see if my acceptance was accepted.
      */
@@ -81,10 +81,14 @@ public class AcceptingTests {
         // Makes sure that the request is still available to be offered to by other drivers.
         assertTrue("The request is no longer available but it should be.", rc.getAvailableRequests().contains(request));
         rc.confirmDriver(request, driver);
+        // Make sure that the confirmed driver is correct.
         assertTrue("Driver has been added to the request as the confirmed driver", request.getConfirmedDriver().equals(driver));
+        // Makes sure that drivers can not make an offer on the request.
         assertFalse("The request is still available to be accepted by other drivers", rc.getAvailableRequests().contains(request));
+        // Makes sure that the request is being labelled as confirmed.
         assertEquals("The request is not being updated to confirmed", Request.CONFIRMED, request.getStatus());
     }
+
     /**
      * (US 05.04.01) As a driver, I want to be notified if my ride offer was accepted.
      */
