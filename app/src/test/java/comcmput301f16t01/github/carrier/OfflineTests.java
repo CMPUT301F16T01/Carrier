@@ -3,6 +3,8 @@ package comcmput301f16t01.github.carrier;
 import org.junit.After;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.Assert.*;
 
 /**
@@ -22,10 +24,23 @@ public class OfflineTests {
     @Test
     public void OfflineSeeRequestsTest() {
         Rider rider = new Rider("Kieter");
-        Location start = new Location();
-        Location end = new Location();
-        Request request = new Request(rider, start, end);
+        Driver driver = new Driver("Baenett");
+        Request request = new Request(rider, new Location(), new Location());
 
+        // Adding a request while online
+        RequestController rc = new RequestController();
+        rc.addRequest(request);
+        // A driver offers a ride for that request
+        rc.addDriver(request, driver);
+
+        // Going offline
+        SyncController sc = new SyncController();
+        sc.setOnline(false);
+
+        ArrayList<Request>
+
+        // The offered requests offline are the same as the ones made online
+        assertTrue(rc.getOfferedRequests(driver))
 
     }
 

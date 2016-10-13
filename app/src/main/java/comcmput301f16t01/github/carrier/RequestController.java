@@ -68,4 +68,7 @@ public class RequestController {
 
     public void payForRequest(Request request) {
     }
+
+    public void getOfferedRequests(Driver driver) {
+    }
 }
