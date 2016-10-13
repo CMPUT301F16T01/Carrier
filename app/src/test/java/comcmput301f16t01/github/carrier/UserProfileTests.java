@@ -46,21 +46,31 @@ public class UserProfileTests {
      */
     @Test
     public void editRiderInfo() {
-        Rider riderOne = new Rider("start username");
-        riderOne.setEmail("start email");
-        riderOne.setPhone("start phone");
+        UserController uc = new UserController();
+        Rider rider = new Rider("Mandy");
+        uc.addRider(rider);
 
-        assertTrue(riderOne.getUsername().equals("start username"));
-        assertTrue(riderOne.getEmail().equals("start email"));
-        assertTrue(riderOne.getPhone().equals("start phone"));
+        String email = "start email";
+        String phone = "start phone";
+        uc.setEmail(rider, email);
+        uc.setPhone(rider, phone);
 
-        riderOne.setUsername("another username");
-        riderOne.setEmail("another email");
-        riderOne.setPhone("another phone");
+        assertTrue(rider.getUsername().equals("start username"));
+        assertTrue(rider.getEmail().equals("start email"));
+        assertTrue(rider.getPhone().equals("start phone"));
 
-        assertTrue(riderOne.getUsername().equals("another username"));
-        assertTrue(riderOne.getEmail().equals("another email"));
-        assertTrue(riderOne.getPhone().equals("another phone"));
+        String difUsername = "another username";
+        String difEmail = "another email";
+        String difPhone = "another phone";
+
+        uc.setUsername(rider, difUsername);
+        uc.setEmail(rider, difEmail);
+        uc.setPhone(rider, difPhone);
+
+        assertTrue(rider.getUsername().equals("another username"));
+        assertTrue(rider.getEmail().equals("another email"));
+        assertTrue(rider.getPhone().equals("another phone"));
+
     }
 
     /**
@@ -69,21 +79,31 @@ public class UserProfileTests {
      */
     @Test
     public void editDriverInfo() {
-        Driver driverOne = new Driver("start username");
-        driverOne.setEmail("start email");
-        driverOne.setPhone("start phone");
+        UserController uc = new UserController();
+        Driver driver = new Driver("Mandy");
+        uc.addDriver(driver);
 
-        assertTrue(driverOne.getUsername().equals("start username"));
-        assertTrue(driverOne.getEmail().equals("start email"));
-        assertTrue(driverOne.getPhone().equals("start phone"));
+        String email = "start email";
+        String phone = "start phone";
+        uc.setEmail(driver, email);
+        uc.setPhone(driver, phone);
 
-        driverOne.setUsername("another username");
-        driverOne.setEmail("another email");
-        driverOne.setPhone("another phone");
+        assertTrue(driver.getUsername().equals("Mandy"));
+        assertTrue(driver.getEmail().equals(email));
+        assertTrue(driver.getPhone().equals(phone));
 
-        assertTrue(driverOne.getUsername().equals("another username"));
-        assertTrue(driverOne.getEmail().equals("another email"));
-        assertTrue(driverOne.getPhone().equals("another phone"));
+        String difUsername = "another username";
+        String difEmail = "another email";
+        String difPhone = "another phone";
+
+
+        uc.setUsername(driver, difUsername);
+        uc.setEmail(driver, difEmail);
+        uc.setPhone(driver, difPhone);
+
+        assertTrue(driver.getUsername().equals("another username"));
+        assertTrue(driver.getEmail().equals("another email"));
+        assertTrue(driver.getPhone().equals("another phone"));
 
     }
 
@@ -97,15 +117,19 @@ public class UserProfileTests {
     @Test
     public void showUsernameIfyouAreRider() {
         Rider you = new Rider("you");
-        Request request = new Request(you, new Location(), new Location());
-        RequestController rc = new RequestController();
+        String description = "thing";
+        Request request = new Request(you, new Location(), new Location(), description);
+        UserController uc = new UserController();
         Driver driver = new Driver("Mandy");
-        driver.setEmail("email");
-        driver.setPhone("phone");
+        uc.addDriver(driver);
+        uc.addRider(you);
 
-        rc.addRequest(request);
-        rc.addDriver(request, driver);
-        rc.confirmDriver(request, driver);
+        String email = "email";
+        String phone = "phone";
+
+        uc.setEmail(driver, email);
+        uc.setPhone(driver, phone);
+
 
         assertTrue(request.getOffers().get(0).getEmail().equals("email"));
         assertTrue(request.getOffers().get(0).getPhone().equals("phone"));
@@ -123,15 +147,19 @@ public class UserProfileTests {
     @Test
     public void showUsernameIfyouAreDriver() {
         Rider rider = new Rider("Sarah");
-        Request request = new Request(rider, new Location(), new Location());
-        RequestController rc = new RequestController();
+        String description = "thing";
+        Request request = new Request(rider, new Location(), new Location(), description);
+        UserController uc = new UserController();
         Driver you = new Driver("you");
-        rider.setEmail("email");
-        rider.setPhone("phone");
+        uc.addDriver(you);
+        uc.addRider(rider);
 
-        rc.addRequest(request);
-        rc.addDriver(request, you);
-        rc.confirmDriver(request, you);
+        String email = "email";
+        String phone = "phone";
+
+        uc.setEmail(rider, email);
+        uc.setPhone(rider, phone);
+
 
         assertTrue(request.getRider().getEmail().equals("email"));
         assertTrue(request.getRider().getPhone().equals("phone"));

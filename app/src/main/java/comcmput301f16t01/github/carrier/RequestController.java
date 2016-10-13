@@ -80,6 +80,7 @@ public class RequestController {
     public void payForRequest(Request request) {
     }
 
+
     /**
      * Is used to search open requests by a location submitted by a driver. The search results
      * should return an ordered list with priority given to requests that begin in closest
@@ -149,4 +150,5 @@ public class RequestController {
      */
     public void setRequestDescription(Request request, String description) {
     }
+
 }
