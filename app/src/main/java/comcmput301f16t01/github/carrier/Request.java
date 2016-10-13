@@ -20,6 +20,7 @@ public class Request {
     private Rider rider;
     private Location start;
     private Location end;
+    private String description;
 
     public Request(Rider rider, Location start, Location end) {
 
@@ -64,6 +65,10 @@ public class Request {
 
     public ArrayList<Driver> getAcceptedDrivers() {
         return new ArrayList<Driver>();
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     // TODO confirm these as the states for a Request.

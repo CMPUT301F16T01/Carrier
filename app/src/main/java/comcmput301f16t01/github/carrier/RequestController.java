@@ -120,4 +120,11 @@ public class RequestController {
     }
 
 
+    /**
+     * This is used to set the Request description.
+     * @param request The request that we are modifying
+     * @param description The description that we are setting it to.
+     */
+    public void setRequestDescription(Request request, String description) {
+    }
 }
