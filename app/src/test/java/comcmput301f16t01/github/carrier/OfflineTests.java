@@ -37,10 +37,10 @@ public class OfflineTests {
         SyncController sc = new SyncController();
         sc.setOnline(false);
 
-        ArrayList<Request>
 
         // The offered requests offline are the same as the ones made online
-        assertTrue(rc.getOfferedRequests(driver))
+        assertEquals( "Driver could not get the requests he offered to fulfill while offline",
+                request, rc.getOfferedRequests(driver).get(0));
 
     }
 
