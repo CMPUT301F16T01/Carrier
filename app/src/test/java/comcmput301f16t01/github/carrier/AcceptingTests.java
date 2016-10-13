@@ -64,7 +64,7 @@ public class AcceptingTests {
         assertTrue("End location is not the same.", rc.getOfferedRequests(driver).get(0).getEnd().equals(start));
         assertEquals("Descriptions are not the same", description, rc.getOfferedRequests(driver).get(0).getDescription());
         // Check to make sure that the request is labelled as offered.
-        assertEquals("The request is not being updated to pending", Request.OFFERED, request.getStatus());
+        assertEquals("The request is not being updated to offered.", Request.OFFERED, request.getStatus());
     }
 
     /**
