@@ -27,6 +27,11 @@ public class AcceptingTests {
         assertTrue("The request is not being updated when it should.", rc.getOpenRequests().size() == 0);
         // Check to make sure that the request has been added to the drivers offered requests.
         assertTrue("The request has not been marked as offered by the driver.", rc.getOfferedRequests(driver).size() == 1);
+        rc.confirmDriver(request, driver);
+        rc.completeRequest(request);
+        rc.payForRequest(request);
+        // Make sure that the status of the request is paid.
+        assertEquals("The request has not been paid for", Request.PAID, request.getStatus());
     }
 
     /**
@@ -38,7 +43,6 @@ public class AcceptingTests {
         Location start = new Location();
         Location end = new Location();
         Request request = new Request(rider, start, end);
-
         RequestController rc = new RequestController();
         rc.addRequest(request);
         String description = "This description.";
@@ -55,7 +59,7 @@ public class AcceptingTests {
         // Make sure that the request is only added to the offering driver.
         assertFalse("Two drivers share pending requests when they shouldn't", rc.getOfferedRequests(driver).equals(rc.getOfferedRequests(driver1)));
         // We want to make sure that the driver has been added to the list of offered drivers in the request.
-        assertTrue("The request has not been marked as offered by the driver.", request.getAcceptedDrivers().contains(driver));
+        assertTrue("The request has not been marked as offered by the driver.", request.getOfferedDrivers().contains(driver));
         // Want to make sure that the request has been added to the drivers list of offered requests.
         assertTrue("Driver is not able to view their pending requests .", rc.getOfferedRequests(driver).size() == 1);
         // Make sure the request added to the driver's offered requests is the same as the current request.
@@ -65,8 +69,9 @@ public class AcceptingTests {
         assertTrue("End location is not the same.", rc.getOfferedRequests(driver).get(0).getEnd().equals(start));
         assertEquals("Descriptions are not the same", description, rc.getOfferedRequests(driver).get(0).getDescription());
         // Check to make sure that the request is labelled as offered.
-        assertEquals("The request is not being updated to pending", Request.OFFERED, request.getStatus());
+        assertEquals("The request is not being updated to offered.", Request.OFFERED, request.getStatus());
     }
+
     /**
      * (US 05.03.01) As a driver, I want to see if my acceptance was accepted.
      */
@@ -81,10 +86,14 @@ public class AcceptingTests {
         // Makes sure that the request is still available to be offered to by other drivers.
         assertTrue("The request is no longer available but it should be.", rc.getAvailableRequests().contains(request));
         rc.confirmDriver(request, driver);
+        // Make sure that the confirmed driver is correct.
         assertTrue("Driver has been added to the request as the confirmed driver", request.getConfirmedDriver().equals(driver));
+        // Makes sure that drivers can not make an offer on the request.
         assertFalse("The request is still available to be accepted by other drivers", rc.getAvailableRequests().contains(request));
+        // Makes sure that the request is being labelled as confirmed.
         assertEquals("The request is not being updated to confirmed", Request.CONFIRMED, request.getStatus());
     }
+
     /**
      * (US 05.04.01) As a driver, I want to be notified if my ride offer was accepted.
      */
