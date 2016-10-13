@@ -63,7 +63,7 @@ public class Request {
         return new Driver("Test");
     }
 
-    public ArrayList<Driver> getAcceptedDrivers() {
+    public ArrayList<Driver> getOfferedDrivers() {
         return new ArrayList<Driver>();
     }
 

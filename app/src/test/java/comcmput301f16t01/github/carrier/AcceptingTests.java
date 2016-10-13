@@ -54,7 +54,7 @@ public class AcceptingTests {
         // Make sure that the request is only added to the offering driver.
         assertFalse("Two drivers share pending requests when they shouldn't", rc.getOfferedRequests(driver).equals(rc.getOfferedRequests(driver1)));
         // We want to make sure that the driver has been added to the list of offered drivers in the request.
-        assertTrue("The request has not been marked as offered by the driver.", request.getAcceptedDrivers().contains(driver));
+        assertTrue("The request has not been marked as offered by the driver.", request.getOfferedDrivers().contains(driver));
         // Want to make sure that the request has been added to the drivers list of offered requests.
         assertTrue("Driver is not able to view their pending requests .", rc.getOfferedRequests(driver).size() == 1);
         // Make sure the request added to the driver's offered requests is the same as the current request.
