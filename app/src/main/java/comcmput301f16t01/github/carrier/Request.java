@@ -22,7 +22,7 @@ public class Request {
     private Location end;
     private String description;
 
-    public Request(Rider rider, Location start, Location end) {
+    public Request(Rider rider, Location start, Location end, String description) {
 
     }
 
