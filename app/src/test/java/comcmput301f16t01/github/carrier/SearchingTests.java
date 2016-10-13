@@ -80,7 +80,6 @@ public class SearchingTests {
         assertEquals("Closest request incorrect", request3, requests.get(0));
         assertFalse("Search returned non-open request", requests.contains(request1));
         assertFalse("Search returned location out of range", requests.contains(request2));
-
     }
 
     /**

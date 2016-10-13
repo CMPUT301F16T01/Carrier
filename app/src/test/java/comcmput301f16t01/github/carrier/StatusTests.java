@@ -43,8 +43,8 @@ public class StatusTests {
 
         rc.addRequest(request);
         rc.addDriver(request, driver);
-        assertEquals("The status of the request should be ACCEPTED",
-                Request.ACCEPTED, request.getStatus());
+        assertEquals("The status of the request should be OFFERED",
+                Request.OFFERED, request.getStatus());
     }
 
     /**
@@ -61,7 +61,7 @@ public class StatusTests {
 
         rc.addRequest(request);
         rc.addDriver(request, driver);
-        rc.acceptDriver(request, driver);
+        rc.confirmDriver(request, driver);
         assertEquals("The status of the request should be CONFIRMED",
                 Request.CONFIRMED, request.getStatus());
     }
@@ -80,7 +80,7 @@ public class StatusTests {
 
         rc.addRequest(request);
         rc.addDriver(request, driver);
-        rc.acceptDriver(request, driver);
+        rc.confirmDriver(request, driver);
         rc.completeRequest(request);
         assertEquals("The status of the request should be COMPLETE",
                 Request.COMPLETE, request.getStatus());
@@ -100,7 +100,7 @@ public class StatusTests {
 
         rc.addRequest(request);
         rc.addDriver(request, driver);
-        rc.acceptDriver(request, driver);
+        rc.confirmDriver(request, driver);
         rc.completeRequest(request);
         rc.payForRequest(request);
         assertEquals("The status of the request should be PAID",
@@ -121,7 +121,7 @@ public class StatusTests {
 
         rc.addRequest(request);
         rc.addDriver(request, driver);
-        rc.acceptDriver(request, driver);
+        rc.confirmDriver(request, driver);
         //can not be paid for or completed to be cancelled
         //rc.completeRequest(request);
         //rc.payForRequest(request);

@@ -83,7 +83,7 @@ public class RequestsTests {
         rc.addDriver( request, new Driver("Kieter (not really)"));
 
         assertEquals( "The request should be accepted",
-                Request.ACCEPTED, request.getStatus() );
+                Request.OFFERED, request.getStatus() );
 
         // Ensures that we've done something with the fact that a driver has accepted the
         // rider's request.
@@ -176,7 +176,7 @@ public class RequestsTests {
         RequestController rc = new RequestController();
         rc.addDriver(request, driver);
 
-        rc.acceptDriver( request, driver );
+        rc.confirmDriver( request, driver );
 
         rc.completeRequest( request );
 
@@ -207,7 +207,7 @@ public class RequestsTests {
         assertEquals("There should be two offers on this request",
                 2, request.getOffers().size());
 
-        rc.acceptDriver(request, driverTwo);
+        rc.confirmDriver(request, driverTwo);
 
         assertEquals("The status of the request should be CONFIRMED",
                 Request.CONFIRMED, request.getStatus());
