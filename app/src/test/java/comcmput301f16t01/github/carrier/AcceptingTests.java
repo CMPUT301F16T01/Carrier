@@ -64,7 +64,8 @@ public class AcceptingTests {
         assertTrue("Start location is not the same.", rc.getOfferedRequests(driver).get(0).getStart().equals(start));
         assertTrue("End location is not the same.", rc.getOfferedRequests(driver).get(0).getEnd().equals(start));
         assertEquals("Descriptions are not the same", description, rc.getOfferedRequests(driver).get(0).getDescription());
-        assertEquals("The request is not being updated to pending", Request.ACCEPTED, request.getStatus());
+        // Check to make sure that the request is labelled as offered.
+        assertEquals("The request is not being updated to pending", Request.OFFERED, request.getStatus());
     }
     /**
      * (US 05.03.01) As a driver, I want to see if my acceptance was accepted.
@@ -77,7 +78,9 @@ public class AcceptingTests {
         RequestController rc = new RequestController();
         rc.addRequest(request);
         rc.addDriver(request, driver);
-        rc.acceptDriver(request, driver);
+        // Makes sure that the request is still available to be offered to by other drivers.
+        assertTrue("The request is no longer available but it should be.", rc.getAvailableRequests().contains(request));
+        rc.confirmDriver(request, driver);
         assertTrue("Driver has been added to the request as the confirmed driver", request.getConfirmedDriver().equals(driver));
         assertFalse("The request is still available to be accepted by other drivers", rc.getAvailableRequests().contains(request));
         assertEquals("The request is not being updated to confirmed", Request.CONFIRMED, request.getStatus());
@@ -93,7 +96,7 @@ public class AcceptingTests {
         RequestController rc = new RequestController();
         rc.addRequest(request);
         rc.addDriver(request,driver);
-        rc.acceptDriver(request,driver);
+        rc.confirmDriver(request,driver);
         assertTrue("Driver is not being notified about accepted ride offers.", driver.hasNotifications());
     }
 }
