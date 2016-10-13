@@ -27,6 +27,11 @@ public class AcceptingTests {
         assertTrue("The request is not being updated when it should.", rc.getOpenRequests().size() == 0);
         // Check to make sure that the request has been added to the drivers offered requests.
         assertTrue("The request has not been marked as offered by the driver.", rc.getOfferedRequests(driver).size() == 1);
+        rc.confirmDriver(request, driver);
+        rc.completeRequest(request);
+        rc.payForRequest(request);
+        // Make sure that the status of the request is paid.
+        assertEquals("The request has not been paid for", Request.PAID, request.getStatus());
     }
 
     /**
