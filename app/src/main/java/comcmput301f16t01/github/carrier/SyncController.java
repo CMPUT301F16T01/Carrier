@@ -19,7 +19,7 @@ public class SyncController {
         online = status;
     }
 
-    public Queue<Request> getQueue() {
+    public Queue<Request> getRequestQueue() {
         return requestQueue;
     }
 }

@@ -82,7 +82,8 @@ public class OfflineTests {
         // adding a request offline will send it to the queue in the SyncController
         rc.addRequest(request);
         // Tests that the request is in the SyncController queue waiting to be posted
-        assertEquals("Request not in queue", request, sc.getQueue().peek());
+        //   this assumes that this is the only request in the queue
+        assertEquals("Request not in queue", request, sc.getRequestQueue().peek());
         // Tests that the request has not been posted yet
         assertFalse("Rider request was posted", rc.getRequests(rider).contains(request));
 
@@ -98,7 +99,30 @@ public class OfflineTests {
      */
     @Test
     public void AcceptRequestsOnceConnected() {
+        // Setting up
+        Rider rider = new Rider("Mandy");
+        Driver driver = new Driver("Abigail");
+        Request request = new Request(rider, new Location(), new Location());
+        RequestController rc = new RequestController();
+        rc.addRequest(request);
 
+        // Going offline
+        SyncController sc = new SyncController();
+        sc.setOnline(false);
+
+        // driver accepts request, request sent to queue in SyncController
+        rc.addDriver(request, driver);
+        // Tests that the request is in the SyncController queue waiting to be posted
+        //   this assumes that this is the only request in the queue
+        assertEquals("Request not in queue", request, sc.getRequestQueue().peek());
+        // Tests that the request has not been posted yet
+        assertFalse("Driver request offer was posted", rc.getRequests(rider).contains(request));
+
+        // Going back online, the request should be accepted as soon as we get connectivity
+        sc.setOnline(true);
+
+        // Tests that the request offer was posted because we got connectivity
+        assertEquals("Driver request offer was not posted", request, rc.getOfferedRequests(driver).get(0));
     }
 
 }
