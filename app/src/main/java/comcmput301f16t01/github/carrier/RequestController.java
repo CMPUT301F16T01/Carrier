@@ -71,7 +71,7 @@ public class RequestController {
      * @param request The request that is being modified
      * @param driver The driver that is being accepted
      */
-    public void acceptDriver(Request request, Driver driver) {
+    public void confirmDriver(Request request, Driver driver) {
     }
 
     public void completeRequest(Request request) {

@@ -10,11 +10,11 @@ public class Request {
     // These are not static because they will be used with an instance of Request?
     // i.e. request.setStatus( request.OPEN );
     static final int OPEN = 1;            // A user has made the request but no drivers have accepted.
-    static final int ACCEPTED = 2;        // One or more drivers have accepted the request.
+    static final int OFFERED = 2;         // One or more drivers have offered to fulfill the request.
     static final int CONFIRMED = 3;       // The user has chosen a driver and accepted one request.
     static final int COMPLETE = 4;        // The user has gotten to their destination (and payed?)
     static final int PAID = 7;
-    static final int CANCELLED = 9;        // The user has cancelled their request
+    static final int CANCELLED = 9;        // The rider has cancelled their request
 
     private int status = OPEN;
     private Rider rider;
@@ -31,7 +31,7 @@ public class Request {
     }
 
     public void setStatus(int status) {
-
+        // TODO make sure you do this right - Mandy (i.e. check that the status can change from one state to another)
     }
 
     public int getFareEstimate() {
