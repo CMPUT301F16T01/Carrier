@@ -55,6 +55,7 @@ public class OfflineTests {
         Driver driver = new Driver("Baenett");
         Request request = new Request(rider, new Location(), new Location());
         RequestController rc = new RequestController();
+        rc.addRequest(request);
 
         // Going offline
         SyncController sc = new SyncController();
@@ -68,15 +69,35 @@ public class OfflineTests {
      * US 08.03.01 As a rider, I want to make requests that will be sent once I get connectivity again.
      */
     @Test
-    public void test_08_03_01() {
+    public void MakeRequestsOnceConnected() {
+        // Going offline
+        SyncController sc = new SyncController();
+        sc.setOnline(false);
 
+        // Setting up
+        Rider rider = new Rider("Mandy");
+        Request request = new Request(rider, new Location(), new Location());
+        RequestController rc = new RequestController();
+
+        // adding a request offline will send it to the queue in the SyncController
+        rc.addRequest(request);
+        // Tests that the request is in the SyncController queue waiting to be posted
+        assertEquals("Request not in queue", request, sc.getQueue().peek());
+        // Tests that the request has not been posted yet
+        assertFalse("Rider request was posted", rc.getRequests(rider).contains(request));
+
+        // Going back online, the request should be made as soon as we get connectivity
+        sc.setOnline(true);
+
+        // Tests that the request was posted because we got connectivity
+        assertEquals("Rider request was not posted", request, rc.getRequests(rider).get(0));
     }
 
     /**
      * US 08.04.01 As a driver, I want to accept requests that will be sent once I get connectivity again.
      */
     @Test
-    public void test_08_04_01() {
+    public void AcceptRequestsOnceConnected() {
 
     }
 

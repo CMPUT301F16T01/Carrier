@@ -61,7 +61,6 @@ public class UserProfileTests {
         assertTrue(riderOne.getUsername().equals("another username"));
         assertTrue(riderOne.getEmail().equals("another email"));
         assertTrue(riderOne.getPhone().equals("another phone"));
-
     }
 
     /**
