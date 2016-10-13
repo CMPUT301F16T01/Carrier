@@ -22,7 +22,7 @@ public class OfflineTests {
      * US 08.01.01 As an driver, I want to see requests that I already accepted while offline.
      */
     @Test
-    public void OfflineSeeDriverOffersTest() {
+    public void OfflineSeeDriverOffers() {
         // Setting up
         Rider rider = new Rider("Kieter");
         Driver driver = new Driver("Baenett");
@@ -49,7 +49,7 @@ public class OfflineTests {
      * US 08.02.01 As a rider, I want to see requests that I have made while offline.
      */
     @Test
-    public void OfflineSeeDriver() {
+    public void OfflineSeeRiderRequests() {
         // Setting up
         Rider rider = new Rider("Kieter");
         Driver driver = new Driver("Baenett");
