@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_login"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/LoginActivityBackground"
+    tools:context="comcmput301f16t01.github.carrier.LoginActivity">
+
+    <TextView
+        android:text="rier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView3"
+        android:textSize="24sp"
+        android:textColor="@android:color/background_light"
+        android:layout_alignBaseline="@+id/CarrierTextView"
+        android:layout_alignBottom="@+id/CarrierTextView"
+        android:layout_toEndOf="@+id/CarrierTextView" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/UsernameEditText"
+        android:background="@drawable/edit_text_bottom_border"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="83dp"
+        android:layout_below="@+id/CarrierTextView"
+        android:layout_centerHorizontal="true"
+        android:textSize="24sp"
+        android:hint="Username"
+        android:text="ASas" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/PasswordEditText"
+        android:background="@drawable/edit_text_bottom_border"
+        android:textColor="@android:color/white"
+        android:layout_below="@+id/UsernameEditText"
+        android:layout_alignStart="@+id/UsernameEditText"
+        android:textSize="24sp"
+        android:hint="Password"
+        android:text="asdasd" />
+
+    <TextView
+        android:text="Car"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/CarrierTextView"
+        android:textColor="@android:color/white"
+        android:textSize="48sp"
+        android:textColorHighlight="@android:color/background_light"
+        android:layout_marginStart="74dp"
+        android:layout_marginTop="147dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/UsernameEditText" />
+</RelativeLayout>
