@@ -27,32 +27,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        UserController uc = new UserController();
-
-        // The editTexts that the user puts login credentials into
-        EditText usernameEditText = (EditText) findViewById(R.id.UsernameEditText);
-        EditText passwordEditText = (EditText) findViewById(R.id.PasswordEditText);
-        // The strings that the user typed
-        String usernameString = usernameEditText.getText().toString();
-        //TODO jarble this?
-        String passwordString = passwordEditText.getText().toString();
-
-        // Attempt to authenticate credentials and "log in"
-
-        boolean isAuthenticated = uc.authenticate(usernameString, passwordString);
-
-        if (!isAuthenticated) {
-            // Show the LoginErrorTextView
-            TextView loginErrorTextView = (TextView) findViewById(R.id.LoginErrorTextView);
-            loginErrorTextView.setVisibility(View.VISIBLE);
-            // Shake it!
-            loginErrorTextView.startAnimation(AnimationUtils.loadAnimation(this, R.anim.shake));
-        }
-        else {
-
-        }
-
     }
 
 
