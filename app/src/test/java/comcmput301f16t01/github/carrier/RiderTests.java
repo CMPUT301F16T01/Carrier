@@ -49,5 +49,5 @@ public class RiderTests {
         riderList.add(kieterRider);
         assertTrue("The list does not contain kieter", riderList.contains(kieterRider));
 
-
+        
 }

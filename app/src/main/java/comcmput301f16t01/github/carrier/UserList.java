@@ -17,4 +17,8 @@ public class UserList {
         users = new ArrayList<User>();
     }
 
+    public ArrayList<User> getUsers() {
+        return users;
+    }
+
 }

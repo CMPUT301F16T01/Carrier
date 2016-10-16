@@ -105,7 +105,29 @@ public class UserController {
      * @param passwordString The password the user attempts to login with
      */
     public boolean authenticate(String usernameString, String passwordString) throws NullPointerException {
+        User attemptedUser = null;
+        String realPassword = null;
 
+        // Iterate over all the users, checking to see if the given username is the users
+        for (User user: userList.getUsers()) {
+            // If there is a username match, get the password and store the user.
+            if (usernameString.equals(user.getUsername())) {
+                attemptedUser = user;
+                realPassword = user.getPassword();
+            }
+        }
+        // If realPassword is still null, the username did not exist.
+        if (realPassword == null) {
+            return false;
+        }
+
+        // If the attempted password is the same as the real password, set login user and ret true
+        if (passwordString.equals(realPassword)) {
+            this.loggedInUser = attemptedUser;
+            return true;
+        }
+        // Otherwise this is a faulty login.
+        return false;
     }
 
     /**
