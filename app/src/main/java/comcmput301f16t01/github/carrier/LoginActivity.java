@@ -48,13 +48,11 @@ public class LoginActivity extends AppCompatActivity {
             loginErrorTextView.setVisibility(View.VISIBLE);
             // Shake it!
             loginErrorTextView.startAnimation(AnimationUtils.loadAnimation(this, R.anim.shake));
-        }
-        else {
+        } else {
             Intent intent = new Intent();
             //TODO goto the first activity after the log in screen.
 
         }
-
     }
-
 }
+

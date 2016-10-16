@@ -8,8 +8,9 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@drawable/login_activity_background"
-    tools:context="comcmput301f16t01.github.carrier.LoginActivity">
+    tools:context="comcmput301f16t01.github.carrier.LoginActivity"
+    android:background="@color/colorPrimaryDark">
+    <!-- TODO add our login background -->
 
     <TextView
         android:text="rier"
