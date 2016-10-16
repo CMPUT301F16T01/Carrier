@@ -7,6 +7,9 @@ import android.widget.EditText;
 /**
  * LoginActivity is where the user enters a username and password so they can access their account.
  *
+ * @author Kieter
+ * @since Friday October 14th, 2016
+ *
  */
 /*
 TODO javadoc this
@@ -27,9 +30,12 @@ public class LoginActivity extends AppCompatActivity {
         String usernameString = usernameEditText.getText().toString();
         //TODO jarble this?
         String passwordString = passwordEditText.getText().toString();
-        
 
-
+        try {
+            uc.authenticate();
+        } catch (AuthenticationException authException){
+            
+        }
 
     }
 
