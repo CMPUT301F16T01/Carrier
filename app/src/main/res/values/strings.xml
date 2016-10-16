@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Carrier</string>
+    <string name="usernameHint">Username</string>
+    <string name="passwordHint">Password</string>
 </resources>

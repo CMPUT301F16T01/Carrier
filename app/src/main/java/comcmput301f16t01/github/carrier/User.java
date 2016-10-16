@@ -7,6 +7,7 @@ package comcmput301f16t01.github.carrier;
  */
 public abstract class User {
     protected String username;
+    protected String password;
     protected String email;
     protected String phoneNumber;
 
@@ -17,6 +18,13 @@ public abstract class User {
 
     public User( String name ) {
         this.username = name;
+    }
+
+    public User(String inputUsername, String inputPassword, String inputEmail, String inputPhoneNumber) {
+        this.username = inputUsername;
+        this.password = inputPassword;
+        this.email = inputEmail;
+        this.phoneNumber = inputPhoneNumber;
     }
 
     public void setUsername(String username) {this.username = username; }
