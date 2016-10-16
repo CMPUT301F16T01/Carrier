@@ -1,9 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
-import android.content.Context;
-
-import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.HashMap;
 
 /**
  * Created by meind on 2016-10-11.
@@ -18,9 +16,9 @@ public class UserController {
     private static RiderList riderList = null;
     private static DriverList driverList = null;
     /**
-     * users is a Dictonary with usernames as a key and the user object as a value
+     * usersHashMap is a Dictonary with usernames as a key and the user object as a value
      */
-    private static Dictionary<String, User> users = null;
+    private static HashMap<String, User> usersHashMap = null;
     private static User loggedInUser = null;
 
 
@@ -51,6 +49,13 @@ public class UserController {
             driverList = new DriverList();
         }
         return driverList;
+    }
+
+    public static HashMap<String, User> getUsersHashMap() {
+        if (usersHashMap == null) {
+            usersHashMap = new HashMap<String, User>();
+        }
+        return usersHashMap;
     }
 
     /**
@@ -112,17 +117,17 @@ public class UserController {
     public boolean authenticate(String usernameString, String passwordString) throws NullPointerException {
         // Try checking if the username actually exists (is contained in the dictionary)
         try {
-            String realPassword = users.get(usernameString).getPassword();
+            String realPassword = usersHashMap.get(usernameString).getPassword();
         } catch (NullPointerException noKey) {
             return false;
         }
 
         // The user is contained in the dictionary, check if the passwords match.
-        String realPassword = users.get(usernameString).getPassword();
+        String realPassword = usersHashMap.get(usernameString).getPassword();
         // If they match, the user is successfully authenticated, otherwise they are not.
         if (passwordString.equals(realPassword)) {
             // If they passwords matched, the loggedInUser is set.
-            this.loggedInUser = users.get(usernameString);
+            this.loggedInUser = usersHashMap.get(usernameString);
             return true;
         } else {
             return false;
