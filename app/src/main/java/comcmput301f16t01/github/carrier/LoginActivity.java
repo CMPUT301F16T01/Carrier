@@ -39,14 +39,18 @@ public class LoginActivity extends AppCompatActivity {
         String passwordString = passwordEditText.getText().toString();
 
         // Attempt to authenticate credentials and "log in"
-        try {
-            uc.authenticate();
-        } catch (AuthenticationException authException){
+
+        boolean isAuthenticated = uc.authenticate(usernameString, passwordString);
+
+        if (!isAuthenticated) {
             // Show the LoginErrorTextView
             TextView loginErrorTextView = (TextView) findViewById(R.id.LoginErrorTextView);
             loginErrorTextView.setVisibility(View.VISIBLE);
             // Shake it!
             loginErrorTextView.startAnimation(AnimationUtils.loadAnimation(this, R.anim.shake));
+        }
+        else {
+
         }
 
     }
