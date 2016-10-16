@@ -63,4 +63,17 @@
         android:layout_marginTop="147dp"
         android:layout_alignParentTop="true"
         android:layout_alignStart="@+id/UsernameEditText" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/LoginErrorTextView"
+        tools:text="Woops! That combination of username and password doesn't exist. Please try again."
+        android:textColor="@android:color/holo_red_light"
+        android:layout_below="@+id/PasswordEditText"
+        android:layout_alignStart="@+id/PasswordEditText"
+        android:layout_marginTop="12dp"
+        android:visibility="invisible"
+        android:layout_alignEnd="@+id/PasswordEditText" />
 </RelativeLayout>
