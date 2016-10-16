@@ -49,13 +49,5 @@ public class RiderTests {
         riderList.add(kieterRider);
         assertTrue("The list does not contain kieter", riderList.contains(kieterRider));
 
-        //TODO should really be using the controller to add stuff but that hasn't been implemented.
-        Boolean authenticated = false;
-
-        uc.getUsersHashMap().put(name, kieterRider);
-        authenticated = uc.authenticate(name, password);
-        assertTrue("Was not authenticated but credentials were right.", authenticated);
-
-    }
 
 }

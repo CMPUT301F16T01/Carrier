@@ -15,10 +15,7 @@ import java.util.HashMap;
 public class UserController {
     private static RiderList riderList = null;
     private static DriverList driverList = null;
-    /**
-     * usersHashMap is a Dictonary with usernames as a key and the user object as a value
-     */
-    private static HashMap<String, User> usersHashMap = null;
+    private static UserList userList = null;
     private static User loggedInUser = null;
 
 
@@ -49,13 +46,6 @@ public class UserController {
             driverList = new DriverList();
         }
         return driverList;
-    }
-
-    public static HashMap<String, User> getUsersHashMap() {
-        if (usersHashMap == null) {
-            usersHashMap = new HashMap<String, User>();
-        }
-        return usersHashMap;
     }
 
     /**
@@ -115,23 +105,7 @@ public class UserController {
      * @param passwordString The password the user attempts to login with
      */
     public boolean authenticate(String usernameString, String passwordString) throws NullPointerException {
-        // Try checking if the username actually exists (is contained in the dictionary)
-        try {
-            String realPassword = usersHashMap.get(usernameString).getPassword();
-        } catch (NullPointerException noKey) {
-            return false;
-        }
 
-        // The user is contained in the dictionary, check if the passwords match.
-        String realPassword = usersHashMap.get(usernameString).getPassword();
-        // If they match, the user is successfully authenticated, otherwise they are not.
-        if (passwordString.equals(realPassword)) {
-            // If they passwords matched, the loggedInUser is set.
-            this.loggedInUser = usersHashMap.get(usernameString);
-            return true;
-        } else {
-            return false;
-        }
     }
 
     /**
