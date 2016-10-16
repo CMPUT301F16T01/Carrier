@@ -17,7 +17,10 @@ import java.util.Dictionary;
 public class UserController {
     private static RiderList riderList = null;
     private static DriverList driverList = null;
-    private static Dictionary users = null;
+    /**
+     * users is a Dictonary with usernames as a key and the user object as a value
+     */
+    private static Dictionary<String, User> users = null;
     private static User loggedInUser = null;
 
 
@@ -95,7 +98,8 @@ public class UserController {
     /**
      * authenticate is called when the user needs to login. Checks to see if the combination of
      * username and password that hte user entered is valid. It throws an exception when the
-     * combination of username and password is wrong.
+     * combination of username and password is wrong. Authenticate also sets the loggedInUser upon
+     * successful login.
      *
      * @author Kieter
      * @since Saturday October 15th, 2016
@@ -105,18 +109,28 @@ public class UserController {
     public boolean authenticate(String usernameString, String passwordString) throws NullPointerException {
         // Try checking if the username actually exists (is contained in the dictionary)
         try {
-            String realPassword = (String) users.get(usernameString);
+            String realPassword = users.get(usernameString).getPassword();
         } catch (NullPointerException noKey) {
             return false;
         }
 
         // The user is contained in the dictionary, check if the passwords match.
-        String realPassword = (String) users.get(usernameString);
+        String realPassword = users.get(usernameString).getPassword();
         // If they match, the user is successfully authenticated, otherwise they are not.
         if (passwordString.equals(realPassword)) {
+            // If they passwords matched, the loggedInUser is set.
+            this.loggedInUser = users.get(usernameString);
             return true;
         } else {
             return false;
         }
+    }
+
+    /**
+     * resets the UserController. Primarily used for testing.
+     */
+    public void reset() {
+        riderList = new RiderList();
+        driverList = new DriverList();
     }
 }

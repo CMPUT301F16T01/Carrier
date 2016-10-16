@@ -9,6 +9,11 @@ package comcmput301f16t01.github.carrier;
  */
 public class Driver extends User {
     private boolean notify = false;
+
+    public Driver(String inputUsername, String inputPassword, String inputEmail, String inputPhoneNumber) {
+        super(inputUsername, inputPassword, inputEmail, inputPhoneNumber);
+    }
+
     public Driver(String username) {
         super( username );
     }

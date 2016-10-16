@@ -1,6 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -50,6 +51,8 @@ public class LoginActivity extends AppCompatActivity {
             loginErrorTextView.startAnimation(AnimationUtils.loadAnimation(this, R.anim.shake));
         }
         else {
+            Intent intent = new Intent();
+            //TODO goto the first activity after the log in screen.
 
         }
 
