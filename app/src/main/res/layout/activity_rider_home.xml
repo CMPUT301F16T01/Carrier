@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- HOLDS TOGGLE BUTTONS FOR REQUEST TYPES
+        i.e. "show cancelled, show open, etc" -->
+    <!-- TODO need better symbols to increase understanding? on/off type etc -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="25dp"
+        android:weightSum="4">
+
+        <!-- SHOW ONES THAT HAVE BEEN CANCELLED -->
+        <ToggleButton
+            android:textOn="show cancelled"
+            android:textOff="no cancelled"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/toggleButton"
+            android:checked="true"
+            android:layout_weight="1" />
+
+        <!-- SHOW ONES WITH NO DRIVERS BUT IS OPEN -->
+        <ToggleButton
+            android:textOn="show open"
+            android:textOff="no open"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/toggleButton"
+            android:checked="true"
+            android:layout_weight="1" />
+
+        <!-- SHOW ONES WITH A DRIVER WAITING TO BE ACCEPTED -->
+        <ToggleButton
+            android:textOn="show waiting"
+            android:textOff="no waiting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/toggleButton"
+            android:checked="true"
+            android:layout_weight="1" />
+
+        <!-- SHOW ONES THAT ARE COMPLETE -->
+        <ToggleButton
+            android:textOn="show complete"
+            android:textOff="no complete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/toggleButton"
+            android:checked="true"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <!-- HOLDS SPECIFIED REQUESTS (FROM TOGGLE BUTTONS) -->
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

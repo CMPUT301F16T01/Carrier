@@ -22,8 +22,14 @@ public class Request {
     private Location end;
     private String description;
 
-    public Request(Rider rider, Location start, Location end, String description) {
 
+    //TODO maybe add the location strings to description by default? Just in case keywords are locations.
+    // Constructor with description
+    public Request(Rider rider, Location start, Location end, String description) {
+    }
+
+    // Constructor without description
+    public Request(Rider rider, Location start, Location end) {
     }
 
     public int getStatus() {

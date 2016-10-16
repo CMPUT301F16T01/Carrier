@@ -6,7 +6,15 @@ import java.util.ArrayList;
  * Created by meind on 2016-10-11.
  */
 
-public class RiderList {
+public class RiderList extends ArrayList {
 
+    /**
+     * Contains
+     */
+    ArrayList<Rider> riders;
+
+    public RiderList() {
+        riders = new ArrayList<Rider>();
+    }
 
 }
