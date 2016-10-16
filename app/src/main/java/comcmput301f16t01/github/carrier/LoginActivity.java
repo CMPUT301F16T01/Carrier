@@ -40,7 +40,6 @@ public class LoginActivity extends AppCompatActivity {
         String passwordString = passwordEditText.getText().toString();
 
         // Attempt to authenticate credentials and "log in"
-
         boolean isAuthenticated = uc.authenticate(usernameString, passwordString);
 
         if (!isAuthenticated) {
@@ -57,8 +56,5 @@ public class LoginActivity extends AppCompatActivity {
         }
 
     }
-
-
-
 
 }

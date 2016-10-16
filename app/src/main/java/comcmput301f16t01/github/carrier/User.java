@@ -12,6 +12,13 @@ public abstract class User {
     protected String phoneNumber;
 
     //TODO we should probably say what is and isn't a valid username, password, email, and phone number.
+    /**
+     * Constructor, requires username, password, email, and phone number.
+     * @param inputUsername The username
+     * @param inputPassword The password
+     * @param inputEmail The e-mail
+     * @param inputPhoneNumber The phone number
+     */
     public User(String inputUsername, String inputPassword, String inputEmail, String inputPhoneNumber) {
         this.username = inputUsername;
         this.password = inputPassword;
@@ -27,8 +34,6 @@ public abstract class User {
     public User( String name ) {
         this.username = name;
     }
-
-
 
     public void setUsername(String username) {this.username = username; }
 

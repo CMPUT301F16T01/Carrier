@@ -103,8 +103,11 @@ public class UserController {
      *
      * @author Kieter
      * @since Saturday October 15th, 2016
-     *
      * @see LoginActivity
+     * @throws NullPointerException Happens when the user enters a username with a username that
+     * does not exist.
+     * @param usernameString The username the user attempts to login with
+     * @param passwordString The password the user attempts to login with
      */
     public boolean authenticate(String usernameString, String passwordString) throws NullPointerException {
         // Try checking if the username actually exists (is contained in the dictionary)
@@ -128,6 +131,7 @@ public class UserController {
 
     /**
      * resets the UserController. Primarily used for testing.
+     * @since Sunday October 16th, 2016
      */
     public void reset() {
         riderList = new RiderList();
