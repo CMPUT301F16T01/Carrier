@@ -20,6 +20,13 @@ public abstract class User {
         this.username = name;
     }
 
+    public User(String inputUsername, String inputPassword, String inputEmail, String inputPhoneNumber) {
+        this.username = inputUsername;
+        this.password = inputPassword;
+        this.email = inputEmail;
+        this.phoneNumber = inputPhoneNumber;
+    }
+
     public void setUsername(String username) {this.username = username; }
 
     public void setEmail(String email) {
