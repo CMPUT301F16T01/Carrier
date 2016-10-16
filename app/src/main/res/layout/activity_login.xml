@@ -34,13 +34,13 @@
         android:layout_below="@+id/CarrierTextView"
         android:layout_centerHorizontal="true"
         android:textSize="24sp"
-        android:hint="Username"
+        android:hint="@string/usernameHint"
         android:text="ASas" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
+        android:inputType="textPassword"
         android:ems="10"
         android:id="@+id/PasswordEditText"
         android:background="@drawable/edit_text_bottom_border"
@@ -48,7 +48,7 @@
         android:layout_below="@+id/UsernameEditText"
         android:layout_alignStart="@+id/UsernameEditText"
         android:textSize="24sp"
-        android:hint="Password"
+        android:hint="@string/passwordHint"
         android:text="asdasd" />
 
     <TextView

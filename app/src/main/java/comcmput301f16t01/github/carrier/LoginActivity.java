@@ -2,12 +2,38 @@ package comcmput301f16t01.github.carrier;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.EditText;
 
+/**
+ * LoginActivity is where the user enters a username and password so they can access their account.
+ *
+ */
+/*
+TODO javadoc this
+TODO comment this
+ */
 public class LoginActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        UserController uc = new UserController();
+
+        // The editTexts that the user puts login credentials into
+        EditText usernameEditText = (EditText) findViewById(R.id.UsernameEditText);
+        EditText passwordEditText = (EditText) findViewById(R.id.PasswordEditText);
+        // The strings that the user typed
+        String usernameString = usernameEditText.getText().toString();
+        //TODO jarble this?
+        String passwordString = passwordEditText.getText().toString();
+        
+
+
+
     }
+
+
+
+
 }

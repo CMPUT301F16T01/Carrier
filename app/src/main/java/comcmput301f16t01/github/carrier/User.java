@@ -7,6 +7,7 @@ package comcmput301f16t01.github.carrier;
  */
 public abstract class User {
     protected String username;
+    protected String password;
     protected String email;
     protected String phoneNumber;
 
