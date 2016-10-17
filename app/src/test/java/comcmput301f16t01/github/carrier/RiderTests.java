@@ -49,11 +49,19 @@ public class RiderTests {
         riderList.add(kieterRider);
         assertTrue("The list does not contain kieter", riderList.contains(kieterRider));
 
-        // 
+        //
         uc.getRiderList().add(kieterRider);
         uc.getUserList().add(kieterRider);
 
         assertTrue("The list does not contain kieter", uc.getUserList().contains(kieterRider));
+        assertEquals("The first thing is not kieter", uc.getUserList().get(0), kieterRider);
+
+        Boolean authenticated = false;
+        authenticated = uc.authenticate(name, password);
+
+        assertTrue("Not authenticated but the credentials were right." + uc.getUserList(), authenticated);
+        Boolean authenticated2 = uc.authenticate(name + "1", password + "1");
+        assertTrue("Authenticated, but the credentials were wrong.", !authenticated2);
 
     }
 }

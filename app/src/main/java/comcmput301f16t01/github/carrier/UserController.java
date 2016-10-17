@@ -1,5 +1,6 @@
 package comcmput301f16t01.github.carrier;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
 
@@ -51,11 +52,11 @@ public class UserController {
         return driverList;
     }
 
-    public static UserList getUserList() {
+    public static ArrayList<User> getUserList() {
         if (userList == null) {
             userList = new UserList();
         }
-        return userList;
+        return userList.getUsers();
     }
 
     /**
@@ -119,9 +120,10 @@ public class UserController {
         String realPassword = null;
 
         // Iterate over all the users, checking to see if the given username is the users
-        for (User user: userList.getUsers()) {
+        for (User user: this.getUserList()) {
             // If there is a username match, get the password and store the user.
             if (usernameString.equals(user.getUsername())) {
+                System.out.println(user.getUsername());
                 attemptedUser = user;
                 realPassword = user.getPassword();
             }
