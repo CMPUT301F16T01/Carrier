@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.util.HashMap;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 /**
@@ -49,13 +50,23 @@ public class RiderTests {
         riderList.add(kieterRider);
         assertTrue("The list does not contain kieter", riderList.contains(kieterRider));
 
-        //TODO should really be using the controller to add stuff but that hasn't been implemented.
-        Boolean authenticated = false;
+        //TODO implement this in usercontroller.java adding to rider should add to user too.
+        uc.getRiderList().add(kieterRider);
+        uc.getUserList().add(kieterRider);
 
-        uc.getUsersHashMap().put(name, kieterRider);
+        // Assuring the list contains the added element
+        assertTrue("The list does not contain kieter", uc.getUserList().contains(kieterRider));
+        assertEquals("The first thing is not kieter", uc.getUserList().get(0), kieterRider);
+
+        // Try authenticating using the correct username and password
+        Boolean authenticated = false;
         authenticated = uc.authenticate(name, password);
-        assertTrue("Was not authenticated but credentials were right.", authenticated);
+
+        // Test authenticating with the right credentials
+        assertTrue("Not authenticated but the credentials were right." + uc.getUserList(), authenticated);
+        Boolean authenticated2 = uc.authenticate(name + "1", password + "1");
+        //Test authenticating with the wrong credentials
+        assertFalse("Authenticated, but the credentials were wrong.", authenticated2);
 
     }
-
 }

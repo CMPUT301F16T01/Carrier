@@ -1,5 +1,6 @@
 package comcmput301f16t01.github.carrier;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
 
@@ -15,10 +16,7 @@ import java.util.HashMap;
 public class UserController {
     private static RiderList riderList = null;
     private static DriverList driverList = null;
-    /**
-     * usersHashMap is a Dictonary with usernames as a key and the user object as a value
-     */
-    private static HashMap<String, User> usersHashMap = null;
+    private static UserList userList = null;
     private static User loggedInUser = null;
 
 
@@ -28,6 +26,9 @@ public class UserController {
         }
         if (driverList == null) {
             driverList = new DriverList();
+        }
+        if (userList == null) {
+            userList = new UserList();
         }
     }
 
@@ -51,11 +52,11 @@ public class UserController {
         return driverList;
     }
 
-    public static HashMap<String, User> getUsersHashMap() {
-        if (usersHashMap == null) {
-            usersHashMap = new HashMap<String, User>();
+    public static ArrayList<User> getUserList() {
+        if (userList == null) {
+            userList = new UserList();
         }
-        return usersHashMap;
+        return userList.getUsers();
     }
 
     /**
@@ -115,23 +116,29 @@ public class UserController {
      * @param passwordString The password the user attempts to login with
      */
     public boolean authenticate(String usernameString, String passwordString) throws NullPointerException {
-        // Try checking if the username actually exists (is contained in the dictionary)
-        try {
-            String realPassword = usersHashMap.get(usernameString).getPassword();
-        } catch (NullPointerException noKey) {
+        User attemptedUser = null;
+        String realPassword = null;
+
+        // Iterate over all the users, checking to see if the given username is the users
+        for (User user: this.getUserList()) {
+            // If there is a username match, get the password and store the user.
+            if (usernameString.equals(user.getUsername())) {
+                attemptedUser = user;
+                realPassword = user.getPassword();
+            }
+        }
+        // If realPassword is still null, the username did not exist.
+        if (realPassword == null) {
             return false;
         }
 
-        // The user is contained in the dictionary, check if the passwords match.
-        String realPassword = usersHashMap.get(usernameString).getPassword();
-        // If they match, the user is successfully authenticated, otherwise they are not.
+        // If the attempted password is the same as the real password, set login user and ret true
         if (passwordString.equals(realPassword)) {
-            // If they passwords matched, the loggedInUser is set.
-            this.loggedInUser = usersHashMap.get(usernameString);
+            this.loggedInUser = attemptedUser;
             return true;
-        } else {
-            return false;
         }
+        // Otherwise this is a faulty login.
+        return false;
     }
 
     /**

@@ -28,8 +28,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        startRiderActivity(findViewById(R.id.CarrierTextView));
+        
     }
 
     public void startRiderActivity(View v) {
@@ -41,5 +40,5 @@ public class LoginActivity extends AppCompatActivity {
     public void startDriverActivity(View v) {
 
     }
-
 }
+
