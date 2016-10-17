@@ -11,6 +11,21 @@ public abstract class User {
     protected String email;
     protected String phoneNumber;
 
+    //TODO we should probably say what is and isn't a valid username, password, email, and phone number.
+    /**
+     * Constructor, requires username, password, email, and phone number.
+     * @param inputUsername The username
+     * @param inputPassword The password
+     * @param inputEmail The e-mail
+     * @param inputPhoneNumber The phone number
+     */
+    public User(String inputUsername, String inputPassword, String inputEmail, String inputPhoneNumber) {
+        this.username = inputUsername;
+        this.password = inputPassword;
+        this.email = inputEmail;
+        this.phoneNumber = inputPhoneNumber;
+    }
+
     public User() {
         this.username = "default_name";
         // TODO this method was implemented to create a default method for extending classes. Probably needs refactoring.
@@ -18,13 +33,6 @@ public abstract class User {
 
     public User( String name ) {
         this.username = name;
-    }
-
-    public User(String inputUsername, String inputPassword, String inputEmail, String inputPhoneNumber) {
-        this.username = inputUsername;
-        this.password = inputPassword;
-        this.email = inputEmail;
-        this.phoneNumber = inputPhoneNumber;
     }
 
     public void setUsername(String username) {this.username = username; }
@@ -37,6 +45,10 @@ public abstract class User {
         this.phoneNumber = phone;
     }
 
+    public void setPassword(String inputPassword) {
+        this.password = inputPassword;
+    }
+
     public String getPhone() {
         return phoneNumber;
     }
@@ -46,4 +58,8 @@ public abstract class User {
     }
 
     public String getUsername() {return username; }
-}
+
+    public String getPassword() {
+        return this.password;
+    }
+ }

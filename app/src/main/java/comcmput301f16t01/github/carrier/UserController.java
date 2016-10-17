@@ -1,9 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
-import android.content.Context;
-
-import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.HashMap;
 
 /**
  * Created by meind on 2016-10-11.
@@ -17,7 +15,10 @@ import java.util.Dictionary;
 public class UserController {
     private static RiderList riderList = null;
     private static DriverList driverList = null;
-    private static Dictionary users = null;
+    /**
+     * usersHashMap is a Dictonary with usernames as a key and the user object as a value
+     */
+    private static HashMap<String, User> usersHashMap = null;
     private static User loggedInUser = null;
 
 
@@ -48,6 +49,13 @@ public class UserController {
             driverList = new DriverList();
         }
         return driverList;
+    }
+
+    public static HashMap<String, User> getUsersHashMap() {
+        if (usersHashMap == null) {
+            usersHashMap = new HashMap<String, User>();
+        }
+        return usersHashMap;
     }
 
     /**
@@ -95,28 +103,43 @@ public class UserController {
     /**
      * authenticate is called when the user needs to login. Checks to see if the combination of
      * username and password that hte user entered is valid. It throws an exception when the
-     * combination of username and password is wrong.
+     * combination of username and password is wrong. Authenticate also sets the loggedInUser upon
+     * successful login.
      *
      * @author Kieter
      * @since Saturday October 15th, 2016
-     *
      * @see LoginActivity
+     * @throws NullPointerException Happens when the user enters a username with a username that
+     * does not exist.
+     * @param usernameString The username the user attempts to login with
+     * @param passwordString The password the user attempts to login with
      */
     public boolean authenticate(String usernameString, String passwordString) throws NullPointerException {
         // Try checking if the username actually exists (is contained in the dictionary)
         try {
-            String realPassword = (String) users.get(usernameString);
+            String realPassword = usersHashMap.get(usernameString).getPassword();
         } catch (NullPointerException noKey) {
             return false;
         }
 
         // The user is contained in the dictionary, check if the passwords match.
-        String realPassword = (String) users.get(usernameString);
+        String realPassword = usersHashMap.get(usernameString).getPassword();
         // If they match, the user is successfully authenticated, otherwise they are not.
         if (passwordString.equals(realPassword)) {
+            // If they passwords matched, the loggedInUser is set.
+            this.loggedInUser = usersHashMap.get(usernameString);
             return true;
         } else {
             return false;
         }
+    }
+
+    /**
+     * resets the UserController. Primarily used for testing.
+     * @since Sunday October 16th, 2016
+     */
+    public void reset() {
+        riderList = new RiderList();
+        driverList = new DriverList();
     }
 }
