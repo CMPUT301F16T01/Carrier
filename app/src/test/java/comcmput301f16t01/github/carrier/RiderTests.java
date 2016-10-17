@@ -49,5 +49,11 @@ public class RiderTests {
         riderList.add(kieterRider);
         assertTrue("The list does not contain kieter", riderList.contains(kieterRider));
 
+        // 
+        uc.getRiderList().add(kieterRider);
+        uc.getUserList().add(kieterRider);
+
+        assertTrue("The list does not contain kieter", uc.getUserList().contains(kieterRider));
+
     }
 }

@@ -26,6 +26,9 @@ public class UserController {
         if (driverList == null) {
             driverList = new DriverList();
         }
+        if (userList == null) {
+            userList = new UserList();
+        }
     }
 
     /**
@@ -46,6 +49,13 @@ public class UserController {
             driverList = new DriverList();
         }
         return driverList;
+    }
+
+    public static UserList getUserList() {
+        if (userList == null) {
+            userList = new UserList();
+        }
+        return userList;
     }
 
     /**

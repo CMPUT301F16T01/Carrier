@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Created by meind on 2016-10-11.
  */
 
-public class UserList {
+public class UserList extends ArrayList{
 
     /**
      * Contains
