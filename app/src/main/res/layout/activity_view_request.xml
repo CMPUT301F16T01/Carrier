@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:text="$XX.XX"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView_$fareAmount"
+        android:gravity="center"/>
+
+    <!-- MISSING MAP THING :( ? -->
+    <!-- TODO source:  http://www.freepik.com/free-icon/map-with-placeholder_736615.htm -->
+    <ImageView
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/map_placeholder"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="3"
+        style="?android:attr/buttonBarButtonStyle">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:textAlignment="center"
+            android:text="ACTION 1"/>
+
+        <!-- REPRESENTS STATUS OF REQUEST -->
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/ic_location_on"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:textAlignment="center"
+            android:text="ACTION 2"/>
+    </LinearLayout>
+
+    <TextView
+        android:text="Start:"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView_startTitle"
+        android:gravity="center"/>
+
+    <TextView
+        android:text="123 ABC Street NW, Edmonton CA"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:id="@+id/textView_startAddress"
+        android:gravity="center" />
+
+    <TextView
+        android:text="End:"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView_endTitle"
+        android:layout_marginTop="5dp"
+        android:gravity="center"/>
+
+    <TextView
+        android:text="324 ABC Ave NW, Edmonton CA"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView_endAddress"
+        android:layout_marginStart="10dp"
+        android:gravity="center"/>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/listView_drivers"
+        android:scrollbarAlwaysDrawVerticalTrack="true"/>
+
+</LinearLayout>

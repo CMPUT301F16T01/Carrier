@@ -34,17 +34,21 @@ public class RiderMainActivity extends AppCompatActivity {
         if (id == R.id.action_viewProfile) {
             Toast.makeText( RiderMainActivity.this, "Wanna view your profile? Nope!",
                     Toast.LENGTH_SHORT ).show();
+            // TODO link to user profile.
         }
 
         if (id == R.id.action_logOut ) {
-            Toast.makeText( RiderMainActivity.this, "logging out? I think not.",
-                    Toast.LENGTH_SHORT ).show();
             onBackPressed();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * When back is pressed or the "Log Out" menu option is selected:
+     *      Pop up a AlertDialog to confirm and open a new LoginActivity, while closing the current
+     *      RiderMainActivity.
+     */
     public void onBackPressed() {
         AlertDialog.Builder adb = new AlertDialog.Builder(this);
         adb.setTitle("Are you sure?");
@@ -57,6 +61,7 @@ public class RiderMainActivity extends AppCompatActivity {
                 activity.finish();
                 Intent intent = new Intent(RiderMainActivity.this, LoginActivity.class);
                 startActivity(intent);
+                // TODO log out current user?
             }
         });
         adb.setNegativeButton("Cancel", null );
