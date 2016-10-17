@@ -29,6 +29,17 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        startRiderActivity(findViewById(R.id.CarrierTextView));
+    }
+
+    public void startRiderActivity(View v) {
+        Intent intent = new Intent(LoginActivity.this, RiderMainActivity.class );
+        startActivity(intent);
+        this.finish();
+    }
+
+    public void startDriverActivity(View v) {
+
     }
 
 }
