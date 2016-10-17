@@ -123,7 +123,6 @@ public class UserController {
         for (User user: this.getUserList()) {
             // If there is a username match, get the password and store the user.
             if (usernameString.equals(user.getUsername())) {
-                System.out.println(user.getUsername());
                 attemptedUser = user;
                 realPassword = user.getPassword();
             }
