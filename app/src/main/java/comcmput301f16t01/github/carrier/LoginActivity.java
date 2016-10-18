@@ -32,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void startRiderActivity(View v) {
-        Intent intent = new Intent(LoginActivity.this, RiderMainActivity.class );
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class );
         startActivity(intent);
         this.finish();
     }
