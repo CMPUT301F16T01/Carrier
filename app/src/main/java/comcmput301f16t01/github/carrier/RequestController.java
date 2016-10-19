@@ -6,16 +6,18 @@ import java.util.ArrayList;
 
 /**
  * Singleton Pattern
+ * We will be using RequestController as a middleman between the activity and elasticController.
  * * modifies/returns a RequestList model
  * * @see Request
  * * @see RequestList
+ *
  */
 public class RequestController {
     private static RequestList requestList = null;
     private Context saveContext = null;
 
     /**
-     *
+     * Since we are using elastic search to get the request list.
      */
     public RequestController() {
         if (requestList == null) {
