@@ -39,11 +39,24 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/fab_rider"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        app:srcCompat="@drawable/ic_plus"
+        android:tint="#FFFFFFFF"
+        android:onClick="startMakeRequestActivity"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_driver"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@drawable/ic_search"
+        android:scaleType="center"
+        android:tint="#FFFFFFFF"
+        android:onClick="startSearchActivity"/>
 
 </android.support.design.widget.CoordinatorLayout>

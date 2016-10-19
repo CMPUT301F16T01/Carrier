@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -81,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
         ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
@@ -98,32 +98,23 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(onPageChangeListener);
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int spag = mViewPager.getCurrentItem();
-                if (spag == 1) {
-                    Snackbar.make(view, "Driver", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                } else {
-                    Snackbar.make(view, "Rider", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-            }
-        });
+        FloatingActionButton driver_fab = (FloatingActionButton) findViewById(R.id.fab_driver);
+        driver_fab.hide();
 
     }
 
     private void changeFab(int position) {
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton rider_fab = (FloatingActionButton) findViewById(R.id.fab_rider);
+        FloatingActionButton driver_fab = (FloatingActionButton) findViewById(R.id.fab_driver);
         switch(position){
             case 0:
-                fab.setSize(FloatingActionButton.SIZE_MINI);
+                driver_fab.hide();
+                rider_fab.show();
                 break;
 
             case 1:
-                fab.setSize(FloatingActionButton.SIZE_NORMAL);
+                rider_fab.hide();
+                driver_fab.show();
                 break;
 
         }
@@ -150,6 +141,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void startMakeRequestActivity(View view) {
+        // This will start the make request activity for a rider when they press the rider FAB
+        Toast.makeText(this, "RIDER FAB", Toast.LENGTH_LONG).show();
+    }
+
+    public void startSearchActivity(View view) {
+        // This will start the Search activity for a driver when they want to search requests
+        // after they press the driver FAB
+        Toast.makeText(this, "DRIVER FAB", Toast.LENGTH_LONG).show();
     }
 
     /**
