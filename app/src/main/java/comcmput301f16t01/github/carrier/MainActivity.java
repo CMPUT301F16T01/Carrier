@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
 
         // THIS LISTENS TO THE TABS BEING MOVED.
-        // WE CAN UPDATE LISTVIEWS, FAB, ETC WITH THIS
+        // WE CAN UPDATE LIST VIEWS, FAB, ETC WITH THIS
         TabLayout.OnTabSelectedListener onTabSelectedListener = new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         };
         tabLayout.addOnTabSelectedListener(onTabSelectedListener);
 
+        // Maybe necessary, maybe not, need to do research.
         ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -99,12 +100,17 @@ public class MainActivity extends AppCompatActivity {
         };
         mViewPager.addOnPageChangeListener(onPageChangeListener);
 
-
+        // We start on the rider tab, so we hide the driver fab
         FloatingActionButton driver_fab = (FloatingActionButton) findViewById(R.id.fab_driver);
         driver_fab.hide();
 
     }
 
+    /**
+     * Shows the correct FAB depending on what tab position we are at.
+     *
+     * @param position the current screen tab we are in (i.e. 0=Rider, 1=Driver)
+     */
     private void changeFab(int position) {
         FloatingActionButton rider_fab = (FloatingActionButton) findViewById(R.id.fab_rider);
         FloatingActionButton driver_fab = (FloatingActionButton) findViewById(R.id.fab_driver);
@@ -121,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -167,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                 activity.finish();
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
-                // TODO log out current user? (UserController) 
+                // TODO log out current user? (UserController)
             }
         });
         adb.setNegativeButton("Cancel", null );
