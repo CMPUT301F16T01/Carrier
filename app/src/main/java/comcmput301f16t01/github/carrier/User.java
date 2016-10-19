@@ -5,11 +5,13 @@ package comcmput301f16t01.github.carrier;
  * @see User
  * @see User
  */
+// TODO: remove references to password in code.
 public class User {
-    protected String username;
-    protected String password;
-    protected String email;
-    protected String phoneNumber;
+    private String username;
+    @Deprecated
+    private String password;
+    private String email;
+    private String phoneNumber;
 
     //TODO we should probably say what is and isn't a valid username, password, email, and phone number.
     /**
@@ -19,6 +21,7 @@ public class User {
      * @param inputEmail The e-mail
      * @param inputPhoneNumber The phone number
      */
+    @Deprecated
     public User(String inputUsername, String inputPassword, String inputEmail, String inputPhoneNumber) {
         this.username = inputUsername;
         this.password = inputPassword;
@@ -45,10 +48,6 @@ public class User {
         this.phoneNumber = phone;
     }
 
-    public void setPassword(String inputPassword) {
-        this.password = inputPassword;
-    }
-
     public String getPhone() {
         return phoneNumber;
     }
@@ -59,6 +58,7 @@ public class User {
 
     public String getUsername() {return username; }
 
+    @Deprecated
     public String getPassword() {
         return this.password;
     }
