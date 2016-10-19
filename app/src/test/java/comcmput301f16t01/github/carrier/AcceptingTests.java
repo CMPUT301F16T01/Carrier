@@ -14,11 +14,11 @@ public class AcceptingTests {
      */
     @Test
     public void driverAccept(){
-        Rider rider = new Rider("Mike");
+        User rider = new User("Mike");
         Request request = new Request(rider, new Location(), new Location());
         RequestController rc = new RequestController();
         rc.addRequest(request);
-        Driver driver = new Driver("Cole");
+        User driver = new User("Cole");
         // Check to see if there is an open request.
         assertTrue("Get open request is not returning any open requests", rc.getOpenRequests().size() == 1);
         rc.addDriver(request, driver);
@@ -39,7 +39,7 @@ public class AcceptingTests {
      */
     @Test
     public void driverPendingAccepts(){
-        Rider rider = new Rider("Mike");
+        User rider = new User("Mike");
         Location start = new Location();
         Location end = new Location();
         Request request = new Request(rider, start, end);
@@ -47,12 +47,12 @@ public class AcceptingTests {
         rc.addRequest(request);
         String description = "This description.";
         rc.setRequestDescription(request, description);
-        Driver driver = new Driver("Cole");
+        User driver = new User("Cole");
         // The request should be open right now and we test to make sure that it is.
         assertTrue("Get open request is not returning any open requests", rc.getOpenRequests().size() == 1);
         rc.addDriver(request, driver);
         // Add another driver to compare
-        Driver driver1 = new Driver("WASD");
+        User driver1 = new User("WASD");
         Request request1 = new Request(rider, new Location(), new Location());
         rc.addRequest(request1);
         rc.addDriver(request1,driver1);
@@ -77,8 +77,8 @@ public class AcceptingTests {
      */
     @Test
     public void driverAcceptedRequests(){
-        Rider rider = new Rider("Josh");
-        Driver driver = new Driver("Kevin");
+        User rider = new User("Josh");
+        User driver = new User("Kevin");
         Request request = new Request(rider, new Location(), new Location());
         RequestController rc = new RequestController();
         rc.addRequest(request);
@@ -99,8 +99,8 @@ public class AcceptingTests {
      */
     @Test
     public void notifyDriver(){
-        Rider rider = new Rider("Josh");
-        Driver driver = new Driver("Kevin");
+        User rider = new User("Josh");
+        User driver = new User("Kevin");
         Request request = new Request(rider, new Location(), new Location());
         RequestController rc = new RequestController();
         rc.addRequest(request);

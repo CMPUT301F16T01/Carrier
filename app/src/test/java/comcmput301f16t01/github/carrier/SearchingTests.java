@@ -37,17 +37,17 @@ public class SearchingTests {
     public void testDriverSearchByLocation() {
         ArrayList<Request> requests;
 
-        Rider rider1 = new Rider("Mandy");
+        User rider1 = new User("Mandy");
         Location startLocation1 = new Location();
         Location endLocation1 = new Location(latitude1, longitude1);
         Request request1 = new Request(rider1, startLocation1, endLocation1, "");
 
-        Rider rider2 = new Rider("Abigail");
+        User rider2 = new User("Abigail");
         Location startLocation2 = new Location();
         Location endLocation2 = new Location(latitude2, longitude2);
         Request request2 = new Request(rider2, startLocation2, endLocation2, "");
 
-        Rider rider3 = new Rider("Alison");
+        User rider3 = new User("Alison");
         Location startLocation3 = new Location();
         Location endLocation3 = new Location(latitude3, longitude3);
         Request request3 = new Request(rider3, startLocation3, endLocation3, "");
@@ -69,7 +69,7 @@ public class SearchingTests {
         assertFalse("Search returned location out of range", requests.contains(request2));
 
         // TODO clarify our terminology...should this return open or accepted requests
-        Driver driver = new Driver("Amber");
+        User driver = new User("Amber");
         rc.addDriver(request1, driver);
         rc.confirmDriver(request1, driver);
 
@@ -90,19 +90,19 @@ public class SearchingTests {
     public void testDriverSearchByKeyword() {
         ArrayList<Request> requests;
 
-        Rider rider1 = new Rider("Mandy");
+        User rider1 = new User("Mandy");
         Location startLocation1 = new Location();
         Location endLocation1 = new Location(latitude1, longitude1);
         String description1 = "Need to get to Whyte Ave for work";
         Request request1 = new Request(rider1, startLocation1, endLocation1, description1);
 
-        Rider rider2 = new Rider("Abigail");
+        User rider2 = new User("Abigail");
         Location startLocation2 = new Location();
         Location endLocation2 = new Location(latitude2, longitude2);
         String description2 = "Going home from the bar";
         Request request2 = new Request(rider2, startLocation2, endLocation2, description2);
 
-        Rider rider3 = new Rider("Alison");
+        User rider3 = new User("Alison");
         Location startLocation3 = new Location();
         Location endLocation3 = new Location(latitude3, longitude3);
         String description3 = "Going home from school";
@@ -126,7 +126,7 @@ public class SearchingTests {
         requests = rc.searchByKeyword(query3);
         assertTrue("Search returned requests", requests.size() == 0);
 
-        Driver driver = new Driver("Amber");
+        User driver = new User("Amber");
         rc.addDriver(request1, driver);
         rc.confirmDriver(request1, driver);
 

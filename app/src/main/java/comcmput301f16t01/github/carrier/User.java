@@ -2,10 +2,10 @@ package comcmput301f16t01.github.carrier;
 /**
  * Abstract base class for a user of Carrier.
  *
- * @see Rider
- * @see Driver
+ * @see User
+ * @see User
  */
-public abstract class User {
+public class User {
     protected String username;
     protected String password;
     protected String email;
@@ -31,7 +31,7 @@ public abstract class User {
         // TODO this method was implemented to create a default method for extending classes. Probably needs refactoring.
     }
 
-    public User( String name ) {
+    public User(String name ) {
         this.username = name;
     }
 
@@ -62,4 +62,8 @@ public abstract class User {
     public String getPassword() {
         return this.password;
     }
- }
+
+    public boolean hasNotifications() {
+        return false;
+    }
+}

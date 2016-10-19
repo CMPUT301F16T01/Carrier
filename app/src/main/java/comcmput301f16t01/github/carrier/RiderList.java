@@ -3,18 +3,18 @@ package comcmput301f16t01.github.carrier;
 import java.util.ArrayList;
 
 /**
- * Created by meind on 2016-10-11.
+ * TODO: Remove/delete class when nothing references RiderList
  */
-
+@Deprecated
 public class RiderList extends ArrayList {
 
     /**
      * Contains
      */
-    ArrayList<Rider> riders;
+    ArrayList<User> riders;
 
     public RiderList() {
-        riders = new ArrayList<Rider>();
+        riders = new ArrayList<User>();
     }
 
 }

@@ -22,7 +22,7 @@ public class RequestsTests {
      */
     @Test
     public void riderRequest() {
-        Rider rider = new Rider("Kieter");
+        User rider = new User("Kieter");
         Request request = new Request(rider, new Location(), new Location(), "");
         RequestController rc = new RequestController();
 
@@ -46,7 +46,7 @@ public class RequestsTests {
      */
     @Test
     public void seeOpenRequests() {
-        Rider riderOne = new Rider("username");
+        User riderOne = new User("username");
         Request request = new Request(riderOne, new Location(), new Location(), "");
         RequestController rc = new RequestController();
         rc.addRequest(request);
@@ -55,7 +55,7 @@ public class RequestsTests {
                 1, rc.getRequests(riderOne).size());
 
         // Add a request to ensure we get back specific requests of a user.
-        rc.addRequest(new Request(new Rider("otherRider"), new Location(), new Location(), ""));
+        rc.addRequest(new Request(new User("otherRider"), new Location(), new Location(), ""));
 
         // Ensures that we still only get one request for our user, with a second user in the system
         assertEquals("There should only be one request returned.",
@@ -75,12 +75,12 @@ public class RequestsTests {
      */
     @Test
     public void acceptedRequestNotification() {
-        Rider rider = new Rider("Bennett");
+        User rider = new User("Bennett");
         Request request = new Request(rider, new Location(), new Location(), "");
         RequestController rc = new RequestController();
 
         rc.addRequest(request);
-        rc.addDriver( request, new Driver("Kieter (not really)"));
+        rc.addDriver( request, new User("Kieter (not really)"));
 
         assertEquals( "The request should be accepted",
                 Request.OFFERED, request.getStatus() );
@@ -88,7 +88,7 @@ public class RequestsTests {
         // Ensures that we've done something with the fact that a driver has accepted the
         // rider's request.
         assertTrue( "The rider should be notified that they have gotten a driver for their request",
-                rider.hasNotification());
+                rider.hasNotifications());
     }
 
     /**
@@ -97,7 +97,7 @@ public class RequestsTests {
      */
     @Test
     public void riderCancelRequests() {
-        Rider riderOne = new Rider("username");
+        User riderOne = new User("username");
         Request request1 = new Request(riderOne, new Location(), new Location(), "");
         Request request2 = new Request(riderOne, new Location(), new Location(), "");
 
@@ -122,8 +122,8 @@ public class RequestsTests {
      */
     @Test
     public void riderContactDriver() {
-        Rider rider = new Rider("Sarah");
-        Driver driver = new Driver("Mandy");
+        User rider = new User("Sarah");
+        User driver = new User("Mandy");
         String email = "mandy@mandy.com";
         driver.setEmail(email);
         String phone = "1234567890";
@@ -152,7 +152,7 @@ public class RequestsTests {
      */
     @Test
     public void getFareEstimate() {
-        Rider riderOne = new Rider("username");
+        User riderOne = new User("username");
         Location start = new Location();
         Location end = new Location();
         Request request = new Request(riderOne, start, end, "");
@@ -169,8 +169,8 @@ public class RequestsTests {
      */
     @Test
     public void confirmCompletionAndPay() {
-        Rider rider = new Rider("Michael");
-        Driver driver = new Driver("Protein Powder");
+        User rider = new User("Michael");
+        User driver = new User("Protein Powder");
         Request request = new Request(rider, new Location(), new Location(), "");
 
         RequestController rc = new RequestController();
@@ -195,9 +195,9 @@ public class RequestsTests {
      */
     @Test
     public void riderAcceptsDriver() {
-        Rider riderOne = new Rider("username");
-        Driver driverOne = new Driver("username2");
-        Driver driverTwo = new Driver("username3");
+        User riderOne = new User("username");
+        User driverOne = new User("username2");
+        User driverTwo = new User("username3");
         RequestController rc = new RequestController();
         Request request = new Request(riderOne, new Location(), new Location(), "");
         rc.addRequest(request);
@@ -213,7 +213,7 @@ public class RequestsTests {
                 Request.CONFIRMED, request.getStatus());
 
         try {
-            Driver testDriver = new Driver("Mr. FailYourTests");
+            User testDriver = new User("Mr. FailYourTests");
             rc.addDriver(request, testDriver);
             fail("You should not be able to add a driver to a request if it is CONFIRMED.");
         } catch (Exception e) {

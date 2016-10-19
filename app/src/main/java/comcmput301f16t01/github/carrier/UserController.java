@@ -1,8 +1,6 @@
 package comcmput301f16t01.github.carrier;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.HashMap;
 
 /**
  * Created by meind on 2016-10-11.
@@ -41,7 +39,7 @@ public class UserController {
      *
      * @param rider
      */
-    public boolean uniqueRiderUsername(Rider rider) {
+    public boolean uniqueRiderUsername(User rider) {
         return false;
     }
 
@@ -53,7 +51,7 @@ public class UserController {
      *
      * @param driver
      */
-    public boolean uniqueDriverUsername(Driver driver) {
+    public boolean uniqueDriverUsername(User driver) {
         return false;
     }
 
@@ -69,10 +67,10 @@ public class UserController {
     public void setUsername(User user, String username) { user.setUsername(username);
     }
 
-    public void addDriver(Driver driver) {
+    public void addDriver(User driver) {
     }
 
-    public void addRider(Rider rider) {
+    public void addRider(User rider) {
     }
 
     /**
