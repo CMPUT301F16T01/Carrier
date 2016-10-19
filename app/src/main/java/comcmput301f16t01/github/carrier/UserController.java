@@ -39,6 +39,7 @@ public class UserController {
      *
      * @param rider
      */
+    @Deprecated
     public boolean uniqueRiderUsername(User rider) {
         return false;
     }
@@ -51,10 +52,14 @@ public class UserController {
      *
      * @param driver
      */
+    @Deprecated
     public boolean uniqueDriverUsername(User driver) {
         return false;
     }
 
+    private boolean checkUniqueUsername( String username ) {
+        return false;
+    }
 
     public void setEmail(User user, String email) {
         user.setEmail(email);
@@ -87,6 +92,7 @@ public class UserController {
      * @param usernameString The username the user attempts to login with
      * @param passwordString The password the user attempts to login with
      */
+    @Deprecated
     public boolean authenticate(String usernameString, String passwordString) throws NullPointerException {
         User attemptedUser = null;
         String realPassword = null;
