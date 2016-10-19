@@ -33,7 +33,7 @@ public class OfflineTests {
         rc.addDriver(request, driver);
 
         // Going offline
-        SyncController sc = new SyncController();
+        ElasticController sc = new ElasticController();
         sc.setOnline(false);
 
 
@@ -56,7 +56,7 @@ public class OfflineTests {
         rc.addRequest(request);
 
         // Going offline
-        SyncController sc = new SyncController();
+        ElasticController sc = new ElasticController();
         sc.setOnline(false);
 
         // Tests that the requests the rider made online persist offline (they are the same)
@@ -69,7 +69,7 @@ public class OfflineTests {
     @Test
     public void MakeRequestsOnceConnected() {
         // Going offline
-        SyncController sc = new SyncController();
+        ElasticController sc = new ElasticController();
         sc.setOnline(false);
 
         // Setting up
@@ -105,7 +105,7 @@ public class OfflineTests {
         rc.addRequest(request);
 
         // Going offline
-        SyncController sc = new SyncController();
+        ElasticController sc = new ElasticController();
         sc.setOnline(false);
 
         // driver accepts request, request sent to queue in SyncController

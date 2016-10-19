@@ -7,7 +7,7 @@ import java.util.Queue;
  * This class is USED by them to save them
  */
 
-public class SyncController {
+public class ElasticController {
     private static boolean online = false;
     private static Queue<Request> requestQueue;
 
