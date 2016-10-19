@@ -1,7 +1,6 @@
 package comcmput301f16t01.github.carrier;
 
 import java.util.ArrayList;
-import java.util.BitSet;
 
 /**
  * Represents a request for a ride.
@@ -17,7 +16,7 @@ public class Request {
     static final int CANCELLED = 9;        // The rider has cancelled their request
 
     private int status = OPEN;
-    private Rider rider;
+    private User rider;
     private Location start;
     private Location end;
     private String description;
@@ -25,11 +24,11 @@ public class Request {
 
     //TODO maybe add the location strings to description by default? Just in case keywords are locations.
     // Constructor with description
-    public Request(Rider rider, Location start, Location end, String description) {
+    public Request(User rider, Location start, Location end, String description) {
     }
 
     // Constructor without description
-    public Request(Rider rider, Location start, Location end) {
+    public Request(User rider, Location start, Location end) {
     }
 
     public int getStatus() {
@@ -45,11 +44,11 @@ public class Request {
         return fareCalc.getEstimate();
     }
 
-    public ArrayList<Driver> getOffers() {
-        return new ArrayList<Driver>();
+    public ArrayList<User> getOffers() {
+        return new ArrayList<User>();
     }
 
-    public Rider getRider() {
+    public User getRider() {
         return this.rider;
     }
 
@@ -65,12 +64,12 @@ public class Request {
 
     }
 
-    public Driver getConfirmedDriver() {
-        return new Driver("Test");
+    public User getConfirmedDriver() {
+        return new User("Test");
     }
 
-    public ArrayList<Driver> getOfferedDrivers() {
-        return new ArrayList<Driver>();
+    public ArrayList<User> getOfferedDrivers() {
+        return new ArrayList<User>();
     }
 
     public String getDescription() {
