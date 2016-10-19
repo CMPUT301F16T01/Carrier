@@ -3,8 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="comcmput301f16t01.github.carrier.MainActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_viewProfile"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:title="View Profile" />
+    <item
+        android:id="@+id/action_logOut"
+        android:orderInCategory="100"
+        android:title="Log Out" />
 </menu>
