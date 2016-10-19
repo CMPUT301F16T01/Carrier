@@ -13,43 +13,17 @@ import java.util.HashMap;
  * * @see RequestList
  */
 
+// TODO - whole class needs to be reconsidered. i.e. we can use elastic search to store all our users and verify them...
+
 public class UserController {
-    private static RiderList riderList = null;
-    private static DriverList driverList = null;
     private static UserList userList = null;
     private static User loggedInUser = null;
 
 
     public UserController() {
-        if (riderList == null) {
-            riderList = new RiderList();
-        }
-        if (driverList == null) {
-            driverList = new DriverList();
-        }
         if (userList == null) {
             userList = new UserList();
         }
-    }
-
-    /**
-     * @return the RiderList held by this controller.
-     */
-    public static RiderList getRiderList() {
-        if (riderList == null) {
-            riderList = new RiderList();
-        }
-        return riderList;
-    }
-
-    /**
-     * @return the DriverList held by this controller.
-     */
-    public static DriverList getDriverList() {
-        if (driverList == null) {
-            driverList = new DriverList();
-        }
-        return driverList;
     }
 
     public static ArrayList<User> getUserList() {
@@ -146,7 +120,6 @@ public class UserController {
      * @since Sunday October 16th, 2016
      */
     public void reset() {
-        riderList = new RiderList();
-        driverList = new DriverList();
+        // TODO this never had the option to reset UserList.
     }
 }
