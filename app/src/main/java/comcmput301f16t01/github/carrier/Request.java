@@ -37,8 +37,13 @@ public class Request {
     private String description;
 
     /** The price the requesting user is willing to pay for the request to be complete */
-    private double fare;
+    private int fare;
 
+    /** When elastic searching, can search if this is true to notify the rider about the request*/
+    private boolean needToNotifyRider = false;
+
+    /** When elastic searching, can search if this is true to notify the driver about the request */
+    private boolean needToNotifyDriver = false;
 
     //TODO maybe add the location strings to description by default? Just in case keywords are locations.
     // Constructor with description

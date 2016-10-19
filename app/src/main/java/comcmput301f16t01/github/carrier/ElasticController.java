@@ -1,5 +1,6 @@
 package comcmput301f16t01.github.carrier;
 
+import java.util.ArrayList;
 import java.util.Queue;
 
 /**
@@ -10,6 +11,7 @@ import java.util.Queue;
 public class ElasticController {
     private static boolean online = false;
     private static Queue<Request> requestQueue;
+    private static ArrayList<Request> requestCache;
 
     public boolean isOnline() {
         return online;
