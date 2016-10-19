@@ -48,12 +48,10 @@ public class RiderTests {
         riderList.add(kieterRider);
         assertTrue("The list does not contain kieter", riderList.contains(kieterRider));
 
-        //TODO implement this in usercontroller.java adding to rider should add to user too.
-        // TODO: Sad test driven development: don't add the feature yourself. uc.addRider( riderObject ) should have added it to the UserList as well.
+        // TODO: test driven development: don't add the feature in your test. uc.addRider( riderObject ) should have added it to the UserList as well.
         //uc.getRiderList().add(kieterRider);
         //uc.getUserList().add(kieterRider);
-
-        // TODO: ERROR: COULD NOT REFACTOR. THIS TEST DOES NOT FOLLOW MVC. THIS TEST HAS NOT REMOVED PASSWORDS
+        // TODO: MVC, and passwords, remove deprecated RiderList
         // TODO: proper usage of UserController: uc.addUser( userObject );
 
         // Assuring the list contains the added element
