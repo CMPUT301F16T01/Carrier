@@ -3,8 +3,6 @@ package comcmput301f16t01.github.carrier;
 import org.junit.After;
 import org.junit.Test;
 
-import java.util.HashMap;
-
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -27,7 +25,7 @@ public class RiderTests {
         String password = "bennettIsBae123";
         String email = "kieter@kieter.me";
         String phoneNumber = "7801234567";
-        Rider kieter = new Rider(name, password, email, phoneNumber);
+        User kieter = new User(name, password, email, phoneNumber);
 
         // Test equality of all the fields.
         assertEquals("Username is not equal", name, kieter.getUsername());
@@ -43,16 +41,18 @@ public class RiderTests {
         String password = "bennettIsBae123";
         String email = "kieter@kieter.me";
         String phoneNumber = "7801234567";
-        Rider kieterRider = new Rider(name, password, email, phoneNumber);
+        User kieterRider = new User(name, password, email, phoneNumber);
         RiderList riderList = new RiderList();
 
         // TODO should really be using something called addRider but that hasn't been made yet.
         riderList.add(kieterRider);
         assertTrue("The list does not contain kieter", riderList.contains(kieterRider));
 
-        //TODO implement this in usercontroller.java adding to rider should add to user too.
-        uc.getRiderList().add(kieterRider);
-        uc.getUserList().add(kieterRider);
+        // TODO: test driven development: don't add the feature in your test. uc.addRider( riderObject ) should have added it to the UserList as well.
+        //uc.getRiderList().add(kieterRider);
+        //uc.getUserList().add(kieterRider);
+        // TODO: MVC, and passwords, remove deprecated RiderList
+        // TODO: proper usage of UserController: uc.addUser( userObject );
 
         // Assuring the list contains the added element
         assertTrue("The list does not contain kieter", uc.getUserList().contains(kieterRider));

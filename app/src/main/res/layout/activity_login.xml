@@ -46,7 +46,6 @@
         android:textColor="@android:color/white"
         android:textSize="24sp"
         android:hint="@string/passwordHint"
-        android:text="asdasd"
         android:layout_below="@+id/UsernameEditText"
         android:layout_alignStart="@+id/UsernameEditText" />
 
@@ -71,7 +70,7 @@
         android:layout_marginTop="32dp"
         android:textSize="24sp"
         android:hint="@string/usernameHint"
-        android:text="ASas"
+        android:text="test"
         android:layout_below="@+id/textView4"
         android:layout_centerHorizontal="true" />
 

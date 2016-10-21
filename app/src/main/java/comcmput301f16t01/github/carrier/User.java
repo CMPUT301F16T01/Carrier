@@ -2,14 +2,16 @@ package comcmput301f16t01.github.carrier;
 /**
  * Abstract base class for a user of Carrier.
  *
- * @see Rider
- * @see Driver
+ * @see User
+ * @see User
  */
-public abstract class User {
-    protected String username;
-    protected String password;
-    protected String email;
-    protected String phoneNumber;
+// TODO: remove references to password in code.
+public class User {
+    private String username;
+    @Deprecated
+    private String password;
+    private String email;
+    private String phoneNumber;
 
     //TODO we should probably say what is and isn't a valid username, password, email, and phone number.
     /**
@@ -19,6 +21,7 @@ public abstract class User {
      * @param inputEmail The e-mail
      * @param inputPhoneNumber The phone number
      */
+    @Deprecated
     public User(String inputUsername, String inputPassword, String inputEmail, String inputPhoneNumber) {
         this.username = inputUsername;
         this.password = inputPassword;
@@ -31,7 +34,7 @@ public abstract class User {
         // TODO this method was implemented to create a default method for extending classes. Probably needs refactoring.
     }
 
-    public User( String name ) {
+    public User(String name ) {
         this.username = name;
     }
 
@@ -45,10 +48,6 @@ public abstract class User {
         this.phoneNumber = phone;
     }
 
-    public void setPassword(String inputPassword) {
-        this.password = inputPassword;
-    }
-
     public String getPhone() {
         return phoneNumber;
     }
@@ -59,7 +58,12 @@ public abstract class User {
 
     public String getUsername() {return username; }
 
+    @Deprecated
     public String getPassword() {
         return this.password;
     }
- }
+
+    public boolean hasNotifications() {
+        return false;
+    }
+}

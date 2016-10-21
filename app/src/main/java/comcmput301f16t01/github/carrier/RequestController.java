@@ -3,20 +3,21 @@ package comcmput301f16t01.github.carrier;
 import android.content.Context;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * Singleton Pattern
+ * We will be using RequestController as a middleman between the activity and elasticController.
  * * modifies/returns a RequestList model
  * * @see Request
  * * @see RequestList
+ *
  */
 public class RequestController {
     private static RequestList requestList = null;
     private Context saveContext = null;
 
     /**
-     *
+     * Since we are using elastic search to get the request list.
      */
     public RequestController() {
         if (requestList == null) {
@@ -44,7 +45,7 @@ public class RequestController {
      * @param rider
      * @return
      */
-    public ArrayList<Request> getRequests(Rider rider) {
+    public ArrayList<Request> getRequests(User rider) {
         return new ArrayList<Request>();
     }
 
@@ -54,7 +55,7 @@ public class RequestController {
     public void reset() {
     }
 
-    public void cancelRequest(Rider rider, Request request) {
+    public void cancelRequest(User rider, Request request) {
     }
 
     /**
@@ -62,7 +63,7 @@ public class RequestController {
      * @param request The request we are modifying
      * @param driver the driver that is being added as a driver for the request.
      */
-    public void addDriver(Request request, Driver driver) {
+    public void addDriver(Request request, User driver) {
     }
 
     /**
@@ -71,7 +72,7 @@ public class RequestController {
      * @param request The request that is being modified
      * @param driver The driver that is being accepted
      */
-    public void confirmDriver(Request request, Driver driver) {
+    public void confirmDriver(Request request, User driver) {
     }
 
     public void completeRequest(Request request) {
@@ -120,7 +121,7 @@ public class RequestController {
      *               but the rider has no confirmed their choice in driver.
      * @return An ArrayList of requests that the driver has offered to give a ride on.
      */
-    public ArrayList<Request> getOfferedRequests(Driver driver) {
+    public ArrayList<Request> getOfferedRequests(User driver) {
         return  new ArrayList<Request>();
     }
 
@@ -129,8 +130,8 @@ public class RequestController {
      * @param request The request that is being queried for a list of drivers.
      * @return An ArrayList of drivers that have offered to give a ride on the request.
      */
-    public ArrayList<Driver> getDrivers(Request request) {
-        return new ArrayList<Driver>();
+    public ArrayList<User> getDrivers(Request request) {
+        return new ArrayList<User>();
     }
 
     /**

@@ -18,10 +18,10 @@ public class UserProfileTests {
     public void uniqueRiderUsername() {
         UserController uc = new UserController();
 
-        Rider riderOne = new Rider("username");
+        User riderOne = new User("username");
         assertTrue(uc.uniqueRiderUsername(riderOne));
 
-        Rider riderTwo = new Rider("username");
+        User riderTwo = new User("username");
         assertFalse(uc.uniqueRiderUsername(riderTwo));
     }
 
@@ -33,10 +33,10 @@ public class UserProfileTests {
     public void uniqueDriverUsername() {
         UserController uc = new UserController();
 
-        Driver driverOne = new Driver("username");
+        User driverOne = new User("username");
         assertTrue(uc.uniqueDriverUsername(driverOne));
 
-        Driver driverTwo = new Driver("username");
+        User driverTwo = new User("username");
         assertFalse(uc.uniqueDriverUsername(driverTwo));
     }
 
@@ -47,7 +47,7 @@ public class UserProfileTests {
     @Test
     public void editRiderInfo() {
         UserController uc = new UserController();
-        Rider rider = new Rider("Mandy");
+        User rider = new User("Mandy");
         uc.addRider(rider);
 
         String email = "start email";
@@ -80,7 +80,7 @@ public class UserProfileTests {
     @Test
     public void editDriverInfo() {
         UserController uc = new UserController();
-        Driver driver = new Driver("Mandy");
+        User driver = new User("Mandy");
         uc.addDriver(driver);
 
         String email = "start email";
@@ -116,11 +116,11 @@ public class UserProfileTests {
      */
     @Test
     public void showUsernameIfyouAreRider() {
-        Rider you = new Rider("you");
+        User you = new User("you");
         String description = "thing";
         Request request = new Request(you, new Location(), new Location(), description);
         UserController uc = new UserController();
-        Driver driver = new Driver("Mandy");
+        User driver = new User("Mandy");
         uc.addDriver(driver);
         uc.addRider(you);
 
@@ -146,11 +146,11 @@ public class UserProfileTests {
      */
     @Test
     public void showUsernameIfyouAreDriver() {
-        Rider rider = new Rider("Sarah");
+        User rider = new User("Sarah");
         String description = "thing";
         Request request = new Request(rider, new Location(), new Location(), description);
         UserController uc = new UserController();
-        Driver you = new Driver("you");
+        User you = new User("you");
         uc.addDriver(you);
         uc.addRider(rider);
 
