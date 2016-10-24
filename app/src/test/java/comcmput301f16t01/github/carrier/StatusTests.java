@@ -18,8 +18,8 @@ public class StatusTests {
      */
     @Test
     public void statusOpenTest() {
-        Rider rider = new Rider("Mandy");
-        Driver driver = new Driver("username2");
+        User rider = new User("Mandy");
+        User driver = new User("username2");
 
         RequestController rc = new RequestController();
         Request request = new Request(rider, new Location(), new Location(), "");
@@ -35,8 +35,8 @@ public class StatusTests {
      */
     @Test
     public void statusAcceptedTest() {
-        Rider rider = new Rider("Mandy");
-        Driver driver = new Driver("username2");
+        User rider = new User("Mandy");
+        User driver = new User("username2");
 
         RequestController rc = new RequestController();
         Request request = new Request(rider, new Location(), new Location(), "");
@@ -53,8 +53,8 @@ public class StatusTests {
      */
     @Test
     public void statusConfirmedTest() {
-        Rider rider = new Rider("Mandy");
-        Driver driver = new Driver("username2");
+        User rider = new User("Mandy");
+        User driver = new User("username2");
 
         RequestController rc = new RequestController();
         Request request = new Request(rider, new Location(), new Location(), "");
@@ -72,8 +72,8 @@ public class StatusTests {
      */
     @Test
     public void statusCompleteTest() {
-        Rider rider = new Rider("Mandy");
-        Driver driver = new Driver("username2");
+        User rider = new User("Mandy");
+        User driver = new User("username2");
 
         RequestController rc = new RequestController();
         Request request = new Request(rider, new Location(), new Location(), "");
@@ -92,8 +92,8 @@ public class StatusTests {
      */
     @Test
     public void statusPaidTest() {
-        Rider rider = new Rider("Mandy");
-        Driver driver = new Driver("username2");
+        User rider = new User("Mandy");
+        User driver = new User("username2");
 
         RequestController rc = new RequestController();
         Request request = new Request(rider, new Location(), new Location(), "");
@@ -113,8 +113,8 @@ public class StatusTests {
      */
     @Test
     public void statusCancelledTest() {
-        Rider rider = new Rider("Mandy");
-        Driver driver = new Driver("username2");
+        User rider = new User("Mandy");
+        User driver = new User("username2");
 
         RequestController rc = new RequestController();
         Request request = new Request(rider, new Location(), new Location(), "");

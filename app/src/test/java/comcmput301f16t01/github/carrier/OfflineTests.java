@@ -3,8 +3,6 @@ package comcmput301f16t01.github.carrier;
 import org.junit.After;
 import org.junit.Test;
 
-import java.util.ArrayList;
-
 import static org.junit.Assert.*;
 
 /**
@@ -24,8 +22,8 @@ public class OfflineTests {
     @Test
     public void OfflineSeeDriverOffers() {
         // Setting up
-        Rider rider = new Rider("Kieter");
-        Driver driver = new Driver("Baenett");
+        User rider = new User("Kieter");
+        User driver = new User("Baenett");
         Request request = new Request(rider, new Location(), new Location());
 
         // Adding a request while online
@@ -35,7 +33,7 @@ public class OfflineTests {
         rc.addDriver(request, driver);
 
         // Going offline
-        SyncController sc = new SyncController();
+        ElasticController sc = new ElasticController();
         sc.setOnline(false);
 
 
@@ -51,14 +49,14 @@ public class OfflineTests {
     @Test
     public void OfflineSeeRiderRequests() {
         // Setting up
-        Rider rider = new Rider("Kieter");
-        Driver driver = new Driver("Baenett");
+        User rider = new User("Kieter");
+        User driver = new User("Baenett");
         Request request = new Request(rider, new Location(), new Location());
         RequestController rc = new RequestController();
         rc.addRequest(request);
 
         // Going offline
-        SyncController sc = new SyncController();
+        ElasticController sc = new ElasticController();
         sc.setOnline(false);
 
         // Tests that the requests the rider made online persist offline (they are the same)
@@ -71,11 +69,11 @@ public class OfflineTests {
     @Test
     public void MakeRequestsOnceConnected() {
         // Going offline
-        SyncController sc = new SyncController();
+        ElasticController sc = new ElasticController();
         sc.setOnline(false);
 
         // Setting up
-        Rider rider = new Rider("Mandy");
+        User rider = new User("Mandy");
         Request request = new Request(rider, new Location(), new Location());
         RequestController rc = new RequestController();
 
@@ -100,14 +98,14 @@ public class OfflineTests {
     @Test
     public void AcceptRequestsOnceConnected() {
         // Setting up
-        Rider rider = new Rider("Mandy");
-        Driver driver = new Driver("Abigail");
+        User rider = new User("Mandy");
+        User driver = new User("Abigail");
         Request request = new Request(rider, new Location(), new Location());
         RequestController rc = new RequestController();
         rc.addRequest(request);
 
         // Going offline
-        SyncController sc = new SyncController();
+        ElasticController sc = new ElasticController();
         sc.setOnline(false);
 
         // driver accepts request, request sent to queue in SyncController

@@ -26,7 +26,7 @@ public class LocationTests {
      */
     @Test
     public void riderChooseRequestLocation() {
-        Rider rider = new Rider("Mandy");
+        User rider = new User("Mandy");
         // TODO better way to get current location (using location manager perhaps?)
 
         // gets current location
@@ -51,7 +51,7 @@ public class LocationTests {
     */
     @Test
     public void driverViewRequestLocation() {
-        Rider rider = new Rider("Mike");
+        User rider = new User("Mike");
         Location startLocation = new Location();
         Location endLocation = new Location();
         Request request = new Request(rider, startLocation, endLocation, "");
