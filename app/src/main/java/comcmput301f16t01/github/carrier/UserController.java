@@ -79,9 +79,9 @@ public class UserController {
     }
 
     /**
-     * authenticate is called when the user needs to login. Checks to see if the combination of
-     * username and password that hte user entered is valid. It throws an exception when the
-     * combination of username and password is wrong. Authenticate also sets the loggedInUser upon
+     * authenticate is called when the user needs to login. Checks to see if the username
+     * the user entered is valid. It throws an exception when the
+     * username is wrong. Authenticate also sets the loggedInUser upon
      * successful login.
      *
      * @author Kieter
@@ -90,30 +90,19 @@ public class UserController {
      * @throws NullPointerException Happens when the user enters a username with a username that
      * does not exist.
      * @param usernameString The username the user attempts to login with
-     * @param passwordString The password the user attempts to login with
      */
     @Deprecated
-    public boolean authenticate(String usernameString, String passwordString) throws NullPointerException {
+    //TODO re-implement after elastic search is all good
+    public boolean authenticate(String usernameString) throws NullPointerException {
         User attemptedUser = null;
-        String realPassword = null;
 
         // Iterate over all the users, checking to see if the given username is the users
         for (User user: this.getUserList()) {
-            // If there is a username match, get the password and store the user.
+            // If there is a username match, store the user
             if (usernameString.equals(user.getUsername())) {
-                attemptedUser = user;
-                realPassword = user.getPassword();
+                this.loggedInUser = user;
+                return true;
             }
-        }
-        // If realPassword is still null, the username did not exist.
-        if (realPassword == null) {
-            return false;
-        }
-
-        // If the attempted password is the same as the real password, set login user and ret true
-        if (passwordString.equals(realPassword)) {
-            this.loggedInUser = attemptedUser;
-            return true;
         }
         // Otherwise this is a faulty login.
         return false;
