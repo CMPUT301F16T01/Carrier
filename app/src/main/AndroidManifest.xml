@@ -42,7 +42,8 @@
 
         <activity
             android:name=".SearchMapsActivity"
-            android:label="@string/title_activity_search_maps"></activity>
+            android:label="@string/title_activity_search_maps" />
+        <activity android:name=".SearchActivity"></activity>
     </application>
 
 </manifest>
