@@ -13,14 +13,19 @@ import android.widget.TextView;
  */
 
 public class UserProfileActivity extends AppCompatActivity {
+    public String oldPhoneNumber;
+    public String oldEmailAddress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
         // Get the TextViews for the information that is going to be shown.
-        EditText userName = (EditText) findViewById(R.id.NameEditText);
-        EditText emailAddress = (EditText) findViewById(R.id.EmailEditText);
-        EditText phoneNumber = (EditText) findViewById(R.id.PhoneEditText);
+        EditText userNameEditText = (EditText) findViewById(R.id.NameEditText);
+        EditText emailAddressEditText = (EditText) findViewById(R.id.EmailEditText);
+        EditText phoneNumberEditText = (EditText) findViewById(R.id.PhoneEditText);
+        // Save old values in case the user changes their mind about editing.
+        this.oldPhoneNumber = phoneNumberEditText.getText().toString();
+        this.oldEmailAddress = emailAddressEditText.getText().toString();
         // TODO Set the TextView to the proper values.
 }
 
@@ -33,7 +38,7 @@ public class UserProfileActivity extends AppCompatActivity {
         saveButton.setVisibility(View.VISIBLE);
         cancelButton.setVisibility(View.VISIBLE);
         TextView phoneNumber = (TextView) findViewById(R.id.PhoneEditText);
-        // Set it so the user can edit the TextView
+        // Set it so the user can edit the EditText
         phoneNumber.setFocusable(true);
     }
 
@@ -46,9 +51,11 @@ public class UserProfileActivity extends AppCompatActivity {
         saveButton.setVisibility(View.INVISIBLE);
         cancelButton.setVisibility(View.INVISIBLE);
         EditText phoneNumberText = (EditText) findViewById(R.id.PhoneEditText);
-        // Set it so the user can edit the TextView
+        // Set it so the user can't edit the EditText
         phoneNumberText.setFocusable(false);
         String phoneNumber = phoneNumberText.getText().toString();
+        // Since editing was confirmed, overwrite old value of phone number
+        this.oldPhoneNumber = phoneNumber;
         // TODO Check if it is a valid phoneNumber
         // TODO Update The information in elasticsearch
     }
@@ -61,9 +68,11 @@ public class UserProfileActivity extends AppCompatActivity {
         saveButton.setVisibility(View.INVISIBLE);
         cancelButton.setVisibility(View.INVISIBLE);
         EditText phoneNumberText = (EditText) findViewById(R.id.PhoneEditText);
-        // Set it so the user can edit the TextView
+        // Set it so the user can't edit the EditText
         phoneNumberText.setFocusable(false);
-        // TODO Set the EditText to the value it originally was.
+        // Revert to the old phone number before editing started
+        phoneNumberText.setText(this.oldPhoneNumber);
+
     }
 
     public void editEmailAddress(View v){
@@ -74,8 +83,8 @@ public class UserProfileActivity extends AppCompatActivity {
         editButton.setVisibility(View.INVISIBLE);
         saveButton.setVisibility(View.VISIBLE);
         cancelButton.setVisibility(View.VISIBLE);
-        TextView emailView = (TextView) findViewById(R.id.EmailEditText);
-        // Set it so the user can edit the TextView
+        EditText emailView = (EditText) findViewById(R.id.EmailEditText);
+        // Set it so the user can edit the EditText
         emailView.setFocusable(true);
     }
 
@@ -87,10 +96,12 @@ public class UserProfileActivity extends AppCompatActivity {
         editButton.setVisibility(View.VISIBLE);
         saveButton.setVisibility(View.INVISIBLE);
         cancelButton.setVisibility(View.INVISIBLE);
-        TextView emailView = (TextView) findViewById(R.id.EmailEditText);
-        // Set it so the user can edit the TextView
+        EditText emailView = (EditText) findViewById(R.id.EmailEditText);
+        // Set it so the user can edit the EditText
         emailView.setFocusable(false);
         String email = emailView.getText().toString();
+        // Since editing was confirmed, overwrite old value of email
+        this.oldEmailAddress = email;
         // TODO Check if valid email and update elasticsearch
     }
     public void cancelEditEmailAddress(View v){
@@ -101,10 +112,11 @@ public class UserProfileActivity extends AppCompatActivity {
         editButton.setVisibility(View.VISIBLE);
         saveButton.setVisibility(View.INVISIBLE);
         cancelButton.setVisibility(View.INVISIBLE);
-        TextView emailView = (TextView) findViewById(R.id.EmailEditText);
-        // Set it so the user can edit the TextView
+        EditText emailView = (EditText) findViewById(R.id.EmailEditText);
+        // Set it so the user can't edit the EditText
         emailView.setFocusable(false);
-        // TODO set email address to what it was before being edited.
+        // Revert to the old email address before editing started
+        emailView.setText(this.oldEmailAddress);
     }
 
 
