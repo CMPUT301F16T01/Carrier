@@ -16,7 +16,7 @@
             android:layout_height="match_parent"
             android:src="@drawable/ic_search"
             android:id="@+id/imageView_search"
-            android:layout_weight="1"
+            android:layout_weight="0.5"
             android:layout_gravity="center"
             android:background="@null" />
 
@@ -27,7 +27,7 @@
             android:hint="Search by keyword"
             android:ems="10"
             android:id="@+id/editText_keywordSearch"
-            android:layout_weight="3" />
+            android:layout_weight="3.5" />
 
     </LinearLayout>
 
@@ -35,26 +35,19 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="4" >
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_location_on"
-            android:id="@+id/imageView_location"
-            android:layout_weight="0.7"
-            android:layout_gravity="center"
-            android:background="@null" />
+        android:weightSum="1" >
 
         <Button
             android:text="Search by location"
             android:textAllCaps="false"
             android:textAlignment="textStart"
-            android:textSize="20dp"
-            android:layout_width="wrap_content"
+            android:textSize="20sp"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:id="@+id/button_locationSearch"
-            android:layout_weight="3.3"
+            android:layout_weight="1"
+            android:drawableStart="@drawable/ic_location_on"
+            android:drawablePadding="5dp"
             style="@style/Widget.AppCompat.Button.Borderless" />
 
     </LinearLayout>
