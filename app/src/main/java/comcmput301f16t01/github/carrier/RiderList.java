@@ -5,7 +5,6 @@ import java.util.ArrayList;
 /**
  * TODO: Remove/delete class when nothing references RiderList
  */
-@Deprecated
 public class RiderList extends ArrayList {
 
     /**

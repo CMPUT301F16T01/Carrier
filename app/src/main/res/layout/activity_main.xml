@@ -45,8 +45,9 @@
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@drawable/ic_plus"
+        app:backgroundTint="@color/color_rider"
         android:tint="#FFFFFFFF"
-        android:onClick="startMakeRequestActivity"/>
+        android:onClick="startMakeRequestActivity" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_driver"
@@ -55,6 +56,7 @@
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@drawable/ic_search"
+        app:backgroundTint="@color/color_driver"
         android:scaleType="center"
         android:tint="#FFFFFFFF"
         android:onClick="startSearchActivity"/>
