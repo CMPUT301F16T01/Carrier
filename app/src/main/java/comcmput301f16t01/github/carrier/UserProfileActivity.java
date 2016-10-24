@@ -12,9 +12,15 @@ import android.widget.TextView;
  * Created by kiete on 10/18/2016.
  */
 
+/**
+ * UserProfileActivity allows the user to view their profile information and edit their
+ * contact information.
+ */
 public class UserProfileActivity extends AppCompatActivity {
+    // Saves the values of the old fields just in case the user cancels their edit.
     public String oldPhoneNumber;
     public String oldEmailAddress;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +35,10 @@ public class UserProfileActivity extends AppCompatActivity {
         // TODO Set the TextView to the proper values.
 }
 
+    /**
+     * Tapping the edit icon next to the phone number allows the user to edit their phone
+     * @param v v is a View, allows usage of on click in xml
+     */
     public void editPhoneNumber(View v){
         ImageButton cancelButton = (ImageButton) findViewById(R.id.CancelEditPhoneButton);
         ImageButton saveButton = (ImageButton) findViewById(R.id.PhoneSaveEditButton);
@@ -42,6 +52,10 @@ public class UserProfileActivity extends AppCompatActivity {
         phoneNumber.setFocusable(true);
     }
 
+    /**
+     * Tapping the save icon after an edit commits changes to the phone number field
+     * @param v v is a View, allows usage of on click in xml
+     */
     public void saveEditedPhoneNumber(View v){
         ImageButton cancelButton = (ImageButton) findViewById(R.id.CancelEditPhoneButton);
         ImageButton saveButton = (ImageButton) findViewById(R.id.PhoneSaveEditButton);
@@ -59,6 +73,11 @@ public class UserProfileActivity extends AppCompatActivity {
         // TODO Check if it is a valid phoneNumber
         // TODO Update The information in elasticsearch
     }
+
+    /**
+     * Tapping the cancel icon during an edit removes changes to the phone number field
+     * @param v v is a View, allows usage of on click in xml
+     */
     public void cancelEditPhoneNumber(View v){
         ImageButton cancelButton = (ImageButton) findViewById(R.id.CancelEditPhoneButton);
         ImageButton saveButton = (ImageButton) findViewById(R.id.PhoneSaveEditButton);
@@ -75,6 +94,10 @@ public class UserProfileActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Tapping the edit icon next to the email allows the user to edit their email
+     * @param v v is a View, allows usage of on click in xml
+     */
     public void editEmailAddress(View v){
         ImageButton cancelButton = (ImageButton) findViewById(R.id.CancelEditEmailButton);
         ImageButton saveButton = (ImageButton) findViewById(R.id.EmailSaveEditButton);
@@ -88,6 +111,11 @@ public class UserProfileActivity extends AppCompatActivity {
         emailView.setFocusable(true);
     }
 
+
+    /**
+     * Tapping the save icon after an edit commits changes to the email address
+     * @param v v is a View, allows usage of on click in xml
+     */
     public void saveEditedEmailAddress(View v){
         ImageButton cancelButton = (ImageButton) findViewById(R.id.CancelEditEmailButton);
         ImageButton saveButton = (ImageButton) findViewById(R.id.EmailSaveEditButton);
@@ -104,6 +132,11 @@ public class UserProfileActivity extends AppCompatActivity {
         this.oldEmailAddress = email;
         // TODO Check if valid email and update elasticsearch
     }
+
+    /**
+     * Tapping the cancel icon during an edit removes changes to the email field
+     * @param v v is a View, allows usage of on click in xml
+     */
     public void cancelEditEmailAddress(View v){
         ImageButton cancelButton = (ImageButton) findViewById(R.id.CancelEditEmailButton);
         ImageButton saveButton = (ImageButton) findViewById(R.id.EmailSaveEditButton);
