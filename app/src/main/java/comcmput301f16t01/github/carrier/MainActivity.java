@@ -149,7 +149,9 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_viewProfile) {
             Toast.makeText( MainActivity.this, "Wanna view your profile? Nope!",
                     Toast.LENGTH_SHORT ).show();
-            // TODO link to user profile.
+            // TODO Bundle information to give to the user profile activity. (UserController or ElasticController)?
+            Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
+            startActivity(intent);
         }
 
         if (id == R.id.action_logOut ) {
