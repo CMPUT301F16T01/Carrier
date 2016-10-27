@@ -18,6 +18,7 @@ public class UserController {
     private static User loggedInUser = null;
 
 
+
     public UserController() {
         if (userList == null) {
             userList = new UserList();
@@ -125,5 +126,11 @@ public class UserController {
      */
     public void reset() {
         // TODO this never had the option to reset UserList.
+    }
+
+    public String createNewUser(String username, String email, String phoneNumber) {
+        User newUser = new User();
+        // TODO do something with this.
+        return "error, see UserController manual for help.";
     }
 }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -28,12 +29,21 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        // TODO grab their username based on their ID
+        // TODO alert them if they cannot log in because they are offline
     }
 
     public void startMainActivity(View v) {
+        // TODO logging in, etc
         Intent intent = new Intent(LoginActivity.this, MainActivity.class );
         startActivity(intent);
         this.finish();
+    }
+
+    public void startNewUserActivity(View v) {
+        Intent intent = new Intent(LoginActivity.this, NewUserActivity.class );
+        startActivity( intent );
     }
 }
 
