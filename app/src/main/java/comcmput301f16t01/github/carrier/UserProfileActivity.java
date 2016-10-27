@@ -18,8 +18,8 @@ import android.widget.TextView;
  */
 public class UserProfileActivity extends AppCompatActivity {
     // Saves the values of the old fields just in case the user cancels their edit.
-    public String oldPhoneNumber;
-    public String oldEmailAddress;
+    private String oldPhoneNumber;
+    private String oldEmailAddress;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +48,9 @@ public class UserProfileActivity extends AppCompatActivity {
         saveButton.setVisibility(View.VISIBLE);
         cancelButton.setVisibility(View.VISIBLE);
         TextView phoneNumber = (TextView) findViewById(R.id.PhoneEditText);
+        phoneNumber.setClickable(true);
         // Set it so the user can edit the EditText
-        phoneNumber.setFocusable(true);
+        phoneNumber.setFocusableInTouchMode(true);;
     }
 
     /**
@@ -89,6 +90,7 @@ public class UserProfileActivity extends AppCompatActivity {
         EditText phoneNumberText = (EditText) findViewById(R.id.PhoneEditText);
         // Set it so the user can't edit the EditText
         phoneNumberText.setFocusable(false);
+        phoneNumberText.setClickable(false);
         // Revert to the old phone number before editing started
         phoneNumberText.setText(this.oldPhoneNumber);
 
@@ -108,7 +110,9 @@ public class UserProfileActivity extends AppCompatActivity {
         cancelButton.setVisibility(View.VISIBLE);
         EditText emailView = (EditText) findViewById(R.id.EmailEditText);
         // Set it so the user can edit the EditText
-        emailView.setFocusable(true);
+        emailView.setFocusableInTouchMode(true);
+        emailView.setClickable(true);
+
     }
 
 
@@ -127,6 +131,7 @@ public class UserProfileActivity extends AppCompatActivity {
         EditText emailView = (EditText) findViewById(R.id.EmailEditText);
         // Set it so the user can edit the EditText
         emailView.setFocusable(false);
+        emailView.setClickable(false);
         String email = emailView.getText().toString();
         // Since editing was confirmed, overwrite old value of email
         this.oldEmailAddress = email;
@@ -148,6 +153,7 @@ public class UserProfileActivity extends AppCompatActivity {
         EditText emailView = (EditText) findViewById(R.id.EmailEditText);
         // Set it so the user can't edit the EditText
         emailView.setFocusable(false);
+        emailView.setClickable(false);
         // Revert to the old email address before editing started
         emailView.setText(this.oldEmailAddress);
     }
