@@ -1,9 +1,12 @@
 package comcmput301f16t01.github.carrier;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -25,13 +28,25 @@ public class UserProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+        // This will not work until we get the logged in user set in another activity.
+        // Get the current logged in user. Will need to set it when the user logs in.
+        /*UserController uc = new UserController();
+        User currentUser = UserController.getLoggedInUser();
+        oldEmailAddress = currentUser.getEmail();
+        oldPhoneNumber = currentUser.getPhone();
+        String username = currentUser.getUsername();*/
+
         // Get the TextViews for the information that is going to be shown.
         EditText userNameEditText = (EditText) findViewById(R.id.NameEditText);
         EditText emailAddressEditText = (EditText) findViewById(R.id.EmailEditText);
         EditText phoneNumberEditText = (EditText) findViewById(R.id.PhoneEditText);
         // Save old values in case the user changes their mind about editing.
-        this.oldPhoneNumber = phoneNumberEditText.getText().toString();
-        this.oldEmailAddress = emailAddressEditText.getText().toString();
+        // userNameEditText.setText(username);
+        // This will not work until we set the logged in user.
+        // emailAddressEditText.setText(oldEmailAddress);
+        // phoneNumberEditText.setText(oldPhoneNumber);
+        oldPhoneNumber = phoneNumberEditText.getText().toString();
+        oldEmailAddress = emailAddressEditText.getText().toString();
         // TODO Set the TextView to the proper values.
 }
 
@@ -93,7 +108,6 @@ public class UserProfileActivity extends AppCompatActivity {
         phoneNumberText.setClickable(false);
         // Revert to the old phone number before editing started
         phoneNumberText.setText(this.oldPhoneNumber);
-
     }
 
     /**
@@ -112,9 +126,7 @@ public class UserProfileActivity extends AppCompatActivity {
         // Set it so the user can edit the EditText
         emailView.setFocusableInTouchMode(true);
         emailView.setClickable(true);
-
     }
-
 
     /**
      * Tapping the save icon after an edit commits changes to the email address
@@ -156,7 +168,7 @@ public class UserProfileActivity extends AppCompatActivity {
         emailView.setClickable(false);
         // Revert to the old email address before editing started
         emailView.setText(this.oldEmailAddress);
+        // TODO Hide keyboard from the screen when buttons are clicked.
     }
-
-
+    // TODO Hide the keyboard automatically from the screen when the user presses a button to finish editing.
 }

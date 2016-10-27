@@ -32,6 +32,22 @@ public class UserController {
     }
 
     /**
+     * Will return the current logged in user.
+     * @return Returns the logged in ser
+     */
+    public static User getLoggedInUser() {
+        return loggedInUser;
+    }
+
+    /**
+     * Will set the logged in user.
+     * @param user The user who is being set to the logged in user.
+     */
+    public void setLoggedInUser(User user) {
+        loggedInUser = user;
+    }
+
+    /**
      * Making sure that the username is unique across all riders
      * otherwise it throws an exception
      *
