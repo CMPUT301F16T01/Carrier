@@ -22,14 +22,12 @@ public class RiderTests {
     @Test
     public void RiderConstructorTest() {
         String name = "kieter";
-        String password = "bennettIsBae123";
         String email = "kieter@kieter.me";
         String phoneNumber = "7801234567";
-        User kieter = new User(name, password, email, phoneNumber);
+        User kieter = new User(name, email, phoneNumber);
 
         // Test equality of all the fields.
         assertEquals("Username is not equal", name, kieter.getUsername());
-        assertEquals("Password is not equal", password, kieter.getPassword());
         assertEquals("Email is not equal", email, kieter.getEmail());
         assertEquals("Phone is not equal", phoneNumber, kieter.getPhone());
     }
@@ -38,10 +36,9 @@ public class RiderTests {
     public void AuthenticationTest() {
         UserController uc = new UserController();
         String name = "kieter";
-        String password = "bennettIsBae123";
         String email = "kieter@kieter.me";
         String phoneNumber = "7801234567";
-        User kieterRider = new User(name, password, email, phoneNumber);
+        User kieterRider = new User(name, email, phoneNumber);
         RiderList riderList = new RiderList();
 
         // TODO should really be using something called addRider but that hasn't been made yet.
@@ -58,13 +55,13 @@ public class RiderTests {
         assertTrue("The list does not contain kieter", uc.getUserList().contains(kieterRider));
         assertEquals("The first thing is not kieter", uc.getUserList().get(0), kieterRider);
 
-        // Try authenticating using the correct username and password
+        // Try authenticating using the correct username
         Boolean authenticated = false;
-        authenticated = uc.authenticate(name, password);
+        authenticated = uc.authenticate(name);
 
         // Test authenticating with the right credentials
         assertTrue("Not authenticated but the credentials were right." + uc.getUserList(), authenticated);
-        Boolean authenticated2 = uc.authenticate(name + "1", password + "1");
+        Boolean authenticated2 = uc.authenticate(name + "1");
         //Test authenticating with the wrong credentials
         assertFalse("Authenticated, but the credentials were wrong.", authenticated2);
 
