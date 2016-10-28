@@ -40,6 +40,8 @@
             android:layout_above="@+id/PhoneIconImageView"
             android:layout_alignParentStart="true" />
 
+
+
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -53,7 +55,8 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
             android:focusable="false"
-            android:clickable="false" />
+            android:clickable="false"
+            android:background="@null"/>
 
         <EditText
             android:layout_width="wrap_content"
@@ -68,7 +71,7 @@
             android:text="1234567"
             android:focusable="false"
             android:clickable="false"
-            android:editable="false" />
+            android:background="@null" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -84,7 +87,7 @@
             android:focusable="false"
             android:clickable="false"
             android:layout_toStartOf="@+id/CancelEditEmailButton"
-            android:editable="false" />
+            android:background="@null" />
 
         <ImageView
             android:layout_width="wrap_content"

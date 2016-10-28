@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.KeyListener;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -51,14 +52,22 @@ public class UserProfileActivity extends AppCompatActivity {
         }
 
         // Get the TextViews for the information that is going to be shown.
-        EditText userNameEditText = (EditText) findViewById(R.id.NameEditText);
+        EditText usernameEditText = (EditText) findViewById(R.id.NameEditText);
         EditText emailAddressEditText = (EditText) findViewById(R.id.EmailEditText);
         EditText phoneNumberEditText = (EditText) findViewById(R.id.PhoneEditText);
 
         //Save old values in case the user changes their mind about editing.
-        userNameEditText.setText(username);
+        usernameEditText.setText(username);
         emailAddressEditText.setText(oldEmailAddress);
         phoneNumberEditText.setText(oldPhoneNumber);
+
+        // Removes the key listener, so that it can't hear keys.
+        // Also stores it as their tag, so we can grab it later...
+        phoneNumberEditText.setTag( phoneNumberEditText.getKeyListener() );
+        phoneNumberEditText.setKeyListener( null );
+        emailAddressEditText.setTag( emailAddressEditText.getKeyListener() );
+        emailAddressEditText.setKeyListener( null );
+        usernameEditText.setKeyListener( null );
 }
 
     /**
@@ -76,7 +85,12 @@ public class UserProfileActivity extends AppCompatActivity {
         TextView phoneNumber = (TextView) findViewById(R.id.PhoneEditText);
         phoneNumber.setClickable(true);
         // Set it so the user can edit the EditText
-        phoneNumber.setFocusableInTouchMode(true);;
+        phoneNumber.setFocusableInTouchMode(true);
+        phoneNumber.setKeyListener( (KeyListener) phoneNumber.getTag() );
+        phoneNumber.requestFocus();
+        phoneNumber.moveCursorToVisibleOffset();
+        phoneNumber.setText( "" );
+        phoneNumber.append( oldPhoneNumber );
     }
 
     /**
@@ -99,6 +113,8 @@ public class UserProfileActivity extends AppCompatActivity {
         this.oldPhoneNumber = phoneNumber;
         // TODO Check if it is a valid phoneNumber
         // TODO Update The information in elasticsearch
+        phoneNumberText.setKeyListener( null );
+        hideKeyboard( phoneNumberText );
     }
 
     /**
@@ -119,6 +135,9 @@ public class UserProfileActivity extends AppCompatActivity {
         phoneNumberText.setClickable(false);
         // Revert to the old phone number before editing started
         phoneNumberText.setText(this.oldPhoneNumber);
+        phoneNumberText.setKeyListener( null );
+
+        hideKeyboard( phoneNumberText );
     }
 
     /**
@@ -137,6 +156,10 @@ public class UserProfileActivity extends AppCompatActivity {
         // Set it so the user can edit the EditText
         emailView.setFocusableInTouchMode(true);
         emailView.setClickable(true);
+        emailView.setKeyListener( (KeyListener) emailView.getTag() );
+        emailView.requestFocus();
+        emailView.setText( "" );
+        emailView.append( oldEmailAddress );
     }
 
     /**
@@ -159,6 +182,10 @@ public class UserProfileActivity extends AppCompatActivity {
         // Since editing was confirmed, overwrite old value of email
         this.oldEmailAddress = email;
         // TODO Check if valid email and update elasticsearch
+
+        hideKeyboard( emailView );
+
+        emailView.setKeyListener( null );
     }
 
     /**
@@ -179,7 +206,14 @@ public class UserProfileActivity extends AppCompatActivity {
         emailView.setClickable(false);
         // Revert to the old email address before editing started
         emailView.setText(this.oldEmailAddress);
-        // TODO Hide keyboard from the screen when buttons are clicked.
+        hideKeyboard( emailView );
+
+        emailView.setKeyListener( null );
     }
-    // TODO Hide the keyboard automatically from the screen when the user presses a button to finish editing.
+
+    // TODO src: http://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
+    public void hideKeyboard( View v ) {
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+    }
 }
