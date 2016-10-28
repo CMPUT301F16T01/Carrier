@@ -48,10 +48,10 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="phone"
         android:ems="10"
         android:id="@+id/editText_newPhoneNum"
-        android:hint="e.g. 0118-999-881-999-119-725... 3"/>
+        android:hint="e.g. 0118-999-881-999-119-725... 3"
+        android:inputType="number" />
 
     <Button
         android:text="Do the make me"
