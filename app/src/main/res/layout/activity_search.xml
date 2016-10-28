@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:weightSum="1"
+        android:gravity="center" >
+
+        <Button
+            android:text="Search by keyword"
+            android:textAllCaps="false"
+            android:textAlignment="textStart"
+            android:textSize="20sp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/button_keywordSearch"
+            android:layout_weight="1"
+            android:drawableStart="@drawable/ic_search"
+            android:drawablePadding="5dp"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:onClick="searchByKeyword" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1" >
+
+        <Button
+            android:text="Search by location"
+            android:textAllCaps="false"
+            android:textAlignment="textStart"
+            android:textSize="20sp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/button_locationSearch"
+            android:layout_weight="1"
+            android:drawableStart="@drawable/ic_location_on"
+            android:drawablePadding="5dp"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:onClick="searchByLocation" />
+
+    </LinearLayout>
+
+</LinearLayout>

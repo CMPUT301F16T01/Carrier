@@ -22,9 +22,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -190,6 +194,8 @@ public class MainActivity extends AppCompatActivity {
         // This will start the Search activity for a driver when they want to search requests
         // after they press the driver FAB
         Toast.makeText(this, "DRIVER FAB", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+        startActivity(intent);
     }
 
     /**
@@ -223,6 +229,21 @@ public class MainActivity extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+
+            // TODO modify code and create a Request adapter for these lists
+            // TODO (after) allow the ability to toggle between what requests are shown (?)
+            ListView requestListView = (ListView) rootView.findViewById( R.id.listView_homeRequestList );
+            ArrayList<String> list = new ArrayList<String>();
+            if( getArguments().getInt(ARG_SECTION_NUMBER) == 1 ) {
+                list.add( "hello world!" );
+                list.add( "this is a rider's request list." );
+            } else {
+                list.add( "Hello again world!" );
+                list.add( "This is a driver's request list!" );
+            }
+            // From Student Picker, Abram Hindle
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_list_item_1, list);
+            requestListView.setAdapter( adapter );
 
             return rootView;
         }
