@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -28,26 +29,36 @@ public class UserProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
-        // This will not work until we get the logged in user set in another activity.
-        // Get the current logged in user. Will need to set it when the user logs in.
-        /*UserController uc = new UserController();
+        UserController uc = new UserController();
         User currentUser = UserController.getLoggedInUser();
-        oldEmailAddress = currentUser.getEmail();
-        oldPhoneNumber = currentUser.getPhone();
-        String username = currentUser.getUsername();*/
+
+        String username;
+
+        // Developer code, may not be needed for release...
+        if (currentUser == null) {
+            AlertDialog.Builder adb = new AlertDialog.Builder( this );
+            adb.setTitle( "debug mode" );
+            adb.setMessage( "you managed to log in without a user. Test data will be shown. This is an error if you are not a developer." );
+            adb.setPositiveButton( "OK", null );
+            adb.show();
+            oldEmailAddress = "testEmail@youDaBomb.com";
+            oldPhoneNumber = "7357129";
+            username = "testUsername";
+        } else {
+            oldEmailAddress = currentUser.getEmail();
+            oldPhoneNumber = currentUser.getPhone();
+            username = currentUser.getUsername();
+        }
 
         // Get the TextViews for the information that is going to be shown.
         EditText userNameEditText = (EditText) findViewById(R.id.NameEditText);
         EditText emailAddressEditText = (EditText) findViewById(R.id.EmailEditText);
         EditText phoneNumberEditText = (EditText) findViewById(R.id.PhoneEditText);
-        // Save old values in case the user changes their mind about editing.
-        // userNameEditText.setText(username);
-        // This will not work until we set the logged in user.
-        // emailAddressEditText.setText(oldEmailAddress);
-        // phoneNumberEditText.setText(oldPhoneNumber);
-        oldPhoneNumber = phoneNumberEditText.getText().toString();
-        oldEmailAddress = emailAddressEditText.getText().toString();
-        // TODO Set the TextView to the proper values.
+
+        //Save old values in case the user changes their mind about editing.
+        userNameEditText.setText(username);
+        emailAddressEditText.setText(oldEmailAddress);
+        phoneNumberEditText.setText(oldPhoneNumber);
 }
 
     /**

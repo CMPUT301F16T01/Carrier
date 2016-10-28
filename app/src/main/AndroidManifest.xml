@@ -27,12 +27,10 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
-<<<<<<< HEAD
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".UserProfileActivity"
             android:label="Carrier"> </activity>
-=======
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity android:name=".driver_view_request"></activity>
