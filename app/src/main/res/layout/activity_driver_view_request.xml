@@ -105,16 +105,6 @@
 
         style="?android:attr/buttonBarButtonStyle">
 
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:textAlignment="center"
-            android:text="@string/Pay"/>
-
-
         <!-- REPRESENTS STATUS OF REQUEST -->
         <ImageView
             android:layout_width="wrap_content"
@@ -128,7 +118,7 @@
             android:layout_weight="1"
             android:gravity="end"
             android:textAlignment="center"
-            android:text="@string/Delete"/>
+            android:text="@string/MakeOffer"/>
     </LinearLayout>
 
 </LinearLayout>
