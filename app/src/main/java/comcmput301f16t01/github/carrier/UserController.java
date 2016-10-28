@@ -6,16 +6,12 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 /**
- * Created by meind on 2016-10-11.
  *
  * Singleton Pattern
  * * modifies/returns a RequestList model
  * * @see Request
  * * @see RequestList
  */
-
-// TODO - whole class needs to be reconsidered. i.e. we can use elastic search to store all our users and verify them...
-
 public class UserController {
     private static UserList userList = null;
     private static User loggedInUser = null;
@@ -176,6 +172,8 @@ public class UserController {
         newUser.setEmail( email );
         newUser.setPhone( phoneNumber );
         newUser.setUsername( username );
+
+        // TODO more checks need to be done when adding a user, not important.
 
         if ( !checkUniqueUsername( username ) ) {
             return "That username is already taken!";
