@@ -1,5 +1,8 @@
 package comcmput301f16t01.github.carrier;
 
+import android.util.Log;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 
 /**
@@ -59,7 +62,40 @@ public class UserController {
     }
 
     private boolean checkUniqueUsername( String username ) {
+        ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();
+        fut.execute( username );
+        User foundUser = null;
+        try {
+            foundUser = fut.get();
+        } catch (Exception e) {
+            Log.i("checkUniqueUsername", "bad error");
+        }
+        if (foundUser == null) {
+            return true;
+        }
         return false;
+    }
+
+    // TODO simplify above and below things (share the same code...)
+    /**
+     * returns false if no user with that username, otherwise sets them as logged in
+     * @param username
+     * @return
+     */
+    public boolean logInUser( String username ) {
+        ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();
+        fut.execute( username );
+        User foundUser = null;
+        try {
+            foundUser = fut.get();
+        } catch (Exception e) {
+            Log.i("logInUser", "bad error");
+        }
+        if (foundUser == null) {
+            return false;
+        }
+        loggedInUser = foundUser;
+        return true;
     }
 
     public void setEmail(User user, String email) {
@@ -128,9 +164,33 @@ public class UserController {
         // TODO this never had the option to reset UserList.
     }
 
+    /**
+     * Attempt to create a new user...
+     * @param username
+     * @param email
+     * @param phoneNumber
+     * @return
+     */
     public String createNewUser(String username, String email, String phoneNumber) {
         User newUser = new User();
-        // TODO do something with this.
-        return "error, see UserController manual for help.";
+        newUser.setEmail( email );
+        newUser.setPhone( phoneNumber );
+        newUser.setUsername( username );
+
+        if ( !checkUniqueUsername( username ) ) {
+            return "That username is already taken!";
+        }
+
+        ElasticUserController.AddUserTask aut = new ElasticUserController.AddUserTask();
+        aut.execute( newUser );
+        while ( newUser.getId() == null ) {
+            // waiting...
+        }
+        loggedInUser = newUser;
+        return null;
+    }
+
+    public void logOutUser() {
+        loggedInUser = null;
     }
 }

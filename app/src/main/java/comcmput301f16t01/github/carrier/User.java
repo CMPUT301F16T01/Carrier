@@ -13,6 +13,8 @@ public class User {
     private String email;
     private String phoneNumber;
 
+    private String elasticID;
+
     //TODO we should probably say what is and isn't a valid username, password, email, and phone number.
     /**
      * Constructor, requires username, password, email, and phone number.
@@ -65,5 +67,13 @@ public class User {
 
     public boolean hasNotifications() {
         return false;
+    }
+
+    public void setId(String id) {
+        elasticID = id;
+    }
+
+    public String getId() {
+        return elasticID;
     }
 }
