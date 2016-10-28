@@ -84,6 +84,7 @@ public class UserProfileActivity extends AppCompatActivity {
         // Set it so the user can't edit the EditText
         phoneNumberText.setFocusable(false);
         phoneNumberText.setClickable(false);
+        phoneNumberText.setFocusableInTouchMode(false);
         String phoneNumber = phoneNumberText.getText().toString();
         // Since editing was confirmed, overwrite old value of phone number
         this.oldPhoneNumber = phoneNumber;
@@ -107,6 +108,7 @@ public class UserProfileActivity extends AppCompatActivity {
         // Set it so the user can't edit the EditText
         phoneNumberText.setFocusable(false);
         phoneNumberText.setClickable(false);
+        phoneNumberText.setFocusableInTouchMode(false);
         // Revert to the old phone number before editing started
         phoneNumberText.setText(this.oldPhoneNumber);
     }
@@ -145,6 +147,7 @@ public class UserProfileActivity extends AppCompatActivity {
         // Set it so the user can edit the EditText
         emailView.setFocusable(false);
         emailView.setClickable(false);
+        emailView.setFocusableInTouchMode(false);
         String email = emailView.getText().toString();
         // Since editing was confirmed, overwrite old value of email
         this.oldEmailAddress = email;
@@ -167,6 +170,7 @@ public class UserProfileActivity extends AppCompatActivity {
         // Set it so the user can't edit the EditText
         emailView.setFocusable(false);
         emailView.setClickable(false);
+        emailView.setFocusableInTouchMode(false);
         // Revert to the old email address before editing started
         emailView.setText(this.oldEmailAddress);
         // TODO Hide keyboard from the screen when buttons are clicked.
