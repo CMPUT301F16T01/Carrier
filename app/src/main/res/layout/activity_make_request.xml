@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:src="@drawable/ic_location_on"
-            android:id="@+id/imageView"
+            android:id="@+id/locationImageView"
             android:layout_weight="1"
             android:layout_gravity="center"/>
 
@@ -36,7 +36,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:layout_gravity="center"
-            android:text="Start"/>
+            android:text="Start"
+            android:id="@+id/startButton" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -53,7 +54,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:layout_gravity="center"
-            android:text="End"/>
+            android:text="End"
+            android:id="@+id/endButton"/>
 
         <ImageView
             android:layout_width="wrap_content"
@@ -151,13 +153,15 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:hint="Enter a cool description about your sexy ride here you cool person you. You rock.\n\n\n\n"
-        android:background="#22000000"/>
+        android:background="#22000000"
+        android:id="@+id/descriptionEditText"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_gravity="center"
-        android:text="SUBMIT YOUR SEXY REQUEST"/>
+        android:text="SUBMIT YOUR SEXY REQUEST"
+        android:id="@+id/submitButton"/>
 
 </LinearLayout>

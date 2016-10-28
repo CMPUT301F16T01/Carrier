@@ -27,13 +27,12 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".UserProfileActivity"
-            android:label="Carrier"> </activity>
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity android:name=".driver_view_request"></activity>
+            android:label="Carrier"></activity>
+        android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".driver_view_request" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -49,8 +48,9 @@
         <activity
             android:name=".SearchMapsActivity"
             android:label="@string/title_activity_search_maps" />
-        <activity android:name=".SearchActivity"></activity>
->>>>>>> refs/remotes/origin/master
+        <activity android:name=".SearchActivity" />
+        >>>>>>> refs/remotes/origin/master
+        <activity android:name=".MakeRequestActivity"></activity>
     </application>
 
 </manifest>
