@@ -6,11 +6,8 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
-<<<<<<< HEAD
     <string name="MakeOffer">Make an Offer!</string>
     <string name="Pay">Pay</string>
     <string name="Delete">Delete</string>
-=======
     <string name="title_activity_search_maps">Choose A Location</string>
->>>>>>> refs/remotes/origin/master
 </resources>
