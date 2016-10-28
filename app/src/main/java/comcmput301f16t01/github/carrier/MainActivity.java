@@ -178,7 +178,8 @@ public class MainActivity extends AppCompatActivity {
                 activity.finish();
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
-                // TODO log out current user? (UserController)
+                UserController uc = new UserController();
+                uc.logOutUser();
             }
         });
         adb.setNegativeButton("Cancel", null );
