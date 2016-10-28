@@ -68,6 +68,7 @@
         android:id="@+id/button_register"
         android:textAllCaps="false"
         android:background="@color/colorPrimary"
+        android:onClick="startNewUserActivity"
         android:textColor="@android:color/background_light"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
