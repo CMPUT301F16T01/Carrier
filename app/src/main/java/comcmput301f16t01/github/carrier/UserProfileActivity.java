@@ -13,9 +13,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-/**
- * Created by kiete on 10/18/2016.
- */
+// TODO A lot can be done to reduce code duplication. Notice how there are 4 functions that close,
+// and 2 that open. I feel like a lot of code generalization can be done here to reduce bugs
+// from editing one thing and forgetting to edit the other four. This is a low priority issue ^Ben
 
 /**
  * UserProfileActivity allows the user to view their profile information and edit their
