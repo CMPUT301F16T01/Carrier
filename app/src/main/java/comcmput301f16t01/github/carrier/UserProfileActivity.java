@@ -83,6 +83,7 @@ public class UserProfileActivity extends AppCompatActivity {
         EditText phoneNumberText = (EditText) findViewById(R.id.PhoneEditText);
         // Set it so the user can't edit the EditText
         phoneNumberText.setFocusable(false);
+        phoneNumberText.setClickable(false);
         String phoneNumber = phoneNumberText.getText().toString();
         // Since editing was confirmed, overwrite old value of phone number
         this.oldPhoneNumber = phoneNumber;
