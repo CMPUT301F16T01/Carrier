@@ -63,10 +63,10 @@ public class MakeRequestActivity extends AppCompatActivity {
      */
     public void submitRequest() {
         RequestController rc = new RequestController();
+        UserController uc = new UserController();
 
         // TODO create a request using all data currently on the screen
-        // TODO get current user? how?
-        User user = new User(); // blank user for now
+        User user = uc.getLoggedInUser();
 
         // TODO get the start and end locations from the map view
         // TODO enforce that the user inputs a start and end location
@@ -87,9 +87,8 @@ public class MakeRequestActivity extends AppCompatActivity {
 
         rc.addRequest(request);
 
-        // TODO save the data (elasticsearch)
+        // TODO save the data (elasticsearch...will this be automatically done from within rc?)
 
-        // TODO return to main page
         Toast.makeText(MakeRequestActivity.this, "Request submitted", Toast.LENGTH_SHORT).show();
         activity.finish();
         Intent intent = new Intent(MakeRequestActivity.this, MainActivity.class);
