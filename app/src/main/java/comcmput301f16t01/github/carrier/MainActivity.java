@@ -194,6 +194,8 @@ public class MainActivity extends AppCompatActivity {
         // This will start the Search activity for a driver when they want to search requests
         // after they press the driver FAB
         Toast.makeText(this, "DRIVER FAB", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+        startActivity(intent);
     }
 
     /**
