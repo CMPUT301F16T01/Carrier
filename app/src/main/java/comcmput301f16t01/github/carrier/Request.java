@@ -60,6 +60,7 @@ public class Request {
     }
 
     public void setStatus(int status) {
+        this.status = status;
         // TODO make sure you do this right - Mandy (i.e. check that the status can change from one state to another)
     }
 
@@ -106,6 +107,10 @@ public class Request {
 
     public String getId(){
         return elasticID;
+    }
+
+    public int getFare(){
+        return  fare;
     }
 
     // TODO confirm these as the states for a Request.

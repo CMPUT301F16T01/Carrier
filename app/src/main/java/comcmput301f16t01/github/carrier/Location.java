@@ -26,4 +26,11 @@ public class Location {
     public double getLongitude() {
         return longitude;
     }
+
+    // TODO Implement a toString() function to give allow for the user to view the location
+
+    @Override
+    public String toString(){
+        return String.valueOf(latitude) +", " + String.valueOf(longitude);
+    }
 }
