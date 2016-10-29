@@ -29,15 +29,15 @@
         android:text="Email:"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView_emailTitle"
-        android:hint="e.g. ILikeBubbleTea@ualberta.ca"/>
+        android:id="@+id/textView_emailTitle" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
         android:ems="10"
-        android:id="@+id/editText_newEmail" />
+        android:id="@+id/editText_newEmail"
+        android:hint="e.g. ILikeBubbleTea@ualberta.ca"/>
 
     <TextView
         android:text="Phone Number:"
