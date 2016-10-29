@@ -14,6 +14,7 @@ public class Request {
     static final int COMPLETE = 4;        // The user has gotten to their destination (and payed?)
     static final int PAID = 7;
     static final int CANCELLED = 9;        // The rider has cancelled their request
+    private String elasticID;
 
     /** */
     private int status = OPEN;
@@ -97,6 +98,14 @@ public class Request {
 
     public String getDescription() {
         return description;
+    }
+
+    public void setId(String id){
+        elasticID = id;
+    }
+
+    public String getId(){
+        return elasticID;
     }
 
     // TODO confirm these as the states for a Request.
