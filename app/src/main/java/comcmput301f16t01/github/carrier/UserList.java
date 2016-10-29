@@ -3,7 +3,7 @@ package comcmput301f16t01.github.carrier;
 import java.util.ArrayList;
 
 @Deprecated
-public class UserList extends ArrayList{
+public class UserList extends ArrayList {
 
     /**
      * Contains
