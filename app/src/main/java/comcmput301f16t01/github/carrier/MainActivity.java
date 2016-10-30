@@ -156,6 +156,11 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
+        if (id == R.id.action_help) {
+            Intent intent = new Intent(this, HelpActivity.class);
+            startActivity(intent);
+        }
+
         if (id == R.id.action_logOut ) {
             onBackPressed();
         }
@@ -264,6 +269,10 @@ public class MainActivity extends AppCompatActivity {
                 // Create sample requests because this is probably not set up yet.
                 Request requestOne = new Request( loggedInUser, new Location(), new Location(), "testRequest!" );
                 Request requestTwo = new Request( loggedInUser, new Location(), new Location(), "testRequest2!" );
+
+
+                requestOne.setStatus(Request.COMPLETE);
+                requestTwo.setStatus(Request.PAID);
                 requestList.add( requestOne );
                 requestList.add( requestTwo );
             }

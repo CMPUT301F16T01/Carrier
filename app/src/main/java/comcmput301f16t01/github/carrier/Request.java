@@ -66,7 +66,9 @@ public class Request {
     }
 
     public void setStatus(int status) {
+        this.status = status;
         // TODO make sure you do this right - Mandy (i.e. check that the status can change from one state to another)
+        // TODO make an actual test for this (Mandy)
     }
 
     public int getFareEstimate() {
