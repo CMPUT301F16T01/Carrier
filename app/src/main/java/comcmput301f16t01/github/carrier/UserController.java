@@ -36,7 +36,7 @@ public class UserController {
      * Will return the current logged in user.
      * @return Returns the logged in ser
      */
-    public User getLoggedInUser() {
+    public static User getLoggedInUser() {
         return loggedInUser;
     }
 
