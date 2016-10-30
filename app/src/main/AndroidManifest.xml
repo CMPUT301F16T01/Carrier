@@ -35,7 +35,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".UserProfileActivity"
-            android:label="Carrier"></activity>
+            android:label="Carrier" />
         android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".NewUserActivity" />
         <activity android:name=".DriverViewRequestActivity" />
@@ -55,7 +55,8 @@
             android:name=".SearchMapsActivity"
             android:label="@string/title_activity_search_maps" />
         <activity android:name=".SearchActivity" />
-        <activity android:name=".HelpActivity"></activity>
+        <activity android:name=".HelpActivity" />
+        <activity android:name=".RiderRequestActivity"></activity>
     </application>
 
 </manifest>

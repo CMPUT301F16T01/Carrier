@@ -34,6 +34,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    final Activity activity = this;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -209,6 +210,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
+
     public static class PlaceholderFragment extends Fragment {
         /**
          * The fragment argument representing the section number for this
@@ -260,6 +262,7 @@ public class MainActivity extends AppCompatActivity {
          * Sets up the ListView for the rider.
          * @param requestListView
          */
+
         private void fillRiderRequests(ListView requestListView) {
             RequestController rc = new RequestController();
             User loggedInUser = UserController.getLoggedInUser();
@@ -294,7 +297,8 @@ public class MainActivity extends AppCompatActivity {
             requestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    System.out.println( "hat" );
+                    Intent intent = new Intent(activity, RiderRequestActivity.class);
+                    startActivity(intent);
                 }
             });
 
