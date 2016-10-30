@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -19,10 +20,15 @@ public class MakeRequestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make_request);
+        setTitle("New Request");
+
+        activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         // TODO set up the location buttons (open map view)
 
-        Button submitButton = (Button) findViewById(R.id.submitButton);
+        // TODO set up the estimate fare button
+
+        Button submitButton = (Button) findViewById(R.id.button_submit);
         submitButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 setResult(RESULT_OK);
@@ -75,7 +81,7 @@ public class MakeRequestActivity extends AppCompatActivity {
         Location start = new Location();
         Location end = new Location();
 
-        EditText descEditText = (EditText) findViewById(R.id.descriptionEditText);
+        EditText descEditText = (EditText) findViewById(R.id.editText_description);
         String description = descEditText.getText().toString();
 
         Request request;
