@@ -37,7 +37,7 @@ public class Request {
     private String description;
 
     /** The price the requesting user is willing to pay for the request to be complete */
-    private double fare;
+    private int fare;
 
     /** When elastic searching, can search if this is true to notify the rider about the request*/
     private boolean needToNotifyRider = false;
@@ -62,11 +62,11 @@ public class Request {
         // TODO make sure you do this right - Mandy (i.e. check that the status can change from one state to another)
     }
 
-    public void setFare(double fare) {
+    public void setFare(int fare) {
         this.fare = fare;
     }
 
-    public double getFareEstimate() {
+    public int getFareEstimate() {
         FareCalculator fareCalc = new FareCalculator( start, end );
         return fareCalc.getEstimate();
     }

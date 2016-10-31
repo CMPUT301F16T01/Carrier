@@ -12,7 +12,7 @@
         android:focusableInTouchMode="true" >
         <!-- line above from https://goo.gl/LRzzp1, author: Mike T, retrieved: October 30th, 2016 -->
 
-        <!-- some kind of prompt?? -->
+        <!-- right now this is a placeholder for some kind of "Choose Locations" prompt -->
         <TextView
             android:text=""
             android:layout_marginTop="20dp"
@@ -35,7 +35,7 @@
             <!-- This button is a placeholder while we decide what we want to do
             with the mapView. This could eventually be one or two buttons. -->
             <Button
-                android:text="Choose Start and End Points on Map"
+                android:text="@string/choose_location_button_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/button_chooseLocation"
@@ -53,7 +53,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Fare estimate:"
+            android:text="@string/fare_estimate_prompt"
             android:layout_marginTop="15dp"/>
 
         <!-- HOLDS "$" FARE ENTRY AND FARE BUTTON -->
@@ -64,7 +64,7 @@
             android:weightSum="5">
 
             <TextView
-                android:text="$"
+                android:text="@string/dollar_sign"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:textAlignment="center"
@@ -76,7 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="30sp"
-                android:text="00.00"
+                android:text=""
                 android:id="@+id/textView_fareEstimate"
                 android:layout_weight="3.5" />
 
@@ -84,7 +84,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Estimate"
+                android:text="@string/estimate_button_text"
                 android:textAllCaps="false"
                 android:textColor="@android:color/background_light"
                 android:background="@color/colorPrimary"
@@ -96,14 +96,14 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Enter a description:"
+            android:text="@string/description_prompt"
             android:layout_marginTop="15dp"/>
 
-        <!-- TODO code reviewer: play around with this -->
+        <!-- TODO code reviewer: play around with the description EditText box in the running app -->
         <!-- I did a lot of work to try to get it as cohesive as possible with
             the it being able to scroll, resize, have the keyboard not cover it
             when it is being edited. Play around with it to see if there are any
-            improvements we could make here. -->
+            improvements I could make here. -->
         <EditText
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -118,7 +118,7 @@
             android:minLines="1"
             android:maxLength="200"
             android:gravity="top|start"
-            android:hint="Describe the ride you seek"
+            android:hint="@string/description_hint"
             android:background="#22000000"
             android:id="@+id/editText_description"
             android:scrollbars="vertical" />
@@ -129,7 +129,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:layout_gravity="center"
-            android:text="Submit"
+            android:text="@string/submit_button_text"
             android:textAllCaps="false"
             android:textColor="@android:color/background_light"
             android:background="@color/colorPrimary"

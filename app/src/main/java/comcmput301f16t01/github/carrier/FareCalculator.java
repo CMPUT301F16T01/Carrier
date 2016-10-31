@@ -16,7 +16,7 @@ public class FareCalculator {
         // TODO calculate a fare. (this is not for project part 2)
     }
 
-    public double getEstimate() {
+    public int getEstimate() {
         return 0;
     }
 }

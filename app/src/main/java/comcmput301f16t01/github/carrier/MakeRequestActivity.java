@@ -22,10 +22,13 @@ This will be a long thought...
 
 So I am running into some problems with the Request class so I've made executive
 decisions for now that we may want to change. There is a getEstimate() method in
-the Request class to estimate the method. It doesn't make sense to use that here
-because I need the location to create the request but I don't want to make the
-request partway through the user's activity here because they could cancel it. I
-want to make the Request object when they hit the submit button. But I need to
+the Request class to estimate the method (that calls the getEstimate() method in
+the FareCalculator class. It doesn't make sense to use the Request method here
+because I need the location to create the request (with the constructor) but I
+don't want to make the request partway through the user's activity here because
+they could cancel it. I want to make the Request object when they hit the submit
+button. I don't want to modify the constructor because the start and end locations
+are necessary information for the existence of a Request. Nevertheless, I need to
 show the user the fare estimate on the screen so I need the estimate before I
 instantiate the Request object.
 
@@ -36,8 +39,9 @@ every time the method is called so maybe this is a non-issue but it just feels m
 to have a method that does it, but here I have to call the method directly from its
 own class and then explicitly set the Request fare.
 
-I don't know if this is even a problem but whoever's reviewing my code give me your
-thoughts or ask me if this doesn't make sense...
+I don't know if this is even a problem or if I am just overthinking things but
+whoever's reviewing my code give me your thoughts or ask me if my use of these
+classes and their methods doesn't make sense...
  */
 
 public class MakeRequestActivity extends AppCompatActivity {
@@ -45,7 +49,7 @@ public class MakeRequestActivity extends AppCompatActivity {
     final Activity activity = MakeRequestActivity.this;
     private static Location start = null;
     private static Location end = null;
-    private static double fareEstimated = -1;
+    private static int fareEstimated = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,17 +85,24 @@ public class MakeRequestActivity extends AppCompatActivity {
     }
 
     private void chooseLocations() {
-        Toast.makeText(activity, "Choose locations on map", Toast.LENGTH_SHORT).show();
+        Toast.makeText(activity, "Choose locations", Toast.LENGTH_SHORT).show();
 
         if(start == null) start = new Location();
         if(end == null) end = new Location();
 
+        // TODO remove fake data
         // fake data, University of Alberta
         start.setLocation(53.5232, -113.5263);
         // fake data, Edmonton City Centre
         end.setLocation(53.5438, -113.4923);
 
+        // prompts for fake data verification
+        Toast.makeText(activity, "Location 1: (53.5232, -113.5263)", Toast.LENGTH_SHORT).show();
+        Toast.makeText(activity, "Location 2: (53.5438, -113.4923)", Toast.LENGTH_SHORT).show();
+
         // TODO create the activity for selecting locations of request (later use case)
+        //    the new activity will handle everything and will return back to use the
+        //    start and end location coordinates
         // SetLocationsActivity does not exist, placeholder name
         //   this will be where the user sets the start and end locations of their request
         // Intent intent = new Intent(MakeRequestActivity.this, SetLocationsActivity.class);
@@ -109,7 +120,7 @@ public class MakeRequestActivity extends AppCompatActivity {
         adb.setMessage("Cancel request?");
         adb.setCancelable(true);
         final Activity activity = MakeRequestActivity.this;
-        // TODO semantics re: cancel
+        // TODO semantics re: cancel, button text (is it confusing to have "cancel" and "cancel request"?)
         adb.setPositiveButton("Cancel request", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -122,15 +133,18 @@ public class MakeRequestActivity extends AppCompatActivity {
         adb.show();
     }
 
+    /**
+     * Use the FareCalculator to estimate the fare between the user-selected start and end locations.
+     * The start and end locations must have both been selected before the fare can be estimated.
+     */
     public void estimateFare() {
         if(start == null || end == null) {
             Toast.makeText(activity, "You must first select a start and end location", Toast.LENGTH_SHORT).show();
         } else {
-            FareCalculator fc = new FareCalculator(start, end);
-            double fareEstimate = fc.getEstimate();
-
-            // fake data
-            fareEstimate = 65.24;
+            // TODO use FareCalculator once available
+            // the MockFareCalculator generates random numbers so we can see different values on the display
+            MockFareCalculator fc = new MockFareCalculator(start, end);
+            int fareEstimate = fc.getEstimate();
 
             TextView fareTextView = (TextView) findViewById(R.id.textView_fareEstimate);
             fareTextView.setText(formatFare(fareEstimate));
@@ -139,15 +153,21 @@ public class MakeRequestActivity extends AppCompatActivity {
         }
     }
 
-    //
-    public String formatFare(double fare) {
-        String ret = "";
+    /**
+     * Format the fare we get as a double as a string to be printed on the screen.
+     * This string will be preceded by a dollar sign (are we concerned about locale?)
+     * and will be to 2 decimal places.
+     * @param intFare
+     * @return String
+     */
+    // TODO deprecate once toString is available in FareCalculator
+    public String formatFare(int intFare) {
+        double fare = ((double) intFare)/100;
+        String str = String.format(Locale.getDefault(),"%.0f",fare/1) + ".";
+        String dec = String.format(Locale.getDefault(),"0%.0f",(fare%1)*100);
         // format the fare as a string with 2 decimal points
-        ret += String.format(Locale.getDefault(),"%.0f",fare/1) + "." +
-                String.format(Locale.getDefault(),"%.0f",(fare%1)*100);
-        // if there is no decimal, add an extra 0 to the string
-        if(fare%1 == 0) ret += "0";
-        return ret;
+        str +=  dec.substring(dec.length()-2, dec.length());
+        return str;
     }
 
     /**
