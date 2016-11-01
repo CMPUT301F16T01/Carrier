@@ -10,4 +10,5 @@
     <string name="Pay">Pay</string>
     <string name="Delete">Delete</string>
     <string name="title_activity_search_maps">Choose A Location</string>
+    <string name="searchHint">Enter a keyword</string>
 </resources>
