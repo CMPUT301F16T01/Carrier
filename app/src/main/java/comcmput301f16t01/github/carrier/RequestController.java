@@ -13,7 +13,7 @@ import java.util.ArrayList;
  *
  */
 public class RequestController {
-    private static RequestList requestList = null;
+    private static ArrayList<Request> requestList = null;
     private Context saveContext = null;
 
     /**
@@ -21,16 +21,16 @@ public class RequestController {
      */
     public RequestController() {
         if (requestList == null) {
-            requestList = new RequestList();
+            requestList = new ArrayList<Request>();
         }
     }
 
     /**
      * @return the RequestList held by this controller.
      */
-    public static RequestList getInstance() {
+    public static ArrayList<Request> getInstance() {
         if (requestList == null) {
-            requestList = new RequestList();
+            requestList = new ArrayList<Request>();
         }
         return requestList;
     }
@@ -46,7 +46,7 @@ public class RequestController {
      * @return
      */
     public ArrayList<Request> getRequests(User rider) {
-        return new ArrayList<Request>();
+        return requestList;
     }
 
     /**
@@ -56,6 +56,11 @@ public class RequestController {
     }
 
     public void cancelRequest(User rider, Request request) {
+        // ElasticRequestController.CancelRequest cancelRequestTask = new ElasticRequestController.CancelRequest();
+        // cancelRequestTask.execute(request);
+        // TODO test elastic search component
+        request.setStatus(Request.CANCELLED);
+
     }
 
     /**
@@ -151,5 +156,4 @@ public class RequestController {
      */
     public void setRequestDescription(Request request, String description) {
     }
-
 }

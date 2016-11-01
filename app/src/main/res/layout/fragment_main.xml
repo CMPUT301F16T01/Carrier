@@ -18,6 +18,9 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/section_label"
         android:layout_centerHorizontal="true"
-        android:id="@+id/listView_homeRequestList" />
+        android:id="@+id/listView_homeRequestList"
+        android:clickable="true"
+        android:longClickable="true"
+        android:descendantFocusability="blocksDescendants"/>
 
 </RelativeLayout>
