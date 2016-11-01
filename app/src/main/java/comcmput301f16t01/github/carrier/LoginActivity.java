@@ -34,7 +34,6 @@ public class LoginActivity extends AppCompatActivity {
 
         UserController uc = new UserController();
         if (!uc.logInUser(usernameEditText.getText().toString())) {
-            //alertInvalidUsername();
             Toast.makeText(this, "Username not found", Toast.LENGTH_LONG).show();
 
         } else {
@@ -44,14 +43,6 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             this.finish();
         }
-    }
-
-    private void alertInvalidUsername() {
-        AlertDialog.Builder adb = new AlertDialog.Builder(this);
-        adb.setTitle("no such user");
-        adb.setMessage("unfortunately, we could not find your profile in our servers :(");
-        adb.setPositiveButton("OK", null);
-        adb.show();
     }
 
     public void startNewUserActivity(View v) {
