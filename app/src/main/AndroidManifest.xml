@@ -58,12 +58,18 @@
             android:label="@string/title_activity_search_maps" />
         <activity android:name=".SearchActivity" />
 <<<<<<< HEAD
+<<<<<<< HEAD
 
         <activity android:name=".RiderViewRequestActivity"></activity>
 =======
         <activity android:name=".HelpActivity" />
         <activity android:name=".RiderRequestActivity"></activity>
 >>>>>>> 6c60a111f626cdbc6854827156771990ef242b3b
+=======
+        >>>>>>> refs/remotes/origin/master
+        <activity android:name=".MakeRequestActivity"
+            android:windowSoftInputMode="adjustPan"></activity>
+>>>>>>> 5edc185748c94e6b7c88801fc4abbc56b576e9bd
     </application>
 
 </manifest>
