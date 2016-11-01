@@ -1,6 +1,8 @@
 package comcmput301f16t01.github.carrier;
 
 import android.app.Activity;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -18,10 +20,10 @@ public class RiderViewRequestActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_request);
+        setContentView(R.layout.activity_rider_view_request);
         getViewIds();
         setViewValues(request);
-        // RequestController rc = new RequestController();
+        RequestController rc = new RequestController();
 
 
     }
@@ -52,9 +54,25 @@ public class RiderViewRequestActivity extends Activity {
     }
 
     public void cancelRequest(View v){
-        RequestController rc = new RequestController();
-        // TODO Add a dialog prompt.
-        rc.cancelRequest(request.getRider(), request);
+        AlertDialog.Builder adb = new AlertDialog.Builder(RiderViewRequestActivity.this);
+        adb.setMessage("Cancel request?");
+        adb.setCancelable(true);
+
+        adb.setPositiveButton("Cancel Request", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                RequestController rc = new RequestController();
+                rc.cancelRequest(request.getRider(), request);
+            }
+        });
+
+        adb.setNegativeButton("Do not cancel ", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        adb.show();
 
     }
 }
