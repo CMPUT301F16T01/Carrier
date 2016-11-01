@@ -162,14 +162,13 @@ public class UserController {
     /**
      * resets the UserController. Primarily used for testing.
      *
-     * @since Sunday October 16th, 2016
      */
     public void reset() {
         // TODO this never had the option to reset UserList.
     }
 
     /**
-     * Attempt to create a new user...
+     * Attempt to create a new user.
      *
      * @param username
      * @param email
@@ -177,19 +176,33 @@ public class UserController {
      * @return
      */
     public String createNewUser(String username, String email, String phoneNumber) {
+        // TODO testing offline behaviour
         User newUser = new User();
+
+        // Trim leading and trailing whitespace
+        email = email.trim();
+        phoneNumber = phoneNumber.trim();
+        username = username.trim();
+
         newUser.setEmail(email);
         newUser.setPhone(phoneNumber);
         newUser.setUsername(username);
 
         // TODO more checks need to be done when adding a user, not important.
 
+        // Ensure no entries are blank
+        if( email.equals("") || phoneNumber.equals("") || username.equals("") ) {
+            return "Username, email, and phone number may not be blank.";
+        }
+
+        // Ensure a username is unique
         if (!checkUniqueUsername(username)) {
             return "That username is already taken!";
         }
 
         ElasticUserController.AddUserTask aut = new ElasticUserController.AddUserTask();
         aut.execute(newUser);
+
         while (newUser.getId() == null) {
             // waiting...
         }

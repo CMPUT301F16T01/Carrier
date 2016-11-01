@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+/**
+ * User can enter their information and a username to create a new account.
+ */
 public class NewUserActivity extends AppCompatActivity {
 
     @Override

@@ -10,13 +10,6 @@ import android.widget.Toast;
 
 /**
  * LoginActivity is where the user enters a username and password so they can access their account.
- *
- * @author Kieter
- * @since Friday October 14th, 2016
- */
-/*
-TODO javadoc this
-TODO comment this
  */
 public class LoginActivity extends AppCompatActivity {
 
@@ -25,7 +18,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // TODO grab their username based on their ID
+        // TODO grab their username based on their ID?
         // TODO alert them if they cannot log in because they are offline
     }
 
@@ -35,7 +28,6 @@ public class LoginActivity extends AppCompatActivity {
         UserController uc = new UserController();
         if (!uc.logInUser(usernameEditText.getText().toString())) {
             Toast.makeText(this, "Username not found", Toast.LENGTH_LONG).show();
-
         } else {
             String welcome = "Welcome back, " + usernameEditText.getText().toString() + "!";
             Toast.makeText(this, welcome, Toast.LENGTH_LONG).show();
