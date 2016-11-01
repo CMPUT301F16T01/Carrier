@@ -42,7 +42,8 @@
                 android:layout_weight="1"
                 android:textAllCaps="false"
                 android:textColor="@android:color/background_light"
-                android:background="@color/colorPrimary"/>
+                android:background="@color/colorPrimary"
+                android:onClick="chooseLocations"/>
         </LinearLayout>
 
         <!-- START LOCATION TEXT ENTRY -->
@@ -88,7 +89,8 @@
                 android:textAllCaps="false"
                 android:textColor="@android:color/background_light"
                 android:background="@color/colorPrimary"
-                android:id="@+id/button_estimateFare"/>
+                android:id="@+id/button_estimateFare"
+                android:onClick="estimateFare" />
 
         </LinearLayout>
 
@@ -132,7 +134,8 @@
             android:textAllCaps="false"
             android:textColor="@android:color/background_light"
             android:background="@color/colorPrimary"
-            android:id="@+id/button_submit"/>
+            android:id="@+id/button_submit"
+            android:onClick="submitRequest" />
 
     </LinearLayout>
 
