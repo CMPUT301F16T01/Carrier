@@ -172,6 +172,8 @@ public class MainActivity extends AppCompatActivity {
         adb.setPositiveButton("Log Out", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                LoginMemory lm = new LoginMemory( activity );
+                lm.saveUsername( "" ); // remove the username from memory
                 activity.finish();
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);

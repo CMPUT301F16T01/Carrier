@@ -18,25 +18,76 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        tryQuickLogin();
+
         // TODO grab their username based on their ID?
         // TODO alert them if they cannot log in because they are offline
     }
 
-    public void startMainActivity(View v) {
-        EditText usernameEditText = (EditText) findViewById(R.id.EditText_username);
+    /**
+     * Attempts to log in a user from memory.
+     * @see LoginMemory
+     */
+    private void tryQuickLogin() {
+        LoginMemory lm = new LoginMemory( this );
+        String username = lm.loadUsername();
+
+        if (username == null) {
+            return;
+        }
+
+        if (username.trim().equals("")) {
+            return;
+        }
 
         UserController uc = new UserController();
-        if (!uc.logInUser(usernameEditText.getText().toString())) {
-            Toast.makeText(this, "Username not found", Toast.LENGTH_LONG).show();
+
+        if ( !uc.logInUser( username ) ) {
+            EditText usernameEditText = (EditText) findViewById( R.id.EditText_username );
+            usernameEditText.setText( username );
+            AlertDialog.Builder adb = new AlertDialog.Builder( this );
+            String message = "Your account '" + username + "' was not found!";
+            adb.setTitle( "Warning!" );
+            adb.setMessage( message );
+            adb.setPositiveButton( "OK", null );
         } else {
-            String welcome = "Welcome back, " + usernameEditText.getText().toString() + "!";
-            Toast.makeText(this, welcome, Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            this.finish();
+            enterApp( username );
         }
     }
 
+    /**
+     * After pressing login, the system attempts to log them in with their given username here
+     */
+    public void attemptLogin(View v) {
+        EditText usernameEditText = (EditText) findViewById(R.id.EditText_username);
+        String username = usernameEditText.getText().toString().trim();
+
+        UserController uc = new UserController();
+        if (!uc.logInUser(username)) {
+            Toast.makeText(this, "Username not found", Toast.LENGTH_LONG).show();
+        } else {
+            // Save username to file
+            LoginMemory lm = new LoginMemory( this );
+            lm.saveUsername( username );
+
+            enterApp( username );
+        }
+    }
+
+    /**
+     * Standard welcome when entering the application.
+     */
+    private void enterApp( String username ) {
+        String welcome = "Welcome back, " + username + "!";
+        Toast.makeText(this, welcome, Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
+        this.finish();
+    }
+
+    /**
+     * Opens the activity where the user can create a new profile, etc
+     */
     public void startNewUserActivity(View v) {
         Intent intent = new Intent(LoginActivity.this, NewUserActivity.class);
         startActivity(intent);
