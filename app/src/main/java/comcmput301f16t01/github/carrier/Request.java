@@ -20,31 +20,49 @@ public class Request {
     /** */
     private int status = OPEN;
 
-    /** The user who made the request. */
+    /**
+     * The user who made the request.
+     */
     private User rider;
 
-    /** The driver that the user has chosen to drive for the request*/
+    /**
+     * The driver that the user has chosen to drive for the request
+     */
     private User chosenDriver;
 
-    /** A list of drivers who have offered to complete the request (but have not been accepted)*/
+    /**
+     * A list of drivers who have offered to complete the request (but have not been accepted)
+     */
     private ArrayList<User> offeringDrivers;
 
-    /** The "from" of the request, where the user wants to go from */
+    /**
+     * The "from" of the request, where the user wants to go from
+     */
     private Location start;
 
-    /** The "end" of the request, where the user want to go */
+    /**
+     * The "end" of the request, where the user want to go
+     */
     private Location end;
 
-    /** A description provided by the rider, */
+    /**
+     * A description provided by the rider,
+     */
     private String description;
 
-    /** The price the requesting user is willing to pay for the request to be complete */
+    /**
+     * The price the requesting user is willing to pay for the request to be complete
+     */
     private int fare;
 
-    /** When elastic searching, can search if this is true to notify the rider about the request*/
+    /**
+     * When elastic searching, can search if this is true to notify the rider about the request
+     */
     private boolean needToNotifyRider = false;
 
-    /** When elastic searching, can search if this is true to notify the driver about the request */
+    /**
+     * When elastic searching, can search if this is true to notify the driver about the request
+     */
     private boolean needToNotifyDriver = false;
 
     //TODO maybe add the location strings to description by default? Just in case keywords are locations.
@@ -70,7 +88,7 @@ public class Request {
     }
 
     public int getFareEstimate() {
-        FareCalculator fareCalc = new FareCalculator( start, end );
+        FareCalculator fareCalc = new FareCalculator(start, end);
         return fareCalc.getEstimate();
     }
 
