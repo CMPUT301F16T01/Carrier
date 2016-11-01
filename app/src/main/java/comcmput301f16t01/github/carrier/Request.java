@@ -45,6 +45,12 @@ public class Request {
     /** When elastic searching, can search if this is true to notify the driver about the request */
     private boolean needToNotifyDriver = false;
 
+    /**
+     * For use with Elastic Search, is the unique ID given to it
+     */
+    private String elasticID;
+
+
     //TODO maybe add the location strings to description by default? Just in case keywords are locations.
     // Constructor with description
     public Request(User rider, Location start, Location end, String description) {
@@ -101,6 +107,18 @@ public class Request {
 
     public String getDescription() {
         return description;
+    }
+
+    public int getFare() {
+        return fare;
+    }
+
+    public void setId(String id) {
+        this.elasticID = id;
+    }
+
+    public String getId() {
+        return elasticID;
     }
 
     // TODO confirm these as the states for a Request.

@@ -87,6 +87,7 @@ public class MakeRequestActivity extends AppCompatActivity {
      * The start and end locations must have both been selected before the fare can be estimated.
      */
     public void estimateFare(View view) {
+        // TODO possibly do check within FareCalculator...need to wait for this to be completed
         if(start == null || end == null) {
             Toast.makeText(activity, "You must first select a start and end location", Toast.LENGTH_SHORT).show();
         } else {
@@ -122,40 +123,37 @@ public class MakeRequestActivity extends AppCompatActivity {
     /**
      * When the submit button is pressed
      *      Create a Request and add it to the request controller
-     *      Save the request (elasticsearch...through request controller?)
+     *      Save the request (elastic search...through request controller?)
      *      Return to MainActivity
      */
     public void submitRequest(View view) {
         RequestController rc = new RequestController();
         UserController uc = new UserController();
 
-        if(start == null || end == null) {
-            Toast.makeText(activity, "You must first select a start and end location", Toast.LENGTH_SHORT).show();
-        } else if (fareEstimated == -1) {
-            Toast.makeText(activity, "You must first estimate the ride fare", Toast.LENGTH_SHORT).show();
+        User user = uc.getLoggedInUser();
+
+        EditText descEditText = (EditText) findViewById(R.id.editText_description);
+        String description = descEditText.getText().toString();
+
+        Request request;
+        if(description.equals("")) {
+            request = new Request(user, start, end);
         } else {
-            User user = uc.getLoggedInUser();
+            request = new Request(user, start, end, description);
+        }
 
-            EditText descEditText = (EditText) findViewById(R.id.editText_description);
-            String description = descEditText.getText().toString();
+        request.setFare(fareEstimated);
 
-            Request request;
-            if(description.equals("")) {
-                request = new Request(user, start, end);
-            } else {
-                request = new Request(user, start, end, description);
-            }
+        String result = rc.addRequest(request);
 
-            request.setFare(fareEstimated);
-
-            rc.addRequest(request);
-
-            // TODO save the data (elasticsearch...will this be automatically done from within rc?)
-
-            Toast.makeText(MakeRequestActivity.this, "Request submitted", Toast.LENGTH_SHORT).show();
+        // Check that a new request was created
+        if (result == null) {
+            Toast.makeText(activity, "Request submitted", Toast.LENGTH_SHORT).show();
             activity.finish();
-            Intent intent = new Intent(MakeRequestActivity.this, MainActivity.class);
+            Intent intent = new Intent(activity, MainActivity.class);
             startActivity(intent);
+        } else { // if not, display returned result message as a Toast
+            Toast.makeText(activity, result, Toast.LENGTH_SHORT).show();
         }
     }
 }

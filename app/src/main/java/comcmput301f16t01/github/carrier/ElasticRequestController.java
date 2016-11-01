@@ -1,0 +1,64 @@
+package comcmput301f16t01.github.carrier;
+
+import android.os.AsyncTask;
+import android.util.Log;
+
+import com.searchly.jestdroid.DroidClientConfig;
+import com.searchly.jestdroid.JestClientFactory;
+import com.searchly.jestdroid.JestDroidClient;
+
+import java.io.IOException;
+
+import io.searchbox.core.DocumentResult;
+import io.searchbox.core.Index;
+
+// TODO still need to test that request was added correctly
+
+public class ElasticRequestController {
+    private static JestDroidClient client;
+
+    /**
+     * Adds a request to Elastic Search
+     */
+    public static class AddRequestTask extends AsyncTask<Request, Void, Void> {
+
+        /**
+         * Async task to add request to elastic search
+         *
+         * @param requests
+         * @return
+         */
+        @Override
+        protected Void doInBackground(Request... requests) {
+            verifySettings();
+
+            for (Request request : requests) {
+                Index index = new Index.Builder(request).index("cmput301f16t01").type("request").build();
+                try {
+                    DocumentResult result = client.execute(index);
+                    if (result.isSucceeded()) {
+                        request.setId(result.getId());
+                    } else {
+                        Log.i("Add User Unsuccessful", "Failed to add user to elastic search?");
+                    }
+                } catch (IOException e) {
+                    Log.i("Add User Failure", "Something went wrong adding a user to elastic search.");
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+    }
+
+    private static void verifySettings() {
+        if (client == null) {
+            DroidClientConfig.Builder builder =
+                    new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");
+            DroidClientConfig config = builder.build();
+
+            JestClientFactory factory = new JestClientFactory();
+            factory.setDroidClientConfig(config);
+            client = (JestDroidClient) factory.getObject();
+        }
+    }
+}
