@@ -76,7 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="30sp"
-                android:text=""
+                android:text="@string/empty_fare"
                 android:id="@+id/textView_fareEstimate"
                 android:layout_weight="3.5" />
 
@@ -106,8 +106,7 @@
             improvements I could make here. -->
         <EditText
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1.46"
+            android:layout_height="150dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:paddingStart="10dp"
