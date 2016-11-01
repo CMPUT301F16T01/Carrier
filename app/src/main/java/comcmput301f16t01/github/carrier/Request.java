@@ -62,10 +62,10 @@ public class Request {
         // TODO make sure you do this right - Mandy (i.e. check that the status can change from one state to another)
     }
 
-    public int getFareEstimate() {
-        FareCalculator fareCalc = new FareCalculator( start, end );
-        return fareCalc.getEstimate();
-    }
+//    public int getFareEstimate() {
+//        FareCalculator fareCalc = new FareCalculator( start, end );
+//        return fareCalc.getEstimate();
+//    }
 
     public ArrayList<User> getOffers() {
         return new ArrayList<User>();
