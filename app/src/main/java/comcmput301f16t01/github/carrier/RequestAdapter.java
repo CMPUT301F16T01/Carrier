@@ -53,7 +53,7 @@ public class RequestAdapter extends ArrayAdapter<Request> {
 
             // Set the end location in the item's view
             if (endLocTextView != null) {
-                String endLoc = "To: " + request.getEnd().toString();
+                String endLoc = "From: " + request.getEnd().toString();
                 endLocTextView.setText(endLoc);
             }
 
