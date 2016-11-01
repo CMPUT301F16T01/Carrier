@@ -28,10 +28,10 @@ public class Request {
     private ArrayList<User> offeringDrivers;
 
     /** The "from" of the request, where the user wants to go from */
-    private Location start;
+    private Location start = null;
 
     /** The "end" of the request, where the user want to go */
-    private Location end;
+    private Location end = null;
 
     /** A description provided by the rider, */
     private String description;
@@ -54,10 +54,17 @@ public class Request {
     //TODO maybe add the location strings to description by default? Just in case keywords are locations.
     // Constructor with description
     public Request(User rider, Location start, Location end, String description) {
+        this.rider = rider;
+        this.start = start;
+        this.end = end;
+        this.description = description;
     }
 
     // Constructor without description
     public Request(User rider, Location start, Location end) {
+        this.rider = rider;
+        this.start = start;
+        this.end = end;
     }
 
     public int getStatus() {
