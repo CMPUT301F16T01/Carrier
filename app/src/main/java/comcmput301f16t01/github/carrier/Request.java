@@ -1,5 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 
 /**
@@ -48,10 +50,15 @@ public class Request {
 
     //TODO maybe add the location strings to description by default? Just in case keywords are locations.
     // Constructor with description
-    public Request(User rider, Location start, Location end, String description) {
+    public Request(@NonNull User requestingRider, @NonNull Location requestedStart,
+                   @NonNull Location requestedEnd, String description) {
+        this.rider = requestingRider;
+        this.start = requestedStart;
+        this.end = requestedEnd;
+        this.description = description;
     }
 
-    // Constructor without description
+    // Constructor without description TODO do we need this?
     public Request(User rider, Location start, Location end) {
     }
 
@@ -64,7 +71,9 @@ public class Request {
         if (!(((this.status == COMPLETE)|| (status == PAID)) && (status == CANCELLED))){
             this.status = status;
         }
+
         // TODO make sure you do this right - Mandy (i.e. check that the status can change from one state to another)
+        // TODO make an actual test for this (Mandy)
     }
 
     public int getFareEstimate() {
@@ -114,7 +123,6 @@ public class Request {
 
     public int getFare(){
         return  fare;
-    }
 
     // TODO confirm these as the states for a Request.
 }

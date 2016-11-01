@@ -1,6 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.FloatRange;
@@ -22,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -154,6 +156,11 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
+        if (id == R.id.action_help) {
+            Intent intent = new Intent(this, HelpActivity.class);
+            startActivity(intent);
+        }
+
         if (id == R.id.action_logOut ) {
             onBackPressed();
         }
@@ -202,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
+
     public static class PlaceholderFragment extends Fragment {
         /**
          * The fragment argument representing the section number for this
@@ -231,22 +239,76 @@ public class MainActivity extends AppCompatActivity {
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
 
-            // TODO modify code and create a Request adapter for these lists
             // TODO (after) allow the ability to toggle between what requests are shown (?)
             ListView requestListView = (ListView) rootView.findViewById( R.id.listView_homeRequestList );
-            ArrayList<String> list = new ArrayList<String>();
             if( getArguments().getInt(ARG_SECTION_NUMBER) == 1 ) {
-                list.add( "hello world!" );
-                list.add( "this is a rider's request list." );
+                fillRiderRequests( requestListView );
             } else {
-                list.add( "Hello again world!" );
-                list.add( "This is a driver's request list!" );
+                fillDriverRequests( requestListView );
             }
-            // From Student Picker, Abram Hindle
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_list_item_1, list);
-            requestListView.setAdapter( adapter );
 
             return rootView;
+        }
+
+        /**
+         * Sets up the ListView for the driver.
+         * @param requestListView
+         */
+        private void fillDriverRequests(ListView requestListView) {
+        }
+
+        /**
+         * Sets up the ListView for the rider.
+         * @param requestListView
+         */
+
+        private void fillRiderRequests(ListView requestListView) {
+            RequestController rc = new RequestController();
+            User loggedInUser = UserController.getLoggedInUser();
+            final ArrayList<Request> requestList = rc.getRequests( loggedInUser );
+
+
+            if (requestList.size() == 0) {
+                // Create sample requests because this is probably not set up yet.
+                Request requestOne = new Request( loggedInUser, new Location(), new Location(), "testRequest!" );
+                Request requestTwo = new Request( loggedInUser, new Location(), new Location(), "testRequest2!" );
+
+
+                requestOne.setStatus(Request.COMPLETE);
+                requestTwo.setStatus(Request.PAID);
+                requestList.add( requestOne );
+                requestList.add( requestTwo );
+            }
+
+            RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
+                    R.layout.requestlist_item, requestList );
+
+            requestListView.setAdapter( requestArrayAdapter );
+
+            final Context ctx = this.getContext();
+            /*requestListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    System.out.println( "hi" );
+                    return true;
+                }
+            });*/
+
+            // To view a request we click on it
+            // We will bundle the request with it
+            // Mandy
+            requestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent intent = new Intent(getActivity(), RiderRequestActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("position", position);
+                    //bundle.putString("activity", "MainActivity");
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            });
+
         }
     }
 

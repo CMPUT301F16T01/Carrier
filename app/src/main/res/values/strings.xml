@@ -10,4 +10,14 @@
     <string name="Pay">Pay</string>
     <string name="Delete">Delete</string>
     <string name="title_activity_search_maps">Choose A Location</string>
+
+    <!--Any string names starting with help will be to describe status to the user-->
+    <string name="helpLegend">Legend</string>
+    <string name="helpOpenText"><b>Open</b> - A newly created request. A driver has yet to offer to drive yet.</string>
+    <string name="helpOfferedText">Offered - A request that has one or more drivers who have offered to take this request.</string>
+    <string name="helpConfirmedText">Confirmed - A request that has an assigned driver.</string>
+    <string name="helpCompleteText">Complete - A request that has arrived at its destination.</string>
+    <string name="helpPaidText">Paid - A request that has been paid for.</string>
+    <string name="helpCancelText">Cancel - A request that has been cancelled. This can occur anytime before the ride is complete.</string>
+    <string name="padding">10dp</string>
 </resources>
