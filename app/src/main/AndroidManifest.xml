@@ -35,18 +35,12 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".UserProfileActivity"
-<<<<<<< HEAD
-            android:label="Carrier"> </activity>
+            android:label="Carrier">
             android:theme="@style/AppTheme.NoActionBar" >/>
-        <activity android:name=".NewUserActivity"></activity>
-        <activity android:name=".driver_view_request"></activity>
-
-=======
             android:label="Carrier" />
-        android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".NewUserActivity" />
-        <activity android:name=".DriverViewRequestActivity" />
->>>>>>> 6c60a111f626cdbc6854827156771990ef242b3b
+            android:theme="@style/AppTheme.NoActionBar" />
+            <activity android:name=".NewUserActivity" />
+            <activity android:name=".DriverViewRequestActivity" /></activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
