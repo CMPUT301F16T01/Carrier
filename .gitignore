@@ -42,3 +42,6 @@ captures/
 
 # Google Map API files
 *google_maps_api*
+
+# DS store
+*.DS_Store

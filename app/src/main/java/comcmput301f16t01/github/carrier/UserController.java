@@ -28,6 +28,7 @@ public class UserController {
         return userList.getUsers();
     }
 
+    // TODO removed the static designation so it could be accessed from MakeRequestActivity...is this okay?
     /**
      * Will return the current logged in user.
      *
