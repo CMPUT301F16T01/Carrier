@@ -274,12 +274,14 @@ public class MainActivity extends AppCompatActivity {
                 // Create sample requests because this is probably not set up yet.
                 Request requestOne = new Request( loggedInUser, new Location(), new Location(), "testRequest!" );
                 Request requestTwo = new Request( loggedInUser, new Location(), new Location(), "testRequest2!" );
-
+                Request requestThree = new Request(loggedInUser, new Location(), new Location(), "testRequest3!" );
 
                 requestOne.setStatus(Request.COMPLETE);
                 requestTwo.setStatus(Request.PAID);
+                requestThree.setStatus(Request.OPEN);
                 requestList.add( requestOne );
                 requestList.add( requestTwo );
+                requestList.add( requestThree );
             }
 
             RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),

@@ -1,6 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class RiderRequestActivity extends AppCompatActivity {
 
@@ -38,7 +40,7 @@ public class RiderRequestActivity extends AppCompatActivity {
         // unpacking the bundle to get the position of request
         Bundle bundle = getIntent().getExtras();
         position = bundle.getInt("position");
-        Request request = requestList.get(position);
+        request = requestList.get(position);
         // Populate values for the different text views.
         setViewValues(request);
         //changing the status image
@@ -81,7 +83,7 @@ public class RiderRequestActivity extends AppCompatActivity {
      * @param request The request that the values come from
      */
     private void setViewValues(Request request) {
-        fareAmountTextView.setText(request.getFare());
+        fareAmountTextView.setText(Integer.toString(request.getFare())); // TODO Add locale support
         startLocationTextView.setText(request.getStart().toString());
         endLocationTextView.setText(request.getEnd().toString());
         descriptionTextView.setText(request.getDescription());
