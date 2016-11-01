@@ -3,27 +3,22 @@ package comcmput301f16t01.github.carrier;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.annotation.FloatRange;
-import android.support.design.widget.TabLayout;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -118,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
     private void changeFab(int position) {
         FloatingActionButton rider_fab = (FloatingActionButton) findViewById(R.id.fab_rider);
         FloatingActionButton driver_fab = (FloatingActionButton) findViewById(R.id.fab_driver);
-        switch(position){
+        switch (position) {
             case 0:
                 driver_fab.hide();
                 rider_fab.show();
@@ -147,14 +142,14 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_viewProfile) {
-            Toast.makeText( MainActivity.this, "Wanna view your profile? Nope!",
-                    Toast.LENGTH_SHORT ).show();
+            Toast.makeText(MainActivity.this, "Wanna view your profile? Nope!",
+                    Toast.LENGTH_SHORT).show();
             // TODO Bundle information to give to the user profile activity. (UserController or ElasticController)?
             Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
             startActivity(intent);
         }
 
-        if (id == R.id.action_logOut ) {
+        if (id == R.id.action_logOut) {
             onBackPressed();
         }
 
@@ -163,8 +158,8 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * When back is pressed or the "Log Out" menu option is selected:
-     *      Pop up a AlertDialog to confirm and open a new LoginActivity, while closing the current
-     *      RiderMainActivity.
+     * Pop up a AlertDialog to confirm and open a new LoginActivity, while closing the current
+     * RiderMainActivity.
      */
     public void onBackPressed() {
         AlertDialog.Builder adb = new AlertDialog.Builder(this);
@@ -178,10 +173,11 @@ public class MainActivity extends AppCompatActivity {
                 activity.finish();
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
-                // TODO log out current user? (UserController)
+                UserController uc = new UserController();
+                uc.logOutUser();
             }
         });
-        adb.setNegativeButton("Cancel", null );
+        adb.setNegativeButton("Cancel", null);
         adb.show();
     }
 
@@ -234,18 +230,18 @@ public class MainActivity extends AppCompatActivity {
 
             // TODO modify code and create a Request adapter for these lists
             // TODO (after) allow the ability to toggle between what requests are shown (?)
-            ListView requestListView = (ListView) rootView.findViewById( R.id.listView_homeRequestList );
+            ListView requestListView = (ListView) rootView.findViewById(R.id.listView_homeRequestList);
             ArrayList<String> list = new ArrayList<String>();
-            if( getArguments().getInt(ARG_SECTION_NUMBER) == 1 ) {
-                list.add( "hello world!" );
-                list.add( "this is a rider's request list." );
+            if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+                list.add("hello world!");
+                list.add("this is a rider's request list.");
             } else {
-                list.add( "Hello again world!" );
-                list.add( "This is a driver's request list!" );
+                list.add("Hello again world!");
+                list.add("This is a driver's request list!");
             }
             // From Student Picker, Abram Hindle
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_list_item_1, list);
-            requestListView.setAdapter( adapter );
+            requestListView.setAdapter(adapter);
 
             return rootView;
         }

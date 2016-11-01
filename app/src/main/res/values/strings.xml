@@ -21,4 +21,6 @@
     <string name="description_hint">Describe the ride you seek</string>
     <string name="submit_button_text">Submit</string>
 
+    <!-- dialog_keyword_search.xml -->
+    <string name="searchHint">Enter a keyword</string>
 </resources>
