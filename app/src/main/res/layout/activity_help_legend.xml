@@ -4,14 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark">
+    android:background="@color/white">
 
 
     <TextView
         android:text="@string/helpLegend"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:textColor="@android:color/white"
         android:gravity="center"
         android:id="@+id/helpLegend"
         android:textSize="@android:dimen/app_icon_size" />
@@ -39,7 +38,6 @@
                 android:text="@string/helpOpenText"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
                 android:id="@+id/helpOpenStatus"
                 android:layout_gravity="left|center_vertical" />
 
@@ -63,7 +61,6 @@
                 android:text="@string/helpOfferedText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
                 android:id="@+id/helpOfferedStatus"
                 android:layout_gravity="left|center_vertical" />
 
@@ -75,19 +72,16 @@
             android:layout_height="wrap_content"
             android:paddingBottom="@string/padding">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/confirmed"
-            android:id="@+id/imageConfirmed"
-            android:scaleX="1.2"
-            android:scaleY="1.2" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/confirmed"
+                android:id="@+id/imageConfirmed" />
 
-        <TextView
+            <TextView
             android:text="@string/helpConfirmedText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
             android:id="@+id/helpConfirmedStatus"
             android:layout_gravity="left|center_vertical" />
 
@@ -109,7 +103,6 @@
                 android:text="@string/helpCompleteText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
                 android:id="@+id/helpCompleteStatus"
                 android:layout_gravity="left|center_vertical" />
 
@@ -131,7 +124,6 @@
                 android:text="@string/helpPaidText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
                 android:id="@+id/helpPaidStatus"
                 android:layout_gravity="left|center_vertical" />
 
@@ -153,7 +145,6 @@
                 android:text="@string/helpCancelText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
                 android:id="@+id/helpCancelStatus"
                 android:layout_gravity="left|center_vertical" />
 
