@@ -39,10 +39,10 @@ public class ElasticRequestController {
                     if (result.isSucceeded()) {
                         request.setId(result.getId());
                     } else {
-                        Log.i("Add User Unsuccessful", "Failed to add user to elastic search?");
+                        Log.i("Add Request Failure", "Failed to add request to elastic search");
                     }
                 } catch (IOException e) {
-                    Log.i("Add User Failure", "Something went wrong adding a user to elastic search.");
+                    Log.i("Add Request Failure", "Something went wrong adding a request to elastic search.");
                     e.printStackTrace();
                 }
             }
