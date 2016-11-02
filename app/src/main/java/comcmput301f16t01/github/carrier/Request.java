@@ -16,7 +16,6 @@ public class Request {
     static final int COMPLETE = 4;        // The user has gotten to their destination (and payed?)
     static final int PAID = 7;
     static final int CANCELLED = 9;        // The rider has cancelled their request
-    private String elasticID;
 
     /** */
     private int status = OPEN;
@@ -66,18 +65,26 @@ public class Request {
      */
     private boolean needToNotifyDriver = false;
 
+    /**
+     * For use with Elastic Search, is the unique ID given to it
+     */
+    private String elasticID;
+
+
     //TODO maybe add the location strings to description by default? Just in case keywords are locations.
     // Constructor with description
-    public Request(@NonNull User requestingRider, @NonNull Location requestedStart,
-                   @NonNull Location requestedEnd, String description) {
-        this.rider = requestingRider;
-        this.start = requestedStart;
-        this.end = requestedEnd;
+    public Request(User rider, Location start, Location end, String description) {
+        this.rider = rider;
+        this.start = start;
+        this.end = end;
         this.description = description;
     }
 
     // Constructor without description TODO do we need this?
     public Request(User rider, Location start, Location end) {
+        this.rider = rider;
+        this.start = start;
+        this.end = end;
     }
 
     public int getStatus() {
@@ -135,16 +142,19 @@ public class Request {
         return description;
     }
 
+    public int getFare() {
+        return fare;
+    }
+
     public void setId(String id) {
-        elasticID = id;
+        this.elasticID = id;
     }
 
     public String getId() {
         return elasticID;
     }
 
-    public int getFare() {
-        return fare;
+
 
         // TODO confirm these as the states for a Request.
     }

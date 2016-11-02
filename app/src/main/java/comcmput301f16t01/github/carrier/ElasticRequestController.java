@@ -29,14 +29,14 @@ public class ElasticRequestController {
 
         /**
          * Async task to update a request in elastic search to cancelled.
-         * @param requests
-         * @return
          */
+
         @Override
         protected Void doInBackground(Request... requests) {
             verifySettings();
 
             for (Request request : requests) {
+
                 // ctx._source.status tells elastic search the the tag that is being modified is the status.
                 String script = "{\n" +
                         "    \"script\" : \"ctx._source.status = " + Request.CANCELLED + "\" }";
@@ -56,6 +56,37 @@ public class ElasticRequestController {
                     }
                 } catch (IOException e) {
                     Log.i("Canceling Failure", "Something went wrong updating value in elastic search.");
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+    }
+    // TODO still need to test that request was added correctly
+
+    public static class AddRequestTask extends AsyncTask<Request, Void, Void> {
+
+        /**
+         * Async task to add request to elastic search
+         *
+         * @param requests
+         * @return
+         */
+        @Override
+        protected Void doInBackground(Request... requests) {
+            verifySettings();
+
+            for (Request request : requests) {
+                Index index = new Index.Builder(request).index("cmput301f16t01").type("request").build();
+                try {
+                    DocumentResult result = client.execute(index);
+                    if (result.isSucceeded()) {
+                        request.setId(result.getId());
+                    } else {
+                        Log.i("Add Request Failure", "Failed to add request to elastic search");
+                    }
+                } catch (IOException e) {
+                    Log.i("Add Request Failure", "Something went wrong adding a request to elastic search.");
                     e.printStackTrace();
                 }
             }
