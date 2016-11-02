@@ -86,7 +86,7 @@ public class Request {
 
     public void setStatus(int status) {
         // Does not allow the canceling of completed requests or paid requests
-        if (!(((this.status == COMPLETE) || (status == PAID)) && (status == CANCELLED))) {
+        if (!(((this.status == COMPLETE) || (this.status == PAID)) && (status == CANCELLED))) {
             this.status = status;
         }
 
