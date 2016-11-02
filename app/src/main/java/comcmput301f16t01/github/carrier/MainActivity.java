@@ -187,13 +187,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void startMakeRequestActivity(View view) {
         // This will start the make request activity for a rider when they press the rider FAB
-        Toast.makeText(this, "RIDER FAB", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "RIDER FAB", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(MainActivity.this, MakeRequestActivity.class);
+        startActivity(intent);
     }
 
     public void startSearchActivity(View view) {
         // This will start the Search activity for a driver when they want to search requests
         // after they press the driver FAB
-        Toast.makeText(this, "DRIVER FAB", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "DRIVER FAB", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(MainActivity.this, SearchActivity.class);
         startActivity(intent);
     }

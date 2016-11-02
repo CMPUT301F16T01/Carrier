@@ -13,7 +13,6 @@ import java.util.ArrayList;
  */
 public class RequestController {
     private static RequestList requestList = null;
-    private Context saveContext = null;
 
     /**
      * Since we are using elastic search to get the request list.
@@ -37,7 +36,17 @@ public class RequestController {
     /**
      * @param request
      */
-    public void addRequest(Request request) {
+    public String addRequest(Request request) {
+        if(request.getStart() == null || request.getEnd() == null) {
+            return "You must first select a start and end location";
+        } else if (request.getFare() == -1) {
+            return "You must first estimate the fare";
+        } else {
+            ElasticRequestController.AddRequestTask art = new ElasticRequestController.AddRequestTask();
+            art.execute(request);
+
+            return null;
+        }
     }
 
     /**
@@ -159,5 +168,4 @@ public class RequestController {
      */
     public void setRequestDescription(Request request, String description) {
     }
-
 }
