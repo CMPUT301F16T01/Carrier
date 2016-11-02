@@ -34,15 +34,22 @@ public class NewUserActivity extends AppCompatActivity {
         EditText phoneEditText = (EditText) findViewById(R.id.editText_newPhoneNum);
         EditText emailEditText = (EditText) findViewById(R.id.editText_newEmail);
 
+        String username = usernameEditText.getText().toString();
+
         // Send new user to UserController
         UserController uc = new UserController();
-        String result = uc.createNewUser(usernameEditText.getText().toString(),
+        String result = uc.createNewUser(username,
                 emailEditText.getText().toString(),
                 phoneEditText.getText().toString());
 
         // Ensure that a new user was created
         if (result == null) {
-            String welcome = "Welcome to CARrier, " + usernameEditText.getText().toString() + "!";
+            // Save username to file
+            LoginMemory lm = new LoginMemory( this );
+            lm.saveUsername( username );
+
+            // Log in to CARier
+            String welcome = "Welcome to CARrier, " + username + "!";
             Intent intent = new Intent(NewUserActivity.this, MainActivity.class);
             Toast.makeText(this, welcome, Toast.LENGTH_SHORT).show();
             startActivity(intent);
