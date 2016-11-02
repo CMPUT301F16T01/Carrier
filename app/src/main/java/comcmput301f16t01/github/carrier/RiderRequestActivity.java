@@ -112,6 +112,7 @@ public class RiderRequestActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 RequestController rc = new RequestController();
                 rc.cancelRequest(request.getRider(), request);
+                finish();
             }
         });
 

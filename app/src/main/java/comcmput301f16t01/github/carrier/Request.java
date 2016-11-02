@@ -91,11 +91,14 @@ public class Request {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(int newStatus) {
         // Does not allow the canceling of completed requests or paid requests
-        if (!(((this.status == COMPLETE) || (this.status == PAID)) && (status == CANCELLED))) {
-            this.status = status;
+        if ((this.status == COMPLETE) && (newStatus == CANCELLED))
+            return; // Do nothing
+        if ((this.status == PAID) && (newStatus == CANCELLED)) {
+            return; // Do nothing
         }
+        this.status = newStatus;
 
         // TODO make sure you do this right - Mandy (i.e. check that the status can change from one state to another)
         // TODO make an actual test for this (Mandy)
