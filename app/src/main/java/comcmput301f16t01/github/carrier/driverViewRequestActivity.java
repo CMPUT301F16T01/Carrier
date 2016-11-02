@@ -1,7 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 /**
  * This will help us show the request from the perspective of a driver

@@ -1,163 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:isScrollContainer="true" >
 
-
-    <TextView
-        android:text="Choose Location(s) with Map"
-        android:layout_marginTop="20dp"
-        android:textColor="@color/colorPrimaryDark"
-        android:textAlignment="center"
-        android:textStyle="bold"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView" />
+        android:orientation="vertical"
+        android:weightSum="1"
+        android:focusableInTouchMode="true" >
+        <!-- line above from https://goo.gl/LRzzp1, author: Mike T, retrieved: October 30th, 2016 -->
 
-    <!-- HOLDS THE GEO-LOCATION CHOICE BUTTONS -->
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:weightSum="8">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_location_on"
-            android:id="@+id/imageView"
-            android:layout_weight="1"
-            android:layout_gravity="center"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:layout_gravity="center"
-            android:text="Start"/>
-
+        <!-- right now this is a placeholder for some kind of "Choose Locations" prompt -->
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:text=""
+            android:layout_marginTop="20dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:textAlignment="center"
             android:textStyle="bold"
-            android:textSize="40sp"
-            android:text=". . ."
-            android:textAlignment="center"
-            android:layout_weight="2"
-            android:layout_gravity="center"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView" />
+
+        <!-- HOLDS THE GEO-LOCATION CHOICE BUTTONS -->
+        <!-- TODO decide how we're getting to the map view...one or two buttons -->
+        <!-- TODO allow user to view locations on map after selecting them -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:weightSum="1">
+
+            <!-- This button is a placeholder while we decide what we want to do
+            with the mapView. This could eventually be one or two buttons. -->
+            <Button
+                android:text="@string/choose_location_button_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/button_chooseLocation"
+                android:layout_weight="1"
+                android:textAllCaps="false"
+                android:textColor="@android:color/background_light"
+                android:background="@color/colorPrimary"
+                android:onClick="chooseLocations"/>
+        </LinearLayout>
+
+        <!-- START LOCATION TEXT ENTRY -->
+
+        <!-- END LOCATION TEXT ENTRY -->
+
+        <!-- FARE TEXT ENTRY -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/fare_estimate_prompt"
+            android:layout_marginTop="15dp"/>
+
+        <!-- HOLDS "$" FARE ENTRY AND FARE BUTTON -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="5">
+
+            <TextView
+                android:text="@string/dollar_sign"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textAlignment="center"
+                android:id="@+id/textView_dollarSign"
+                android:layout_weight="1"
+                android:textSize="30sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:text="@string/empty_fare"
+                android:id="@+id/textView_fareEstimate"
+                android:layout_weight="3.5" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/estimate_button_text"
+                android:textAllCaps="false"
+                android:textColor="@android:color/background_light"
+                android:background="@color/colorPrimary"
+                android:id="@+id/button_estimateFare"
+                android:onClick="estimateFare" />
+
+        </LinearLayout>
+
+        <!-- DESCRIPTION TEXT ENTRY -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/description_prompt"
+            android:layout_marginTop="15dp"/>
+
+        <!-- TODO code reviewer: play around with the description EditText box in the running app -->
+        <!-- I did a lot of work to try to get it as cohesive as possible with
+            the it being able to scroll, resize, have the keyboard not cover it
+            when it is being edited. Play around with it to see if there are any
+            improvements I could make here. -->
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="5dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:inputType="textMultiLine"
+            android:minLines="1"
+            android:maxLength="200"
+            android:gravity="top|start"
+            android:hint="@string/description_hint"
+            android:background="#22000000"
+            android:id="@+id/editText_description"
+            android:scrollbars="vertical" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:layout_gravity="center"
-            android:text="End"/>
+            android:text="@string/submit_button_text"
+            android:textAllCaps="false"
+            android:textColor="@android:color/background_light"
+            android:background="@color/colorPrimary"
+            android:id="@+id/button_submit"
+            android:onClick="submitRequest" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_location_on"
-            android:id="@+id/imageView"
-            android:layout_weight="1"
-            android:layout_gravity="center"/>
     </LinearLayout>
 
-    <!-- START LOCATION TEXT ENTRY -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Enter a start location:"
-        android:layout_marginTop="5dp"/>
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:hint="123 ABC Street NW, Edmonton,  Canada"
-        android:background="#22000000"/>
-
-    <!-- END LOCATION TEXT ENTRY -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Enter an end location:"
-        android:layout_marginTop="15dp"/>
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:hint="213 DEF Street NW, Edmonton, Canada"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:background="#22000000"/>
-
-    <!-- FARE TEXT ENTRY -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Enter a fare:"
-        android:layout_marginTop="15dp"/>
-
-    <!-- HOLDS "$" FARE ENTRY AND FARE BUTTON -->
-    <!-- TODO need to fix the ratchet look of this part -->
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:weightSum="3">
-
-        <TextView
-            android:text="$"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:id="@+id/textView2"
-            android:layout_weight="1" />
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
-            android:ems="10"
-            android:hint="XX.XX"
-            android:id="@+id/editText"
-            android:layout_weight="2"
-            android:background="#22000000"/>
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@android:drawable/ic_menu_help"
-            android:id="@+id/imageButton"
-            android:layout_weight="1" />
-    </LinearLayout>
-
-    <!-- DESCRIPTION TEXT ENTRY -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Enter a description:"
-        android:layout_marginTop="15dp"/>
-
-    <!-- TODO Find out how to keep this box a certain size and only allow a certian # of input -->
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:hint="Enter a cool description about your sexy ride here you cool person you. You rock.\n\n\n\n"
-        android:background="#22000000"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_gravity="center"
-        android:text="SUBMIT YOUR SEXY REQUEST"/>
-
-</LinearLayout>
+</ScrollView>

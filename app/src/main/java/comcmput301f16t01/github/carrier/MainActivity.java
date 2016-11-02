@@ -4,28 +4,23 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.annotation.FloatRange;
-import android.support.design.widget.TabLayout;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -120,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
     private void changeFab(int position) {
         FloatingActionButton rider_fab = (FloatingActionButton) findViewById(R.id.fab_rider);
         FloatingActionButton driver_fab = (FloatingActionButton) findViewById(R.id.fab_driver);
-        switch(position){
+        switch (position) {
             case 0:
                 driver_fab.hide();
                 rider_fab.show();
@@ -149,8 +144,8 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_viewProfile) {
-            Toast.makeText( MainActivity.this, "Wanna view your profile? Nope!",
-                    Toast.LENGTH_SHORT ).show();
+            Toast.makeText(MainActivity.this, "Wanna view your profile? Nope!",
+                    Toast.LENGTH_SHORT).show();
             // TODO Bundle information to give to the user profile activity. (UserController or ElasticController)?
             Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
             startActivity(intent);
@@ -161,7 +156,8 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
-        if (id == R.id.action_logOut ) {
+
+        if (id == R.id.action_logOut) {
             onBackPressed();
         }
 
@@ -170,8 +166,8 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * When back is pressed or the "Log Out" menu option is selected:
-     *      Pop up a AlertDialog to confirm and open a new LoginActivity, while closing the current
-     *      RiderMainActivity.
+     * Pop up a AlertDialog to confirm and open a new LoginActivity, while closing the current
+     * RiderMainActivity.
      */
     public void onBackPressed() {
         AlertDialog.Builder adb = new AlertDialog.Builder(this);
@@ -182,6 +178,8 @@ public class MainActivity extends AppCompatActivity {
         adb.setPositiveButton("Log Out", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                LoginMemory lm = new LoginMemory( activity );
+                lm.saveUsername( "" ); // remove the username from memory
                 activity.finish();
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
@@ -189,19 +187,21 @@ public class MainActivity extends AppCompatActivity {
                 uc.logOutUser();
             }
         });
-        adb.setNegativeButton("Cancel", null );
+        adb.setNegativeButton("Cancel", null);
         adb.show();
     }
 
     public void startMakeRequestActivity(View view) {
         // This will start the make request activity for a rider when they press the rider FAB
-        Toast.makeText(this, "RIDER FAB", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "RIDER FAB", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(MainActivity.this, MakeRequestActivity.class);
+        startActivity(intent);
     }
 
     public void startSearchActivity(View view) {
         // This will start the Search activity for a driver when they want to search requests
         // after they press the driver FAB
-        Toast.makeText(this, "DRIVER FAB", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "DRIVER FAB", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(MainActivity.this, SearchActivity.class);
         startActivity(intent);
     }
@@ -240,6 +240,7 @@ public class MainActivity extends AppCompatActivity {
             textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
 
             // TODO (after) allow the ability to toggle between what requests are shown (?)
+
             ListView requestListView = (ListView) rootView.findViewById( R.id.listView_homeRequestList );
             if( getArguments().getInt(ARG_SECTION_NUMBER) == 1 ) {
                 fillRiderRequests( requestListView );

@@ -1,9 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.KeyListener;
@@ -25,7 +23,7 @@ public class UserProfileActivity extends AppCompatActivity {
     // Saves the values of the old fields just in case the user cancels their edit.
     private String oldPhoneNumber;
     private String oldEmailAddress;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,10 +35,10 @@ public class UserProfileActivity extends AppCompatActivity {
 
         // Developer code, may not be needed for release...
         if (currentUser == null) {
-            AlertDialog.Builder adb = new AlertDialog.Builder( this );
-            adb.setTitle( "debug mode" );
-            adb.setMessage( "you managed to log in without a user. Test data will be shown. This is an error if you are not a developer." );
-            adb.setPositiveButton( "OK", null );
+            AlertDialog.Builder adb = new AlertDialog.Builder(this);
+            adb.setTitle("debug mode");
+            adb.setMessage("you managed to log in without a user. Test data will be shown. This is an error if you are not a developer.");
+            adb.setPositiveButton("OK", null);
             adb.show();
             oldEmailAddress = "testEmail@youDaBomb.com";
             oldPhoneNumber = "7357129";
@@ -63,18 +61,19 @@ public class UserProfileActivity extends AppCompatActivity {
 
         // Removes the key listener, so that it can't hear keys.
         // Also stores it as their tag, so we can grab it later...
-        phoneNumberEditText.setTag( phoneNumberEditText.getKeyListener() );
-        phoneNumberEditText.setKeyListener( null );
-        emailAddressEditText.setTag( emailAddressEditText.getKeyListener() );
-        emailAddressEditText.setKeyListener( null );
-        usernameEditText.setKeyListener( null );
-}
+        phoneNumberEditText.setTag(phoneNumberEditText.getKeyListener());
+        phoneNumberEditText.setKeyListener(null);
+        emailAddressEditText.setTag(emailAddressEditText.getKeyListener());
+        emailAddressEditText.setKeyListener(null);
+        usernameEditText.setKeyListener(null);
+    }
 
     /**
      * Tapping the edit icon next to the phone number allows the user to edit their phone
+     *
      * @param v v is a View, allows usage of on click in xml
      */
-    public void editPhoneNumber(View v){
+    public void editPhoneNumber(View v) {
         ImageButton cancelButton = (ImageButton) findViewById(R.id.CancelEditPhoneButton);
         ImageButton saveButton = (ImageButton) findViewById(R.id.PhoneSaveEditButton);
         ImageButton editButton = (ImageButton) findViewById(R.id.PhoneEditIconImageButton);
@@ -86,18 +85,19 @@ public class UserProfileActivity extends AppCompatActivity {
         phoneNumber.setClickable(true);
         // Set it so the user can edit the EditText
         phoneNumber.setFocusableInTouchMode(true);
-        phoneNumber.setKeyListener( (KeyListener) phoneNumber.getTag() );
+        phoneNumber.setKeyListener((KeyListener) phoneNumber.getTag());
         phoneNumber.requestFocus();
         phoneNumber.moveCursorToVisibleOffset();
-        phoneNumber.setText( "" );
-        phoneNumber.append( oldPhoneNumber );
+        phoneNumber.setText("");
+        phoneNumber.append(oldPhoneNumber);
     }
 
     /**
      * Tapping the save icon after an edit commits changes to the phone number field
+     *
      * @param v v is a View, allows usage of on click in xml
      */
-    public void saveEditedPhoneNumber(View v){
+    public void saveEditedPhoneNumber(View v) {
         ImageButton cancelButton = (ImageButton) findViewById(R.id.CancelEditPhoneButton);
         ImageButton saveButton = (ImageButton) findViewById(R.id.PhoneSaveEditButton);
         ImageButton editButton = (ImageButton) findViewById(R.id.PhoneEditIconImageButton);
@@ -113,15 +113,16 @@ public class UserProfileActivity extends AppCompatActivity {
         this.oldPhoneNumber = phoneNumber;
         // TODO Check if it is a valid phoneNumber
         // TODO Update The information in elasticsearch
-        phoneNumberText.setKeyListener( null );
-        hideKeyboard( phoneNumberText );
+        phoneNumberText.setKeyListener(null);
+        hideKeyboard(phoneNumberText);
     }
 
     /**
      * Tapping the cancel icon during an edit removes changes to the phone number field
+     *
      * @param v v is a View, allows usage of on click in xml
      */
-    public void cancelEditPhoneNumber(View v){
+    public void cancelEditPhoneNumber(View v) {
         ImageButton cancelButton = (ImageButton) findViewById(R.id.CancelEditPhoneButton);
         ImageButton saveButton = (ImageButton) findViewById(R.id.PhoneSaveEditButton);
         ImageButton editButton = (ImageButton) findViewById(R.id.PhoneEditIconImageButton);
@@ -135,16 +136,17 @@ public class UserProfileActivity extends AppCompatActivity {
         phoneNumberText.setClickable(false);
         // Revert to the old phone number before editing started
         phoneNumberText.setText(this.oldPhoneNumber);
-        phoneNumberText.setKeyListener( null );
+        phoneNumberText.setKeyListener(null);
 
-        hideKeyboard( phoneNumberText );
+        hideKeyboard(phoneNumberText);
     }
 
     /**
      * Tapping the edit icon next to the email allows the user to edit their email
+     *
      * @param v v is a View, allows usage of on click in xml
      */
-    public void editEmailAddress(View v){
+    public void editEmailAddress(View v) {
         ImageButton cancelButton = (ImageButton) findViewById(R.id.CancelEditEmailButton);
         ImageButton saveButton = (ImageButton) findViewById(R.id.EmailSaveEditButton);
         ImageButton editButton = (ImageButton) findViewById(R.id.EmailEditIconImageButton);
@@ -156,17 +158,18 @@ public class UserProfileActivity extends AppCompatActivity {
         // Set it so the user can edit the EditText
         emailView.setFocusableInTouchMode(true);
         emailView.setClickable(true);
-        emailView.setKeyListener( (KeyListener) emailView.getTag() );
+        emailView.setKeyListener((KeyListener) emailView.getTag());
         emailView.requestFocus();
-        emailView.setText( "" );
-        emailView.append( oldEmailAddress );
+        emailView.setText("");
+        emailView.append(oldEmailAddress);
     }
 
     /**
      * Tapping the save icon after an edit commits changes to the email address
+     *
      * @param v v is a View, allows usage of on click in xml
      */
-    public void saveEditedEmailAddress(View v){
+    public void saveEditedEmailAddress(View v) {
         ImageButton cancelButton = (ImageButton) findViewById(R.id.CancelEditEmailButton);
         ImageButton saveButton = (ImageButton) findViewById(R.id.EmailSaveEditButton);
         ImageButton editButton = (ImageButton) findViewById(R.id.EmailEditIconImageButton);
@@ -183,16 +186,17 @@ public class UserProfileActivity extends AppCompatActivity {
         this.oldEmailAddress = email;
         // TODO Check if valid email and update elasticsearch
 
-        hideKeyboard( emailView );
+        hideKeyboard(emailView);
 
-        emailView.setKeyListener( null );
+        emailView.setKeyListener(null);
     }
 
     /**
      * Tapping the cancel icon during an edit removes changes to the email field
+     *
      * @param v v is a View, allows usage of on click in xml
      */
-    public void cancelEditEmailAddress(View v){
+    public void cancelEditEmailAddress(View v) {
         ImageButton cancelButton = (ImageButton) findViewById(R.id.CancelEditEmailButton);
         ImageButton saveButton = (ImageButton) findViewById(R.id.EmailSaveEditButton);
         ImageButton editButton = (ImageButton) findViewById(R.id.EmailEditIconImageButton);
@@ -206,14 +210,14 @@ public class UserProfileActivity extends AppCompatActivity {
         emailView.setClickable(false);
         // Revert to the old email address before editing started
         emailView.setText(this.oldEmailAddress);
-        hideKeyboard( emailView );
+        hideKeyboard(emailView);
 
-        emailView.setKeyListener( null );
+        emailView.setKeyListener(null);
     }
 
     // TODO src: http://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
-    public void hideKeyboard( View v ) {
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+    public void hideKeyboard(View v) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
     }
 }

@@ -20,4 +20,17 @@
     <string name="helpPaidText"><b>Paid</b> - A request that has been paid for.</string>
     <string name="helpCancelText"><b>Cancel</b> - A request that has been cancelled. This can occur anytime before the ride is complete.</string>
 
+
+    <!-- activity_make_request.xml -->
+    <string name="choose_location_button_text">Choose Start and End Points on Map</string>
+    <string name="fare_estimate_prompt">Fare estimate:</string>
+    <string name="dollar_sign">$</string>
+    <string name="empty_fare">0.00</string>
+    <string name="estimate_button_text">Estimate</string>
+    <string name="description_prompt">Enter a description:</string>
+    <string name="description_hint">Describe the ride you seek</string>
+    <string name="submit_button_text">Submit</string>
+
+    <!-- dialog_keyword_search.xml -->
+    <string name="searchHint">Enter a keyword</string>
 </resources>

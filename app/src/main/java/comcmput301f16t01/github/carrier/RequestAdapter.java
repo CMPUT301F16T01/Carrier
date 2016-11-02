@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Currency;
+import java.util.Locale;
 
 /**
  * From hreherch's implementation of LonelyTwitter
@@ -46,7 +48,7 @@ public class RequestAdapter extends ArrayAdapter<Request> {
 
             // Set the start location in the item's view
             if (startLocTextView != null) {
-                String startLoc = "To: " + request.getStart().toString();
+                String startLoc = "From: " + request.getStart().toString();
                 startLocTextView.setText(startLoc);
             }
 
@@ -58,7 +60,9 @@ public class RequestAdapter extends ArrayAdapter<Request> {
 
             // Set the price in the item's view
             if (priceTextView != null) {
-                String price = "$" + Float.toString(request.getFare() / 100);
+                Currency localCurrency = Currency.getInstance( Locale.getDefault() );
+                String price = localCurrency.getSymbol()
+                        + Float.toString(request.getFare() / 100);
                 priceTextView.setText(price);
             }
 
