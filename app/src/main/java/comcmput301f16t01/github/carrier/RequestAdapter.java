@@ -62,7 +62,6 @@ public class RequestAdapter extends ArrayAdapter<Request> {
                 priceTextView.setText(price);
             }
 
-            // TODO showing the status properly...
             // Set up the status icon depending on the status of the request
             if (statusImageView != null) {
                 switch( request.getStatus() ) {

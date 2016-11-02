@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (id == R.id.action_help) {
-            Intent intent = new Intent(this, HelpActivity.class);
+            Intent intent = new Intent(MainActivity.this, HelpActivity.class);
             startActivity(intent);
         }
 
@@ -294,9 +294,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             });*/
 
-            // To view a request we click on it
-            // We will bundle the request with it
-            // Mandy
+
+            /**
+             * When we click a request we want to be able to see it in another activity
+             * Use bundles to send the position of the request in a list
+             */
             requestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
