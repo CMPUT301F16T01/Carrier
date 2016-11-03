@@ -56,8 +56,6 @@ public class RequestController {
     }
 
     public void cancelRequest(User rider, Request request) {
-        // ElasticRequestController.CancelRequest cancelRequestTask = new ElasticRequestController.CancelRequest();
-        // cancelRequestTask.execute(request);
         // TODO test elastic search component
         request.setStatus(Request.CANCELLED);
 
