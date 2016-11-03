@@ -105,23 +105,35 @@ public class RiderRequestActivity extends AppCompatActivity {
 
     public void cancelRequest(View v){
         AlertDialog.Builder adb = new AlertDialog.Builder(RiderRequestActivity.this);
-        adb.setMessage("Cancel request?");
-        adb.setCancelable(true);
-        adb.setPositiveButton("Cancel Request", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                RequestController rc = new RequestController();
-                rc.cancelRequest(request.getRider(), request);
-                finish();
-            }
-        });
+        if ((request.getStatus() != Request.CANCELLED) && (request.getStatus() != Request.COMPLETE)
+                && (request.getStatus() != Request.PAID)) {
+            adb.setMessage("Cancel request?");
+            adb.setCancelable(true);
+            adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    RequestController rc = new RequestController();
+                    rc.cancelRequest(request.getRider(), request);
+                    finish();
+                }
+            });
 
-        adb.setNegativeButton("Do not cancel ", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+            adb.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
 
-            }
-        });
+                }
+            });
+        }
+        else {
+            adb.setTitle("Error: ");
+            adb.setMessage("Request cannot be cancelled.");
+            adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+        }
         adb.show();
     }
 }
