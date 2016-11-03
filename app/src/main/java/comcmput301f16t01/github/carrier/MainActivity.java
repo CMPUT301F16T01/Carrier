@@ -25,7 +25,9 @@ import android.view.ViewGroup;
 
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -349,5 +351,14 @@ public class MainActivity extends AppCompatActivity {
             }
             return null;
         }
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        ListView requestListView = (ListView) findViewById( R.id.listView_homeRequestList );
+        // ListAdapter arrayAdapter =  requestListView.getAdapter();
+        //arrayAdapter.notifyAll();
+        // arrayAdapter.notifyDataSetChanged();
     }
 }
