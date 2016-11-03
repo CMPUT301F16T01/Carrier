@@ -17,39 +17,12 @@ import org.w3c.dom.Text;
 
 import java.util.Locale;
 
-/*
-This will be a long thought...
-
-So I am running into some problems with the Request class so I've made executive
-decisions for now that we may want to change. There is a getEstimate() method in
-the Request class to estimate the method (that calls the getEstimate() method in
-the FareCalculator class. It doesn't make sense to use the Request method here
-because I need the location to create the request (with the constructor) but I
-don't want to make the request partway through the user's activity here because
-they could cancel it. I want to make the Request object when they hit the submit
-button. I don't want to modify the constructor because the start and end locations
-are necessary information for the existence of a Request. Nevertheless, I need to
-show the user the fare estimate on the screen so I need the estimate before I
-instantiate the Request object.
-
-It makes sense for the Request object to require the location parameters because
-those are necessary attributes for a Request to exist. I am assuming that if the
-user doesn't make any changes to the location, the fare estimate will be the same
-every time the method is called so maybe this is a non-issue but it just feels messy
-to have a method that does it, but here I have to call the method directly from its
-own class and then explicitly set the Request fare.
-
-I don't know if this is even a problem or if I am just overthinking things but
-whoever's reviewing my code give me your thoughts or ask me if my use of these
-classes and their methods doesn't make sense...
- */
-
 public class MakeRequestActivity extends AppCompatActivity {
 
     final Activity activity = MakeRequestActivity.this;
-    private static Location start = null;
-    private static Location end = null;
-    private static int fareEstimated = -1;
+    private Location start = null;
+    private Location end = null;
+    private int fareEstimated = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,33 +31,9 @@ public class MakeRequestActivity extends AppCompatActivity {
         setTitle("New Request");
 
         activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-
-        Button locationButton = (Button) findViewById(R.id.button_chooseLocation);
-        locationButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                setResult(RESULT_OK);
-                chooseLocations();
-            }
-        });
-
-        Button estimateButton = (Button) findViewById(R.id.button_estimateFare);
-        estimateButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                setResult(RESULT_OK);
-                estimateFare();
-            }
-        });
-
-        Button submitButton = (Button) findViewById(R.id.button_submit);
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                setResult(RESULT_OK);
-                submitRequest();
-            }
-        });
     }
 
-    private void chooseLocations() {
+    public void chooseLocations(View view) {
         Toast.makeText(activity, "Choose locations", Toast.LENGTH_SHORT).show();
 
         if(start == null) start = new Location();
@@ -117,11 +66,11 @@ public class MakeRequestActivity extends AppCompatActivity {
     public void onBackPressed() {
         AlertDialog.Builder adb = new AlertDialog.Builder(this);
         adb.setTitle("Are you sure?");
-        adb.setMessage("Cancel request?");
+        adb.setMessage("You will lose this request if you go back.");
         adb.setCancelable(true);
         final Activity activity = MakeRequestActivity.this;
         // TODO semantics re: cancel, button text (is it confusing to have "cancel" and "cancel request"?)
-        adb.setPositiveButton("Cancel request", new DialogInterface.OnClickListener() {
+        adb.setPositiveButton("Go back", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 activity.finish();
@@ -129,7 +78,7 @@ public class MakeRequestActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        adb.setNegativeButton("Cancel", null );
+        adb.setNegativeButton("Stay", null );
         adb.show();
     }
 
@@ -137,7 +86,8 @@ public class MakeRequestActivity extends AppCompatActivity {
      * Use the FareCalculator to estimate the fare between the user-selected start and end locations.
      * The start and end locations must have both been selected before the fare can be estimated.
      */
-    public void estimateFare() {
+    public void estimateFare(View view) {
+        // TODO possibly do check within FareCalculator...need to wait for this to be completed
         if(start == null || end == null) {
             Toast.makeText(activity, "You must first select a start and end location", Toast.LENGTH_SHORT).show();
         } else {
@@ -163,7 +113,7 @@ public class MakeRequestActivity extends AppCompatActivity {
     // TODO deprecate once toString is available in FareCalculator
     public String formatFare(int intFare) {
         double fare = ((double) intFare)/100;
-        String str = String.format(Locale.getDefault(),"%.0f",fare/1) + ".";
+        String str = String.format(Locale.getDefault(),"%d",(long)fare) + ".";
         String dec = String.format(Locale.getDefault(),"0%.0f",(fare%1)*100);
         // format the fare as a string with 2 decimal points
         str +=  dec.substring(dec.length()-2, dec.length());
@@ -173,40 +123,37 @@ public class MakeRequestActivity extends AppCompatActivity {
     /**
      * When the submit button is pressed
      *      Create a Request and add it to the request controller
-     *      Save the request (elasticsearch...through request controller?)
+     *      Save the request (elastic search...through request controller?)
      *      Return to MainActivity
      */
-    public void submitRequest() {
+    public void submitRequest(View view) {
         RequestController rc = new RequestController();
         UserController uc = new UserController();
 
-        if(start == null || end == null) {
-            Toast.makeText(activity, "You must first select a start and end location", Toast.LENGTH_SHORT).show();
-        } else if (fareEstimated != -1) {
-            Toast.makeText(activity, "You must first estimate the ride fare", Toast.LENGTH_SHORT).show();
+        User user = uc.getLoggedInUser();
+
+        EditText descEditText = (EditText) findViewById(R.id.editText_description);
+        String description = descEditText.getText().toString();
+
+        Request request;
+        if(description.equals("")) {
+            request = new Request(user, start, end);
         } else {
-            User user = uc.getLoggedInUser();
+            request = new Request(user, start, end, description);
+        }
 
-            EditText descEditText = (EditText) findViewById(R.id.editText_description);
-            String description = descEditText.getText().toString();
+        request.setFare(fareEstimated);
 
-            Request request;
-            if(description.equals("")) {
-                request = new Request(user, start, end);
-            } else {
-                request = new Request(user, start, end, description);
-            }
+        String result = rc.addRequest(request);
 
-            request.setFare(fareEstimated);
-
-            rc.addRequest(request);
-
-            // TODO save the data (elasticsearch...will this be automatically done from within rc?)
-
-            Toast.makeText(MakeRequestActivity.this, "Request submitted", Toast.LENGTH_SHORT).show();
+        // Check that a new request was created
+        if (result == null) {
+            Toast.makeText(activity, "Request submitted", Toast.LENGTH_SHORT).show();
             activity.finish();
-            Intent intent = new Intent(MakeRequestActivity.this, MainActivity.class);
+            Intent intent = new Intent(activity, MainActivity.class);
             startActivity(intent);
+        } else { // if not, display returned result message as a Toast
+            Toast.makeText(activity, result, Toast.LENGTH_SHORT).show();
         }
     }
 }

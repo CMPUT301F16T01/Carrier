@@ -28,6 +28,7 @@ public class ElasticUserController {
 
         /**
          * Async task to add user to elastic search.
+         *
          * @param users
          * @return
          */
@@ -35,19 +36,19 @@ public class ElasticUserController {
         protected Void doInBackground(User... users) {
             verifySettings();
 
-            for ( User user : users ) {
+            for (User user : users) {
                 Index index = new Index.Builder(user).index("cmput301f16t01").type("user").build();
 
                 try {
                     DocumentResult result = client.execute(index);
 
-                    if( result.isSucceeded() ) {
-                        user.setId( result.getId() );
+                    if (result.isSucceeded()) {
+                        user.setId(result.getId());
                     } else {
-                        Log.i( "Add User Unsuccessful", "Failed to add user to elastic search?" );
+                        Log.i("Add User Unsuccessful", "Failed to add user to elastic search?");
                     }
                 } catch (IOException e) {
-                    Log.i( "Add User Failure", "Something went wrong adding a user to elastic search." );
+                    Log.i("Add User Failure", "Something went wrong adding a user to elastic search.");
                     e.printStackTrace();
                 }
             }
@@ -92,7 +93,7 @@ public class ElasticUserController {
             DroidClientConfig config = builder.build();
 
             JestClientFactory factory = new JestClientFactory();
-            factory.setDroidClientConfig( config );
+            factory.setDroidClientConfig(config);
             client = (JestDroidClient) factory.getObject();
         }
     }
