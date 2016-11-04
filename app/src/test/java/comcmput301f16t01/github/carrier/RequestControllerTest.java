@@ -2,17 +2,13 @@ package comcmput301f16t01.github.carrier;
 
 import org.junit.Test;
 
-<<<<<<< HEAD
 import static org.junit.Assert.*;
 
-=======
->>>>>>> 8a5139f539af5fc79329470a2aa56abfeee6a9d6
 public class RequestControllerTest {
     @Test
     public void addRequestTest() {
         // TODO write tests to test adding a request via elastic search
     }
-<<<<<<< HEAD
 
     @Test
     public void cancelRequestTest(){
@@ -42,6 +38,4 @@ public class RequestControllerTest {
         assertTrue("cancelledRequest changed when it shouldn't have", cancelledRequest.getStatus() == Request.CANCELLED);
         assertTrue("completedRequest changed when it shouldn't have.", completedRequest.getStatus() == Request.COMPLETE);
     }
-=======
->>>>>>> 8a5139f539af5fc79329470a2aa56abfeee6a9d6
 }
