@@ -251,12 +251,15 @@ public class MainActivity extends AppCompatActivity {
         private void fillDriverRequests(ListView requestListView) {
             RequestController rc = new RequestController();
             User loggedInUser = UserController.getLoggedInUser();
-            RequestList requestList = rc.getOfferedRequests(loggedInUser);
+            ArrayList<Request> requestList = rc.getOfferedRequests(loggedInUser);
             if (requestList.size() == 0){
                 User testUser = new User("TestUser");
                 Request testRequest1 = new Request(testUser, new Location(), new Location(), "testRequest1");
                 Request testRequest2 = new Request(testUser, new Location(), new Location(), "testRequest1");
-                re
+                requestList.add(testRequest1);
+                requestList.add(testRequest2);
+                rc.addDriver(testRequest1, loggedInUser);
+                rc.addDriver(testRequest2, loggedInUser);
 
             }
         }

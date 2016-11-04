@@ -12,6 +12,7 @@ import java.util.ArrayList;
  * * @see RequestList
  */
 public class RequestController {
+    private Context saveContext = null;
     private static RequestList requestList = null;
 
     /**
@@ -54,7 +55,7 @@ public class RequestController {
      * @return
      */
     public ArrayList<Request> getRequests(User rider) {
-        return new ArrayList<Request>();
+        return requestList;
     }
 
     /**
@@ -64,6 +65,9 @@ public class RequestController {
     }
 
     public void cancelRequest(User rider, Request request) {
+        // TODO test elastic search component
+        request.setStatus(Request.CANCELLED);
+
     }
 
     /**
@@ -73,6 +77,8 @@ public class RequestController {
      * @param driver  the driver that is being added as a driver for the request.
      */
     public void addDriver(Request request, User driver) {
+        request.addOfferingDriver(driver);
+
     }
 
     /**
