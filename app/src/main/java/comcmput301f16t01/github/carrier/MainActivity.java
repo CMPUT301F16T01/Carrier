@@ -1,29 +1,26 @@
 package comcmput301f16t01.github.carrier;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.annotation.FloatRange;
-import android.support.design.widget.TabLayout;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -118,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
     private void changeFab(int position) {
         FloatingActionButton rider_fab = (FloatingActionButton) findViewById(R.id.fab_rider);
         FloatingActionButton driver_fab = (FloatingActionButton) findViewById(R.id.fab_driver);
-        switch(position){
+        switch (position) {
             case 0:
                 driver_fab.hide();
                 rider_fab.show();
@@ -147,14 +144,20 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_viewProfile) {
-            Toast.makeText( MainActivity.this, "Wanna view your profile? Nope!",
-                    Toast.LENGTH_SHORT ).show();
+            Toast.makeText(MainActivity.this, "Wanna view your profile? Nope!",
+                    Toast.LENGTH_SHORT).show();
             // TODO Bundle information to give to the user profile activity. (UserController or ElasticController)?
             Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
             startActivity(intent);
         }
 
-        if (id == R.id.action_logOut ) {
+        if (id == R.id.action_help) {
+            Intent intent = new Intent(MainActivity.this, HelpActivity.class);
+            startActivity(intent);
+        }
+
+
+        if (id == R.id.action_logOut) {
             onBackPressed();
         }
 
@@ -163,8 +166,8 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * When back is pressed or the "Log Out" menu option is selected:
-     *      Pop up a AlertDialog to confirm and open a new LoginActivity, while closing the current
-     *      RiderMainActivity.
+     * Pop up a AlertDialog to confirm and open a new LoginActivity, while closing the current
+     * RiderMainActivity.
      */
     public void onBackPressed() {
         AlertDialog.Builder adb = new AlertDialog.Builder(this);
@@ -175,25 +178,30 @@ public class MainActivity extends AppCompatActivity {
         adb.setPositiveButton("Log Out", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                LoginMemory lm = new LoginMemory( activity );
+                lm.saveUsername( "" ); // remove the username from memory
                 activity.finish();
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
-                // TODO log out current user? (UserController)
+                UserController uc = new UserController();
+                uc.logOutUser();
             }
         });
-        adb.setNegativeButton("Cancel", null );
+        adb.setNegativeButton("Cancel", null);
         adb.show();
     }
 
     public void startMakeRequestActivity(View view) {
         // This will start the make request activity for a rider when they press the rider FAB
-        Toast.makeText(this, "RIDER FAB", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "RIDER FAB", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(MainActivity.this, MakeRequestActivity.class);
+        startActivity(intent);
     }
 
     public void startSearchActivity(View view) {
         // This will start the Search activity for a driver when they want to search requests
         // after they press the driver FAB
-        Toast.makeText(this, "DRIVER FAB", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "DRIVER FAB", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(MainActivity.this, SearchActivity.class);
         startActivity(intent);
     }
@@ -201,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
+
     public static class PlaceholderFragment extends Fragment {
         /**
          * The fragment argument representing the section number for this
@@ -230,22 +239,79 @@ public class MainActivity extends AppCompatActivity {
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
 
-            // TODO modify code and create a Request adapter for these lists
             // TODO (after) allow the ability to toggle between what requests are shown (?)
+
             ListView requestListView = (ListView) rootView.findViewById( R.id.listView_homeRequestList );
-            ArrayList<String> list = new ArrayList<String>();
             if( getArguments().getInt(ARG_SECTION_NUMBER) == 1 ) {
-                list.add( "hello world!" );
-                list.add( "this is a rider's request list." );
+                fillRiderRequests( requestListView );
             } else {
-                list.add( "Hello again world!" );
-                list.add( "This is a driver's request list!" );
+                fillDriverRequests( requestListView );
             }
-            // From Student Picker, Abram Hindle
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_list_item_1, list);
-            requestListView.setAdapter( adapter );
 
             return rootView;
+        }
+
+        /**
+         * Sets up the ListView for the driver.
+         * @param requestListView
+         */
+        private void fillDriverRequests(ListView requestListView) {
+        }
+
+        /**
+         * Sets up the ListView for the rider.
+         * @param requestListView
+         */
+
+        private void fillRiderRequests(ListView requestListView) {
+            RequestController rc = new RequestController();
+            User loggedInUser = UserController.getLoggedInUser();
+            final ArrayList<Request> requestList = rc.getRequests( loggedInUser );
+
+
+            if (requestList.size() == 0) {
+                // Create sample requests because this is probably not set up yet.
+                Request requestOne = new Request( loggedInUser, new Location(), new Location(), "testRequest!" );
+                Request requestTwo = new Request( loggedInUser, new Location(), new Location(), "testRequest2!" );
+
+
+                requestOne.setStatus(Request.COMPLETE);
+                requestTwo.setStatus(Request.PAID);
+                requestList.add( requestOne );
+                requestList.add( requestTwo );
+            }
+
+            RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
+                    R.layout.requestlist_item, requestList );
+
+            requestListView.setAdapter( requestArrayAdapter );
+
+            final Context ctx = this.getContext();
+            /*requestListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    System.out.println( "hi" );
+                    return true;
+                }
+            });*/
+
+
+            /**
+             * When we click a request we want to be able to see it in another activity
+             * Use bundles to send the position of the request in a list
+             */
+            requestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent intent = new Intent(getActivity(), RiderRequestActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("position", position);
+                    //bundle.putString("activity", "MainActivity");
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            });
+
         }
     }
 

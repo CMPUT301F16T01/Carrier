@@ -21,21 +21,10 @@ public class FareCalculator {
     /**
      * Creates a new object fare calculator, used to estimate a fair fare for a ride between
      * start and end.
-     * @param start The starting location of a ride.
-     * @param end The destination of a ride.
      */
-    public FareCalculator( Location start, Location end ) {
-        this.start = start;
-        this.end = end;
+    public FareCalculator() {
     }
 
-    /**
-     * Calculates a fair fare to charge a rider for a ride. Uses distance and duration to calculate
-     * this.
-     * @param distance
-     * @param duration
-     * @return
-     */
     public int getEstimate(double distance, double duration) {
         /* TODO: once we get routing working on our map we'll fetch the distance and duration */
         /* Assuming we're using OSM we can do road.mLength (a string, in km) and road.mDuration

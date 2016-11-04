@@ -120,6 +120,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:id="@+id/imageView_requestStatus"
             android:src="@drawable/ic_location_on"/>
 
         <Button
