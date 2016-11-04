@@ -12,23 +12,27 @@ import java.util.ArrayList;
  * * @see RequestList
  */
 public class RequestController {
-    private static RequestList requestList = null;
+    private static ArrayList<Request> requestList = null;
+    private Context saveContext = null;
+
+    //private static RequestList requestList = null;
+
 
     /**
      * Since we are using elastic search to get the request list.
      */
     public RequestController() {
         if (requestList == null) {
-            requestList = new RequestList();
+            requestList = new ArrayList<Request>();
         }
     }
 
     /**
      * @return the RequestList held by this controller.
      */
-    public static RequestList getInstance() {
+    public static ArrayList<Request> getInstance() {
         if (requestList == null) {
-            requestList = new RequestList();
+            requestList = new ArrayList<Request>();
         }
         return requestList;
     }
@@ -54,7 +58,7 @@ public class RequestController {
      * @return
      */
     public ArrayList<Request> getRequests(User rider) {
-        return new ArrayList<Request>();
+        return requestList;
     }
 
     /**
