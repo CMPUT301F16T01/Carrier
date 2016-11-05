@@ -1,6 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
 import android.util.Log;
+import android.util.Patterns;
 
 import java.util.ArrayList;
 
@@ -201,6 +202,15 @@ public class UserController {
         // Ensure a username is unique
         if (!checkUniqueUsername(username)) {
             return "That username is already taken!";
+        }
+
+        // Check if the email matches the email pattern
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches() ) {
+            return "That doesn't look like a valid email!";
+        }
+
+        if (!Patterns.PHONE.matcher(phoneNumber).matches()) {
+            return "That doesn't look liek a valid phone number!";
         }
 
         ElasticUserController.AddUserTask aut = new ElasticUserController.AddUserTask();

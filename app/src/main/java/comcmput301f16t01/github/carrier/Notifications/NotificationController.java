@@ -6,6 +6,8 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import java.util.concurrent.ExecutionException;
+
 import comcmput301f16t01.github.carrier.Request;
 import comcmput301f16t01.github.carrier.User;
 
@@ -31,6 +33,12 @@ public class NotificationController {
     public void clearAllNotifications( User user ) {
         ElasticNotificationController.ClearAllTask cat = new ElasticNotificationController.ClearAllTask();
         cat.execute( user.getUsername() );
+        try {
+            cat.get();
+        } catch (Exception e) {
+            // Make the Async insync
+            e.printStackTrace();
+        }
     }
 
     public void deleteNotification( String notificationID ) {

@@ -93,7 +93,7 @@ public class NotificationTest extends ApplicationTest {
     /**
      * Test that a user receives a notification when a driver makes an offer on their request
      */
-    public void testWithTimeoutRiderGetNotified() {
+    public void testRiderGetNotified() {
         assertTrue( "You must at least have network connection to run this test",
                 ConnectionChecker.isConnected( getContext() ) );
 
@@ -120,6 +120,6 @@ public class NotificationTest extends ApplicationTest {
         System.out.print( notificationList.size() );
 
         assertTrue( "There should be a notification for the user now",
-                notificationList.size() == 1 );
+                notificationList.size() != 0 );
     }
 }
