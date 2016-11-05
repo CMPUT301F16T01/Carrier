@@ -1,7 +1,13 @@
 package comcmput301f16t01.github.carrier.Notifications;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
+
+import comcmput301f16t01.github.carrier.Request;
+import comcmput301f16t01.github.carrier.User;
+
 /**
- * Created by Ben on 2016-11-04.
+ * Holds an instance of fetched notifications from ElasticSearch
  */
 
 public class NotificationController {
@@ -11,6 +17,17 @@ public class NotificationController {
         fetchNotifications();
     }
 
-    private void fetchNotifications() {
+    public NotificationList fetchNotifications() {
+        return new NotificationList();
+    }
+
+    public void clearAllNotifications( User user ) {
+    }
+
+    public void deleteNotification( String notificationID ) {
+    }
+
+    public void addNotification(@NonNull String username, @NonNull Request relatedRequest) {
+
     }
 }

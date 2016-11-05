@@ -9,10 +9,27 @@ import java.util.Date;
 
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Notifications.Notification;
+import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationList;
+import io.searchbox.core.search.sort.Sort;
 
 public class NotificationTest extends ApplicationTest {
     private User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234" );
+    private User driverOne = new User( "notifTestDriver", "notifyYou@email.com", "0118-99-112" );
+
+    // Set up a test user to receive notifications
+    private void setUpUser() {
+        UserController uc = new UserController();
+        String result = uc.createNewUser( loggedInUser.getUsername(),
+                loggedInUser.getEmail(),
+                loggedInUser.getPhone() );
+
+        if (result == null) {
+            System.out.print( "null line" );
+        }
+
+        assertTrue( "Failed to log in for test.", uc.logInUser( loggedInUser.getUsername() ) );
+    }
 
     /**
      * Tests that Collection.sort( notificationList ) correctly sorts notifications in a expected
@@ -78,8 +95,34 @@ public class NotificationTest extends ApplicationTest {
         assertEquals( "Could not sort on both rules", d, notificationList.get(3) );
     }
 
+    /**
+     * Test that a user receives a notification when a driver makes an offer on their request
+     */
     public void testRiderGetNotified() {
         assertTrue( "You must at least have network connection to run this test",
                 ConnectionChecker.isConnected( getContext() ) );
+
+        setUpUser();
+
+        NotificationController nc = new NotificationController();
+        RequestController rc = new RequestController();
+
+        nc.clearAllNotifications( loggedInUser );
+
+        Request newRequest = new Request( UserController.getLoggedInUser(),
+                new Location(), new Location(), "testRiderGetNotified" );
+
+        rc.addRequest( newRequest );
+
+        NotificationList notificationList = nc.fetchNotifications();
+        assertTrue( "There should be no notifications for the user yet",
+                0 == notificationList.size() );
+
+        rc.addDriver( newRequest, driverOne ); // adding a driver should initiate a notification
+
+        notificationList = nc.fetchNotifications();
+
+        assertTrue( "There should be a notification for the user now",
+                notificationList.size() == 1 );
     }
 }

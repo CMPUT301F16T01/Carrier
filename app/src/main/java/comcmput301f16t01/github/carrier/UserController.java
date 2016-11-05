@@ -39,10 +39,10 @@ public class UserController {
     }
 
     /**
-     * Will set the logged in user.
-     *
-     * @param user The user who is being set to the logged in user.
+     * Deprecated: use logInUser instead.
+     * @see #logInUser(String)
      */
+    @Deprecated
     public void setLoggedInUser(User user) {
         loggedInUser = user;
     }
@@ -124,9 +124,11 @@ public class UserController {
         user.setUsername(username);
     }
 
+    @Deprecated
     public void addDriver(User driver) {
     }
 
+    @Deprecated
     public void addRider(User rider) {
     }
 
