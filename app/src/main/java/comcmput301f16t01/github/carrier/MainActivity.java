@@ -151,6 +151,12 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
+        if (id == R.id.action_help) {
+            Intent intent = new Intent(MainActivity.this, HelpActivity.class);
+            startActivity(intent);
+        }
+
+
         if (id == R.id.action_logOut) {
             onBackPressed();
         }
@@ -203,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
+
     public static class PlaceholderFragment extends Fragment {
         /**
          * The fragment argument representing the section number for this
@@ -268,15 +275,21 @@ public class MainActivity extends AppCompatActivity {
          * Sets up the ListView for the rider.
          * @param requestListView
          */
+
         private void fillRiderRequests(ListView requestListView) {
             RequestController rc = new RequestController();
             User loggedInUser = UserController.getLoggedInUser();
-            ArrayList<Request> requestList = rc.getRequests( loggedInUser );
+            final ArrayList<Request> requestList = rc.getRequests( loggedInUser );
+
 
             if (requestList.size() == 0) {
                 // Create sample requests because this is probably not set up yet.
                 Request requestOne = new Request( loggedInUser, new Location(), new Location(), "testRequest!" );
                 Request requestTwo = new Request( loggedInUser, new Location(), new Location(), "testRequest2!" );
+
+
+                requestOne.setStatus(Request.COMPLETE);
+                requestTwo.setStatus(Request.PAID);
                 requestList.add( requestOne );
                 requestList.add( requestTwo );
             }
@@ -287,18 +300,28 @@ public class MainActivity extends AppCompatActivity {
             requestListView.setAdapter( requestArrayAdapter );
 
             final Context ctx = this.getContext();
-            requestListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            /*requestListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                     System.out.println( "hi" );
                     return true;
                 }
-            });
+            });*/
 
+
+            /**
+             * When we click a request we want to be able to see it in another activity
+             * Use bundles to send the position of the request in a list
+             */
             requestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    System.out.println( "hat" );
+                    Intent intent = new Intent(getActivity(), RiderRequestActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("position", position);
+                    //bundle.putString("activity", "MainActivity");
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 }
             });
 

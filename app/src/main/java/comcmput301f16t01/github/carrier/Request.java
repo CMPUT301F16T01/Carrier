@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * Represents a request for a ride.
  */
 public class Request {
-    // These are not static because they will be used with an instance of Request?
+    // These are not static because they will be used with an instance of Request
     // i.e. request.setStatus( request.OPEN );
     static final int OPEN = 1;            // A user has made the request but no drivers have accepted.
     static final int OFFERED = 2;         // One or more drivers have offered to fulfill the request.
@@ -96,17 +96,14 @@ public class Request {
     }
 
     public void setStatus(int status) {
-        // TODO make sure you do this right - Mandy (i.e. check that the status can change from one state to another)
+        this.status = status;
+        // TODO make an actual test for this (Mandy)
     }
 
     public void setFare(int fare) {
         this.fare = fare;
     }
 
-    public int getFareEstimate() {
-        FareCalculator fareCalc = new FareCalculator(start, end);
-        return fareCalc.getEstimate();
-    }
 
     public ArrayList<User> getOffers() {
         return new ArrayList<User>();

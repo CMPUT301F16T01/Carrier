@@ -1,6 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,33 +66,32 @@ public class RequestAdapter extends ArrayAdapter<Request> {
                 priceTextView.setText(price);
             }
 
-            // TODO showing the status properly...
             // Set up the status icon depending on the status of the request
             if (statusImageView != null) {
                 switch( request.getStatus() ) {
                     case( Request.OPEN ):
-                        //statusImageView.setImageResource( *** enter image for this status? *** );
-                        statusImageView.setBackgroundResource(R.color.openStatus);
+                        statusImageView.setImageResource(R.drawable.open);
+                        //statusImageView.setBackgroundResource(R.color.openStatus);
                         break;
                     case( Request.OFFERED ):
-                        //statusImageView.setImageResource( *** enter image for this status? *** );
-                        statusImageView.setBackgroundResource(R.color.offeredStatus);
+                        statusImageView.setImageResource(R.drawable.offered);
+                        //statusImageView.setBackgroundResource(R.color.offeredStatus);
                         break;
                     case( Request.CONFIRMED ):
-                        //statusImageView.setImageResource( *** enter image for this status? *** );
-                        statusImageView.setBackgroundResource(R.color.confirmedStatus);
+                        statusImageView.setImageResource(R.drawable.confirmed);
+                        //statusImageView.setBackgroundResource(R.color.confirmedStatus);
                         break;
                     case( Request.COMPLETE):
-                        //statusImageView.setImageResource( *** enter image for this status? *** );
-                        statusImageView.setBackgroundResource(R.color.completeStatus);
+                        statusImageView.setImageResource(R.drawable.complete);
+                        //statusImageView.setBackgroundResource(R.color.completeStatus);
                         break;
                     case( Request.PAID):
-                        //statusImageView.setImageResource( *** enter image for this status? *** );
-                        statusImageView.setBackgroundResource(R.color.paidStatus);
+                        statusImageView.setImageResource(R.drawable.paid);
+                        //statusImageView.setBackgroundResource(R.color.paidStatus);
                         break;
                     case( Request.CANCELLED):
-                        //statusImageView.setImageResource( *** enter image for this status? *** );
-                        statusImageView.setBackgroundResource(R.color.cancelledStatus);
+                        statusImageView.setImageResource(R.drawable.cancel);
+                        //statusImageView.setBackgroundResource(R.color.cancelledStatus);
                         break;
                 }
             }
