@@ -9,5 +9,7 @@
     <color name="color_rider">#448aff</color>
     <color name="color_driver">#ffb640</color>
     <color name="colorPrimaryLight">#757575</color>
+    <color name="usernameClick">#BDBDBD</color>
+    <color name="transparent">@null</color>
 
 </resources>

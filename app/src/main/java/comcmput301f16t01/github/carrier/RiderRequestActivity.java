@@ -1,8 +1,14 @@
 package comcmput301f16t01.github.carrier;
 
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -65,5 +71,57 @@ public class RiderRequestActivity extends AppCompatActivity {
 
             }
         }
+
+        final TextView driverUsernameTextView = (TextView) findViewById(R.id.text_view_driver);
+        /**
+         * This listener causes the TextView that displays driver username to have a dark
+         * background colour when touched. Like on facebook.
+         */
+        driverUsernameTextView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                String username = driverUsernameTextView.getText().toString()
+                        .replace("Driver: ", "");
+                if( event.getAction() == MotionEvent.ACTION_DOWN) {
+                    driverUsernameTextView.setBackgroundColor(ContextCompat
+                            .getColor(RiderRequestActivity.this, R.color.usernameClick));
+                    // When the name is released, go to user profile
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    driverUsernameTextView.setBackgroundColor(Color.TRANSPARENT);
+
+                }
+                return true;
+            }
+        });
+
+        final TextView riderUsernameTextView = (TextView) findViewById(R.id.text_view_rider);
+        /**
+         * This listener causes the TextView that displays rider username to have a dark
+         * background colour when touched. Like on facebook.
+         */
+        riderUsernameTextView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                String username = riderUsernameTextView.getText().toString()
+                        .replace("Rider: ", "");
+                if( event.getAction() == MotionEvent.ACTION_DOWN) {
+                    riderUsernameTextView.setBackgroundColor(ContextCompat
+                            .getColor(RiderRequestActivity.this, R.color.usernameClick));
+                    // When the name is released, go to user profile
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    riderUsernameTextView.setBackgroundColor(Color.TRANSPARENT);
+                    onClickUsername(username);
+                }
+                return true;
+            }
+        });
     }
+
+
+    public void onClickUsername(String username) {
+        Toast.makeText(this, username, Toast.LENGTH_SHORT).show();
+    }
+
+
+
 }
