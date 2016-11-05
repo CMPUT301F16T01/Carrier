@@ -1,17 +1,12 @@
 package comcmput301f16t01.github.carrier;
 
-import android.support.annotation.NonNull;
-import android.test.mock.MockContext;
-
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 
+import comcmput301f16t01.github.carrier.MockObjects.MockNotification;
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
-import comcmput301f16t01.github.carrier.Notifications.Notification;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationList;
-import io.searchbox.core.search.sort.Sort;
 
 public class NotificationTest extends ApplicationTest {
     private User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234" );
@@ -98,7 +93,7 @@ public class NotificationTest extends ApplicationTest {
     /**
      * Test that a user receives a notification when a driver makes an offer on their request
      */
-    public void testRiderGetNotified() {
+    public void testWithTimeoutRiderGetNotified() {
         assertTrue( "You must at least have network connection to run this test",
                 ConnectionChecker.isConnected( getContext() ) );
 
@@ -114,13 +109,15 @@ public class NotificationTest extends ApplicationTest {
 
         rc.addRequest( newRequest );
 
-        NotificationList notificationList = nc.fetchNotifications();
+        NotificationList notificationList = nc.fetchNotifications( loggedInUser.getUsername() );
         assertTrue( "There should be no notifications for the user yet",
                 0 == notificationList.size() );
 
         rc.addDriver( newRequest, driverOne ); // adding a driver should initiate a notification
 
-        notificationList = nc.fetchNotifications();
+        notificationList = nc.fetchNotifications( loggedInUser.getUsername() );
+
+        System.out.print( notificationList.size() );
 
         assertTrue( "There should be a notification for the user now",
                 notificationList.size() == 1 );

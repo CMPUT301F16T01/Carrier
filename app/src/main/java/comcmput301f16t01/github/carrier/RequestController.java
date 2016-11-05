@@ -84,7 +84,7 @@ public class RequestController {
         // TODO Elastic Requests...
         // only on success should we send out a notification!
         NotificationController nc = new NotificationController();
-        nc.addNotification( driver.getUsername(), request );
+        nc.addNotification( request.getRider(), request );
         // TODO check for notification success?
     }
 

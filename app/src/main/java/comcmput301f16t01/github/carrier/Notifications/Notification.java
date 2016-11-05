@@ -11,14 +11,15 @@ import comcmput301f16t01.github.carrier.User;
  * Notification class for storing and retrieving notifications.
  */
 public class Notification implements Comparable<Notification> {
-    protected User user;
+    protected String username;
     protected String requestID;
     protected boolean read;
     protected Date date;
+    private String elasticID;
 
     public Notification(@NonNull User userToBeNotified, @NonNull Request relatedRequest) {
         this.requestID = relatedRequest.getId();
-        this.user = userToBeNotified;
+        this.username = userToBeNotified.getUsername();
         this.date = new Date();
         this.read = false;
     }
@@ -39,8 +40,20 @@ public class Notification implements Comparable<Notification> {
         return requestID;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setID(String id) {
+        this.elasticID = id;
+    }
+
+    public String getID() {
+        return elasticID;
+    }
+
     @Override
-    public int compareTo(Notification o) {
+    public int compareTo(@NonNull Notification o) {
         // 0 means 'this = o' || 1 means 'this > o' || -1 means 'this < o'
         if (this.isRead() == o.isRead()) {
             // If they are equal in isRead, we order them based on date.
