@@ -267,8 +267,10 @@ public class MainActivity extends AppCompatActivity {
                 requestList.add(testRequest2);
                 rc.addDriver(testRequest1, loggedInUser);
                 rc.addDriver(testRequest2, loggedInUser);
-
             }
+            RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(), R.layout.requestlist_item,
+                    requestList);
+            requestListView.setAdapter(requestArrayAdapter);
         }
 
         /**
