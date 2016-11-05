@@ -1,11 +1,13 @@
 package comcmput301f16t01.github.carrier;
 
 import android.support.annotation.NonNull;
+import android.test.mock.MockContext;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 
+import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Notifications.Notification;
 import comcmput301f16t01.github.carrier.Notifications.NotificationList;
 
@@ -74,5 +76,10 @@ public class NotificationTest extends ApplicationTest {
         assertEquals( "Could not sort on both rules", c, notificationList.get(1) );
         assertEquals( "Could not sort on both rules", b, notificationList.get(2) );
         assertEquals( "Could not sort on both rules", d, notificationList.get(3) );
+    }
+
+    public void testRiderGetNotified() {
+        assertTrue( "You must at least have network connection to run this test",
+                ConnectionChecker.isConnected( getContext() ) );
     }
 }
