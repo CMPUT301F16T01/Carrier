@@ -25,6 +25,7 @@ import comcmput301f16t01.github.carrier.Notifications.NotificationList;
  *      3) Getting a notification when a driver offers to accept a rider's request (Use case test)
  *      4) Getting a notification when a driver's offer has been accepted (Use case test)
  *      5) Marking a notification as read
+ *      6) Deleting more than 10 notifications (testing the 10 return limit of queries)
  *
  * @see NotificationController
  * @see Notification
@@ -331,6 +332,7 @@ public class NotificationTest extends ApplicationTest {
             if (pass > 5) { break; }
         }
 
+        // Assertions based on which one is marked as "read"
         if (notificationList.get(0).isRead()) {
             assertFalse( "One of the notifications should be false", notificationList.get(1).isRead() );
             assertEquals( "The ID that was set to false is not the same",
@@ -340,5 +342,66 @@ public class NotificationTest extends ApplicationTest {
             assertEquals( "The ID that was set to false is not the same",
                     rememberReadID, notificationList.get(0).getID() );
         }
+    }
+
+    /** TESTt * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * Test that we can delete or get more than 10 notifications in one call
+     */
+    public void testDeletingManyNotification() {
+        Request requestOne = new Request( anotherUser, new Location(), new Location(),
+                "testDeletingManyNotifications1");
+
+        NotificationController nc = new NotificationController();
+
+        nc.clearAllNotifications( anotherUser );
+
+        NotificationList notificationList = nc.fetchNotifications( anotherUser );
+
+        // wait for async tasks to finish (All requests should be cleared)
+        int pass = 0;
+        while( notificationList.size() != 0 ) {
+            chillabit( 1000 );
+            notificationList = nc.fetchNotifications( anotherUser );
+            pass++;
+            if (pass > 5) { break; }
+        }
+
+        assertTrue( "There should be no notification", notificationList.size() == 0 );
+
+        for( int i = 0; i < 15; i++ ) {
+            nc.addNotification( anotherUser, requestOne );
+        }
+
+        notificationList = nc.fetchNotifications( anotherUser );
+
+        // wait for async tasks to finish (need 15 or more unique requests)
+        pass = 0;
+        while( notificationList.size() <= 10 ) {
+            chillabit( 1000 );
+            notificationList = nc.fetchNotifications( anotherUser );
+            pass++;
+            if (pass > 5) { break; }
+        }
+
+        int numFound = notificationList.size();
+        assertTrue( "There should be 15 notifications, found: " + Integer.toString( numFound ),
+                numFound == 15 );
+
+        nc.clearAllNotifications( anotherUser );
+
+        notificationList = nc.fetchNotifications( anotherUser );
+
+        // wait for async tasks to finish (All requests should be cleared)
+        pass = 0;
+        while( notificationList.size() != 0 ) {
+            chillabit( 1000 );
+            notificationList = nc.fetchNotifications( anotherUser );
+            pass++;
+            if (pass > 5) { break; }
+        }
+
+        assertTrue( "There should be no notification", notificationList.size() == 0 );
+
     }
 }

@@ -64,7 +64,7 @@ public class ElasticNotificationController {
         @Override
         protected NotificationList doInBackground(String... search_parameters) {
             verifySettings();
-            String search_string = "{\"query\": {\"match\": {\"username\": \"" + search_parameters[0] + "\"}}}";
+            String search_string = "{\"from\" : 0, \"size\" : 500, \"query\": {\"match\": {\"username\": \"" + search_parameters[0] + "\"}}}";
 
             Search search = new Search.Builder(search_string)
                     .addIndex("cmput301f16t01")
