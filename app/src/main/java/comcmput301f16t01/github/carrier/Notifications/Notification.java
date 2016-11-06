@@ -14,6 +14,7 @@ public class Notification implements Comparable<Notification> {
     protected String username;
     protected String requestID;
     protected boolean read;
+    protected boolean isRider;
     protected Date date;
     private String elasticID;
 
@@ -22,6 +23,11 @@ public class Notification implements Comparable<Notification> {
         this.username = userToBeNotified.getUsername();
         this.date = new Date();
         this.read = false;
+        if (relatedRequest.getRider().getUsername().equals(userToBeNotified.getUsername())) {
+            isRider = true;
+        } else {
+            isRider = false;
+        }
     }
 
     public boolean isRead() {
@@ -50,6 +56,20 @@ public class Notification implements Comparable<Notification> {
 
     public String getID() {
         return elasticID;
+    }
+
+    @Override
+    public String toString() {
+        String notifString = "";
+        if (!read) {
+            notifString += "New!\n";
+        }
+        if (isRider) {
+            notifString += "A driver has offered to accept your request!";
+        } else {
+            notifString += "A rider has accepted your offer to drive!";
+        }
+        return notifString;
     }
 
     @Override

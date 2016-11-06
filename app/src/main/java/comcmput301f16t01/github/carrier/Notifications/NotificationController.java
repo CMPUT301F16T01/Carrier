@@ -14,10 +14,10 @@ import comcmput301f16t01.github.carrier.Request;
 import comcmput301f16t01.github.carrier.User;
 
 /**
- * Elastic Search in between...?
+ * Controls a user's notifications for elastic search
  */
 public class NotificationController {
-    // private NotificationList notificationList;
+    private static NotificationList notificationList;
 
     /**
      * @return A sorted NotificationList
@@ -25,7 +25,6 @@ public class NotificationController {
     public NotificationList fetchNotifications( User user ) {
         ElasticNotificationController.FindNotificationTask fnt = new ElasticNotificationController.FindNotificationTask();
         fnt.execute( user.getUsername() );
-        NotificationList notificationList = new NotificationList();
         try {
             notificationList = fnt.get();
             Collections.sort(notificationList);
@@ -35,6 +34,23 @@ public class NotificationController {
         return notificationList;
     }
 
+    /**
+     * @return true, if an unread notification exists. false otherwise
+     */
+    public boolean unreadNotification( User user ) {
+        fetchNotifications( user );
+        for ( Notification notification : notificationList ) {
+            if (!notification.isRead()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Clears all notifications for a user.
+     * @param user
+     */
     public void clearAllNotifications( User user ) {
         ElasticNotificationController.ClearAllTask cat = new ElasticNotificationController.ClearAllTask();
         cat.execute( user.getUsername() );
@@ -44,6 +60,7 @@ public class NotificationController {
             // Make the Async insync
             e.printStackTrace();
         }
+        notificationList.clear();
     }
 
     /**
@@ -58,9 +75,13 @@ public class NotificationController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return newNotification;
+        return newNotification; // TODO find out why I did this, because it makes no sense.
     }
 
+    /**
+     * Marks the given notification as read
+     * @param notification
+     */
     public void markNotificationAsRead( Notification notification ) {
         ElasticNotificationController.MarkAsReadTask mart = new ElasticNotificationController.MarkAsReadTask();
         mart.execute( notification.getID() );
