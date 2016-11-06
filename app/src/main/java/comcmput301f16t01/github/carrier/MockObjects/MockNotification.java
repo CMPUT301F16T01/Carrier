@@ -11,7 +11,6 @@ import comcmput301f16t01.github.carrier.User;
 /**
  * Created by Ben on 2016-11-04.
  */
-
 public class MockNotification extends Notification {
     public MockNotification(@NonNull User userToBeNotified, @NonNull Request relatedRequest) {
         super(userToBeNotified, relatedRequest);

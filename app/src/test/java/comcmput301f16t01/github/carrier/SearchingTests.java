@@ -26,7 +26,7 @@ public class SearchingTests {
     @After
     public void clean() {
         RequestController rc = new RequestController();
-        rc.reset();
+        rc.clear();
     }
 
     /**
@@ -61,7 +61,7 @@ public class SearchingTests {
         // this method should return a list of requests, sorted based on proximity of start location
         // for now I'm assuming there are limits on how far away a request can be to be included in this list
         // TODO would it be better to use ArrayList<Request> or requestList
-        requests = rc.searchByLocation(driverLocation);
+        requests = rc.getSearchByLocation(driverLocation);
         assertTrue("Search did not return 2 requests", requests.size() == 2);
         // check that the requests are ordered properly
         assertEquals("Closest request incorrect", request1, requests.get(0));
@@ -74,7 +74,7 @@ public class SearchingTests {
         rc.confirmDriver(request1, driver);
 
         // request1 should no longer be included in the search results
-        requests = rc.searchByLocation(driverLocation);
+        requests = rc.getSearchByLocation(driverLocation);
         assertTrue("Search did not return 1 request", requests.size() == 1);
         // check that the requests are ordered properly
         assertEquals("Closest request incorrect", request3, requests.get(0));
@@ -119,11 +119,11 @@ public class SearchingTests {
         String query3 = "downtown";
 
         // TODO should we allow the capability to search more than one keyword?
-        requests = rc.searchByKeyword(query1);
+        requests = rc.getSearchByKeyword(query1);
         assertTrue("Search did not return 2 requests", requests.size() == 2);
-        requests = rc.searchByKeyword(query2);
+        requests = rc.getSearchByKeyword(query2);
         assertTrue("Search did not return 1 request", requests.size() == 1);
-        requests = rc.searchByKeyword(query3);
+        requests = rc.getSearchByKeyword(query3);
         assertTrue("Search returned requests", requests.size() == 0);
 
         User driver = new User("Amber");
@@ -131,22 +131,22 @@ public class SearchingTests {
         rc.confirmDriver(request1, driver);
 
         // request1 should no longer be included in search results
-        requests = rc.searchByKeyword(query1);
+        requests = rc.getSearchByKeyword(query1);
         assertTrue("Search did not return 2 requests", requests.size() == 2);
-        requests = rc.searchByKeyword(query2);
+        requests = rc.getSearchByKeyword(query2);
         assertTrue("Search returned requests", requests.size() == 0);
-        requests = rc.searchByKeyword(query3);
+        requests = rc.getSearchByKeyword(query3);
         assertTrue("Search returned requests", requests.size() == 0);
 
         rc.addDriver(request2, driver);
         rc.confirmDriver(request2, driver);
 
         // request1 and request2 should no longer be included in search results
-        requests = rc.searchByKeyword(query1);
+        requests = rc.getSearchByKeyword(query1);
         assertTrue("Search did not return 1 requests", requests.size() == 1);
-        requests = rc.searchByKeyword(query2);
+        requests = rc.getSearchByKeyword(query2);
         assertTrue("Search returned requests", requests.size() == 0);
-        requests = rc.searchByKeyword(query3);
+        requests = rc.getSearchByKeyword(query3);
         assertTrue("Search returned requests", requests.size() == 0);
     }
 }

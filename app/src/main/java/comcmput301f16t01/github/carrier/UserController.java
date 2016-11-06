@@ -168,7 +168,7 @@ public class UserController {
      *
      */
     public void reset() {
-        // TODO this never had the option to reset UserList.
+        // TODO this never had the option to clear UserList.
     }
 
     /**

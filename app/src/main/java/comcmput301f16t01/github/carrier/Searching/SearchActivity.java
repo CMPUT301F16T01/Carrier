@@ -1,4 +1,4 @@
-package comcmput301f16t01.github.carrier;
+package comcmput301f16t01.github.carrier.Searching;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import comcmput301f16t01.github.carrier.R;
 
 public class SearchActivity extends AppCompatActivity {
     final Activity activity = SearchActivity.this;
