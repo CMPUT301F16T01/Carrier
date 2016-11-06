@@ -4,6 +4,9 @@ import android.content.Context;
 
 import java.util.ArrayList;
 
+import comcmput301f16t01.github.carrier.Notifications.Notification;
+import comcmput301f16t01.github.carrier.Notifications.NotificationController;
+
 /**
  * Singleton Pattern
  * We will be using RequestController as a middleman between the activity and elasticController.
@@ -48,15 +51,15 @@ public class RequestController {
         } else {
             ElasticRequestController.AddRequestTask art = new ElasticRequestController.AddRequestTask();
             art.execute(request);
-
             return null;
         }
     }
 
     /**
-     * @param rider
-     * @return
+     * Deprecated: should use new function that uses elastic search or FileIO (depending on
+     * connectivity), not singleton?
      */
+    @Deprecated
     public ArrayList<Request> getRequests(User rider) {
         return requestList;
     }
@@ -77,6 +80,12 @@ public class RequestController {
      * @param driver  the driver that is being added as a driver for the request.
      */
     public void addDriver(Request request, User driver) {
+
+        // TODO Elastic Requests...
+        // only on success should we send out a notification!
+        NotificationController nc = new NotificationController();
+        nc.addNotification( request.getRider(), request );
+        // TODO check for notification success?
     }
 
     /**
@@ -87,6 +96,12 @@ public class RequestController {
      * @param driver  The driver that is being accepted
      */
     public void confirmDriver(Request request, User driver) {
+
+        // TODO Elastic Requests...
+        // only on success should we send out a notification!
+        NotificationController nc = new NotificationController();
+        nc.addNotification( driver, request );
+        // TODO check for notification success?
     }
 
     public void completeRequest(Request request) {

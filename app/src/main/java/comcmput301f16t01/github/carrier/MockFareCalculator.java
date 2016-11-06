@@ -11,10 +11,10 @@ public class MockFareCalculator extends FareCalculator {
      * @param end
      */
     public MockFareCalculator(Location start, Location end) {
-        super(start, end);
+        //super(start, end);
     }
 
-    @Override
+    //@Override
     public int getEstimate() {
         double upper = 20000;
         double lower = 1;

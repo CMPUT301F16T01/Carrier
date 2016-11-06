@@ -7,6 +7,10 @@
         android:orderInCategory="100"
         android:title="View Profile" />
     <item
+        android:id="@+id/action_viewNotifications"
+        android:orderInCategory="100"
+        android:title="View Notifications" />
+    <item
         android:id="@+id/action_help"
         android:orderInCategory="100"
         android:title="Help" />

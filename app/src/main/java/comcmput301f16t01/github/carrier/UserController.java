@@ -1,6 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
 import android.util.Log;
+import android.util.Patterns;
 
 import java.util.ArrayList;
 
@@ -39,10 +40,10 @@ public class UserController {
     }
 
     /**
-     * Will set the logged in user.
-     *
-     * @param user The user who is being set to the logged in user.
+     * Deprecated: use logInUser instead.
+     * @see #logInUser(String)
      */
+    @Deprecated
     public void setLoggedInUser(User user) {
         loggedInUser = user;
     }
@@ -124,9 +125,11 @@ public class UserController {
         user.setUsername(username);
     }
 
+    @Deprecated
     public void addDriver(User driver) {
     }
 
+    @Deprecated
     public void addRider(User rider) {
     }
 
@@ -201,12 +204,22 @@ public class UserController {
             return "That username is already taken!";
         }
 
+        // Check if the email matches the email pattern
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches() ) {
+            return "That doesn't look like a valid email!";
+        }
+
+        if (!Patterns.PHONE.matcher(phoneNumber).matches()) {
+            return "That doesn't look liek a valid phone number!";
+        }
+
         ElasticUserController.AddUserTask aut = new ElasticUserController.AddUserTask();
         aut.execute(newUser);
 
         while (newUser.getId() == null) {
             // waiting...
         }
+
         loggedInUser = newUser;
         return null;
     }
