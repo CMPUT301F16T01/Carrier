@@ -140,8 +140,8 @@ public class MakeRequestActivity extends AppCompatActivity {
         //    start and end location coordinates
         // SetLocationsActivity does not exist, placeholder name
         //   this will be where the user sets the start and end locations of their request
-        // Intent intent = new Intent(MakeRequestActivity.this, SetLocationsActivity.class);
-        // startActivity(intent);
+        Intent intent = new Intent(MakeRequestActivity.this, SetLocationsActivity.class);
+        startActivity(intent);
     }
 
     /**

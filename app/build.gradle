@@ -10,6 +10,7 @@ android {
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -23,6 +24,10 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
+    compile('com.github.MKergall:osmbonuspack:6.0') {
+        exclude module: "commons-lang3"
+        exclude module: "gson"
+    }
     testCompile 'junit:junit:4.12'
     compile files('src/include/jest-droid-2.0.1-SNAPSHOT.jar')
 }
