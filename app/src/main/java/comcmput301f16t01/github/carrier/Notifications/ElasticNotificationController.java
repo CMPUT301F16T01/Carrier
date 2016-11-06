@@ -120,7 +120,7 @@ public class ElasticNotificationController {
         protected Void doInBackground(String... id_parameter) {
             String script =
                     "{\n" +
-                    "    \"script\" : \"ctx._source.read = false\",\n" +
+                    "    \"script\" : \"ctx._source.read = true\",\n" +
                     "}";
 
             Update update = new Update.Builder(script)

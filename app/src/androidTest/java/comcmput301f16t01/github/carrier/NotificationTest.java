@@ -10,6 +10,7 @@ import java.util.Date;
 
 import comcmput301f16t01.github.carrier.MockObjects.MockNotification;
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
+import comcmput301f16t01.github.carrier.Notifications.ElasticNotificationController;
 import comcmput301f16t01.github.carrier.Notifications.Notification;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationList;
@@ -267,7 +268,8 @@ public class NotificationTest extends ApplicationTest {
 
     /** TEST5 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-     * Test that we can mark a notification as read
+     * Test that we can mark a notification as read.
+     * Also tests that it does not set all other notifications to read.
      */
     public void testMarkingNotificationAsRead() {
         Request requestOne = new Request( loggedInUser, new Location(), new Location(),
@@ -294,8 +296,8 @@ public class NotificationTest extends ApplicationTest {
 
         assertTrue( "Notifications not clearing properly", notificationList.size() == 0 );
 
-        Notification noteOne = nc.addNotification( loggedInUser, requestOne );
-        Notification noteTwo = nc.addNotification( loggedInUser, requestTwo );
+        nc.addNotification( loggedInUser, requestOne );
+        nc.addNotification( loggedInUser, requestTwo );
 
         notificationList = nc.fetchNotifications( loggedInUser );
 
@@ -312,6 +314,31 @@ public class NotificationTest extends ApplicationTest {
         assertFalse( "Both notifications should be unread", notificationList.get(0).isRead() );
         assertFalse( "Both notifications should be unread", notificationList.get(1).isRead() );
 
+        String rememberReadID = notificationList.get(0).getID();
+        nc.markNotificationAsRead( notificationList.get(0) );
 
+        notificationList = nc.fetchNotifications( loggedInUser );
+
+        // wait for async tasks to finish (two requests with different isRead status
+        pass = 0;
+        while( true ) {
+            if ( notificationList.get(0).isRead() != notificationList.get(1).isRead() ) {
+                break;
+            }
+            chillabit( 1000 );
+            notificationList = nc.fetchNotifications( loggedInUser );
+            pass++;
+            if (pass > 5) { break; }
+        }
+
+        if (notificationList.get(0).isRead()) {
+            assertFalse( "One of the notifications should be false", notificationList.get(1).isRead() );
+            assertEquals( "The ID that was set to false is not the same",
+                    rememberReadID, notificationList.get(1).getID() );
+        } else {
+            assertFalse( "One of the notifications should be false", notificationList.get(0).isRead() );
+            assertEquals( "The ID that was set to false is not the same",
+                    rememberReadID, notificationList.get(0).getID() );
+        }
     }
 }
