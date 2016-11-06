@@ -96,6 +96,12 @@ public class RequestController {
      * @param driver  The driver that is being accepted
      */
     public void confirmDriver(Request request, User driver) {
+
+        // TODO Elastic Requests...
+        // only on success should we send out a notification!
+        NotificationController nc = new NotificationController();
+        nc.addNotification( driver, request );
+        // TODO check for notification success?
     }
 
     public void completeRequest(Request request) {

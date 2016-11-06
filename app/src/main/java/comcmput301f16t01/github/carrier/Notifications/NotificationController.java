@@ -17,10 +17,9 @@ import comcmput301f16t01.github.carrier.User;
 public class NotificationController {
     // private NotificationList notificationList;
 
-    public NotificationList fetchNotifications( String username ) {
+    public NotificationList fetchNotifications( User user ) {
         ElasticNotificationController.FindNotificationTask fnt = new ElasticNotificationController.FindNotificationTask();
-        fnt.execute( username );
-        System.out.print( username );
+        fnt.execute( user.getUsername() );
         NotificationList notificationList = new NotificationList();
         try {
             notificationList.addAll( fnt.get() );
@@ -48,5 +47,10 @@ public class NotificationController {
         ElasticNotificationController.AddNotificationTask ant = new ElasticNotificationController.AddNotificationTask();
         Notification newNotification = new Notification( userToAlert, relatedRequest );
         ant.execute( newNotification );
+        try {
+            ant.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

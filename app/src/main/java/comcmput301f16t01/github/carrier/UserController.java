@@ -219,6 +219,7 @@ public class UserController {
         while (newUser.getId() == null) {
             // waiting...
         }
+
         loggedInUser = newUser;
         return null;
     }
