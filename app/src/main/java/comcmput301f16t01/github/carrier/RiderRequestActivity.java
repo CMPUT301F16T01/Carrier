@@ -41,12 +41,12 @@ public class RiderRequestActivity extends AppCompatActivity {
 
         // The set up the UsernameTextView of the rider
         UsernameTextView riderUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_rider);
-        riderUsernameTextView.setText(request.getRider().getUsername());
+        riderUsernameTextView.setText("Rider: " + request.getRider().getUsername());
         riderUsernameTextView.setUser(request.getRider());
 
         // The set up the UsernameTextView of the driver
         UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
-        driverUsernameTextView.setText(request.getChosenDriver().getUsername());
+        driverUsernameTextView.setText("Driver: " + request.getChosenDriver().getUsername());
         driverUsernameTextView.setUser(request.getChosenDriver());
 
 
