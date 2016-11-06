@@ -39,12 +39,12 @@ public class RiderRequestActivity extends AppCompatActivity {
         TextView descriptionTextView = (TextView) findViewById(R.id.TextView_description);
         descriptionTextView.setText(request.getDescription());
 
-        // The set up the UsernameTextView of the rider
+        // Set up the UsernameTextView of the rider
         UsernameTextView riderUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_rider);
         riderUsernameTextView.setText("Rider: " + request.getRider().getUsername());
         riderUsernameTextView.setUser(request.getRider());
 
-        // The set up the UsernameTextView of the driver
+        // Set up the UsernameTextView of the driver
         UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
         driverUsernameTextView.setText("Driver: " + request.getChosenDriver().getUsername());
         driverUsernameTextView.setUser(request.getChosenDriver());
@@ -87,11 +87,6 @@ public class RiderRequestActivity extends AppCompatActivity {
             }
         }
     }
-//
-//    public void onClickUsername(Request request) {
-//        Toast.makeText(this, request.getRider().getUsername(), Toast.LENGTH_SHORT).show();
-//
-//    }
 
 
 

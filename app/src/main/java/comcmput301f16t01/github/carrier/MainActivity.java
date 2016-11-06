@@ -273,6 +273,7 @@ public class MainActivity extends AppCompatActivity {
             if (requestList.size() == 0) {
                 
                 // Create sample requests because this is probably not set up yet.
+                // TODO: remove these tests
                 Request requestOne = new Request(loggedInUser, new Location(), new Location(), "test request 1!");
                 ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();
                 fut.execute("sarah");
