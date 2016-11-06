@@ -92,4 +92,17 @@ public class NotificationController {
         }
         notification.setRead( true );
     }
+
+    /**
+     * Marks all request for user as read, if they are currently unread.
+     * @param user
+     */
+    public void markAllAsRead( User user ) {
+        NotificationList notificationList = this.fetchNotifications( user );
+        for (Notification notification : notificationList ) {
+            if( !notification.isRead() ) {
+                this.markNotificationAsRead(notification);
+            }
+        }
+    }
 }

@@ -23,6 +23,7 @@ public class Notification implements Comparable<Notification> {
         this.username = userToBeNotified.getUsername();
         this.date = new Date();
         this.read = false;
+        // TODO Confirm this is correct, maybe implement it a different way.
         if (relatedRequest.getRider().getUsername().equals(userToBeNotified.getUsername())) {
             isRider = true;
         } else {

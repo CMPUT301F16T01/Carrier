@@ -22,4 +22,11 @@
         android:layout_height="wrap_content"
         android:id="@+id/Button_ClearAllNotifications"
         android:onClick="clearAll"/>
+
+    <Button
+        android:text="Mark All As Read"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/Button_MarkAllRead"
+        android:onClick="markAllRead"/>
 </LinearLayout>
