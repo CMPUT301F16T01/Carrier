@@ -50,9 +50,9 @@ public class UserProfileActivity extends AppCompatActivity {
         }
 
         // Get the TextViews for the information that is going to be shown.
-        EditText usernameEditText = (EditText) findViewById(R.id.NameEditText);
-        EditText emailAddressEditText = (EditText) findViewById(R.id.EmailEditText);
-        EditText phoneNumberEditText = (EditText) findViewById(R.id.PhoneEditText);
+        EditText usernameEditText = (EditText) findViewById(R.id.EditText_name);
+        EditText emailAddressEditText = (EditText) findViewById(R.id.EditText_email);
+        EditText phoneNumberEditText = (EditText) findViewById(R.id.EditText_phone);
 
         //Save old values in case the user changes their mind about editing.
         usernameEditText.setText(username);
@@ -81,7 +81,7 @@ public class UserProfileActivity extends AppCompatActivity {
         editButton.setVisibility(View.INVISIBLE);
         saveButton.setVisibility(View.VISIBLE);
         cancelButton.setVisibility(View.VISIBLE);
-        TextView phoneNumber = (TextView) findViewById(R.id.PhoneEditText);
+        TextView phoneNumber = (TextView) findViewById(R.id.EditText_phone);
         phoneNumber.setClickable(true);
         // Set it so the user can edit the EditText
         phoneNumber.setFocusableInTouchMode(true);
@@ -105,7 +105,7 @@ public class UserProfileActivity extends AppCompatActivity {
         editButton.setVisibility(View.VISIBLE);
         saveButton.setVisibility(View.INVISIBLE);
         cancelButton.setVisibility(View.INVISIBLE);
-        EditText phoneNumberText = (EditText) findViewById(R.id.PhoneEditText);
+        EditText phoneNumberText = (EditText) findViewById(R.id.EditText_phone);
         // Set it so the user can't edit the EditText
         phoneNumberText.setFocusable(false);
         String phoneNumber = phoneNumberText.getText().toString();
@@ -130,7 +130,7 @@ public class UserProfileActivity extends AppCompatActivity {
         editButton.setVisibility(View.VISIBLE);
         saveButton.setVisibility(View.INVISIBLE);
         cancelButton.setVisibility(View.INVISIBLE);
-        EditText phoneNumberText = (EditText) findViewById(R.id.PhoneEditText);
+        EditText phoneNumberText = (EditText) findViewById(R.id.EditText_phone);
         // Set it so the user can't edit the EditText
         phoneNumberText.setFocusable(false);
         phoneNumberText.setClickable(false);
@@ -154,7 +154,7 @@ public class UserProfileActivity extends AppCompatActivity {
         editButton.setVisibility(View.INVISIBLE);
         saveButton.setVisibility(View.VISIBLE);
         cancelButton.setVisibility(View.VISIBLE);
-        EditText emailView = (EditText) findViewById(R.id.EmailEditText);
+        EditText emailView = (EditText) findViewById(R.id.EditText_email);
         // Set it so the user can edit the EditText
         emailView.setFocusableInTouchMode(true);
         emailView.setClickable(true);
@@ -177,7 +177,7 @@ public class UserProfileActivity extends AppCompatActivity {
         editButton.setVisibility(View.VISIBLE);
         saveButton.setVisibility(View.INVISIBLE);
         cancelButton.setVisibility(View.INVISIBLE);
-        EditText emailView = (EditText) findViewById(R.id.EmailEditText);
+        EditText emailView = (EditText) findViewById(R.id.EditText_email);
         // Set it so the user can edit the EditText
         emailView.setFocusable(false);
         emailView.setClickable(false);
@@ -204,7 +204,7 @@ public class UserProfileActivity extends AppCompatActivity {
         editButton.setVisibility(View.VISIBLE);
         saveButton.setVisibility(View.INVISIBLE);
         cancelButton.setVisibility(View.INVISIBLE);
-        EditText emailView = (EditText) findViewById(R.id.EmailEditText);
+        EditText emailView = (EditText) findViewById(R.id.EditText_email);
         // Set it so the user can't edit the EditText
         emailView.setFocusable(false);
         emailView.setClickable(false);

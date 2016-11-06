@@ -18,6 +18,4 @@ public class DriverViewRequestActivity extends AppCompatActivity {
 
 
     }
-
-
 }

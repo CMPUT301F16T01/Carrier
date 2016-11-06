@@ -65,7 +65,7 @@
             app:srcCompat="@android:drawable/ic_menu_view"
             android:id="@+id/viewDriver"
             android:background="@android:color/transparent"
-            android:layout_alignBottom="@+id/text_view_driver"
+            android:layout_alignBottom="@+id/UsernameTextView_driver"
             android:layout_alignParentEnd="true" />
 
         <ImageButton
@@ -74,25 +74,25 @@
             app:srcCompat="@android:drawable/ic_menu_view"
             android:id="@+id/viewRider"
             android:background="@android:color/transparent"
-            android:layout_alignBottom="@+id/text_view_rider"
-            android:layout_toEndOf="@+id/text_view_rider" />
+            android:layout_alignBottom="@+id/UsernameTextView_driver"
+            android:layout_toEndOf="@+id/UsernameTextView_driver" />
 
         <TextView
             android:text="Rider: Mike"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/text_view_rider"
+            android:id="@+id/UsernameTextView_driver"
             android:gravity="center"
             android:clickable="true"
-            android:layout_alignBaseline="@+id/text_view_driver"
-            android:layout_alignBottom="@+id/text_view_driver"
+            android:layout_alignBaseline="@+id/UsernameTextView_driver"
+            android:layout_alignBottom="@+id/UsernameTextView_driver"
             android:layout_alignParentStart="true" />
 
         <TextView
             android:text="Driver: Sarah"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/text_view_driver"
+            android:id="@+id/UsernameTextView_driver"
             android:gravity="center"
             android:clickable="true"
             android:layout_centerVertical="true"

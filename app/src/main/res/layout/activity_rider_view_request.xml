@@ -29,7 +29,7 @@
         android:text="Start: 123 ABC Street NW, Edmonton CA"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView_start"
+        android:id="@+id/TextView_start"
         android:gravity="center"/>
 
 
@@ -37,7 +37,7 @@
         android:text="End: 324 ABC Ave NW, Edmonton CA"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView_end"
+        android:id="@+id/TextView_end"
         android:layout_marginTop="5dp"
         android:gravity="center"/>
 
@@ -45,7 +45,7 @@
         android:text="Description: I just finished working out. I need to go to the Frat."
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView_description"
+        android:id="@+id/TextView_description"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="20dp"
         android:gravity="center"/>
@@ -59,11 +59,11 @@
         style="?android:attr/buttonBarButtonStyle">
 
 
-        <TextView
+        <comcmput301f16t01.github.carrier.UsernameTextView
             android:text="Driver: Sarah"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/text_view_driver"
+            android:id="@+id/UsernameTextView_driver"
             android:gravity="center"
             android:layout_alignParentTop="true"
             android:layout_toStartOf="@+id/viewDriver"
@@ -75,7 +75,7 @@
             app:srcCompat="@android:drawable/ic_menu_view"
             android:id="@+id/viewDriver"
             android:background="@android:color/transparent"
-            android:layout_alignBottom="@+id/text_view_driver"
+            android:layout_alignBottom="@+id/UsernameTextView_driver"
             android:layout_alignParentEnd="true" />
 
         <ImageButton
@@ -84,18 +84,18 @@
             app:srcCompat="@android:drawable/ic_menu_view"
             android:id="@+id/viewRider"
             android:background="@android:color/transparent"
-            android:layout_alignBottom="@+id/text_view_rider"
-            android:layout_toEndOf="@+id/text_view_rider" />
+            android:layout_alignBottom="@+id/UsernameTextView_driver"
+            android:layout_toEndOf="@+id/UsernameTextView_driver" />
 
-        <TextView
+        <comcmput301f16t01.github.carrier.UsernameTextView
             android:text="Rider: Mike"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/text_view_rider"
+            android:id="@+id/UsernameTextView_rider"
             android:gravity="center"
-            android:layout_alignBottom="@+id/text_view_driver"
+            android:layout_alignBottom="@+id/UsernameTextView_driver"
             android:layout_alignParentStart="true"
-            android:layout_alignTop="@+id/text_view_driver"
+            android:layout_alignTop="@+id/UsernameTextView_driver"
             android:textStyle="bold" />
     </RelativeLayout>
 

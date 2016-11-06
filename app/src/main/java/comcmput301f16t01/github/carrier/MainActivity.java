@@ -271,8 +271,10 @@ public class MainActivity extends AppCompatActivity {
 
             if (requestList.size() == 0) {
                 // Create sample requests because this is probably not set up yet.
-                Request requestOne = new Request( loggedInUser, new Location(), new Location(), "testRequest!" );
-                Request requestTwo = new Request( loggedInUser, new Location(), new Location(), "testRequest2!" );
+
+                Request requestOne = new Request( loggedInUser, new Location(), new Location(), "test request 1!" );
+
+                Request requestTwo = new Request( loggedInUser, new Location(), new Location(), "test request 2!" );
 
 
                 requestOne.setStatus(Request.COMPLETE);

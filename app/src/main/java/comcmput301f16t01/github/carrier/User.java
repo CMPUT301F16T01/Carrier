@@ -1,5 +1,8 @@
 package comcmput301f16t01.github.carrier;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Abstract base class for a user of Carrier.
  *
@@ -77,4 +80,5 @@ public class User {
     public String getId() {
         return elasticID;
     }
+
 }
