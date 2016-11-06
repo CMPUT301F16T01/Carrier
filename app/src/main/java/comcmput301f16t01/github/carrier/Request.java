@@ -79,10 +79,6 @@ public class Request {
         this.fare = fare;
     }
 
-    public int getFareEstimate() {
-        FareCalculator fareCalc = new FareCalculator(start, end);
-        return fareCalc.getEstimate();
-    }
 
     public ArrayList<User> getOffers() {
         return new ArrayList<User>();
