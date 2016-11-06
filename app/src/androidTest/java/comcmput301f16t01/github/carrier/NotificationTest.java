@@ -1,6 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
 import android.app.Instrumentation;
+import android.support.annotation.UiThread;
 import android.test.InstrumentationTestCase;
 import android.test.UiThreadTest;
 
@@ -13,6 +14,8 @@ import comcmput301f16t01.github.carrier.Notifications.Notification;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationList;
 
+// TODO could probably use a mock RequestController, since it always posts test requests to elastic search
+
 /**
  * Test Suite for Notifications.
  * Test List:
@@ -20,8 +23,7 @@ import comcmput301f16t01.github.carrier.Notifications.NotificationList;
  *      2) Clearing notifications from Elastic Search
  *      3) Getting a notification when a driver offers to accept a rider's request (Use case test)
  *      4) Getting a notification when a driver's offer has been accepted (Use case test)
- *      5) Deleting a single notification
- *      6) Marking a notification as read
+ *      5) Marking a notification as read
  *
  * @see NotificationController
  * @see Notification
@@ -29,6 +31,7 @@ import comcmput301f16t01.github.carrier.Notifications.NotificationList;
 public class NotificationTest extends ApplicationTest {
     private User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234" );
     private User driverOne = new User( "notifTestDriver", "notifyYou@email.com", "0118-99-112" );
+    private User anotherUser = new User( "notifThirdUser", "notifyMe@gmail.com", "887112233" );
 
     // Set up a test user to receive notifications
     private void setUpUser() {
@@ -46,6 +49,7 @@ public class NotificationTest extends ApplicationTest {
 
     // abstracts reused code to prevent mistakes and aid in readability of tests
     // Makes the current thread sleep for the specified amount of time (in ms)
+    // TODO convert to a full out AsyncWait method to generalize waiting for .size() == x tasks?
     private void chillabit( long time ) {
         try {
             Thread.sleep( time );
@@ -134,6 +138,7 @@ public class NotificationTest extends ApplicationTest {
                 "testClearingNotifications2" );
         requestTwo.setId("testClearing2");
 
+        // Add a few notifications to loggedInUser
         NotificationController nc = new NotificationController();
         nc.addNotification( loggedInUser, requestOne );
         nc.addNotification( loggedInUser, requestTwo );
@@ -141,8 +146,10 @@ public class NotificationTest extends ApplicationTest {
 
         NotificationList notificationList = nc.fetchNotifications( loggedInUser );
 
+        // Make sure this test is useful by ensuring there are notfications now
         assertTrue( "There should be at least one notification so far", notificationList.size() != 0 );
 
+        // Try to clear them
         nc.clearAllNotifications( loggedInUser );
 
         /*
@@ -156,6 +163,7 @@ public class NotificationTest extends ApplicationTest {
             if (pass > 5) { break; }
         }
 
+        // Test that clearing the notifications was successful!
         assertTrue( "We should have cleared all the notifications.", notificationList.size() == 0 );
     }
 
@@ -241,6 +249,7 @@ public class NotificationTest extends ApplicationTest {
 
         notificationList = nc.fetchNotifications( driverOne );
 
+        // wait for async tasks to finish loop.
         int pass = 0;
         while( notificationList.size() == 0 ) {
             chillabit( 1000 );
@@ -249,7 +258,60 @@ public class NotificationTest extends ApplicationTest {
             if (pass > 5) { break; }
         }
 
+        nc.clearAllNotifications( driverOne );
+
         assertTrue( "The driver should have one and only one notification.",
                 notificationList.size() == 1);
+    }
+
+
+    /** TEST5 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * Test that we can mark a notification as read
+     */
+    public void testMarkingNotificationAsRead() {
+        Request requestOne = new Request( loggedInUser, new Location(), new Location(),
+                "testMarkingNotificationAsRead1" );
+        requestOne.setId("testMarkingNotificationAsRead1");
+        Request requestTwo = new Request( loggedInUser, new Location(), new Location(),
+                "testMarkingNotificationAsRead2" );
+        requestTwo.setId("testMarkingNotificationAsRead2");
+
+        NotificationController nc = new NotificationController();
+
+        nc.clearAllNotifications( loggedInUser );
+
+        NotificationList notificationList = nc.fetchNotifications( loggedInUser );
+
+        // wait for async tasks to finish (no requests should be present now)
+        int pass = 0;
+        while( notificationList.size() != 0 ) {
+            chillabit( 1000 );
+            notificationList = nc.fetchNotifications( loggedInUser );
+            pass++;
+            if (pass > 5) { break; }
+        }
+
+        assertTrue( "Notifications not clearing properly", notificationList.size() == 0 );
+
+        Notification noteOne = nc.addNotification( loggedInUser, requestOne );
+        Notification noteTwo = nc.addNotification( loggedInUser, requestTwo );
+
+        notificationList = nc.fetchNotifications( loggedInUser );
+
+        // wait for async tasks to finish (two requests should be present)
+        pass = 0;
+        while( notificationList.size() != 2 ) {
+            chillabit( 1000 );
+            notificationList = nc.fetchNotifications( loggedInUser );
+            pass++;
+            if (pass > 10) { break; }
+        }
+
+        assertTrue( "There should be two notifications", notificationList.size() == 2);
+        assertFalse( "Both notifications should be unread", notificationList.get(0).isRead() );
+        assertFalse( "Both notifications should be unread", notificationList.get(1).isRead() );
+
+
     }
 }

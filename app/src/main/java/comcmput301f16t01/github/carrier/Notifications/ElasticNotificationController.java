@@ -17,6 +17,7 @@ import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
+import io.searchbox.core.Update;
 
 /**
  * Maintains a user's notifications in elastic search
@@ -63,7 +64,7 @@ public class ElasticNotificationController {
         @Override
         protected NotificationList doInBackground(String... search_parameters) {
             verifySettings();
-            String search_string = "{\"from\": 0, \"size\": 10000, \"query\": {\"match\": {\"username\": \"" + search_parameters[0] + "\"}}}";
+            String search_string = "{\"query\": {\"match\": {\"username\": \"" + search_parameters[0] + "\"}}}";
 
             Search search = new Search.Builder(search_string)
                     .addIndex("cmput301f16t01")
@@ -110,6 +111,31 @@ public class ElasticNotificationController {
 
             return null;
 
+        }
+    }
+
+    public static class MarkAsReadTask extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... id_parameter) {
+            String script =
+                    "{\n" +
+                    "    \"script\" : \"ctx._source.read = false\",\n" +
+                    "}";
+
+            Update update = new Update.Builder(script)
+                    .index("cmput301f16t01")
+                    .type("notification")
+                    .id(id_parameter[0])
+                    .build();
+
+            try {
+                client.execute( update );
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
         }
     }
 
