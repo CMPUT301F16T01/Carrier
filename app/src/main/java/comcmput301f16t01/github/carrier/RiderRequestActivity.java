@@ -36,6 +36,20 @@ public class RiderRequestActivity extends AppCompatActivity {
         position = bundle.getInt("position");
         final Request request = requestList.get(position);
 
+        TextView descriptionTextView = (TextView) findViewById(R.id.TextView_description);
+        descriptionTextView.setText(request.getDescription());
+
+        // The set up the UsernameTextView of the rider
+        UsernameTextView riderUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_rider);
+        riderUsernameTextView.setText(request.getRider().getUsername());
+        riderUsernameTextView.setUser(request.getRider());
+
+        // The set up the UsernameTextView of the driver
+        UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
+        driverUsernameTextView.setText(request.getChosenDriver().getUsername());
+        driverUsernameTextView.setUser(request.getChosenDriver());
+
+
 
         /**
          * This switch statement changes the status image
@@ -72,56 +86,6 @@ public class RiderRequestActivity extends AppCompatActivity {
 
             }
         }
-
-//        final TextView driverUsernameTextView = (TextView) findViewById(R.id.TextView_driver);
-//        /**
-//         * This listener causes the TextView that displays driver username to have a dark
-//         * background colour when touched. Like on facebook.
-//         */
-//        driverUsernameTextView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                String username = driverUsernameTextView.getText().toString()
-//                        .replace("Driver: ", "");
-//                if( event.getAction() == MotionEvent.ACTION_DOWN) {
-//                    driverUsernameTextView.setBackgroundColor(ContextCompat
-//                            .getColor(RiderRequestActivity.this, R.color.usernameClick));
-//                    // When the name is released, go to user profile
-//                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-//                    driverUsernameTextView.setBackgroundColor(Color.TRANSPARENT);
-//
-//                }
-//                return true;
-//            }
-//        });
-//
-//        final TextView riderUsernameTextView = (TextView) findViewById(R.id.TextView_rider);
-//        /**
-//         * This listener causes the TextView that displays rider username to have a dark
-//         * background colour when touched. Like on facebook.
-//         */
-//        riderUsernameTextView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                String username = riderUsernameTextView.getText().toString()
-//                        .replace("Rider: ", "");
-//                if( event.getAction() == MotionEvent.ACTION_DOWN) {
-//                    riderUsernameTextView.setBackgroundColor(ContextCompat
-//                            .getColor(RiderRequestActivity.this, R.color.usernameClick));
-//                    // When the name is released, go to user profile
-//                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-//                    riderUsernameTextView.setBackgroundColor(Color.TRANSPARENT);
-//                    onClickUsername(request);
-//                }
-//                return true;
-//            }
-//        });
-        UsernameTextView riderUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_rider);
-        riderUsernameTextView.setUser(request.getRider());
-
-        UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
-        driverUsernameTextView.setUser(request.getChosenDriver());
-
     }
 //
 //    public void onClickUsername(Request request) {

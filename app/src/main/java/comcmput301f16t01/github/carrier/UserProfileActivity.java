@@ -29,10 +29,11 @@ public class UserProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
-        // Retrieve the user this intent was brought with.
+        // Retrieve the user this intent was started with.
         Bundle bundle = getIntent().getExtras();
         User user = bundle.getParcelable("user");
 
+        // Get an instance of the UserController
         UserController uc = new UserController();
 //        User currentUser = UserController.getLoggedInUser();
 
@@ -72,6 +73,9 @@ public class UserProfileActivity extends AppCompatActivity {
         emailAddressEditText.setKeyListener(null);
         usernameEditText.setKeyListener(null);
 
+        /*If profile being viewed is not the logged in user's, the edit buttons are hidden and are
+        unclickable.
+         */
         if (!user.getUsername().equals(UserController.getLoggedInUser().getUsername())) {
             ImageButton phoneEditButton = (ImageButton) findViewById(R.id.PhoneEditIconImageButton);
             ImageButton emailEditButton = (ImageButton) findViewById(R.id.EmailEditIconImageButton);

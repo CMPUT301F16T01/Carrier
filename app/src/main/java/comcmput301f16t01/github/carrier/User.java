@@ -51,6 +51,9 @@ public class User implements Parcelable{
         elasticID = in.readString();
     }
 
+    /**
+     * Required by the Parcelable interface. Allows the creation and storage of parcels in bundles.
+     */
     public static final Creator<User> CREATOR = new Creator<User>() {
         @Override
         public User createFromParcel(Parcel in) {
@@ -101,11 +104,20 @@ public class User implements Parcelable{
     }
 
     @Override
+    /**
+     * Required by the Parcelable interface. I honestly don't know what this is for.
+     */
     public int describeContents() {
         return 0;
     }
 
     @Override
+    /**
+     * Required by the Parcelable interface.
+     * Allows the User class to be put into a bundle using putParcelable() on a bundle.
+     * @param dest
+     * @param flags
+     */
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(username);
         dest.writeString(email);
