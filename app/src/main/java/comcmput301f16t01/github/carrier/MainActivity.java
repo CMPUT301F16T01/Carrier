@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -272,15 +273,24 @@ public class MainActivity extends AppCompatActivity {
             if (requestList.size() == 0) {
                 // Create sample requests because this is probably not set up yet.
 
-                Request requestOne = new Request( loggedInUser, new Location(), new Location(), "test request 1!" );
+                Request requestOne = new Request(loggedInUser, new Location(), new Location(), "test request 1!");
+                ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();
+                fut.execute("sarah");
+                User sarah = null;
+                try {
+                    sarah = fut.get();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                requestOne.setChosenDriver(sarah);
 
-                Request requestTwo = new Request( loggedInUser, new Location(), new Location(), "test request 2!" );
-
+                Request requestTwo = new Request(loggedInUser, new Location(), new Location(), "test request 2!");
+                requestTwo.setChosenDriver(sarah);
 
                 requestOne.setStatus(Request.COMPLETE);
                 requestTwo.setStatus(Request.PAID);
-                requestList.add( requestOne );
-                requestList.add( requestTwo );
+                requestList.add(requestOne);
+                requestList.add(requestTwo);
             }
 
             RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),

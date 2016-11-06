@@ -28,13 +28,18 @@ public class UserProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+
+        // Retrieve the user this intent was brought with.
+        Bundle bundle = getIntent().getExtras();
+        User user = bundle.getParcelable("user");
+
         UserController uc = new UserController();
-        User currentUser = UserController.getLoggedInUser();
+//        User currentUser = UserController.getLoggedInUser();
 
         String username;
 
         // Developer code, may not be needed for release...
-        if (currentUser == null) {
+        if (user == null) {
             AlertDialog.Builder adb = new AlertDialog.Builder(this);
             adb.setTitle("debug mode");
             adb.setMessage("you managed to log in without a user. Test data will be shown. This is an error if you are not a developer.");
@@ -44,9 +49,9 @@ public class UserProfileActivity extends AppCompatActivity {
             oldPhoneNumber = "7357129";
             username = "testUsername";
         } else {
-            oldEmailAddress = currentUser.getEmail();
-            oldPhoneNumber = currentUser.getPhone();
-            username = currentUser.getUsername();
+            oldEmailAddress = user.getEmail();
+            oldPhoneNumber = user.getPhone();
+            username = user.getUsername();
         }
 
         // Get the TextViews for the information that is going to be shown.
@@ -66,6 +71,15 @@ public class UserProfileActivity extends AppCompatActivity {
         emailAddressEditText.setTag(emailAddressEditText.getKeyListener());
         emailAddressEditText.setKeyListener(null);
         usernameEditText.setKeyListener(null);
+
+        if (!user.getUsername().equals(UserController.getLoggedInUser().getUsername())) {
+            ImageButton phoneEditButton = (ImageButton) findViewById(R.id.PhoneEditIconImageButton);
+            ImageButton emailEditButton = (ImageButton) findViewById(R.id.EmailEditIconImageButton);
+            phoneEditButton.setClickable(false);
+            phoneEditButton.setVisibility(View.INVISIBLE);
+            emailEditButton.setClickable(false);
+            emailEditButton.setVisibility(View.INVISIBLE);
+        }
     }
 
     /**

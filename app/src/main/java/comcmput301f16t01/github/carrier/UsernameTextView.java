@@ -30,6 +30,7 @@ public class UsernameTextView extends TextView {
                     // When the name is released, go to user profile
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     UsernameTextView.this.setBackgroundColor(Color.TRANSPARENT);
+                    toProfile(user);
                     Toast.makeText(getContext(), username, Toast.LENGTH_SHORT).show();
                 }
                 return true;
@@ -42,7 +43,9 @@ public class UsernameTextView extends TextView {
     public void toProfile(User userToProfile) {
         Intent intent = new Intent(getContext(), UserProfileActivity.class);
         Bundle bundle = new Bundle();
-
+        bundle.putParcelable("user", userToProfile);
+        intent.putExtras(bundle);
+        getContext().startActivity(intent);
 
     }
 }
