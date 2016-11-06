@@ -110,9 +110,9 @@ public class Request {
     public User getChosenDriver() {
         return this.chosenDriver;
     }
-    public int getFareEstimate() {
-        FareCalculator fareCalc = new FareCalculator(start, end);
-        return fareCalc.getEstimate();
+    public int getFareEstimate(Double distance, Double duration) {
+        FareCalculator fareCalc = new FareCalculator();
+        return fareCalc.getEstimate(distance, duration);
     }
 
     public ArrayList<User> getOffers() {
