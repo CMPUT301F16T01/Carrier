@@ -26,7 +26,10 @@ import android.os.Handler;
 public class MakeRequestActivity extends AppCompatActivity {
 
     final Activity activity = MakeRequestActivity.this;
-    final int REP_DEL = 50;
+    /**
+     * Determines how fast the arrows increment/decrement the estimated fare
+     */
+    final int REP_DEL = 25;
 
     private Location start = null;
     private Location end = null;
@@ -39,10 +42,10 @@ public class MakeRequestActivity extends AppCompatActivity {
     class RepeatUpdater implements Runnable {
         public void run() {
             if(autoIncrement) {
-                incrementFare();
+                incrementFare(null);
                 repeatUpdateHandler.postDelayed( new RepeatUpdater(), REP_DEL);
             } else if(autoDecrement) {
-                decrementFare();
+                decrementFare(null);
                 repeatUpdateHandler.postDelayed( new RepeatUpdater(), REP_DEL);
             }
         }
@@ -53,22 +56,12 @@ public class MakeRequestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make_request);
         setTitle("New Request");
-
         setButtons();
-
         activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
 
     private void setButtons() {
         ImageButton fareUpButton = (ImageButton) findViewById(R.id.imageButton_fareUp);
-        fareUpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(fareEstimated != -1) {
-                    incrementFare();
-                }
-            }
-        });
         fareUpButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -91,14 +84,6 @@ public class MakeRequestActivity extends AppCompatActivity {
         });
 
         ImageButton fareDownButton = (ImageButton) findViewById(R.id.imageButton_fareDown);
-        fareDownButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(fareEstimated != -1) {
-                    decrementFare();
-                }
-            }
-        });
         fareDownButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -191,16 +176,18 @@ public class MakeRequestActivity extends AppCompatActivity {
     /**
      * Increase fare by 1 when up arrow is pressed.
      */
-    public void incrementFare() {
-        fareEstimated++;
-        TextView fareTextView = (TextView) findViewById(R.id.textView_fareEstimate);
-        fareTextView.setText(formatFare(fareEstimated));
+    public void incrementFare(View view) {
+        if(fareEstimated != -1) {
+            fareEstimated++;
+            TextView fareTextView = (TextView) findViewById(R.id.textView_fareEstimate);
+            fareTextView.setText(formatFare(fareEstimated));
+        }
     }
 
     /**
      * Decrease fare by 1 when down arrow is pressed.
      */
-    public void decrementFare() {
+    public void decrementFare(View view) {
         if(fareEstimated > 0) {
             fareEstimated--;
             TextView fareTextView = (TextView) findViewById(R.id.textView_fareEstimate);

@@ -89,7 +89,6 @@
                 android:layout_height="match_parent"
                 android:weightSum="2" >
 
-                <!-- TODO are these buttons too small?? -->
                 <ImageButton
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -97,7 +96,8 @@
                     android:id="@+id/imageButton_fareUp"
                     android:background="@null"
                     android:layout_weight="1"
-                    android:tint="@color/colorPrimaryLight"/>
+                    android:tint="@color/colorPrimaryLight"
+                    android:onClick="incrementFare" />
 
                 <ImageButton
                     android:layout_width="match_parent"
@@ -106,7 +106,8 @@
                     android:id="@+id/imageButton_fareDown"
                     android:background="@null"
                     android:layout_weight="1"
-                    android:tint="@color/colorPrimaryLight" />
+                    android:tint="@color/colorPrimaryLight"
+                    android:onClick="decrementFare" />
             </LinearLayout>
 
             <Button
