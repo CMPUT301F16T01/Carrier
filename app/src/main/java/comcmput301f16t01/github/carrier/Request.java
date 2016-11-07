@@ -123,5 +123,11 @@ public class Request {
     public String getId() {
         return elasticID;
     }
-    // TODO confirm these as the states for a Request.
+
+    @Override
+    public String toString() {
+        String requestAsString = "Request From: " + rider.getUsername() + "\n";
+        requestAsString += "Description: " + description;
+        return requestAsString;
+    }
 }

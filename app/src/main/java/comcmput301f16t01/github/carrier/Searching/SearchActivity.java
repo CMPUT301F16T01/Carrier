@@ -2,6 +2,7 @@ package comcmput301f16t01.github.carrier.Searching;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +12,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import comcmput301f16t01.github.carrier.R;
+import comcmput301f16t01.github.carrier.Request;
+import comcmput301f16t01.github.carrier.RequestController;
 
 public class SearchActivity extends AppCompatActivity {
     final Activity activity = SearchActivity.this;
@@ -42,8 +45,11 @@ public class SearchActivity extends AppCompatActivity {
                 EditText searchEditText = (EditText) dialogView.findViewById(R.id.editText_keywordSearch);
                 String query = searchEditText.getText().toString();
                 Toast.makeText(activity, query, Toast.LENGTH_SHORT).show();
-                // TODO do the search with the inputted keyword query
                 // TODO consider any input handling on the keyword?
+                RequestController rc = new RequestController();
+                rc.searchByKeyword( query );
+                Intent intent = new Intent( SearchActivity.this, SearchResultsActivity.class );
+                startActivity( intent );
             }
         });
         adb.setNegativeButton("Cancel", null);

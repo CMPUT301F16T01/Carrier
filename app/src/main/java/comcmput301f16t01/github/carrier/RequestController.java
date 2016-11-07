@@ -3,6 +3,7 @@ package comcmput301f16t01.github.carrier;
 import android.content.Context;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import comcmput301f16t01.github.carrier.Notifications.Notification;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
@@ -17,16 +18,16 @@ import comcmput301f16t01.github.carrier.Notifications.NotificationController;
  * Or use one of the getX() functions to get immediate info.
  */
 public class RequestController {
-    private static ArrayList<Request> requestList;
+    private static RequestList requestList;
     private Context saveContext = null;
-    
+
     /**
      * Prevents errors when a RequestController is initialized and methods that require requestList
      * to not be null (i.e. getResult() )
      */
     public RequestController() {
         if (requestList == null) {
-            requestList = new ArrayList<Request>();
+            requestList = new RequestList();
         }
     }
 
@@ -96,12 +97,16 @@ public class RequestController {
      * @param keyword
      */
     public void searchByKeyword(String keyword) {
-        //ElasticRequestController.SearchByKeywordTask sbkt = new ElasticRequestController.SearchByKeywordTask();
-        //sbkt.execute(keyword)
-        //requestList = sbkt.get();
+        ElasticRequestController.SearchByKeywordTask sbkt = new ElasticRequestController.SearchByKeywordTask();
+        sbkt.execute(keyword);
+        try {
+            requestList = sbkt.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    /**
+        /**
      * Search requests by a location. This sets it so the singleton contains the information for
      * this query. Use getResults() to get the information.
      */
@@ -162,7 +167,7 @@ public class RequestController {
     @Deprecated
     public static ArrayList<Request> getInstance() {
         if (requestList == null) {
-            requestList = new ArrayList<Request>();
+            //requestList = new ArrayList<Request>();
         }
         return requestList;
     }
