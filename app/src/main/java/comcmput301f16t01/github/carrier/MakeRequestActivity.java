@@ -58,6 +58,8 @@ public class MakeRequestActivity extends AppCompatActivity {
         setTitle("New Request");
         setButtons();
         activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
+
     }
 
     private void setButtons() {
@@ -116,16 +118,15 @@ public class MakeRequestActivity extends AppCompatActivity {
         // fake data, Edmonton City Centre
         end.setLocation(53.5438, -113.4923);
 
-        // prompts for fake data verification
-        Toast.makeText(activity, "Location 1: (53.5232, -113.5263)", Toast.LENGTH_SHORT).show();
-        Toast.makeText(activity, "Location 2: (53.5438, -113.4923)", Toast.LENGTH_SHORT).show();
-
         // TODO create the activity for selecting locations of request (later use case)
         //    the new activity will handle everything and will return back to use the
         //    start and end location coordinates
         // SetLocationsActivity does not exist, placeholder name
         //   this will be where the user sets the start and end locations of their request
         Intent intent = new Intent(MakeRequestActivity.this, SetLocationsActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("point","start");
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 

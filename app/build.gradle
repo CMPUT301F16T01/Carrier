@@ -24,6 +24,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
+    compile 'com.google.android.gms:play-services-location:9.8.0'
     compile('com.github.MKergall:osmbonuspack:6.0') {
         exclude module: "commons-lang3"
         exclude module: "gson"
