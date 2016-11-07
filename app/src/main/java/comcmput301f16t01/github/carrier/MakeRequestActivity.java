@@ -93,7 +93,7 @@ public class MakeRequestActivity extends AppCompatActivity {
         } else {
             // TODO use FareCalculator once available
             // the MockFareCalculator generates random numbers so we can see different values on the display
-            MockFareCalculator fc = new MockFareCalculator(start, end);
+            MockFareCalculator fc = new MockFareCalculator();
             int fareEstimate = fc.getEstimate();
 
             TextView fareTextView = (TextView) findViewById(R.id.textView_fareEstimate);
