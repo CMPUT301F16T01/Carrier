@@ -88,6 +88,7 @@ public class Request {
         this.start = start;
         this.end = end;
         this.offeringDrivers = new ArrayList<User>();
+        this.description = "";
 
     }
 

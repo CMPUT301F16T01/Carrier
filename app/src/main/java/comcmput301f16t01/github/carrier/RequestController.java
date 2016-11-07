@@ -38,7 +38,7 @@ public class RequestController {
      * @param request
      */
     public String addRequest(Request request) {
-        if(request.getStart() == null || request.getEnd() == null) {
+        if (request.getStart() == null || request.getEnd() == null) {
             return "You must first select a start and end location";
         } else if (request.getFare() == -1) {
             return "You must first estimate the fare";
@@ -51,11 +51,19 @@ public class RequestController {
     }
 
     /**
-     * @param rider
-     * @return
+     * Will return a list of requests that the rider has requested.
+     *
+     * @param rider The rider we are getting the requests for.
+     * @return An array list of requests that the user has made.
      */
     public ArrayList<Request> getRequests(User rider) {
-        return requestList;
+        ArrayList<Request> returnValue = new ArrayList<>();
+        for (Request request : requestList) {
+            if (request.getRider() == rider) {
+                returnValue.add(request);
+            }
+        }
+        return returnValue;
     }
 
     /**
@@ -148,7 +156,7 @@ public class RequestController {
                 returnValue.add(request);
             }
         }
-        return  returnValue;
+        return returnValue;
     }
 
     /**

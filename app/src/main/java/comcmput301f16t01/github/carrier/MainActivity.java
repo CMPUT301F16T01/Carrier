@@ -258,19 +258,38 @@ public class MainActivity extends AppCompatActivity {
         private void fillDriverRequests(ListView requestListView) {
             RequestController rc = new RequestController();
             User loggedInUser = UserController.getLoggedInUser();
-            ArrayList<Request> requestList = rc.getOfferedRequests(loggedInUser);
-            if (requestList.size() == 0){
+            RequestList rl = RequestController.getInstance();
+            if (rc.getOfferedRequests(loggedInUser).size() == 0){
                 User testUser = new User("TestUser");
                 Request testRequest1 = new Request(testUser, new Location(), new Location(), "testRequest1");
                 Request testRequest2 = new Request(testUser, new Location(), new Location(), "testRequest1");
-                requestList.add(testRequest1);
-                requestList.add(testRequest2);
+                testRequest1.setFare(100);
+                rl.add(testRequest1);
+                rl.add(testRequest2);
                 rc.addDriver(testRequest1, loggedInUser);
                 rc.addDriver(testRequest2, loggedInUser);
             }
+            ArrayList<Request> requestList = rc.getOfferedRequests(loggedInUser);
             RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(), R.layout.requestlist_item,
                     requestList);
             requestListView.setAdapter(requestArrayAdapter);
+            final Context ctx = this.getContext();
+
+            /**
+             * When we click a request we want to be able to see it in another activity
+             * Use bundles to send the position of the request in a list
+             */
+            requestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent intent = new Intent(getActivity(), DriverViewRequestActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("position", position);
+                    //bundle.putString("activity", "MainActivity");
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            });
         }
 
         /**
