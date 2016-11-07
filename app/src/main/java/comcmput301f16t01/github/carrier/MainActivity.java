@@ -261,8 +261,9 @@ public class MainActivity extends AppCompatActivity {
             RequestList rl = RequestController.getInstance();
             if (rc.getOfferedRequests(loggedInUser).size() == 0){
                 User testUser = new User("TestUser");
-                Request testRequest1 = new Request(testUser, new Location(), new Location(), "testRequest1");
-                Request testRequest2 = new Request(testUser, new Location(), new Location(), "testRequest1");
+                Request testRequest1 = new Request(testUser, new Location(), new Location());
+                Request testRequest2 = new Request(testUser, new Location(), new Location(),
+                        "I gotta go home please.");
                 testRequest1.setFare(100);
                 rl.add(testRequest1);
                 rl.add(testRequest2);
@@ -270,8 +271,8 @@ public class MainActivity extends AppCompatActivity {
                 rc.addDriver(testRequest2, loggedInUser);
             }
             ArrayList<Request> requestList = rc.getOfferedRequests(loggedInUser);
-            RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(), R.layout.requestlist_item,
-                    requestList);
+            DriverRequestAdapter requestArrayAdapter = new DriverRequestAdapter(this.getContext(),
+                    R.layout.driverrequestlist_item, requestList);
             requestListView.setAdapter(requestArrayAdapter);
             final Context ctx = this.getContext();
 
@@ -279,17 +280,7 @@ public class MainActivity extends AppCompatActivity {
              * When we click a request we want to be able to see it in another activity
              * Use bundles to send the position of the request in a list
              */
-            requestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent intent = new Intent(getActivity(), DriverViewRequestActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("position", position);
-                    //bundle.putString("activity", "MainActivity");
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-                }
-            });
+
         }
 
         /**
