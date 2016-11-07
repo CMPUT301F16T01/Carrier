@@ -27,7 +27,7 @@ public class RequestController {
     /**
      * @return the RequestList held by this controller.
      */
-    public static ArrayList<Request> getInstance() {
+    public static RequestList getInstance() {
         if (requestList == null) {
             requestList = new RequestList();
         }
