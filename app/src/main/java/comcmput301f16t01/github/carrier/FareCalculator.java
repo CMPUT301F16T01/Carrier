@@ -25,11 +25,6 @@ public class FareCalculator {
     public FareCalculator() {
     }
 
-    public FareCalculator(Location start, Location end) {
-        this.start = start;
-        this.end = end;
-    }
-
     public int getEstimate(double distance, double duration) {
         /* TODO: once we get routing working on our map we'll fetch the distance and duration */
         /* Assuming we're using OSM we can do road.mLength (a string, in km) and road.mDuration
