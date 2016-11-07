@@ -11,7 +11,7 @@ public class MockFareCalculator extends FareCalculator {
      * @param end
      */
     public MockFareCalculator(Location start, Location end) {
-        // super(start, end);
+        super(start, end);
     }
 
     // This not an @Override because FareCalculator does not have a getEstimate() it has a getEstimate(double, double)

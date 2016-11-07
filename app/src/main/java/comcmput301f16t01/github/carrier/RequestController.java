@@ -142,7 +142,13 @@ public class RequestController {
      * @return An ArrayList of requests that the driver has offered to give a ride on.
      */
     public ArrayList<Request> getOfferedRequests(User driver) {
-        return new ArrayList<Request>();
+        ArrayList<Request> returnValue = new ArrayList<Request>();
+        for (Request request : requestList) {
+            if (request.getOfferedDrivers().contains(driver)) {
+                returnValue.add(request);
+            }
+        }
+        return  returnValue;
     }
 
     /**
