@@ -15,14 +15,24 @@
 
         <!-- right now this is a placeholder for some kind of "Choose Locations" prompt -->
         <TextView
-            android:text=""
+            android:text="text here"
             android:layout_marginTop="20dp"
             android:textColor="@color/colorPrimaryDark"
             android:textAlignment="center"
             android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textView" />
+            android:id="@+id/textView_start" />
+
+        <TextView
+            android:text="text here"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_end" />
 
         <!-- HOLDS THE GEO-LOCATION CHOICE BUTTONS -->
         <!-- TODO decide how we're getting to the map view...one or two buttons -->

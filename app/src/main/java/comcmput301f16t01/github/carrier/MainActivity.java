@@ -24,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.location.Location;
 
 import java.util.ArrayList;
 
@@ -271,8 +272,8 @@ public class MainActivity extends AppCompatActivity {
 
             if (requestList.size() == 0) {
                 // Create sample requests because this is probably not set up yet.
-                Request requestOne = new Request( loggedInUser, new Location(), new Location(), "testRequest!" );
-                Request requestTwo = new Request( loggedInUser, new Location(), new Location(), "testRequest2!" );
+                Request requestOne = new Request( loggedInUser, new Location(""), new Location(""), "testRequest!" );
+                Request requestTwo = new Request( loggedInUser, new Location(""), new Location(""), "testRequest2!" );
 
 
                 requestOne.setStatus(Request.COMPLETE);

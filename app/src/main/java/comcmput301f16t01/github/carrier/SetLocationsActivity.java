@@ -38,6 +38,7 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 2;
+    private static final int DEFAULT_REQ_CODE = 1;
     private GoogleApiClient googleApiClient = null;
     public final Activity activity = SetLocationsActivity.this;
     Location lastLocation = null;
@@ -60,6 +61,7 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
 
         if(point.equals("end")) {
             String startLocation = bundle.getString("startLocation");
+            lastBundle.putString("point", "start");
             lastBundle.putString("startLocation",startLocation);
         }
 
@@ -262,21 +264,49 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
         return false;
     }
 
+    // from: http://stackoverflow.com/questions/14292398/how-to-pass-data-from-2nd-activity-to-1st-activity-when-pressed-back-android
+    // author: ρяσѕρєя K
+    // retrieved on: November 7th, 2016
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if(requestCode == DEFAULT_REQ_CODE) {
+            if(resultCode == RESULT_OK){
+                // when done choosing end, go back to request screen and pass bundle of locations
+                Intent backIntent = new Intent();
+                setResult(RESULT_OK, backIntent);
+                lastBundle.putString("startLocation", intent.getStringExtra("startLocation"));
+                lastBundle.putString("endLocation", intent.getStringExtra("endLocation"));
+                backIntent.putExtras(lastBundle);
+                activity.finish();
+            }
+        }
+    }
 
     public void confirmLocation(View view) {
         if(locationPoint != null) {
+            // if choosing start point, continue to end point screen
             if (point.equals("start")) {
                 Intent intent = new Intent(activity, SetLocationsActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("point", "end");
-                bundle.putString("startLocation", new Gson().toJson(locationPoint));
+                bundle.putString(point + "Location", new Gson().toJson(locationPoint));
                 intent.putExtras(bundle);
-                startActivity(intent);
+                startActivityForResult(intent, DEFAULT_REQ_CODE);
+
+                // when done choosing end, go back to request screen and pass bundle of locations
+                /*Intent backIntent = new Intent();
+                setResult(RESULT_OK, backIntent);
+                lastBundle.putString("startLocation", new Gson().toJson(locationPoint));
+                //lastBundle.putString("endLocation", intent.getStringExtra("endLocation"));
+                backIntent.putExtras(lastBundle);
+                activity.finish();*/
             } else if (point.equals("end")) {
-                Intent intent = new Intent(activity, MakeRequestActivity.class);
-                lastBundle.putString("endLocation", new Gson().toJson(locationPoint));
-                intent.putExtras(lastBundle);
-                startActivity(intent);
+                // if choosing end point, go back to last activity, passing bundle of locations
+                Intent backIntent = new Intent();
+                lastBundle.putString(point + "Location", new Gson().toJson(locationPoint));
+                backIntent.putExtras(lastBundle);
+                setResult(RESULT_OK, backIntent);
+                activity.finish();
             }
         } else {
             Toast.makeText(activity, "You must first choose a location by long-pressing on the map", Toast.LENGTH_SHORT).show();

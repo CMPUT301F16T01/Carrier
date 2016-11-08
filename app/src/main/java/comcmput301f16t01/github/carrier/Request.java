@@ -3,6 +3,7 @@ package comcmput301f16t01.github.carrier;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import android.location.Location;
 
 /**
  * Represents a request for a ride.
@@ -102,7 +103,7 @@ public class Request {
     }
 
     public int getFareEstimate() {
-        FareCalculator fareCalc = new FareCalculator(start, end);
+        FareCalculator fareCalc = new FareCalculator();
         return fareCalc.getEstimate();
     }
 

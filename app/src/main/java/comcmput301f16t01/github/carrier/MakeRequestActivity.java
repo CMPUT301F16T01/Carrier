@@ -16,6 +16,9 @@ import android.widget.Toast;
 import java.util.Locale;
 import android.os.Handler;
 
+import com.google.gson.Gson;
+import android.location.Location;
+
 /*
  The code for incrementing/decrementing the fare while holding down
  the up and down arrows is based on: https://goo.gl/zKpYnX
@@ -25,6 +28,7 @@ import android.os.Handler;
 
 public class MakeRequestActivity extends AppCompatActivity {
 
+    private static final int DEFAULT_REQ_CODE = 1;
     final Activity activity = MakeRequestActivity.this;
     /**
      * Determines how fast the arrows increment/decrement the estimated fare
@@ -58,8 +62,24 @@ public class MakeRequestActivity extends AppCompatActivity {
         setTitle("New Request");
         setButtons();
         activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+    }
 
-
+    // from: http://stackoverflow.com/questions/14292398/how-to-pass-data-from-2nd-activity-to-1st-activity-when-pressed-back-android
+    // author: ρяσѕρєя K
+    // retrieved on: November 7th, 2016
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if(requestCode == DEFAULT_REQ_CODE) {
+            if(resultCode == RESULT_OK){
+                // from LonelyTwitter
+                start = new Gson().fromJson(intent.getStringExtra("startLocation"), Location.class);
+                end = new Gson().fromJson(intent.getStringExtra("endLocation"), Location.class);
+                TextView tv = (TextView) findViewById(R.id.textView_start);
+                tv.setText(start.toString());
+                tv = (TextView) findViewById(R.id.textView_end);
+                tv.setText(end.toString());
+            }
+        }
     }
 
     private void setButtons() {
@@ -107,27 +127,14 @@ public class MakeRequestActivity extends AppCompatActivity {
     }
 
     public void chooseLocations(View view) {
-        Toast.makeText(activity, "Choose locations", Toast.LENGTH_SHORT).show();
+        if(start == null) start = new Location("");
+        if(end == null) end = new Location("");
 
-        if(start == null) start = new Location();
-        if(end == null) end = new Location();
-
-        // TODO remove fake data
-        // fake data, University of Alberta
-        start.setLocation(53.5232, -113.5263);
-        // fake data, Edmonton City Centre
-        end.setLocation(53.5438, -113.4923);
-
-        // TODO create the activity for selecting locations of request (later use case)
-        //    the new activity will handle everything and will return back to use the
-        //    start and end location coordinates
-        // SetLocationsActivity does not exist, placeholder name
-        //   this will be where the user sets the start and end locations of their request
         Intent intent = new Intent(MakeRequestActivity.this, SetLocationsActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("point","start");
         intent.putExtras(bundle);
-        startActivity(intent);
+        startActivityForResult(intent, DEFAULT_REQ_CODE);
     }
 
     /**
@@ -164,7 +171,7 @@ public class MakeRequestActivity extends AppCompatActivity {
         } else {
             // TODO use FareCalculator once available
             // the MockFareCalculator generates random numbers so we can see different values on the display
-            MockFareCalculator fc = new MockFareCalculator(start, end);
+            MockFareCalculator fc = new MockFareCalculator();
             int fareEstimate = fc.getEstimate();
 
             TextView fareTextView = (TextView) findViewById(R.id.textView_fareEstimate);

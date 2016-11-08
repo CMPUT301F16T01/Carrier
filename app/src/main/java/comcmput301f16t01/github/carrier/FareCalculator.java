@@ -7,11 +7,7 @@ package comcmput301f16t01.github.carrier;
  */
 public class FareCalculator {
 
-    /**
-     * @param start
-     * @param end
-     */
-    public FareCalculator(Location start, Location end) {
+    public FareCalculator() {
         // TODO calculate a fare. (this is not for project part 2)
     }
 
