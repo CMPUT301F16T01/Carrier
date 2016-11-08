@@ -6,31 +6,102 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
-
 import java.util.Locale;
+import android.os.Handler;
+
+/*
+ The code for incrementing/decrementing the fare while holding down
+ the up and down arrows is based on: https://goo.gl/zKpYnX
+ Author: Yar
+ Retrieved on: November 5th, 2016
+  */
 
 public class MakeRequestActivity extends AppCompatActivity {
 
     final Activity activity = MakeRequestActivity.this;
+    /**
+     * Determines how fast the arrows increment/decrement the estimated fare
+     */
+    final int REP_DEL = 25;
+
     private Location start = null;
     private Location end = null;
     private int fareEstimated = -1;
+
+    private Handler repeatUpdateHandler = new Handler();
+    private boolean autoIncrement = false;
+    private boolean autoDecrement = false;
+
+    class RepeatUpdater implements Runnable {
+        public void run() {
+            if(autoIncrement) {
+                incrementFare(null);
+                repeatUpdateHandler.postDelayed( new RepeatUpdater(), REP_DEL);
+            } else if(autoDecrement) {
+                decrementFare(null);
+                repeatUpdateHandler.postDelayed( new RepeatUpdater(), REP_DEL);
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make_request);
         setTitle("New Request");
-
+        setButtons();
         activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+    }
+
+    private void setButtons() {
+        ImageButton fareUpButton = (ImageButton) findViewById(R.id.imageButton_fareUp);
+        fareUpButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if(fareEstimated != -1) {
+                    autoIncrement = true;
+                    repeatUpdateHandler.post(new RepeatUpdater());
+                }
+                return false;
+            }
+        });
+        fareUpButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if((motionEvent.getAction() == MotionEvent.ACTION_UP
+                        || motionEvent.getAction() == MotionEvent.ACTION_CANCEL) && autoIncrement) {
+                    autoIncrement = false;
+                }
+                return false;
+            }
+        });
+
+        ImageButton fareDownButton = (ImageButton) findViewById(R.id.imageButton_fareDown);
+        fareDownButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                autoDecrement = true;
+                repeatUpdateHandler.post(new RepeatUpdater());
+                return false;
+            }
+        });
+        fareDownButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if((motionEvent.getAction() == MotionEvent.ACTION_UP
+                        || motionEvent.getAction() == MotionEvent.ACTION_CANCEL) && autoDecrement) {
+                    autoDecrement = false;
+                }
+                return false;
+            }
+        });
     }
 
     public void chooseLocations(View view) {
@@ -65,12 +136,11 @@ public class MakeRequestActivity extends AppCompatActivity {
      */
     public void onBackPressed() {
         AlertDialog.Builder adb = new AlertDialog.Builder(this);
-        adb.setTitle("Are you sure?");
-        adb.setMessage("You will lose this request if you go back.");
+        adb.setTitle("Are you sure you want to cancel request?");
+        adb.setMessage("You will lose this request.");
         adb.setCancelable(true);
         final Activity activity = MakeRequestActivity.this;
-        // TODO semantics re: cancel, button text (is it confusing to have "cancel" and "cancel request"?)
-        adb.setPositiveButton("Go back", new DialogInterface.OnClickListener() {
+        adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 activity.finish();
@@ -78,7 +148,7 @@ public class MakeRequestActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        adb.setNegativeButton("Stay", null );
+        adb.setNegativeButton("No", null );
         adb.show();
     }
 
@@ -100,6 +170,28 @@ public class MakeRequestActivity extends AppCompatActivity {
             fareTextView.setText(formatFare(fareEstimate));
 
             fareEstimated = fareEstimate;
+        }
+    }
+
+    /**
+     * Increase fare by 1 when up arrow is pressed.
+     */
+    public void incrementFare(View view) {
+        if(fareEstimated != -1) {
+            fareEstimated++;
+            TextView fareTextView = (TextView) findViewById(R.id.textView_fareEstimate);
+            fareTextView.setText(formatFare(fareEstimated));
+        }
+    }
+
+    /**
+     * Decrease fare by 1 when down arrow is pressed.
+     */
+    public void decrementFare(View view) {
+        if(fareEstimated > 0) {
+            fareEstimated--;
+            TextView fareTextView = (TextView) findViewById(R.id.textView_fareEstimate);
+            fareTextView.setText(formatFare(fareEstimated));
         }
     }
 
