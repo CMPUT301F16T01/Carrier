@@ -257,6 +257,31 @@ public class MainActivity extends AppCompatActivity {
          * @param requestListView
          */
         private void fillDriverRequests(ListView requestListView) {
+            RequestController rc = new RequestController();
+            User loggedInUser = UserController.getLoggedInUser();
+            RequestList rl = RequestController.getInstance();
+            if (rc.getOfferedRequests(loggedInUser).size() == 0){
+                User testUser = new User("TestUser");
+                Request testRequest1 = new Request(testUser, new Location(), new Location());
+                Request testRequest2 = new Request(testUser, new Location(), new Location(),
+                        "I gotta go home please.");
+                testRequest1.setFare(100);
+                rl.add(testRequest1);
+                rl.add(testRequest2);
+                rc.addDriver(testRequest1, loggedInUser);
+                rc.addDriver(testRequest2, loggedInUser);
+            }
+            ArrayList<Request> requestList = rc.getOfferedRequests(loggedInUser);
+            DriverRequestAdapter requestArrayAdapter = new DriverRequestAdapter(this.getContext(),
+                    R.layout.driverrequestlist_item, requestList);
+            requestListView.setAdapter(requestArrayAdapter);
+            final Context ctx = this.getContext();
+
+            /**
+             * When we click a request we want to be able to see it in another activity
+             * Use bundles to send the position of the request in a list
+             */
+
         }
 
         /**
