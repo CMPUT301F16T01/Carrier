@@ -291,7 +291,9 @@ public class MainActivity extends AppCompatActivity {
         private void fillRiderRequests(ListView requestListView) {
             RequestController rc = new RequestController();
             User loggedInUser = UserController.getLoggedInUser();
-            final ArrayList<Request> requestList = rc.getRequests( loggedInUser );
+            // Mike's old line, Kieter rewrote with Mike, you can probably delete it
+            //final ArrayList<Request> requestList = rc.getRequests( loggedInUser );
+            final ArrayList<Request> requestList = rc.getInstance();
 
 
             if (requestList.size() == 0) {
@@ -306,8 +308,11 @@ public class MainActivity extends AppCompatActivity {
                 requestList.add( requestTwo );
             }
 
+            // Mike's old line, Kieter rewrote it with Mike, you can probably delete it
+//            RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
+//                    R.layout.requestlist_item, requestList );
             RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
-                    R.layout.requestlist_item, requestList );
+                    R.layout.requestlist_item, rc.getRequests(UserController.getLoggedInUser()) );
 
             requestListView.setAdapter( requestArrayAdapter );
 
