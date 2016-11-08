@@ -18,8 +18,8 @@ import comcmput301f16t01.github.carrier.Notifications.NotificationController;
  * Or use one of the getX() functions to get immediate info.
  */
 public class RequestController {
+    /** Singleton instance of RequestController */
     private static RequestList requestList;
-    private Context saveContext = null;
 
     /**
      * Prevents errors when a RequestController is initialized and methods that require requestList
@@ -33,7 +33,7 @@ public class RequestController {
 
     /** Adds a request to elastic search. */
     public String addRequest(Request request) {
-        if(request.getStart() == null || request.getEnd() == null) {
+        if (request.getStart() == null || request.getEnd() == null) {
             return "You must first select a start and end location";
         } else if (request.getFare() == -1) {
             return "You must first estimate the fare";
@@ -50,8 +50,28 @@ public class RequestController {
         requestList = new RequestList();
     }
 
+    /**
+     * Will return a list of requests that the rider has requested.
+     *
+     * @param rider The rider we are getting the requests for.
+     * @return An array list of requests that the user has made.
+     */
+    public RequestList getRequests(User rider) {
+        RequestList returnValue = new RequestList();
+        for (Request request : requestList) {
+            if (request.getRider() == rider) {
+                returnValue.add(request);
+            }
+        }
+        return returnValue;
+    }
+
+
     // TODO Why does this need a rider? You can cancel a request just knowing the request.
     public void cancelRequest(User rider, Request request) {
+        // TODO test elastic search component
+        request.setStatus(Request.CANCELLED);
+
     }
 
     /**
@@ -61,12 +81,12 @@ public class RequestController {
      * @param driver  the driver that is being added as a driver for the request.
      */
     public void addDriver(Request request, User driver) {
-
         // TODO Elastic Requests...
         // only on success should we send out a notification!
         NotificationController nc = new NotificationController();
         nc.addNotification( request.getRider(), request );
         // TODO check for notification success?
+        request.addOfferingDriver(driver);
     }
 
     /**
@@ -122,7 +142,13 @@ public class RequestController {
      * @return An ArrayList of requests that the driver has offered to give a ride on.
      */
     public ArrayList<Request> getOfferedRequests(User driver) {
-        return new ArrayList<Request>();
+        ArrayList<Request> returnValue = new ArrayList<Request>();
+        for (Request request : requestList) {
+            if (request.getOfferedDrivers().contains(driver)) {
+                returnValue.add(request);
+            }
+        }
+        return returnValue;
     }
 
 
@@ -165,7 +191,7 @@ public class RequestController {
      * Deprecated: Use getResult instead.
      */
     @Deprecated
-    public static ArrayList<Request> getInstance() {
+    public static RequestList getInstance() {
         if (requestList == null) {
             //requestList = new ArrayList<Request>();
         }
@@ -198,12 +224,12 @@ public class RequestController {
         return new ArrayList<>();
     }
 
-    /**
-     * Deprecated: should use new function that uses elastic search or FileIO (depending on
-     * connectivity), not singleton?
-     */
-    @Deprecated
-    public ArrayList<Request> getRequests(User rider) {
-        return requestList;
-    }
+//    /**
+//     * Deprecated: should use new function that uses elastic search or FileIO (depending on
+//     * connectivity), not singleton?
+//     */
+//    @Deprecated
+//    public ArrayList<Request> getRequests(User rider) {
+//        return requestList;
+//    }
 }

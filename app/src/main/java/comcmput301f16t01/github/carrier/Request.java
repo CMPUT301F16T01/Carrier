@@ -57,6 +57,7 @@ public class Request {
         this.start = requestedStart;
         this.end = requestedEnd;
         this.description = description;
+        this.offeringDrivers = new ArrayList<User>();
     }
 
     // Constructor without description TODO do we need this?
@@ -64,6 +65,9 @@ public class Request {
         this.rider = rider;
         this.start = start;
         this.end = end;
+        this.offeringDrivers = new ArrayList<User>();
+        this.description = "";
+
     }
 
     public int getStatus() {
@@ -96,16 +100,12 @@ public class Request {
         return this.end;
     }
 
-    public void notifyRider() {
-
-    }
-
     public User getConfirmedDriver() {
         return new User("Test");
     }
 
     public ArrayList<User> getOfferedDrivers() {
-        return new ArrayList<User>();
+        return this.offeringDrivers;
     }
 
     public String getDescription() {
@@ -129,5 +129,9 @@ public class Request {
         String requestAsString = "Request From: " + rider.getUsername() + "\n";
         requestAsString += "Description: " + description;
         return requestAsString;
+    }
+
+    public void addOfferingDriver(User offeredDriver) {
+        offeringDrivers.add(offeredDriver);
     }
 }
