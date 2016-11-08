@@ -79,6 +79,7 @@ public class Request {
         this.start = requestedStart;
         this.end = requestedEnd;
         this.description = description;
+        this.offeringDrivers = new ArrayList<User>();
     }
 
     // Constructor without description TODO do we need this?
@@ -86,6 +87,9 @@ public class Request {
         this.rider = rider;
         this.start = start;
         this.end = end;
+        this.offeringDrivers = new ArrayList<User>();
+        this.description = "";
+
     }
 
     public int getStatus() {
@@ -127,7 +131,7 @@ public class Request {
     }
 
     public ArrayList<User> getOfferedDrivers() {
-        return new ArrayList<User>();
+        return this.offeringDrivers;
     }
 
     public String getDescription() {
@@ -146,4 +150,8 @@ public class Request {
         return elasticID;
     }
     // TODO confirm these as the states for a Request.
+
+    public void addOfferingDriver(User offeredDriver) {
+        offeringDrivers.add(offeredDriver);
+    }
 }
