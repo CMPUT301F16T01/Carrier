@@ -1,6 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -151,6 +152,30 @@ public class RequestController {
         return returnValue;
     }
 
+    public void clearAllRequests(User basicRider) {
+        ElasticRequestController.ClearRequestTask crt = new ElasticRequestController.ClearRequestTask();
+        crt.execute( basicRider.getUsername() );
+    }
+
+    /**
+     *
+     * @param rider the rider you want to match requests against
+     * @param statuses the requests that you want to filter out (null means get all requests).
+     * @return A list of requests from the given criteria
+     */
+    public RequestList fetchRequestsWhereRider(User rider, @Nullable Integer... statuses ) {
+        if (statuses == null) {
+            ElasticRequestController.FetchRiderRequestsTask frrt = ElasticRequestController.FetchRiderRequestsTask();
+            frrt.execute( rider.getUsername() );
+        } else {
+
+        }
+        return new RequestList();
+    }
+
+    public RequestList fetchAllRequestsWhereRider( User rider ) {
+        return fetchRequestsWhereRider(rider, (Integer) null);
+    }
 
 
     /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
