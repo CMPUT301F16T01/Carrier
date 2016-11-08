@@ -9,7 +9,8 @@ import comcmput301f16t01.github.carrier.Request;
 import comcmput301f16t01.github.carrier.User;
 
 /**
- * Created by Ben on 2016-11-04.
+ * Mocks a notification. Allows to set the date of a notification instead of it being solely set by
+ * the time it was created.
  */
 public class MockNotification extends Notification {
     public MockNotification(@NonNull User userToBeNotified, @NonNull Request relatedRequest) {
