@@ -94,8 +94,8 @@ public class ElasticUserController {
             //update_params[0] is the id, update_params[1] is email, update params[2] is phone
             String script =
                     "{\n" +
-                    "    \"script\" : \"ctx._source.email = " + update_params[1] + "\",\n" +
-                    "\"ctx._source.phoneNumber = " + update_params[2] + "\",\n" +
+                    "    \"script\" : \"ctx._source.email = " + "\"" + update_params[1] + "\"" + "\",\n" +
+                    "\"ctx._source.phoneNumber = " + "\"" + update_params[2] + "\"" + "\",\n" +
                     "}";
 
             Update update = new Update.Builder(script)
