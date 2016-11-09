@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:isScrollContainer="true" >
@@ -61,8 +62,9 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="5">
+            android:layout_height="50dp"
+            android:weightSum="6"
+            android:background="@color/colorPrimaryLighter">
 
             <TextView
                 android:text="@string/dollar_sign"
@@ -75,16 +77,44 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:textSize="30sp"
                 android:text="@string/empty_fare"
                 android:id="@+id/textView_fareEstimate"
-                android:layout_weight="3.5" />
+                android:layout_weight="3.50" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="64dp"
+                android:layout_height="match_parent"
+                android:weightSum="2" >
+
+                <ImageButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_arrow_up"
+                    android:id="@+id/imageButton_fareUp"
+                    android:background="@null"
+                    android:layout_weight="1"
+                    android:tint="@color/colorPrimaryLight"
+                    android:onClick="incrementFare" />
+
+                <ImageButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_arrow_down"
+                    android:id="@+id/imageButton_fareDown"
+                    android:background="@null"
+                    android:layout_weight="1"
+                    android:tint="@color/colorPrimaryLight"
+                    android:onClick="decrementFare" />
+            </LinearLayout>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_weight="1"
                 android:text="@string/estimate_button_text"
                 android:textAllCaps="false"
                 android:textColor="@android:color/background_light"
@@ -120,7 +150,7 @@
             android:maxLength="200"
             android:gravity="top|start"
             android:hint="@string/description_hint"
-            android:background="#22000000"
+            android:background="@color/colorPrimaryLighter"
             android:id="@+id/editText_description"
             android:scrollbars="vertical" />
 

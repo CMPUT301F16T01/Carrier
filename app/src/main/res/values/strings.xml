@@ -14,12 +14,12 @@
     <!--Any string names starting with help will be to describe status to the user-->
     <string name="helpLegend">Legend</string>
     <string name="helpOpenText"><b>Open</b> - A newly created request. A driver has yet to offer to drive yet.</string>
-    <string name="helpOfferedText">Offered - A request that has one or more drivers who have offered to take this request.</string>
-    <string name="helpConfirmedText">Confirmed - A request that has an assigned driver.</string>
-    <string name="helpCompleteText">Complete - A request that has arrived at its destination.</string>
-    <string name="helpPaidText">Paid - A request that has been paid for.</string>
-    <string name="helpCancelText">Cancel - A request that has been cancelled. This can occur anytime before the ride is complete.</string>
-    <string name="padding">10dp</string>
+
+    <string name="helpOfferedText"><b>Offered</b> - A request that has one or more drivers who have offered to take this request.</string>
+    <string name="helpConfirmedText"><b>Confirmed</b> - A request that has an assigned driver.</string>
+    <string name="helpCompleteText"><b>Complete</b> - A request that has arrived at its destination.</string>
+    <string name="helpPaidText"><b>Paid</b> - A request that has been paid for.</string>
+    <string name="helpCancelText"><b>Cancel</b> - A request that has been cancelled. This can occur anytime before the ride is complete.</string>
     <!-- activity_make_request.xml -->
     <string name="choose_location_button_text">Choose Start and End Points on Map</string>
     <string name="fare_estimate_prompt">Fare estimate:</string>

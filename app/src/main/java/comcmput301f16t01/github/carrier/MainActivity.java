@@ -155,11 +155,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (id == R.id.action_help) {
-            Intent intent = new Intent(this, HelpActivity.class);
+            Intent intent = new Intent(MainActivity.this, HelpActivity.class);
             startActivity(intent);
         }
 
-        if (id == R.id.action_logOut ) {
+        if (id == R.id.action_logOut) {
             onBackPressed();
         }
 
@@ -258,6 +258,31 @@ public class MainActivity extends AppCompatActivity {
          * @param requestListView
          */
         private void fillDriverRequests(ListView requestListView) {
+            RequestController rc = new RequestController();
+            User loggedInUser = UserController.getLoggedInUser();
+            RequestList rl = RequestController.getInstance();
+            if (rc.getOfferedRequests(loggedInUser).size() == 0){
+                User testUser = new User("TestUser");
+                Request testRequest1 = new Request(testUser, new Location(), new Location());
+                Request testRequest2 = new Request(testUser, new Location(), new Location(),
+                        "I gotta go home please.");
+                testRequest1.setFare(100);
+                rl.add(testRequest1);
+                rl.add(testRequest2);
+                rc.addDriver(testRequest1, loggedInUser);
+                rc.addDriver(testRequest2, loggedInUser);
+            }
+            ArrayList<Request> requestList = rc.getOfferedRequests(loggedInUser);
+            DriverRequestAdapter requestArrayAdapter = new DriverRequestAdapter(this.getContext(),
+                    R.layout.driverrequestlist_item, requestList);
+            requestListView.setAdapter(requestArrayAdapter);
+            final Context ctx = this.getContext();
+
+            /**
+             * When we click a request we want to be able to see it in another activity
+             * Use bundles to send the position of the request in a list
+             */
+
         }
 
         /**
@@ -268,7 +293,9 @@ public class MainActivity extends AppCompatActivity {
         private void fillRiderRequests(ListView requestListView) {
             RequestController rc = new RequestController();
             User loggedInUser = UserController.getLoggedInUser();
-            final ArrayList<Request> requestList = rc.getRequests( loggedInUser );
+            // Mike's old line, Kieter rewrote with Mike, you can probably delete it
+            //final ArrayList<Request> requestList = rc.getRequests( loggedInUser );
+            final ArrayList<Request> requestList = rc.getInstance();
 
 
             if (requestList.size() == 0) {
@@ -285,8 +312,11 @@ public class MainActivity extends AppCompatActivity {
                 requestList.add( requestThree );
             }
 
+            // Mike's old line, Kieter rewrote it with Mike, you can probably delete it
+//            RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
+//                    R.layout.requestlist_item, requestList );
             RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
-                    R.layout.requestlist_item, requestList );
+                    R.layout.requestlist_item, rc.getRequests(UserController.getLoggedInUser()) );
 
             requestListView.setAdapter( requestArrayAdapter );
 
@@ -299,9 +329,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             });*/
 
-            // To view a request we click on it
-            // We will bundle the request with it
-            // Mandy
+
+            /**
+             * When we click a request we want to be able to see it in another activity
+             * Use bundles to send the position of the request in a list
+             */
             requestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

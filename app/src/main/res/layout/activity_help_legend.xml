@@ -1,157 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_height="match_parent">
 
 
     <TextView
         android:text="@string/helpLegend"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:id="@+id/helpLegend"
-        android:textSize="@android:dimen/app_icon_size" />
+        android:textSize="@android:dimen/app_icon_size"/>
 
 
     <LinearLayout
         android:layout_height="wrap_content"
         android:layout_below="@+id/helpLegend"
         android:layout_width="fill_parent"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="20dp"
         android:orientation="vertical">
 
+
         <!--       OPEN        -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:text="@string/helpOpenText"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@string/padding">
+            android:id="@+id/helpOpenStatus"
+            android:gravity="start|center_vertical"
+            android:paddingBottom="20dp"
+            android:drawableStart="@drawable/open"
+            android:drawablePadding="7dp"/>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/open"
-                android:id="@+id/imageOpen" />
-
-            <TextView
-                android:text="@string/helpOpenText"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/helpOpenStatus"
-                android:layout_gravity="left|center_vertical" />
-
-        </LinearLayout>
 
         <!--       OFFERED        -->
-        <LinearLayout
+        <TextView
+            android:text="@string/helpOfferedText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@string/padding">
+            android:id="@+id/helpOfferedStatus"
+            android:gravity="start|center_vertical"
+            android:drawableStart="@drawable/offered"
+            android:paddingBottom="20dp"
+            android:drawablePadding="7dp"/>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/offered"
-                android:id="@+id/imageOffered"
-                android:scaleX="1.4"
-                android:scaleY="1.4" />
-
-            <TextView
-                android:text="@string/helpOfferedText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/helpOfferedStatus"
-                android:layout_gravity="left|center_vertical" />
-
-        </LinearLayout>
 
         <!--       CONFIRMED        -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="@string/padding">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/confirmed"
-                android:id="@+id/imageConfirmed" />
-
-            <TextView
+        <TextView
             android:text="@string/helpConfirmedText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/helpConfirmedStatus"
-            android:layout_gravity="left|center_vertical" />
+            android:gravity="start|center_vertical"
+            android:paddingBottom="20dp"
+            android:drawableStart="@drawable/confirmed"
+            android:drawablePadding="7dp"/>
 
-        </LinearLayout>
 
         <!--       COMPLETE        -->
-        <LinearLayout
+        <TextView
+            android:text="@string/helpCompleteText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@string/padding">
+            android:id="@+id/helpCompleteStatus"
+            android:paddingBottom="20dp"
+            android:gravity="start|center_vertical"
+            android:drawableStart="@drawable/complete"
+            android:drawablePadding="7dp"/>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/complete"
-                android:id="@+id/imageComplete" />
-
-            <TextView
-                android:text="@string/helpCompleteText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/helpCompleteStatus"
-                android:layout_gravity="left|center_vertical" />
-
-        </LinearLayout>
 
         <!--       PAID        -->
-        <LinearLayout
+        <TextView
+            android:text="@string/helpPaidText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@string/padding">
+            android:id="@+id/helpPaidStatus"
+            android:gravity="start|center_vertical"
+            android:paddingBottom="20dp"
+            android:drawableStart="@drawable/paid"
+            android:drawablePadding="7dp"/>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/paid"
-                android:id="@+id/imagePaid" />
-
-            <TextView
-                android:text="@string/helpPaidText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/helpPaidStatus"
-                android:layout_gravity="left|center_vertical" />
-
-        </LinearLayout>
 
         <!--       CANCEL        -->
-        <LinearLayout
+        <TextView
+            android:text="@string/helpCancelText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@string/padding">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/cancel"
-                android:id="@+id/imageCancel" />
-
-            <TextView
-                android:text="@string/helpCancelText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/helpCancelStatus"
-                android:layout_gravity="left|center_vertical" />
-
-        </LinearLayout>
-
-
-
+            android:id="@+id/helpCancelStatus"
+            android:paddingBottom="20dp"
+            android:gravity="start|center_vertical"
+            android:drawableStart="@drawable/cancel"
+            android:drawablePadding="7dp"/>
 
     </LinearLayout>
 

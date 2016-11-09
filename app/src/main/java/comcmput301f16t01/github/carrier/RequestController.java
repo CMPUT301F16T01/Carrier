@@ -27,7 +27,7 @@ public class RequestController {
     /**
      * @return the RequestList held by this controller.
      */
-    public static ArrayList<Request> getInstance() {
+    public static RequestList getInstance() {
         if (requestList == null) {
             requestList = new RequestList();
         }
@@ -38,7 +38,7 @@ public class RequestController {
      * @param request
      */
     public String addRequest(Request request) {
-        if(request.getStart() == null || request.getEnd() == null) {
+        if (request.getStart() == null || request.getEnd() == null) {
             return "You must first select a start and end location";
         } else if (request.getFare() == -1) {
             return "You must first estimate the fare";
@@ -51,11 +51,19 @@ public class RequestController {
     }
 
     /**
-     * @param rider
-     * @return
+     * Will return a list of requests that the rider has requested.
+     *
+     * @param rider The rider we are getting the requests for.
+     * @return An array list of requests that the user has made.
      */
     public ArrayList<Request> getRequests(User rider) {
-        return requestList;
+        ArrayList<Request> returnValue = new ArrayList<>();
+        for (Request request : requestList) {
+            if (request.getRider() == rider) {
+                returnValue.add(request);
+            }
+        }
+        return returnValue;
     }
 
     /**
@@ -77,6 +85,8 @@ public class RequestController {
      * @param driver  the driver that is being added as a driver for the request.
      */
     public void addDriver(Request request, User driver) {
+        request.addOfferingDriver(driver);
+
     }
 
     /**
@@ -140,7 +150,13 @@ public class RequestController {
      * @return An ArrayList of requests that the driver has offered to give a ride on.
      */
     public ArrayList<Request> getOfferedRequests(User driver) {
-        return new ArrayList<Request>();
+        ArrayList<Request> returnValue = new ArrayList<Request>();
+        for (Request request : requestList) {
+            if (request.getOfferedDrivers().contains(driver)) {
+                returnValue.add(request);
+            }
+        }
+        return returnValue;
     }
 
     /**

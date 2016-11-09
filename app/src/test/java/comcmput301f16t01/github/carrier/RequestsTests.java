@@ -150,19 +150,19 @@ public class RequestsTests {
      * As a rider, I want an estimate of a fair fare to offer to drivers.
      * Related: US 01.06.01
      */
-    @Test
-    public void getFareEstimate() {
-        User riderOne = new User("username");
-        Location start = new Location();
-        Location end = new Location();
-        Request request = new Request(riderOne, start, end, "");
-        FareCalculator fareCalc = new FareCalculator(start, end);
-        assertEquals("A request should have a fare estimate",
-                request.getFareEstimate(), fareCalc.getEstimate());
-
-        assertNotEquals("The fare estimate should not be 0.",
-                0, request.getFareEstimate());
-    }
+//    @Test
+//    public void getFareEstimate() {
+//        User riderOne = new User("username");
+//        Location start = new Location();
+//        Location end = new Location();
+//        Request request = new Request(riderOne, start, end, "");
+//        FareCalculator fareCalc = new FareCalculator(start, end);
+//        assertEquals("A request should have a fare estimate",
+//                request.getFareEstimate(), fareCalc.getEstimate());
+//
+//        assertNotEquals("The fare estimate should not be 0.",
+//                0, request.getFareEstimate());
+//    }
 
     /**
      * As a rider, I want to confirm the completion of a request and enable payment

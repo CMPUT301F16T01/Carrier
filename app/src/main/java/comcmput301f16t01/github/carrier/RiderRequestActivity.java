@@ -12,6 +12,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Locale;
 
+/**
+ * This will help us show the request from the perspective of a rider
+ */
 public class RiderRequestActivity extends AppCompatActivity {
 
     //this is just used to make it work for now
@@ -44,9 +47,13 @@ public class RiderRequestActivity extends AppCompatActivity {
         // Populate values for the different text views.
         setViewValues(request);
         //changing the status image
+
+        /**
+         * This switch statement changes the status image
+         * There is currently coloring code in here which we may use
+         * in the future for a notification system?
+         */
         ImageView statusImageView = (ImageView) findViewById(R.id.imageView_requestStatus);
-        // TODO showing the status properly...
-        // Set up the status icon depending on the status of the request
         if (statusImageView != null) {
             switch (request.getStatus()) {
                 case (Request.OPEN):
