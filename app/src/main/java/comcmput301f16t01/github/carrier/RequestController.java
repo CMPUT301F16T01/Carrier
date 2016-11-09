@@ -152,20 +152,20 @@ public class RequestController {
         return returnValue;
     }
 
-    public void clearAllRequests(User basicRider) {
-        ElasticRequestController.ClearRequestTask crt = new ElasticRequestController.ClearRequestTask();
-        crt.execute( basicRider.getUsername() );
+    public void clearAllRiderRequests(User rider) {
+        ElasticRequestController.ClearRiderRequestsTask crrt = new ElasticRequestController.ClearRiderRequestsTask();
+        crrt.execute( rider.getUsername() );
     }
 
     /**
      *
      * @param rider the rider you want to match requests against
-     * @param statuses the requests that you want to filter out (null means get all requests).
+     * @param statuses the statues you would like to see (filters non listed ones) (null means grab all)
      * @return A list of requests from the given criteria
      */
     public RequestList fetchRequestsWhereRider(User rider, @Nullable Integer... statuses ) {
         if (statuses == null) {
-            ElasticRequestController.FetchRiderRequestsTask frrt = ElasticRequestController.FetchRiderRequestsTask();
+            ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
             frrt.execute( rider.getUsername() );
         } else {
 

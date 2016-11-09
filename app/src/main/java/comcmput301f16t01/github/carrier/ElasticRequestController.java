@@ -10,6 +10,7 @@ import com.searchly.jestdroid.JestDroidClient;
 import java.io.IOException;
 import java.util.List;
 
+import io.searchbox.core.DeleteByQuery;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
@@ -21,7 +22,7 @@ public class ElasticRequestController {
     private static JestDroidClient client;
 
     /**
-     * Adds a request to Elastic Search
+     * Adds a request to Elastic Search.
      */
     public static class AddRequestTask extends AsyncTask<Request, Void, Void> {
 
@@ -45,9 +46,9 @@ public class ElasticRequestController {
             }
             return null;
         }
-    }
+    } // AddRequestTask
 
-// May need this to edit it later...
+// TODO May need this to edit it later...
 //    { "from" : 0, "size" : 500,
 //      "query": {
 //        "bool": {
@@ -59,6 +60,10 @@ public class ElasticRequestController {
 //        }
 //    }
 //}
+
+    /**
+     * Searches by one keyword (this keyword could be a phrase too, though...
+     */
     public static class SearchByKeywordTask extends AsyncTask<String, Void, RequestList> {
 
         @Override
@@ -99,9 +104,55 @@ public class ElasticRequestController {
                 Log.i("Error", "Something went wrong when we tried to talk to elastic search");
             }
             return foundRequests;
+        }
+    } // SearchByKeywordTask
 
+    /**
+     *
+     */
+    public static class FetchRiderRequestsTask extends AsyncTask<Object, Void, Request> {
+
+        @Override
+        protected Request doInBackground(Object... params) {
+            String query;
+            // must match clause
+            if (params.length == 1) {
+                // do not include shoulds.
+            } else {
+                // should match clause
+            }
+
+            return null;
         }
     }
+
+    /**
+     * Clears requests for a specified rider.
+     */
+    public static class ClearRiderRequestsTask extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... search_parameters) {
+            verifySettings();
+            String search_string = "{\"query\": {\"match\": {\"username\": \"" + search_parameters[0] + "\"}}}";
+
+            DeleteByQuery delete = new DeleteByQuery.Builder(search_string)
+                    .addIndex("cmput301f16t01")
+                    .addType("request")
+                    .build();
+
+            try {
+                client.execute( delete );
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new IllegalArgumentException();
+            }
+
+            return null;
+        }
+    }
+
+
 
     private static void verifySettings() {
         if (client == null) {
