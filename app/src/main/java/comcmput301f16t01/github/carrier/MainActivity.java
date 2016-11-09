@@ -383,13 +383,5 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-        ListView requestListView = (ListView) findViewById( R.id.listView_homeRequestList );
-        // ListAdapter arrayAdapter =  requestListView.getAdapter();
-        //arrayAdapter.notifyAll();
-        // arrayAdapter.notifyDataSetChanged();
-    }
+    
 }
