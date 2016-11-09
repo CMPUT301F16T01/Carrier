@@ -13,34 +13,11 @@
         android:focusableInTouchMode="true" >
         <!-- line above from https://goo.gl/LRzzp1, author: Mike T, retrieved: October 30th, 2016 -->
 
-        <!-- right now this is a placeholder for some kind of "Choose Locations" prompt -->
-        <TextView
-            android:text="text here"
-            android:layout_marginTop="20dp"
-            android:textColor="@color/colorPrimaryDark"
-            android:textAlignment="center"
-            android:textStyle="bold"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView_start" />
-
-        <TextView
-            android:text="text here"
-            android:layout_marginTop="20dp"
-            android:textColor="@color/colorPrimaryDark"
-            android:textAlignment="center"
-            android:textStyle="bold"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView_end" />
-
-        <!-- HOLDS THE GEO-LOCATION CHOICE BUTTONS -->
-        <!-- TODO decide how we're getting to the map view...one or two buttons -->
-        <!-- TODO allow user to view locations on map after selecting them -->
+        <!-- HOLDS THE GEO-LOCATION CHOICE BUTTON -->
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="wrap_content"
             android:weightSum="1">
 
             <!-- This button is a placeholder while we decide what we want to do
@@ -57,9 +34,26 @@
                 android:onClick="chooseLocations"/>
         </LinearLayout>
 
-        <!-- START LOCATION TEXT ENTRY -->
+        <!-- right now this is a placeholder to print start and end locations -->
+        <TextView
+            android:text="Start:"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_start" />
 
-        <!-- END LOCATION TEXT ENTRY -->
+        <TextView
+            android:text="End:"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_end" />
 
         <!-- FARE TEXT ENTRY -->
         <TextView

@@ -52,7 +52,8 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_locations);
-        Bundle bundle = getIntent().getExtras();
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
         point = bundle.getString("point");
         setTitle("Choose " + point + " point");
 
@@ -60,9 +61,20 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
         button.setText("Confirm " + point + " point");
 
         if(point.equals("end")) {
-            String startLocation = bundle.getString("startLocation");
             lastBundle.putString("point", "start");
-            lastBundle.putString("startLocation",startLocation);
+            if(intent.hasExtra("startLocation")) {
+                lastBundle.putString("startLocation", bundle.getString("startLocation"));
+            }
+            if(intent.hasExtra("endLocation")) {
+                locationPoint = new Gson().fromJson(bundle.getString("endLocation"), Location.class);
+            }
+        } else if(point.equals("start")) {
+            if(intent.hasExtra("startLocation")) {
+                locationPoint = new Gson().fromJson(bundle.getString("startLocation"), Location.class);
+            }
+            if(intent.hasExtra("endLocation")) {
+                lastBundle.putString("endLocation",bundle.getString("endLocation"));
+            }
         }
 
         checkPermissions();
@@ -82,9 +94,13 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setBuiltInZoomControls(true);
         map.setMultiTouchControls(true);
+
+        if(locationPoint != null) {
+            GeoPoint geoPoint = new GeoPoint(locationPoint.getLatitude(), locationPoint.getLongitude());
+            map = (MapView) findViewById(R.id.map);
+            setLocationMarker(map, geoPoint);
+        }
     }
-
-
 
     // the following two functions come from: https://developer.android.com/training/location/retrieve-current.html
     protected void onStart() {
@@ -95,6 +111,40 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
     protected void onStop() {
         googleApiClient.disconnect();
         super.onStop();
+    }
+
+    /**
+     * Set the location marker on the map for the user-selected location
+     *
+     * @param map
+     * @param geoPoint
+     */
+    private void setLocationMarker(MapView map, GeoPoint geoPoint) {
+        final Marker startMarker = new Marker(map);
+        startMarker.setPosition(geoPoint);
+        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+
+        startMarker.setDraggable(true);
+        startMarker.setOnMarkerDragListener(new Marker.OnMarkerDragListener() {
+            @Override
+            public void onMarkerDrag(Marker marker) {
+
+            }
+
+            @Override
+            public void onMarkerDragEnd(Marker marker) {
+                locationPoint.setLatitude(marker.getPosition().getLatitude());
+                locationPoint.setLongitude(marker.getPosition().getLongitude());
+            }
+
+            @Override
+            public void onMarkerDragStart(Marker marker) {
+
+            }
+        });
+
+        map.getOverlays().add(startMarker);
+        map.invalidate();
     }
 
     // this function comes from: https://developer.android.com/training/permissions/requesting.html
@@ -200,15 +250,6 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
 
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(activity, (MapEventsReceiver) activity);
         map.getOverlays().add(0, mapEventsOverlay);
-
-        // Set a start marker at our current location
-        /*Marker startMarker = new Marker(map);
-        startMarker.setPosition(startPoint);
-        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        map.getOverlays().add(startMarker);
-
-        map.invalidate();
-        */
     }
 
     @Override
@@ -230,37 +271,11 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
     public boolean longPressHelper(GeoPoint geoPoint) {
         if(locationPoint == null){
             MapView map = (MapView) findViewById(R.id.map);
-            final Marker startMarker = new Marker(map);
-            startMarker.setPosition(geoPoint);
-            startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-
             locationPoint = new Location("");
             locationPoint.setLatitude(geoPoint.getLatitude());
             locationPoint.setLongitude(geoPoint.getLongitude());
-
-            startMarker.setDraggable(true);
-            startMarker.setOnMarkerDragListener(new Marker.OnMarkerDragListener() {
-                @Override
-                public void onMarkerDrag(Marker marker) {
-
-                }
-
-                @Override
-                public void onMarkerDragEnd(Marker marker) {
-                    locationPoint.setLatitude(marker.getPosition().getLatitude());
-                    locationPoint.setLongitude(marker.getPosition().getLongitude());
-                }
-
-                @Override
-                public void onMarkerDragStart(Marker marker) {
-
-                }
-            });
-
-            map.getOverlays().add(startMarker);
-            map.invalidate();
+            setLocationMarker(map, geoPoint);
         }
-
         return false;
     }
 
@@ -282,28 +297,25 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
         }
     }
 
+    /**
+     * If the user has selected a location, set the location point and continue to the next screen
+     * in the workflow.
+     *
+     * @param view
+     */
     public void confirmLocation(View view) {
         if(locationPoint != null) {
             // if choosing start point, continue to end point screen
             if (point.equals("start")) {
-                Intent intent = new Intent(activity, SetLocationsActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("point", "end");
-                bundle.putString(point + "Location", new Gson().toJson(locationPoint));
-                intent.putExtras(bundle);
-                startActivityForResult(intent, DEFAULT_REQ_CODE);
-
-                // when done choosing end, go back to request screen and pass bundle of locations
-                /*Intent backIntent = new Intent();
-                setResult(RESULT_OK, backIntent);
+                lastBundle.putString("point", "end");
                 lastBundle.putString("startLocation", new Gson().toJson(locationPoint));
-                //lastBundle.putString("endLocation", intent.getStringExtra("endLocation"));
-                backIntent.putExtras(lastBundle);
-                activity.finish();*/
+                Intent intent = new Intent(activity, SetLocationsActivity.class);
+                intent.putExtras(lastBundle);
+                startActivityForResult(intent, DEFAULT_REQ_CODE);
             } else if (point.equals("end")) {
                 // if choosing end point, go back to last activity, passing bundle of locations
                 Intent backIntent = new Intent();
-                lastBundle.putString(point + "Location", new Gson().toJson(locationPoint));
+                lastBundle.putString("endLocation", new Gson().toJson(locationPoint));
                 backIntent.putExtras(lastBundle);
                 setResult(RESULT_OK, backIntent);
                 activity.finish();

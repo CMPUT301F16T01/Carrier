@@ -64,6 +64,7 @@ public class MakeRequestActivity extends AppCompatActivity {
         activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
 
+    // TODO instead of location tuples, allow user to view start-to-end path on a map
     // from: http://stackoverflow.com/questions/14292398/how-to-pass-data-from-2nd-activity-to-1st-activity-when-pressed-back-android
     // author: ρяσѕρєя K
     // retrieved on: November 7th, 2016
@@ -75,13 +76,16 @@ public class MakeRequestActivity extends AppCompatActivity {
                 start = new Gson().fromJson(intent.getStringExtra("startLocation"), Location.class);
                 end = new Gson().fromJson(intent.getStringExtra("endLocation"), Location.class);
                 TextView tv = (TextView) findViewById(R.id.textView_start);
-                tv.setText(start.toString());
+                tv.setText("Start: (" + String.valueOf(start.getLatitude()) + ", " + String.valueOf(start.getLongitude()) + ")");
                 tv = (TextView) findViewById(R.id.textView_end);
-                tv.setText(end.toString());
+                tv.setText("End: (" + String.valueOf(end.getLatitude()) + ", " + String.valueOf(end.getLongitude()) + ")");
             }
         }
     }
 
+    /**
+     * Set the buttons for incrementing and decrementing the fare estimate by the user holding it down
+     */
     private void setButtons() {
         ImageButton fareUpButton = (ImageButton) findViewById(R.id.imageButton_fareUp);
         fareUpButton.setOnLongClickListener(new View.OnLongClickListener() {
@@ -126,13 +130,28 @@ public class MakeRequestActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Choose the start and end locations for the trip on a map
+     *
+     * @param view
+     */
     public void chooseLocations(View view) {
-        if(start == null) start = new Location("");
-        if(end == null) end = new Location("");
-
-        Intent intent = new Intent(MakeRequestActivity.this, SetLocationsActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("point","start");
+
+        // if start or end has already been assigned, we will have this marker set on the map
+        if(start == null) {
+            start = new Location("");
+        } else {
+            bundle.putString("startLocation", new Gson().toJson(start));
+        }
+        if(end == null) {
+            end = new Location("");
+        } else {
+            bundle.putString("endLocation", new Gson().toJson(end));
+        }
+
+        Intent intent = new Intent(MakeRequestActivity.this, SetLocationsActivity.class);
         intent.putExtras(bundle);
         startActivityForResult(intent, DEFAULT_REQ_CODE);
     }
