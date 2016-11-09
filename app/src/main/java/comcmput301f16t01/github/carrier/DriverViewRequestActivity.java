@@ -1,6 +1,8 @@
 package comcmput301f16t01.github.carrier;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
@@ -110,8 +112,21 @@ public class DriverViewRequestActivity extends AppCompatActivity {
 
     public void MakeOffer(View v) {
         RequestController rc = new RequestController();
-        if (request.getConfirmedDriver() != null) {
-
+        // Can not make an offer on a request that has a confirmed driver.
+        // Can not make an offer on a request that you hae already made an offer on.
+        if (request.getConfirmedDriver() != null || request.getOfferedDrivers().contains(loggedInUser)) {
+            AlertDialog.Builder adb = new AlertDialog.Builder(DriverViewRequestActivity.this);
+            adb.setTitle("Error: ");
+            adb.setMessage("Unable to make an offer on the request.");
+            adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+            adb.show();
+        }
+        else {
+            rc.addDriver(request, loggedInUser);
         }
     }
 }
