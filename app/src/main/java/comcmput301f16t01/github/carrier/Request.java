@@ -28,7 +28,7 @@ public class Request {
     /**
      * The driver that the user has chosen to drive for the request
      */
-    private User chosenDriver;
+    private User chosenDriver = null;
 
     /**
      * A list of drivers who have offered to complete the request (but have not been accepted)
@@ -127,7 +127,7 @@ public class Request {
     }
 
     public User getConfirmedDriver() {
-        return new User("Test");
+        return chosenDriver;
     }
 
     public ArrayList<User> getOfferedDrivers() {
@@ -151,7 +151,19 @@ public class Request {
     }
     // TODO confirm these as the states for a Request.
 
+    /**
+     * Will addthe driver to the list of offering drivers.
+     * @param offeredDriver The driver that is making the offer.
+     */
     public void addOfferingDriver(User offeredDriver) {
         offeringDrivers.add(offeredDriver);
+        if (status == Request.OPEN) {
+            this.setStatus(Request.OFFERED);
+        }
+    }
+
+    public void confirmDriver(User confirmedDriver) {
+        chosenDriver = confirmedDriver;
+        setStatus(Request.CONFIRMED);
     }
 }

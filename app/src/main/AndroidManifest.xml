@@ -59,6 +59,7 @@
         <activity android:name=".RiderRequestActivity"></activity>
         <activity android:name=".MakeRequestActivity"
             android:windowSoftInputMode="adjustPan"></activity>
+        <activity android:name=".MockSearchResultsActivity" />
     </application>
 
 </manifest>

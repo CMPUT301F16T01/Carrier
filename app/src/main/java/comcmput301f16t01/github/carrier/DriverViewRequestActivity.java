@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -33,8 +34,10 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         // unpacking the bundle to get the position of request
         Bundle bundle = getIntent().getExtras();
         position = bundle.getInt("position");
-        request = requestList.get(position);
-        if (request != null && loggedInUser != null) {
+        if (position != -1) {
+            request = requestList.get(position);
+        }
+        if ((request != null) && (loggedInUser != null)) {
             getViewIds();
             setViewIds();
         }
@@ -114,7 +117,9 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         RequestController rc = new RequestController();
         // Can not make an offer on a request that has a confirmed driver.
         // Can not make an offer on a request that you hae already made an offer on.
-        if (request.getConfirmedDriver() != null || request.getOfferedDrivers().contains(loggedInUser)) {
+        // Can not make an offer on a cancelled request.
+        if (request.getConfirmedDriver() != null || request.getOfferedDrivers().contains(loggedInUser) ||
+                request.getStatus() == Request.CANCELLED) {
             AlertDialog.Builder adb = new AlertDialog.Builder(DriverViewRequestActivity.this);
             adb.setTitle("Error: ");
             adb.setMessage("Unable to make an offer on the request.");
@@ -127,6 +132,7 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         }
         else {
             rc.addDriver(request, loggedInUser);
+            Toast.makeText(this, "Made an offer.", Toast.LENGTH_SHORT).show();
         }
     }
 }
