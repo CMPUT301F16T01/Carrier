@@ -79,6 +79,7 @@ public class ElasticNotificationController {
                     List<Notification> notificationList = result.getSourceAsObjectList(Notification.class);
                     foundNotifications.addAll( notificationList );
                 } else {
+                    // TODO is there an issue with this?
                     return null;
                 }
             } catch (IOException e) {

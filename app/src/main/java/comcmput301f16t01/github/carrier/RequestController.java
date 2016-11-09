@@ -163,18 +163,28 @@ public class RequestController {
      * @param statuses the statues you would like to see (filters non listed ones) (null means grab all)
      * @return A list of requests from the given criteria
      */
-    public RequestList fetchRequestsWhereRider(User rider, @Nullable Integer... statuses ) {
-        if (statuses == null) {
-            ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
-            frrt.execute( rider.getUsername() );
-        } else {
-
+    public RequestList fetchRequestsWhereRider(User rider, Integer... statuses ) {
+        ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
+        frrt.execute( rider.getUsername(), statuses );
+        RequestList foundRequests = new RequestList();
+        try {
+            foundRequests = frrt.get();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return new RequestList();
+        return foundRequests;
     }
 
     public RequestList fetchAllRequestsWhereRider( User rider ) {
-        return fetchRequestsWhereRider(rider, (Integer) null);
+        ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
+        frrt.execute( rider.getUsername() );
+        RequestList foundRequests = new RequestList();
+        try {
+            foundRequests = frrt.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return foundRequests;
     }
 
 

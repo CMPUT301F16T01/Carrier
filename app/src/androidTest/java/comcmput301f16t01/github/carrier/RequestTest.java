@@ -41,11 +41,12 @@ public class RequestTest extends ApplicationTest {
             pass++;
             if (pass > 5) { break; }
         }
+
         assertTrue( "There should be at least one fetched request for this test.",
                 requestList.size() != 0);
 
         // clear all the requests and make sure we have done so.
-        rc.clearAllRequests( basicRider );
+        rc.clearAllRiderRequests( basicRider );
         requestList = rc.fetchAllRequestsWhereRider( basicRider );
         pass = 0;
         while( requestList.size() != 0 ) {
