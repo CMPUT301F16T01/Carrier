@@ -99,6 +99,9 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
             GeoPoint geoPoint = new GeoPoint(locationPoint.getLatitude(), locationPoint.getLongitude());
             map = (MapView) findViewById(R.id.map);
             setLocationMarker(map, geoPoint);
+            IMapController mapController = map.getController();
+            mapController.setZoom(18);
+            mapController.setCenter(geoPoint);
         }
     }
 
@@ -246,7 +249,9 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
         GeoPoint startPoint = new GeoPoint(latitude,longitude);
         IMapController mapController = map.getController();
         mapController.setZoom(18);
-        mapController.setCenter(startPoint);
+        if(locationPoint == null) {
+            mapController.setCenter(startPoint);
+        }
 
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(activity, (MapEventsReceiver) activity);
         map.getOverlays().add(0, mapEventsOverlay);
