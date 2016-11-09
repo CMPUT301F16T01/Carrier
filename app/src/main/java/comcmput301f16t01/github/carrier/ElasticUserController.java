@@ -13,6 +13,7 @@ import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
+import io.searchbox.core.Update;
 
 /**
  * Created by Ben on 2016-10-27.
@@ -83,6 +84,33 @@ public class ElasticUserController {
                 Log.i("Error", "Something went wrong when we tried to talk to elastic search");
             }
             return foundUser;
+        }
+    }
+
+    public static class EditUserTask extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... update_params) {
+            //update_params[0] is the id, update_params[1] is email, update params[2] is phone
+            String script =
+                    "{\n" +
+                    "    \"script\" : \"ctx._source.email = " + update_params[1] + "\",\n" +
+                    "\"ctx._source.phoneNumber = " + update_params[2] + "\",\n" +
+                    "}";
+
+            Update update = new Update.Builder(script)
+                    .index("cmput301f16t01")
+                    .type("user")
+                    .id(update_params[0])
+                    .build();
+
+            try {
+                client.execute(update);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
         }
     }
 
