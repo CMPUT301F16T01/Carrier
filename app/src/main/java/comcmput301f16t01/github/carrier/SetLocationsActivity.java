@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 
@@ -28,14 +29,17 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 
-public class SetLocationsActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, MapEventsReceiver {
+import static com.google.android.gms.common.api.GoogleApiClient.*;
+
+public class SetLocationsActivity extends AppCompatActivity implements ConnectionCallbacks,
+        OnConnectionFailedListener, MapEventsReceiver {
     // result code for when we return to an instance of this activity
     private static final int PASS_ACTIVITY_BACK = 1;
     private static final int PASS_ACTIVITY_FORWARD = 2;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private GoogleApiClient googleApiClient = null;
     public final Activity activity = SetLocationsActivity.this;
+    Marker marker = null;
     Location lastLocation = null;
     Location locationPoint = null;
     double latitude = 0;
@@ -79,9 +83,9 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
         // From (Android Developer Docs): https://goo.gl/Kpueci
         // Retrieved on: November 9th, 2016
         if (googleApiClient == null) {
-            googleApiClient = new GoogleApiClient.Builder(activity)
-                    .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) activity)
-                    .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) activity)
+            googleApiClient = new Builder(activity)
+                    .addConnectionCallbacks((ConnectionCallbacks) activity)
+                    .addOnConnectionFailedListener((OnConnectionFailedListener) activity)
                     .addApi(LocationServices.API)
                     .build();
         }
@@ -99,6 +103,9 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
         if(locationPoint != null) {
             GeoPoint geoPoint = new GeoPoint(locationPoint.getLatitude(), locationPoint.getLongitude());
             map = (MapView) findViewById(R.id.map);
+            if(marker == null) {
+                marker = new Marker(map);
+            }
             setLocationMarker(map, geoPoint);
             mapController.setCenter(geoPoint);
         }
@@ -124,12 +131,11 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
      * @param geoPoint
      */
     private void setLocationMarker(MapView map, GeoPoint geoPoint) {
-        final Marker startMarker = new Marker(map);
-        startMarker.setPosition(geoPoint);
-        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        marker.setPosition(geoPoint);
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
-        startMarker.setDraggable(true);
-        startMarker.setOnMarkerDragListener(new Marker.OnMarkerDragListener() {
+        marker.setDraggable(true);
+        marker.setOnMarkerDragListener(new Marker.OnMarkerDragListener() {
             @Override
             public void onMarkerDrag(Marker marker) {
 
@@ -147,7 +153,7 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
             }
         });
 
-        map.getOverlays().add(startMarker);
+        map.getOverlays().add(marker);
         map.invalidate();
     }
 
@@ -181,20 +187,23 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
 
     @Override
     public boolean singleTapConfirmedHelper(GeoPoint geoPoint) {
+        // Based on: https://goo.gl/4TKn2y
+        // Retrieved on: November 9th, 2016
+        MapView map = (MapView) findViewById(R.id.map);
+        if(marker == null) {
+            marker = new Marker(map);
+        }
+        if(locationPoint == null) {
+            locationPoint = new Location("");
+        }
+        locationPoint.setLatitude(geoPoint.getLatitude());
+        locationPoint.setLongitude(geoPoint.getLongitude());
+        setLocationMarker(map, geoPoint);
         return false;
     }
 
     @Override
     public boolean longPressHelper(GeoPoint geoPoint) {
-        if(locationPoint == null){
-            // Based on: https://goo.gl/4TKn2y
-            // Retrieved on: November 9th, 2016
-            MapView map = (MapView) findViewById(R.id.map);
-            locationPoint = new Location("");
-            locationPoint.setLatitude(geoPoint.getLatitude());
-            locationPoint.setLongitude(geoPoint.getLongitude());
-            setLocationMarker(map, geoPoint);
-        }
         return false;
     }
 

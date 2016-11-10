@@ -70,13 +70,9 @@ public class MakeRequestActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if(intent.hasExtra("startLocation")) {
             start = new Gson().fromJson(intent.getStringExtra("startLocation"), Location.class);
-            TextView tv = (TextView) findViewById(R.id.textView_start);
-            tv.setText("Start: (" + String.valueOf(start.getLatitude()) + ", " + String.valueOf(start.getLongitude()) + ")");
         }
         if(intent.hasExtra("endLocation")) {
             end = new Gson().fromJson(intent.getStringExtra("endLocation"), Location.class);
-            TextView tv = (TextView) findViewById(R.id.textView_end);
-            tv.setText("End: (" + String.valueOf(end.getLatitude()) + ", " + String.valueOf(end.getLongitude()) + ")");
         }
     }
 
@@ -93,10 +89,6 @@ public class MakeRequestActivity extends AppCompatActivity {
                 // from LonelyTwitter
                 start = new Gson().fromJson(intent.getStringExtra("startLocation"), Location.class);
                 end = new Gson().fromJson(intent.getStringExtra("endLocation"), Location.class);
-                TextView tv = (TextView) findViewById(R.id.textView_start);
-                tv.setText("Start: (" + String.valueOf(start.getLatitude()) + ", " + String.valueOf(start.getLongitude()) + ")");
-                tv = (TextView) findViewById(R.id.textView_end);
-                tv.setText("End: (" + String.valueOf(end.getLatitude()) + ", " + String.valueOf(end.getLongitude()) + ")");
             }
         }
     }
@@ -174,6 +166,19 @@ public class MakeRequestActivity extends AppCompatActivity {
         Intent intent = new Intent(MakeRequestActivity.this, SetLocationsActivity.class);
         intent.putExtras(bundle);
         startActivityForResult(intent, PASS_ACTIVITY_BACK);
+    }
+
+    /**
+     * Allows the user to view a map
+     * @param view
+     */
+    public void viewMap(View view) {
+        Intent intent = new Intent(activity, ViewLocationsActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("startLocation", new Gson().toJson(start));
+        bundle.putString("endLocation", new Gson().toJson(end));
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     /**
