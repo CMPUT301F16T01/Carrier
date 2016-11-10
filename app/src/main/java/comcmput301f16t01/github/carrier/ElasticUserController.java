@@ -21,9 +21,7 @@ import io.searchbox.core.SearchResult;
 public class ElasticUserController {
     private static JestDroidClient client;
 
-    /**
-     * Called to add a user to elastic search
-     */
+    /** Called to add a user to elastic search */
     public static class AddUserTask extends AsyncTask<User, Void, Void> {
 
         /**
@@ -86,6 +84,7 @@ public class ElasticUserController {
         }
     }
 
+    /** Sets up the client to be used for Elastic Search */
     private static void verifySettings() {
         if (client == null) {
             DroidClientConfig.Builder builder =
