@@ -1,6 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
 import android.content.Context;
+import android.support.annotation.IntegerRes;
 import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
@@ -165,8 +166,13 @@ public class RequestController {
      */
     public RequestList fetchRequestsWhereRider(User rider, Integer... statuses ) {
         ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
-        frrt.execute( rider.getUsername(), statuses );
+        String[] vars = new String[1 + statuses.length];
+        vars[0] = rider.getUsername();
+        for (int i = 1; i <= statuses.length; i++ ) {
+            vars[i] = Integer.toString( statuses[i-1] );
+        }
         RequestList foundRequests = new RequestList();
+        frrt.execute( vars );
         try {
             foundRequests = frrt.get();
         } catch (Exception e) {

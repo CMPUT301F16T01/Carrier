@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 
+import io.searchbox.annotations.JestId;
+
 /**
  * Represents a request for a ride.
  */
@@ -46,6 +48,7 @@ public class Request {
     private boolean needToNotifyDriver = false;
 
     /** For use with Elastic Search, is the unique ID given to it */
+    @JestId
     private String elasticID;
 
 

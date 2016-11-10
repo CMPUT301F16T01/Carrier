@@ -10,6 +10,7 @@ import com.searchly.jestdroid.JestDroidClient;
 import java.io.IOException;
 import java.util.IllegalFormatException;
 import java.util.List;
+import java.util.Objects;
 
 import io.searchbox.core.DeleteByQuery;
 import io.searchbox.core.DocumentResult;
@@ -113,32 +114,34 @@ public class ElasticRequestController {
      * Get all of a rider's requests including a filter by status
      * Only call this with a [String, Integer, Integer, Integer...] execution array
      */
-    public static class FetchRiderRequestsTask extends AsyncTask<Object, Void, RequestList> {
+    public static class FetchRiderRequestsTask extends AsyncTask<String, Void, RequestList> {
 
         @Override
-        protected RequestList doInBackground(Object... params) {
+        protected RequestList doInBackground(String... params) {
             verifySettings();
 
             // Set up must match this username bool query
             String query = "{ \"from\" : 0, \"size\" : 500,\n" +
                     "  \"query\": {\n" +
                     "    \"bool\": {\n" +
-                    "      \"must\": { \"match\": { \"username\": \"" + params[0] + "\" }}\n";
+                    "      \"must\": { \"match\": { \"username\": \"" + params[0] + "\" }}";
 
 
             if (params.length > 1) {
                 // add should clause(s)
                 query += ",\n\"should\": [\n";
+                int last = 0;
                 for (int i = 1; i < params.length-1; i++) {
                     // complete n-1 filters with a comma
-                    query += "{ \"match\": { \"status\": " + Integer.toString((int)params[i]) + " }},";
+                    query += "{ \"match\": { \"status\": " + params[i] + " }},";
+                    last = i;
                 }
                 // Do the final parameter without a comma and close it.
                 query += "{ \"match\": { \"status\": " + params[params.length-1]  + " }}\n]\n";
             }
 
             // add final closing brackets
-            query += "    }\n" +
+            query += "\n    }\n" +
                     "  }\n" +
                     "}";
 
