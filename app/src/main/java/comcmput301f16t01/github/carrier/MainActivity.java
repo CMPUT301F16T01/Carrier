@@ -1,15 +1,19 @@
 package comcmput301f16t01.github.carrier;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -45,10 +49,16 @@ public class MainActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
 
+    private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
+    private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private static final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        checkPermissions();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -127,6 +137,57 @@ public class MainActivity extends AppCompatActivity {
                 driver_fab.show();
                 break;
 
+        }
+    }
+
+    // Based on (Android Developer Docs): https://goo.gl/9FTnEL
+    // Retrieved on: November 9th, 2016
+    /**
+     * Result of the user granting or denying permissions. If they grant the permissions
+     * we don't need to do anything. If they do not grant the permissions, we should tell
+     * them that they are required for the map to be displayed and the app to function.
+     *
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay!
+                } else {
+                    // permission denied, boo!
+                    AlertDialog.Builder adb = new AlertDialog.Builder(this);
+                    adb.setTitle("Permissions Denied");
+                    adb.setMessage("You cannot view the map to select locations without " +
+                            "allowing the app to access your device's storage. You can change " +
+                            "this permission from the app info.");
+                    adb.setCancelable(true);
+                    adb.setPositiveButton("OK", null);
+                    adb.show();
+                }
+                break;
+            }
+        }
+    }
+
+    // Based on (Android Developer Docs): https://goo.gl/9FTnEL
+    // Retrieved on: November 9th, 2016
+    /**
+     * Asks user to grant required permissions for the maps to work.
+     */
+    private void checkPermissions() {
+        // if statement from https://developer.android.com/training/permissions/requesting.html
+        if(ContextCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
         }
     }
 
@@ -257,6 +318,31 @@ public class MainActivity extends AppCompatActivity {
          * @param requestListView
          */
         private void fillDriverRequests(ListView requestListView) {
+            RequestController rc = new RequestController();
+            User loggedInUser = UserController.getLoggedInUser();
+            RequestList rl = RequestController.getInstance();
+            if (rc.getOfferedRequests(loggedInUser).size() == 0){
+                User testUser = new User("TestUser");
+                Request testRequest1 = new Request(testUser, new Location(""), new Location(""));
+                Request testRequest2 = new Request(testUser, new Location(""), new Location(""),
+                        "I gotta go home please.");
+                testRequest1.setFare(100);
+                rl.add(testRequest1);
+                rl.add(testRequest2);
+                rc.addDriver(testRequest1, loggedInUser);
+                rc.addDriver(testRequest2, loggedInUser);
+            }
+            ArrayList<Request> requestList = rc.getOfferedRequests(loggedInUser);
+            DriverRequestAdapter requestArrayAdapter = new DriverRequestAdapter(this.getContext(),
+                    R.layout.driverrequestlist_item, requestList);
+            requestListView.setAdapter(requestArrayAdapter);
+            final Context ctx = this.getContext();
+
+            /**
+             * When we click a request we want to be able to see it in another activity
+             * Use bundles to send the position of the request in a list
+             */
+
         }
 
         /**
@@ -267,7 +353,9 @@ public class MainActivity extends AppCompatActivity {
         private void fillRiderRequests(ListView requestListView) {
             RequestController rc = new RequestController();
             User loggedInUser = UserController.getLoggedInUser();
-            final ArrayList<Request> requestList = rc.getRequests( loggedInUser );
+            // Mike's old line, Kieter rewrote with Mike, you can probably delete it
+            //final ArrayList<Request> requestList = rc.getRequests( loggedInUser );
+            final ArrayList<Request> requestList = rc.getInstance();
 
 
             if (requestList.size() == 0) {
@@ -282,8 +370,11 @@ public class MainActivity extends AppCompatActivity {
                 requestList.add( requestTwo );
             }
 
+            // Mike's old line, Kieter rewrote it with Mike, you can probably delete it
+//            RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
+//                    R.layout.requestlist_item, requestList );
             RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
-                    R.layout.requestlist_item, requestList );
+                    R.layout.requestlist_item, rc.getRequests(UserController.getLoggedInUser()) );
 
             requestListView.setAdapter( requestArrayAdapter );
 

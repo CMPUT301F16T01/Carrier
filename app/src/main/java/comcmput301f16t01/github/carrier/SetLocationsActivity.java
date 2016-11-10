@@ -5,12 +5,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -24,21 +22,18 @@ import com.google.gson.Gson;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.events.MapEventsReceiver;
-import org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 
-import java.io.File;
-
 public class SetLocationsActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, MapEventsReceiver {
-    private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
+    // result code for when we return to an instance of this activity
+    private static final int PASS_ACTIVITY_BACK = 1;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 2;
-    private static final int DEFAULT_REQ_CODE = 1;
     private GoogleApiClient googleApiClient = null;
     public final Activity activity = SetLocationsActivity.this;
     Location lastLocation = null;
@@ -77,9 +72,9 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
             }
         }
 
-        checkPermissions();
-
         // Create an instance of GoogleAPIClient.
+        // From (Android Developer Docs): https://goo.gl/Kpueci
+        // Retrieved on: November 9th, 2016
         if (googleApiClient == null) {
             googleApiClient = new GoogleApiClient.Builder(activity)
                     .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) activity)
@@ -88,24 +83,27 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
                     .build();
         }
 
-        OpenStreetMapTileProviderConstants.setCachePath(new File(Environment.getExternalStorageDirectory().getPath() + "osmdroid2").getAbsolutePath());
-
+        // Based on: https://goo.gl/4TKn2y
+        // Retrieved on: November 9th, 2016
+        // Center our map on our current location
         MapView map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setBuiltInZoomControls(true);
         map.setMultiTouchControls(true);
+        IMapController mapController = map.getController();
+        mapController.setZoom(18);
 
         if(locationPoint != null) {
             GeoPoint geoPoint = new GeoPoint(locationPoint.getLatitude(), locationPoint.getLongitude());
             map = (MapView) findViewById(R.id.map);
             setLocationMarker(map, geoPoint);
-            IMapController mapController = map.getController();
-            mapController.setZoom(18);
             mapController.setCenter(geoPoint);
         }
+
     }
 
-    // the following two functions come from: https://developer.android.com/training/location/retrieve-current.html
+    // From (Android Developer Docs): https://goo.gl/Kpueci
+    // Retrieved on: November 9th, 2016
     protected void onStart() {
         googleApiClient.connect();
         super.onStart();
@@ -150,121 +148,32 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
         map.invalidate();
     }
 
-    // this function comes from: https://developer.android.com/training/permissions/requesting.html
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        getCurrentLocation();
+    }
 
-    /**
-     * Result of the user granting or denying permissions. If they grant the permissions
-     * we don't need to do anything. If they do not grant the permissions, we should tell
-     * them that they are required for the map to be displayed and the app to function.
-     *
-     * @param requestCode
-     * @param permissions
-     * @param grantResults
-     */
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // task you need to do.
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                    AlertDialog.Builder adb = new AlertDialog.Builder(this);
-                    adb.setTitle("Permissions Denied");
-                    adb.setMessage("You cannot view the map to select locations without " +
-                            "allowing the app to access your device's storage. You can change " +
-                            "this permission from the app info.");
-                    adb.setCancelable(true);
-                    adb.setPositiveButton("OK", null);
-                    adb.show();
-                }
-                break;
-            }
             case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // task you need to do.
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
+                    getCurrentLocation();
                 }
-                break;
-            }
-            case MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // task you need to do.
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                break;
             }
         }
-    }
-
-    /**
-     * Asks user to grant required permissions for the maps to work.
-     */
-    private void checkPermissions() {
-        // if statement from https://developer.android.com/training/permissions/requesting.html
-        if (ContextCompat.checkSelfPermission(activity,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(activity,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-        }
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(activity,
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(activity,
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(activity,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-            ActivityCompat.requestPermissions(activity,
-                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                    MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
-            return;
-        }
-        lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-        latitude = lastLocation.getLatitude();
-        longitude = lastLocation.getLongitude();
-
-        // This code is from: https://github.com/MKergall/osmbonuspack/wiki/Tutorial_0
-        // Center our map on our current location
-        MapView map = (MapView) findViewById(R.id.map);
-        GeoPoint startPoint = new GeoPoint(latitude,longitude);
-        IMapController mapController = map.getController();
-        mapController.setZoom(18);
-        if(locationPoint == null) {
-            mapController.setCenter(startPoint);
-        }
-
-        MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(activity, (MapEventsReceiver) activity);
-        map.getOverlays().add(0, mapEventsOverlay);
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        // TODO potentially offline behaviour?
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        // TODO potentially offline behaviour?
     }
 
     @Override
@@ -275,6 +184,8 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
     @Override
     public boolean longPressHelper(GeoPoint geoPoint) {
         if(locationPoint == null){
+            // Based on: https://goo.gl/4TKn2y
+            // Retrieved on: November 9th, 2016
             MapView map = (MapView) findViewById(R.id.map);
             locationPoint = new Location("");
             locationPoint.setLatitude(geoPoint.getLatitude());
@@ -284,12 +195,14 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
         return false;
     }
 
-    // from: http://stackoverflow.com/questions/14292398/how-to-pass-data-from-2nd-activity-to-1st-activity-when-pressed-back-android
+    // from: https://goo.gl/IxFxpG
     // author: ρяσѕρєя K
     // retrieved on: November 7th, 2016
+    // This is called when we startActivityForResult from here and get a result back when that activity finishes.
+    // This allows us to do any "clean up actions" when we get back here
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        if(requestCode == DEFAULT_REQ_CODE) {
+        if(requestCode == PASS_ACTIVITY_BACK) {
             if(resultCode == RESULT_OK){
                 // when done choosing end, go back to request screen and pass bundle of locations
                 Intent backIntent = new Intent();
@@ -316,7 +229,7 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
                 lastBundle.putString("startLocation", new Gson().toJson(locationPoint));
                 Intent intent = new Intent(activity, SetLocationsActivity.class);
                 intent.putExtras(lastBundle);
-                startActivityForResult(intent, DEFAULT_REQ_CODE);
+                startActivityForResult(intent, PASS_ACTIVITY_BACK);
             } else if (point.equals("end")) {
                 // if choosing end point, go back to last activity, passing bundle of locations
                 Intent backIntent = new Intent();
@@ -327,6 +240,36 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
             }
         } else {
             Toast.makeText(activity, "You must first choose a location by long-pressing on the map", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Inspired by ideas from: https://goo.gl/qh3Dzf
+    // Author: antonio
+    // Retrieved on: November 9th, 2016
+    public void getCurrentLocation() {
+        if(ContextCompat.checkSelfPermission(activity,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        } else {
+            lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+            latitude = lastLocation.getLatitude();
+            longitude = lastLocation.getLongitude();
+
+            // Based on: https://goo.gl/4TKn2y
+            // Retrieved on: November 9th, 2016
+            // Center our map on our current location
+            MapView map = (MapView) findViewById(R.id.map);
+            GeoPoint startPoint = new GeoPoint(latitude,longitude);
+            IMapController mapController = map.getController();
+            mapController.setZoom(18);
+            if(locationPoint == null) {
+                mapController.setCenter(startPoint);
+            }
+
+            MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(activity, (MapEventsReceiver) activity);
+            map.getOverlays().add(0, mapEventsOverlay);
         }
     }
 }

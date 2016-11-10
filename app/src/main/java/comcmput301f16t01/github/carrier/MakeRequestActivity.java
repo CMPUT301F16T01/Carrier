@@ -13,9 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-import java.util.Locale;
 import android.os.Handler;
-
 import com.google.gson.Gson;
 import android.location.Location;
 
@@ -28,7 +26,8 @@ import android.location.Location;
 
 public class MakeRequestActivity extends AppCompatActivity {
 
-    private static final int DEFAULT_REQ_CODE = 1;
+    // result code for when we return to an instance of this activity
+    private static final int PASS_ACTIVITY_BACK = 1;
     final Activity activity = MakeRequestActivity.this;
     /**
      * Determines how fast the arrows increment/decrement the estimated fare
@@ -43,6 +42,10 @@ public class MakeRequestActivity extends AppCompatActivity {
     private boolean autoIncrement = false;
     private boolean autoDecrement = false;
 
+    /**
+     * Class that runs in a thread to handle the repeated increments/decrements
+     * to the estimated fare.
+     */
     class RepeatUpdater implements Runnable {
         public void run() {
             if(autoIncrement) {
@@ -60,17 +63,19 @@ public class MakeRequestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make_request);
         setTitle("New Request");
-        setButtons();
+        setButtons(); // setting increment and decrement fare buttons
         activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
 
     // TODO instead of location tuples, allow user to view start-to-end path on a map
-    // from: http://stackoverflow.com/questions/14292398/how-to-pass-data-from-2nd-activity-to-1st-activity-when-pressed-back-android
+    // from: https://goo.gl/IxFxpG
     // author: ρяσѕρєя K
     // retrieved on: November 7th, 2016
+    // This is called when we startActivityForResult from here and get a result back when that activity finishes.
+    // This allows us to do any "clean up actions" when we get back here
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        if(requestCode == DEFAULT_REQ_CODE) {
+        if(requestCode == PASS_ACTIVITY_BACK) {
             if(resultCode == RESULT_OK){
                 // from LonelyTwitter
                 start = new Gson().fromJson(intent.getStringExtra("startLocation"), Location.class);
@@ -101,6 +106,7 @@ public class MakeRequestActivity extends AppCompatActivity {
         fareUpButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
+                // stop auto-incrementing when the user stops pressing down the button
                 if((motionEvent.getAction() == MotionEvent.ACTION_UP
                         || motionEvent.getAction() == MotionEvent.ACTION_CANCEL) && autoIncrement) {
                     autoIncrement = false;
@@ -121,6 +127,7 @@ public class MakeRequestActivity extends AppCompatActivity {
         fareDownButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
+                // stop auto-decrementing when the user stops pressing down the button
                 if((motionEvent.getAction() == MotionEvent.ACTION_UP
                         || motionEvent.getAction() == MotionEvent.ACTION_CANCEL) && autoDecrement) {
                     autoDecrement = false;
@@ -153,7 +160,7 @@ public class MakeRequestActivity extends AppCompatActivity {
 
         Intent intent = new Intent(MakeRequestActivity.this, SetLocationsActivity.class);
         intent.putExtras(bundle);
-        startActivityForResult(intent, DEFAULT_REQ_CODE);
+        startActivityForResult(intent, PASS_ACTIVITY_BACK);
     }
 
     /**
@@ -232,8 +239,8 @@ public class MakeRequestActivity extends AppCompatActivity {
     // TODO deprecate once toString is available in FareCalculator
     public String formatFare(int intFare) {
         double fare = ((double) intFare)/100;
-        String str = String.format(Locale.getDefault(),"%d",(long)fare) + ".";
-        String dec = String.format(Locale.getDefault(),"0%.0f",(fare%1)*100);
+        String str = String.format("%d",(long)fare) + ".";
+        String dec = String.format("0%.0f",(fare%1)*100);
         // format the fare as a string with 2 decimal points
         str +=  dec.substring(dec.length()-2, dec.length());
         return str;
