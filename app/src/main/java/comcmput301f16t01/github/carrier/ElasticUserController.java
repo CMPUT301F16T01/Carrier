@@ -2,6 +2,7 @@ package comcmput301f16t01.github.carrier;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
@@ -76,6 +77,7 @@ public class ElasticUserController {
                 SearchResult result = client.execute(search);
                 if (result.isSucceeded()) {
                     foundUser = result.getSourceAsObject(User.class);
+
                 } else {
                     return null;
                 }
@@ -91,11 +93,10 @@ public class ElasticUserController {
 
         @Override
         protected Void doInBackground(String... update_params) {
+             verifySettings();
             //update_params[0] is the id, update_params[1] is email, update params[2] is phone
-            String script =
-                    "{\n" +
-                    "    \"script\" : \"ctx._source.email = " + "\"" + update_params[1] + "\"" + "\",\n" +
-                    "\"ctx._source.phoneNumber = " + "\"" + update_params[2] + "\"" + "\",\n" +
+            String script = "{\n" +
+                    "    \"script\" : \"ctx._source.phoneNumber = \\\"9090909\\\"\",\n" +
                     "}";
 
             Update update = new Update.Builder(script)

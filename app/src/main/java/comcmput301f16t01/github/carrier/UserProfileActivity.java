@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 // TODO A lot can be done to reduce code duplication. Notice how there are 4 functions that close,
 // and 2 that open. I feel like a lot of code generalization can be done here to reduce bugs
@@ -23,13 +24,14 @@ public class UserProfileActivity extends AppCompatActivity {
     // Saves the values of the old fields just in case the user cancels their edit.
     private String oldPhoneNumber;
     private String oldEmailAddress;
+    private User currentUser = UserController.getLoggedInUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
         UserController uc = new UserController();
-        User currentUser = UserController.getLoggedInUser();
+        //User currentUser = UserController.getLoggedInUser();
 
         String username;
 
@@ -85,6 +87,7 @@ public class UserProfileActivity extends AppCompatActivity {
         phoneNumber.setClickable(true);
         // Set it so the user can edit the EditText
         phoneNumber.setFocusableInTouchMode(true);
+        phoneNumber.setFocusable(true);
         phoneNumber.setKeyListener((KeyListener) phoneNumber.getTag());
         phoneNumber.requestFocus();
         phoneNumber.moveCursorToVisibleOffset();
@@ -102,19 +105,26 @@ public class UserProfileActivity extends AppCompatActivity {
         ImageButton saveButton = (ImageButton) findViewById(R.id.PhoneSaveEditButton);
         ImageButton editButton = (ImageButton) findViewById(R.id.PhoneEditIconImageButton);
         // Set visibility of the buttons.
-        editButton.setVisibility(View.VISIBLE);
+
         saveButton.setVisibility(View.INVISIBLE);
         cancelButton.setVisibility(View.INVISIBLE);
         EditText phoneNumberText = (EditText) findViewById(R.id.PhoneEditText);
         // Set it so the user can't edit the EditText
         phoneNumberText.setFocusable(false);
         String phoneNumber = phoneNumberText.getText().toString();
-        // Since editing was confirmed, overwrite old value of phone number
-        this.oldPhoneNumber = phoneNumber;
         // TODO Check if it is a valid phoneNumber
         // TODO Update The information in elasticsearch
         phoneNumberText.setKeyListener(null);
         hideKeyboard(phoneNumberText);
+        if (!this.oldPhoneNumber.equals(phoneNumber)) {
+            ElasticUserController.EditUserTask eut = new ElasticUserController.EditUserTask();
+            eut.execute(currentUser.getId(), currentUser.getEmail(), phoneNumber);
+            Toast.makeText(this, "New phone: " + phoneNumber, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "ID:" + UserController.getLoggedInUser().getId(), Toast.LENGTH_SHORT).show();
+        }
+        // Since editing was confirmed, overwrite old value of phone number
+        this.oldPhoneNumber = phoneNumber;
+        currentUser.setPhone(phoneNumber);
     }
 
     /**
