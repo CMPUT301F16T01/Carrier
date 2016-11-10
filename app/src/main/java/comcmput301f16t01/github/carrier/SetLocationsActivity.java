@@ -32,8 +32,8 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
         GoogleApiClient.OnConnectionFailedListener, MapEventsReceiver {
     // result code for when we return to an instance of this activity
     private static final int PASS_ACTIVITY_BACK = 1;
+    private static final int PASS_ACTIVITY_FORWARD = 2;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private static final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 2;
     private GoogleApiClient googleApiClient = null;
     public final Activity activity = SetLocationsActivity.this;
     Location lastLocation = null;
@@ -41,6 +41,7 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
     double latitude = 0;
     double longitude = 0;
     String point = "";
+    String type = "";
     Bundle lastBundle = new Bundle();
 
     @Override
@@ -50,11 +51,13 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         point = bundle.getString("point");
+        type = bundle.getString("type");
         setTitle("Choose " + point + " point");
 
         Button button = (Button) findViewById(R.id.button_confirmLocation);
         button.setText("Confirm " + point + " point");
 
+        lastBundle.putString("type",type);
         if(point.equals("end")) {
             lastBundle.putString("point", "start");
             if(intent.hasExtra("startLocation")) {
@@ -203,7 +206,7 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if(requestCode == PASS_ACTIVITY_BACK) {
-            if(resultCode == RESULT_OK){
+            if(resultCode == RESULT_OK) {
                 // when done choosing end, go back to request screen and pass bundle of locations
                 Intent backIntent = new Intent();
                 setResult(RESULT_OK, backIntent);
@@ -211,6 +214,16 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
                 lastBundle.putString("endLocation", intent.getStringExtra("endLocation"));
                 backIntent.putExtras(lastBundle);
                 activity.finish();
+            }
+        } else if(requestCode == PASS_ACTIVITY_FORWARD) {
+            if(resultCode == RESULT_OK) {
+                Intent forwardIntent = new Intent(activity, MakeRequestActivity.class);
+                setResult(RESULT_OK,forwardIntent);
+                lastBundle.putString("startLocation", intent.getStringExtra("startLocation"));
+                lastBundle.putString("endLocation", intent.getStringExtra("endLocation"));
+                forwardIntent.putExtras(lastBundle);
+                activity.finish();
+                startActivity(forwardIntent);
             }
         }
     }
@@ -229,7 +242,11 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
                 lastBundle.putString("startLocation", new Gson().toJson(locationPoint));
                 Intent intent = new Intent(activity, SetLocationsActivity.class);
                 intent.putExtras(lastBundle);
-                startActivityForResult(intent, PASS_ACTIVITY_BACK);
+                if(type.equals("new")) {
+                    startActivityForResult(intent, PASS_ACTIVITY_FORWARD);
+                } else {
+                    startActivityForResult(intent, PASS_ACTIVITY_BACK);
+                }
             } else if (point.equals("end")) {
                 // if choosing end point, go back to last activity, passing bundle of locations
                 Intent backIntent = new Intent();

@@ -65,6 +65,19 @@ public class MakeRequestActivity extends AppCompatActivity {
         setTitle("New Request");
         setButtons(); // setting increment and decrement fare buttons
         activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
+        // if this came from the location selector we have data to save here
+        Intent intent = getIntent();
+        if(intent.hasExtra("startLocation")) {
+            start = new Gson().fromJson(intent.getStringExtra("startLocation"), Location.class);
+            TextView tv = (TextView) findViewById(R.id.textView_start);
+            tv.setText("Start: (" + String.valueOf(start.getLatitude()) + ", " + String.valueOf(start.getLongitude()) + ")");
+        }
+        if(intent.hasExtra("endLocation")) {
+            end = new Gson().fromJson(intent.getStringExtra("endLocation"), Location.class);
+            TextView tv = (TextView) findViewById(R.id.textView_end);
+            tv.setText("End: (" + String.valueOf(end.getLatitude()) + ", " + String.valueOf(end.getLongitude()) + ")");
+        }
     }
 
     // TODO instead of location tuples, allow user to view start-to-end path on a map
@@ -145,7 +158,7 @@ public class MakeRequestActivity extends AppCompatActivity {
     public void chooseLocations(View view) {
         Bundle bundle = new Bundle();
         bundle.putString("point","start");
-
+        bundle.putString("type","edit");
         // if start or end has already been assigned, we will have this marker set on the map
         if(start == null) {
             start = new Location("");
