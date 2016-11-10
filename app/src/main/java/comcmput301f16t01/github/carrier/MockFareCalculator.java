@@ -10,7 +10,7 @@ public class MockFareCalculator extends FareCalculator {
         super();
     }
 
-    // This not an @Override because FareCalculator does not have a getEstimate() it has a getEstimate(double, double)
+    //@Override
     public int getEstimate() {
         double upper = 20000;
         double lower = 1;

@@ -17,7 +17,7 @@ public class LocationTests {
     @After
     public void clean() {
         RequestController rc = new RequestController();
-        rc.reset();
+        rc.clear();
     }
 
     /**

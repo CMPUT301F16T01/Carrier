@@ -24,13 +24,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.location.Location;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+
+import comcmput301f16t01.github.carrier.Notifications.NotificationController;
+import comcmput301f16t01.github.carrier.Notifications.NotificationActivity;
+import comcmput301f16t01.github.carrier.Searching.SearchActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -62,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
+        // Create the adapter that will return a fragment for each of the two
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
@@ -115,7 +119,35 @@ public class MainActivity extends AppCompatActivity {
         // We start on the rider tab, so we hide the driver fab
         FloatingActionButton driver_fab = (FloatingActionButton) findViewById(R.id.fab_driver);
         driver_fab.hide();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        NotificationController nc = new NotificationController();
+        if (nc.unreadNotification( UserController.getLoggedInUser() )) {
+            promptViewNotifications();
+        }
+    }
+
+    /**
+     * Creates a dialogue that tells the user to go view their notifications, if they have unread
+     * ones.
+     */
+    private void promptViewNotifications() {
+        AlertDialog.Builder adb = new AlertDialog.Builder( this );
+        adb.setTitle( "New Notifications!" );
+        adb.setMessage( "You've received notifications, do you want to see them?" );
+        adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(MainActivity.this, NotificationActivity.class );
+                startActivity(intent);
+            }
+        });
+        adb.setNegativeButton( "Later", null );
+        adb.show();
     }
 
     /**
@@ -206,15 +238,20 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_viewProfile) {
-            Toast.makeText(MainActivity.this, "Wanna view your profile? Nope!",
-                    Toast.LENGTH_SHORT).show();
-            // TODO Bundle information to give to the user profile activity. (UserController or ElasticController)?
             Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", UserController.getLoggedInUser());
+            intent.putExtras(bundle);
             startActivity(intent);
         }
 
         if (id == R.id.action_help) {
             Intent intent = new Intent(MainActivity.this, HelpActivity.class);
+            startActivity(intent);
+        }
+
+        if (id == R.id.action_viewNotifications ) {
+            Intent intent = new Intent(MainActivity.this, NotificationActivity.class );
             startActivity(intent);
         }
 
@@ -320,6 +357,7 @@ public class MainActivity extends AppCompatActivity {
         private void fillDriverRequests(ListView requestListView) {
             RequestController rc = new RequestController();
             User loggedInUser = UserController.getLoggedInUser();
+            // TODO fix deprecation usage 
             RequestList rl = RequestController.getInstance();
             if (rc.getOfferedRequests(loggedInUser).size() == 0){
                 User testUser = new User("TestUser");
@@ -359,15 +397,25 @@ public class MainActivity extends AppCompatActivity {
 
 
             if (requestList.size() == 0) {
+                
                 // Create sample requests because this is probably not set up yet.
                 Request requestOne = new Request( loggedInUser, new Location(""), new Location(""), "testRequest!" );
                 Request requestTwo = new Request( loggedInUser, new Location(""), new Location(""), "testRequest2!" );
-
-
+                // TODO: remove these tests
+                ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();
+                fut.execute("sarah");
+                User sarah = null;
+                try {
+                    sarah = fut.get();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                requestOne.setChosenDriver(sarah);
+                requestTwo.setChosenDriver(sarah);
                 requestOne.setStatus(Request.COMPLETE);
                 requestTwo.setStatus(Request.PAID);
-                requestList.add( requestOne );
-                requestList.add( requestTwo );
+                requestList.add(requestOne);
+                requestList.add(requestTwo);
             }
 
             // Mike's old line, Kieter rewrote it with Mike, you can probably delete it
