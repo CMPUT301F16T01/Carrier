@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationActivity;
@@ -175,10 +176,10 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_viewProfile) {
-            Toast.makeText(MainActivity.this, "Wanna view your profile? Nope!",
-                    Toast.LENGTH_SHORT).show();
-            // TODO Bundle information to give to the user profile activity. (UserController or ElasticController)?
             Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", UserController.getLoggedInUser());
+            intent.putExtras(bundle);
             startActivity(intent);
         }
 
@@ -334,15 +335,27 @@ public class MainActivity extends AppCompatActivity {
 
 
             if (requestList.size() == 0) {
+                
                 // Create sample requests because this is probably not set up yet.
-                Request requestOne = new Request( loggedInUser, new Location(), new Location(), "testRequest!" );
-                Request requestTwo = new Request( loggedInUser, new Location(), new Location(), "testRequest2!" );
+                // TODO: remove these tests
+                Request requestOne = new Request(loggedInUser, new Location(), new Location(), "test request 1!");
+                ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();
+                fut.execute("sarah");
+                User sarah = null;
+                try {
+                    sarah = fut.get();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                requestOne.setChosenDriver(sarah);
 
+                Request requestTwo = new Request(loggedInUser, new Location(), new Location(), "test request 2!");
+                requestTwo.setChosenDriver(sarah);
 
                 requestOne.setStatus(Request.COMPLETE);
                 requestTwo.setStatus(Request.PAID);
-                requestList.add( requestOne );
-                requestList.add( requestTwo );
+                requestList.add(requestOne);
+                requestList.add(requestTwo);
             }
 
             // Mike's old line, Kieter rewrote it with Mike, you can probably delete it

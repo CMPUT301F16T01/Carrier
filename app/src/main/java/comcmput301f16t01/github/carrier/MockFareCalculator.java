@@ -10,8 +10,9 @@ public class MockFareCalculator extends FareCalculator {
      * @param start
      * @param end
      */
-    public MockFareCalculator(Location start, Location end) {
-        //super(start, end);
+
+    public MockFareCalculator() {
+        super();
     }
 
     //@Override

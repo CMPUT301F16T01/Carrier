@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -50,7 +51,6 @@
         android:gravity="center"/>
 
 
-
     <RelativeLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -59,31 +59,13 @@
         style="?android:attr/buttonBarButtonStyle">
 
 
-        <TextView
-            android:text="Rider: Mike"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView_rider"
-            android:gravity="center"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true" />
-
-        <TextView
-            android:text="Driver: Sarah"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView_driver"
-            android:gravity="center"
-            android:layout_alignParentTop="true"
-            android:layout_toStartOf="@+id/viewDriver" />
-
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@android:drawable/ic_menu_view"
             android:id="@+id/viewDriver"
             android:background="@android:color/transparent"
-            android:layout_alignBottom="@+id/textView_driver"
+            android:layout_alignBottom="@+id/UsernameTextView_driver"
             android:layout_alignParentEnd="true" />
 
         <ImageButton
@@ -92,8 +74,29 @@
             app:srcCompat="@android:drawable/ic_menu_view"
             android:id="@+id/viewRider"
             android:background="@android:color/transparent"
-            android:layout_alignBottom="@+id/textView_rider"
-            android:layout_toEndOf="@+id/textView_rider" />
+            android:layout_alignBottom="@+id/UsernameTextView_driver"
+            android:layout_toEndOf="@+id/UsernameTextView_driver" />
+
+        <TextView
+            android:text="Rider: Mike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/UsernameTextView_driver"
+            android:gravity="center"
+            android:clickable="true"
+            android:layout_alignBaseline="@+id/UsernameTextView_driver"
+            android:layout_alignBottom="@+id/UsernameTextView_driver"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:text="Driver: Sarah"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/UsernameTextView_driver"
+            android:gravity="center"
+            android:clickable="true"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/viewDriver" />
     </RelativeLayout>
 
 

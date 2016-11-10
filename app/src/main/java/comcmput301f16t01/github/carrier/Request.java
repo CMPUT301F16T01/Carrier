@@ -1,5 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -83,6 +85,17 @@ public class Request {
         this.fare = fare;
     }
 
+    public void setChosenDriver(User driver) {
+        this.chosenDriver = driver;
+    }
+
+    public User getChosenDriver() {
+        return this.chosenDriver;
+    }
+    public int getFareEstimate(Double distance, Double duration) {
+        FareCalculator fareCalc = new FareCalculator();
+        return fareCalc.getEstimate(distance, duration);
+    }
 
     public ArrayList<User> getOffers() {
         return new ArrayList<User>();
@@ -134,4 +147,5 @@ public class Request {
     public void addOfferingDriver(User offeredDriver) {
         offeringDrivers.add(offeredDriver);
     }
+
 }

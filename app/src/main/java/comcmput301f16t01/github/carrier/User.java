@@ -1,5 +1,8 @@
 package comcmput301f16t01.github.carrier;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Abstract base class for a user of Carrier.
  *
@@ -7,7 +10,7 @@ package comcmput301f16t01.github.carrier;
  * @see User
  */
 
-public class User {
+public class User implements Parcelable{
     private String username;
     private String email;
     private String phoneNumber;
@@ -40,6 +43,28 @@ public class User {
     public User(String name) {
         this.username = name;
     }
+
+    protected User(Parcel in) {
+        username = in.readString();
+        email = in.readString();
+        phoneNumber = in.readString();
+        elasticID = in.readString();
+    }
+
+    /**
+     * Required by the Parcelable interface. Allows the creation and storage of parcels in bundles.
+     */
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     public void setUsername(String username) {
         this.username = username;
@@ -76,5 +101,27 @@ public class User {
 
     public String getId() {
         return elasticID;
+    }
+
+    @Override
+    /**
+     * Required by the Parcelable interface. I honestly don't know what this is for.
+     */
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    /**
+     * Required by the Parcelable interface.
+     * Allows the User class to be put into a bundle using putParcelable() on a bundle.
+     * @param dest
+     * @param flags
+     */
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(username);
+        dest.writeString(email);
+        dest.writeString(phoneNumber);
+        dest.writeString(elasticID);
     }
 }
