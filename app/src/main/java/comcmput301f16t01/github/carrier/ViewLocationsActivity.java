@@ -6,6 +6,7 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -78,6 +79,7 @@ public class ViewLocationsActivity extends AppCompatActivity {
         getRoadAsync();
     }
 
+    // TODO try to get the addresses to put in the info windows
     private void setMarkers() {
         // set the map
         Marker startMarker = new Marker(map);
@@ -85,8 +87,12 @@ public class ViewLocationsActivity extends AppCompatActivity {
 
         startMarker.setPosition(startPoint);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        startMarker.setTitle("Start");
+        startMarker.setInfoWindow(new BasicInfoWindow(org.osmdroid.bonuspack.R.layout.bonuspack_bubble, map));
         endMarker.setPosition(endPoint);
         endMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        endMarker.setTitle("End");
+        endMarker.setInfoWindow(new BasicInfoWindow(org.osmdroid.bonuspack.R.layout.bonuspack_bubble, map));
 
         map.getOverlays().add(startMarker);
         map.getOverlays().add(endMarker);
@@ -110,6 +116,17 @@ public class ViewLocationsActivity extends AppCompatActivity {
         new UpdateRoadTask().execute(waypoints);
     }
 
+    public void centerStart(View view) {
+        IMapController mapController = map.getController();
+        mapController.setCenter(startPoint);
+    }
+
+    public void centerEnd(View view) {
+        IMapController mapController = map.getController();
+        mapController.setCenter(endPoint);
+    }
+
+    // TODO possibly try to just show the shortest route? Use this for fare calculation.
     private class UpdateRoadTask extends AsyncTask<Object, Void, Road[]> {
 
         @Override
