@@ -13,7 +13,7 @@ public class RequestsTests {
     @After
     public void clean() {
         RequestController rc = new RequestController();
-        rc.reset();
+        rc.clear();
     }
 
     /**

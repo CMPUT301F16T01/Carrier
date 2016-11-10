@@ -20,12 +20,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+
+import comcmput301f16t01.github.carrier.Notifications.NotificationController;
+import comcmput301f16t01.github.carrier.Notifications.NotificationActivity;
+import comcmput301f16t01.github.carrier.Searching.SearchActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
+        // Create the adapter that will return a fragment for each of the two
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
@@ -104,7 +107,35 @@ public class MainActivity extends AppCompatActivity {
         // We start on the rider tab, so we hide the driver fab
         FloatingActionButton driver_fab = (FloatingActionButton) findViewById(R.id.fab_driver);
         driver_fab.hide();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        NotificationController nc = new NotificationController();
+        if (nc.unreadNotification( UserController.getLoggedInUser() )) {
+            promptViewNotifications();
+        }
+    }
+
+    /**
+     * Creates a dialogue that tells the user to go view their notifications, if they have unread
+     * ones.
+     */
+    private void promptViewNotifications() {
+        AlertDialog.Builder adb = new AlertDialog.Builder( this );
+        adb.setTitle( "New Notifications!" );
+        adb.setMessage( "You've received notifications, do you want to see them?" );
+        adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(MainActivity.this, NotificationActivity.class );
+                startActivity(intent);
+            }
+        });
+        adb.setNegativeButton( "Later", null );
+        adb.show();
     }
 
     /**
@@ -153,6 +184,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.action_help) {
             Intent intent = new Intent(MainActivity.this, HelpActivity.class);
+            startActivity(intent);
+        }
+
+        if (id == R.id.action_viewNotifications ) {
+            Intent intent = new Intent(MainActivity.this, NotificationActivity.class );
             startActivity(intent);
         }
 
@@ -258,6 +294,7 @@ public class MainActivity extends AppCompatActivity {
         private void fillDriverRequests(ListView requestListView) {
             RequestController rc = new RequestController();
             User loggedInUser = UserController.getLoggedInUser();
+            // TODO fix deprecation usage 
             RequestList rl = RequestController.getInstance();
             if (rc.getOfferedRequests(loggedInUser).size() == 0){
                 User testUser = new User("TestUser");
