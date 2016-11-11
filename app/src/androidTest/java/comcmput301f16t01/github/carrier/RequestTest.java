@@ -4,6 +4,8 @@ package comcmput301f16t01.github.carrier;
  * Test suite for Elastic Requests.
  * Test List:
  *      1) Test clearing all requests for a user. (Confirms that we can add a request for a user).
+ *      2) Test getting more than one type of request for a user.
+ *      3) Test adding an offer to a request (from a driver offering to accept)
  */
 public class RequestTest extends ApplicationTest {
     private User basicRider = new User( "reqTestUser", "giveMeRide@carrier.com", "41534153" );
@@ -70,6 +72,7 @@ public class RequestTest extends ApplicationTest {
         int pass;
 
         // clear all the requests and make sure we have done so.
+        rc.clearAllRiderRequests( anotherUser );
         rc.clearAllRiderRequests( basicRider );
         requestList = rc.fetchAllRequestsWhereRider( basicRider );
         pass = 0;
@@ -111,7 +114,6 @@ public class RequestTest extends ApplicationTest {
             pass++;
             if (pass > 5) { break; }
         }
-
         assertTrue( "[1] There should be exactly one request of this type for this user",
                 requestList.size() == 1);
         assertTrue( "[1] We should get only what we requested (same rider)",
@@ -128,7 +130,7 @@ public class RequestTest extends ApplicationTest {
         requestFour.setStatus( Request.OPEN );
         rc.addRequest( requestFour );
 
-        // Test that we can fetch one request, even if there is another user with the same status
+        // Test that we can fetch two requests.
         requestList = rc.fetchRequestsWhereRider( basicRider, Request.CANCELLED, Request.COMPLETE );
         pass = 0;
         while( requestList.size() != 2 ) {
@@ -146,4 +148,6 @@ public class RequestTest extends ApplicationTest {
         assertTrue( "[2] One of the requests should equal the one of the statuses we requested (cancelled)",
                 requestList.get(0).getStatus() == Request.CANCELLED || requestList.get(1).getStatus() == Request.CANCELLED );
     }
+
+    
 }

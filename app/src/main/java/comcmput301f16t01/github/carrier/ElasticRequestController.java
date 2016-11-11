@@ -137,15 +137,14 @@ public class ElasticRequestController {
                     last = i;
                 }
                 // Do the final parameter without a comma and close it.
-                query += "{ \"match\": { \"status\": " + params[params.length-1]  + " }}\n]\n";
+                query += "{ \"match\": { \"status\": " + params[params.length-1]  + " }}\n],\n";
+                query += "\"minimum_should_match\": \"1\"\n";
             }
 
             // add final closing brackets
             query += "\n    }\n" +
                     "  }\n" +
                     "}";
-
-            //if( true ) { throw new IllegalArgumentException( query ); }
 
             Search search = new Search.Builder(query)
                     .addIndex("cmput301f16t01")
