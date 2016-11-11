@@ -13,7 +13,7 @@ public class OfflineTests {
     @After
     public void reset() {
         RequestController rc = new RequestController();
-        rc.reset();
+        rc.clear();
     }
 
     /**

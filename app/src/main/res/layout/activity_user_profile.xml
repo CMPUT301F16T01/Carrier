@@ -16,8 +16,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@android:drawable/ic_menu_delete"
-            android:layout_below="@+id/PhoneIconImageView"
-            android:layout_toEndOf="@+id/NameEditText"
+            android:layout_below="@+id/ImageView_phone_icon"
+            android:layout_toEndOf="@+id/EditText_name"
             android:id="@+id/CancelEditPhoneButton"
             android:background="@android:color/transparent"
             android:visibility="invisible"
@@ -28,9 +28,8 @@
             android:layout_height="wrap_content"
             app:srcCompat="@mipmap/ic_phone"
             android:id="@+id/PhoneIconImageView"
-            android:layout_below="@+id/NameEditText"
+            android:layout_below="@+id/EditText_name"
             android:layout_alignParentStart="true" />
-
 
         <EditText
             android:layout_width="wrap_content"
@@ -38,7 +37,7 @@
             android:inputType="textPersonName"
             android:text="Name"
             android:ems="10"
-            android:id="@+id/NameEditText"
+            android:id="@+id/EditText_name"
             android:textColor="@android:color/white"
             android:textSize="24sp"
             android:layout_marginTop="171dp"
@@ -54,23 +53,15 @@
             android:inputType="none|textEmailAddress"
             android:text="name@name.com"
             android:ems="10"
-            android:id="@+id/EmailEditText"
+            android:id="@+id/EditText_email"
             android:textColor="@android:color/white"
             android:textSize="24sp"
-            android:layout_below="@+id/EmailIconImageView"
+            android:layout_below="@+id/ImageView_email_icon"
             android:layout_alignParentStart="true"
             android:focusable="false"
             android:clickable="false"
             android:layout_toStartOf="@+id/EmailEditIconImageButton"
             android:background="@null" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/ic_email2"
-            android:id="@+id/EmailIconImageView"
-            android:layout_below="@+id/PhoneEditText"
-            android:layout_alignParentStart="true" />
 
         <ImageButton
             android:layout_width="wrap_content"
@@ -83,16 +74,6 @@
             android:layout_alignEnd="@+id/EmailEditIconImageButton"
             android:onClick="saveEditedEmailAddress" />
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@android:drawable/ic_menu_delete"
-            android:id="@+id/CancelEditEmailButton"
-            android:background="@android:color/transparent"
-            android:layout_alignTop="@+id/EmailEditIconImageButton"
-            android:layout_toEndOf="@+id/EmailEditIconImageButton"
-            android:visibility="invisible"
-            android:onClick="cancelEditEmailAddress" />
 
         <TextView
             android:text="Profile"
@@ -141,16 +122,21 @@
             android:layout_alignParentStart="true"
             android:layout_toStartOf="@+id/PhoneSaveEditButton" />
 
-        <ImageButton
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            app:srcCompat="@mipmap/ic_edit"
-            android:id="@+id/PhoneEditIconImageButton"
-            android:scaleType="fitStart"
-            android:background="@android:color/transparent"
-            android:onClick="editPhoneNumber"
-            android:layout_alignBottom="@+id/CancelEditPhoneButton"
-            android:layout_toStartOf="@+id/CancelEditPhoneButton" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@mipmap/ic_email2"
+            android:id="@+id/ImageView_email_icon"
+            android:layout_below="@+id/PhoneEditIconImageButton"
+            android:layout_alignParentStart="true" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@mipmap/ic_phone"
+            android:id="@+id/ImageView_phone_icon"
+            android:layout_below="@+id/EditText_name"
+            android:layout_alignParentStart="true" />
 
         <ImageButton
             android:layout_width="30dp"
@@ -160,8 +146,30 @@
             android:scaleType="fitStart"
             android:background="@android:color/transparent"
             android:onClick="editEmailAddress"
-            android:layout_alignBottom="@+id/EmailEditText"
-            android:layout_alignEnd="@+id/PhoneSaveEditButton" />
+            android:layout_alignTop="@+id/EditText_email"
+            android:layout_alignStart="@+id/PhoneSaveEditButton" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@android:drawable/ic_menu_delete"
+            android:id="@+id/CancelEditEmailButton"
+            android:background="@android:color/transparent"
+            android:visibility="invisible"
+            android:onClick="cancelEditEmailAddress"
+            android:layout_alignTop="@+id/EmailSaveEditButton"
+            android:layout_toEndOf="@+id/PhoneSaveEditButton" />
+
+        <ImageButton
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:srcCompat="@mipmap/ic_edit"
+            android:id="@+id/PhoneEditIconImageButton"
+            android:scaleType="fitStart"
+            android:background="@android:color/transparent"
+            android:onClick="editPhoneNumber"
+            android:layout_alignTop="@+id/CancelEditPhoneButton"
+            android:layout_toStartOf="@+id/CancelEditPhoneButton" />
 
 
     </RelativeLayout>
