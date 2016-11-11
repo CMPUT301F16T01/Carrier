@@ -83,7 +83,8 @@ public class RequestController {
      * @param driver  the driver that is being added as a driver for the request.
      */
     public void addDriver(Request request, User driver) {
-        // TODO Elastic Requests...
+        //ElasticRequestController.AddOfferTask aot = new ElasticRequestController().AddOfferTask();
+        //aot.execute( request.getId(), driver )
         // only on success should we send out a notification!
         NotificationController nc = new NotificationController();
         nc.addNotification( request.getRider(), request );
@@ -143,8 +144,8 @@ public class RequestController {
      *               but the rider has no confirmed their choice in driver.
      * @return An ArrayList of requests that the driver has offered to give a ride on.
      */
-    public ArrayList<Request> getOfferedRequests(User driver) {
-        ArrayList<Request> returnValue = new ArrayList<Request>();
+    public RequestList getOfferedRequests(User driver) {
+        RequestList returnValue = new RequestList();
         for (Request request : requestList) {
             if (request.getOfferedDrivers().contains(driver)) {
                 returnValue.add(request);

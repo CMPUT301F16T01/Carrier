@@ -6,10 +6,12 @@ package comcmput301f16t01.github.carrier;
  *      1) Test clearing all requests for a user. (Confirms that we can add a request for a user).
  *      2) Test getting more than one type of request for a user.
  *      3) Test adding an offer to a request (from a driver offering to accept)
+ *      4) Test to ensure separation from "offering drivers" and "rider" (when searching)
  */
 public class RequestTest extends ApplicationTest {
     private User basicRider = new User( "reqTestUser", "giveMeRide@carrier.com", "41534153" );
     private User anotherUser = new User( "reqTestUser2", "loveSia@hotmail.com", "514514514" );
+    private User basicDriver = new User( "offeringDriver", "wannaDriveYou@gmail.com", "1323123" );
 
     // abstracts reused code to prevent mistakes and aid in readability of tests
     // Makes the current thread sleep for the specified amount of time (in ms)
@@ -149,5 +151,74 @@ public class RequestTest extends ApplicationTest {
                 requestList.get(0).getStatus() == Request.CANCELLED || requestList.get(1).getStatus() == Request.CANCELLED );
     }
 
-    
+    /** TEST3 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * Tests that we can grab requests for a driver who has offered to drive for some requests.
+     *
+     * Tests that it returns only one request even if there are others without him.
+     * Tests that it does not return his own requests.
+     */
+    public void testGetRequestsWhereOffered() {
+        RequestController rc = new RequestController();
+        RequestList requestList;
+        int pass;
+
+        // clear all the requests and make sure we have done so.
+        rc.clearAllRiderRequests( basicDriver );
+        rc.clearAllRiderRequests( basicRider );
+        requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        pass = 0;
+        while( requestList.size() != 0 ) {
+            chillabit( 1000 );
+            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            pass++;
+            if (pass > 5) { break; }
+        }
+        assertTrue( "There should be no requests fetched because we cleared them.",
+                requestList.size() == 0);
+
+        // Create and add three requests
+        Request requestOne = new Request( basicRider, new Location(), new Location(),
+                "testGetRequestsWhereOffered (no offers)" );
+        Request requestTwo = new Request( basicRider, new Location(), new Location(),
+                "testGetRequestsWhereOffered (offers)" );
+        Request requestThree = new Request( basicDriver, new Location(), new Location(),
+                "testGetRequestsWhereOffered (driver's request)");
+
+        requestTwo.addOfferingDriver( basicDriver );
+        requestTwo.addOfferingDriver( anotherUser );
+
+        rc.addRequest( requestOne );
+        rc.addRequest( requestTwo );
+        rc.addRequest( requestThree );
+
+        // Ensure that at least the basicDriver's request is present
+        requestList = rc.fetchRequestsWhereRider( basicDriver );
+        pass = 0;
+        while( requestList.size() != 1 ) {
+            chillabit( 1000 );
+            requestList = rc.fetchRequestsWhereRider( basicDriver );
+            pass++;
+            if (pass > 5) { break; }
+        }
+
+        assertTrue( "The driver posted a request, but it was not found.",
+                requestList.size() == 1);
+
+        // Add the driver to a request and check that we can get this request
+        rc.addDriver( requestTwo, basicDriver );
+        requestList = rc.getOfferedRequests( basicDriver );
+        pass = 0;
+        while( requestList.size() != 1 ) {
+            chillabit( 1000 );
+            requestList = rc.getOfferedRequests( basicRider );
+            pass++;
+            if (pass > 5) { break; }
+        }
+
+        assertTrue( "We only offered to fulfill one request, so there should be only one",
+                requestList.size() == 1);
+        assertTrue( "We should expect the same request back that we added to (equal descriptions)",
+                requestList.get(0).getDescription().equals(requestTwo.getDescription()) );
+    }
 }
