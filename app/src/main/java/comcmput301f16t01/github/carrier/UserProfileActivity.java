@@ -10,7 +10,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 // TODO A lot can be done to reduce code duplication. Notice how there are 4 functions that close,
 // and 2 that open. I feel like a lot of code generalization can be done here to reduce bugs
@@ -79,8 +78,8 @@ public class UserProfileActivity extends AppCompatActivity {
         unclickable.
          */
         if (!user.getUsername().equals(UserController.getLoggedInUser().getUsername())) {
-            ImageButton phoneEditButton = (ImageButton) findViewById(R.id.PhoneEditIconImageButton);
-            ImageButton emailEditButton = (ImageButton) findViewById(R.id.EmailEditIconImageButton);
+            ImageButton phoneEditButton = (ImageButton) findViewById(R.id.ImageButton_phoneEditIcon);
+            ImageButton emailEditButton = (ImageButton) findViewById(R.id.ImageButton_emailEditIcon);
             phoneEditButton.setClickable(false);
             phoneEditButton.setVisibility(View.INVISIBLE);
             emailEditButton.setClickable(false);
@@ -94,9 +93,9 @@ public class UserProfileActivity extends AppCompatActivity {
      * @param v v is a View, allows usage of on click in xml
      */
     public void editPhoneNumber(View v) {
-        ImageButton cancelButton = (ImageButton) findViewById(R.id.CancelEditPhoneButton);
-        ImageButton saveButton = (ImageButton) findViewById(R.id.PhoneSaveEditButton);
-        ImageButton editButton = (ImageButton) findViewById(R.id.PhoneEditIconImageButton);
+        ImageButton cancelButton = (ImageButton) findViewById(R.id.Button_cancelPhoneEdit);
+        ImageButton saveButton = (ImageButton) findViewById(R.id.EditButton_savePhoneEdit);
+        ImageButton editButton = (ImageButton) findViewById(R.id.ImageButton_phoneEditIcon);
         // Set visibility of the buttons.
         editButton.setVisibility(View.INVISIBLE);
         saveButton.setVisibility(View.VISIBLE);
@@ -119,9 +118,9 @@ public class UserProfileActivity extends AppCompatActivity {
      * @param v v is a View, allows usage of on click in xml
      */
     public void saveEditedPhoneNumber(View v) {
-        ImageButton cancelButton = (ImageButton) findViewById(R.id.CancelEditPhoneButton);
-        ImageButton saveButton = (ImageButton) findViewById(R.id.PhoneSaveEditButton);
-        ImageButton editButton = (ImageButton) findViewById(R.id.PhoneEditIconImageButton);
+        ImageButton cancelButton = (ImageButton) findViewById(R.id.Button_cancelPhoneEdit);
+        ImageButton saveButton = (ImageButton) findViewById(R.id.EditButton_savePhoneEdit);
+        ImageButton editButton = (ImageButton) findViewById(R.id.ImageButton_phoneEditIcon);
         // Set visibility of the buttons.
 
         saveButton.setVisibility(View.INVISIBLE);
@@ -151,9 +150,9 @@ public class UserProfileActivity extends AppCompatActivity {
      * @param v v is a View, allows usage of on click in xml
      */
     public void cancelEditPhoneNumber(View v) {
-        ImageButton cancelButton = (ImageButton) findViewById(R.id.CancelEditPhoneButton);
-        ImageButton saveButton = (ImageButton) findViewById(R.id.PhoneSaveEditButton);
-        ImageButton editButton = (ImageButton) findViewById(R.id.PhoneEditIconImageButton);
+        ImageButton cancelButton = (ImageButton) findViewById(R.id.Button_cancelPhoneEdit);
+        ImageButton saveButton = (ImageButton) findViewById(R.id.EditButton_savePhoneEdit);
+        ImageButton editButton = (ImageButton) findViewById(R.id.ImageButton_phoneEditIcon);
         // Set visibility of the buttons.
         editButton.setVisibility(View.VISIBLE);
         saveButton.setVisibility(View.INVISIBLE);
@@ -175,9 +174,9 @@ public class UserProfileActivity extends AppCompatActivity {
      * @param v v is a View, allows usage of on click in xml
      */
     public void editEmailAddress(View v) {
-        ImageButton cancelButton = (ImageButton) findViewById(R.id.CancelEditEmailButton);
-        ImageButton saveButton = (ImageButton) findViewById(R.id.EmailSaveEditButton);
-        ImageButton editButton = (ImageButton) findViewById(R.id.EmailEditIconImageButton);
+        ImageButton cancelButton = (ImageButton) findViewById(R.id.ImageButton_cancelEmailEdit);
+        ImageButton saveButton = (ImageButton) findViewById(R.id.EditButton_saveEmail);
+        ImageButton editButton = (ImageButton) findViewById(R.id.ImageButton_emailEditIcon);
         // Set visibility of the buttons.
         editButton.setVisibility(View.INVISIBLE);
         saveButton.setVisibility(View.VISIBLE);
@@ -198,9 +197,9 @@ public class UserProfileActivity extends AppCompatActivity {
      * @param v v is a View, allows usage of on click in xml
      */
     public void saveEditedEmailAddress(View v) {
-        ImageButton cancelButton = (ImageButton) findViewById(R.id.CancelEditEmailButton);
-        ImageButton saveButton = (ImageButton) findViewById(R.id.EmailSaveEditButton);
-        ImageButton editButton = (ImageButton) findViewById(R.id.EmailEditIconImageButton);
+        ImageButton cancelButton = (ImageButton) findViewById(R.id.ImageButton_cancelEmailEdit);
+        ImageButton saveButton = (ImageButton) findViewById(R.id.EditButton_saveEmail);
+        ImageButton editButton = (ImageButton) findViewById(R.id.ImageButton_emailEditIcon);
         // Set visibility of the buttons.
         editButton.setVisibility(View.VISIBLE);
         saveButton.setVisibility(View.INVISIBLE);
@@ -229,9 +228,9 @@ public class UserProfileActivity extends AppCompatActivity {
      * @param v v is a View, allows usage of on click in xml
      */
     public void cancelEditEmailAddress(View v) {
-        ImageButton cancelButton = (ImageButton) findViewById(R.id.CancelEditEmailButton);
-        ImageButton saveButton = (ImageButton) findViewById(R.id.EmailSaveEditButton);
-        ImageButton editButton = (ImageButton) findViewById(R.id.EmailEditIconImageButton);
+        ImageButton cancelButton = (ImageButton) findViewById(R.id.ImageButton_cancelEmailEdit);
+        ImageButton saveButton = (ImageButton) findViewById(R.id.EditButton_saveEmail);
+        ImageButton editButton = (ImageButton) findViewById(R.id.ImageButton_emailEditIcon);
         // Set visibility of the buttons.
         editButton.setVisibility(View.VISIBLE);
         saveButton.setVisibility(View.INVISIBLE);
