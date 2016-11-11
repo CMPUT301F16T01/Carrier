@@ -5,8 +5,9 @@ package comcmput301f16t01.github.carrier;
  * Test List:
  *      1) Test clearing all requests for a user. (Confirms that we can add a request for a user).
  *      2) Test getting more than one type of request for a user.
- *      3) Test adding an offer to a request (from a driver offering to accept)
- *      4) Test to ensure separation from "offering drivers" and "rider" (when searching)
+ *      3) Test adding driver to a request (visible on a rider's getRequest)
+ *      4) Test getting requests where the driver has offered
+ *      5) Test to ensure separation from "offering drivers" and "rider" (when searching)
  */
 public class RequestTest extends ApplicationTest {
     private User basicRider = new User( "reqTestUser", "giveMeRide@carrier.com", "41534153" );
@@ -151,7 +152,63 @@ public class RequestTest extends ApplicationTest {
                 requestList.get(0).getStatus() == Request.CANCELLED || requestList.get(1).getStatus() == Request.CANCELLED );
     }
 
+
     /** TEST3 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * Tests that we can add a driver to a request (as an offer)
+     *
+     */
+    public void testAddingDriverToRequest() {
+        RequestController rc = new RequestController();
+        RequestList requestList;
+        int pass;
+
+        // clear all the requests and make sure we have done so.
+        rc.clearAllRiderRequests( basicRider );
+        requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        pass = 0;
+        while( requestList.size() != 0 ) {
+            chillabit( 1000 );
+            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            pass++;
+            if (pass > 5) { break; }
+        }
+        assertTrue( "There should be no requests fetched because we cleared them.",
+                requestList.size() == 0);
+
+        // Add a request and check that it is there
+        Request request = new Request( basicRider, new Location(), new Location(),
+                "testAddingDriverToRequest" );
+        rc.addRequest( request );
+        requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        pass = 0;
+        while( requestList.size() != 1 ) {
+            chillabit( 1000 );
+            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            pass++;
+            if (pass > 5) { break; }
+        }
+        assertTrue( "We should fetch a request here",
+                requestList.size() == 1);
+        Request test = requestList.get(0);
+        assertTrue( "There should be no offered drivers yet",
+                test.getOfferedDrivers() == null || test.getOfferedDrivers().size() == 0);
+
+        rc.addDriver( request, basicDriver );
+        pass = 0;
+        while( requestList.get(0).getOfferedDrivers().size() == 0 ) {
+            chillabit( 1000 );
+            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            pass++;
+            if (pass > 5) { break; }
+        }
+
+        assertTrue( "We should have added a driver to this request.",
+                requestList.get(0).getOfferedDrivers().size() == 1 );
+    }
+
+
+    /** TEST4 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      * Tests that we can grab requests for a driver who has offered to drive for some requests.
      *

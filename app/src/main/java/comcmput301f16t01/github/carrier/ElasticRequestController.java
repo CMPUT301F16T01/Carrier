@@ -17,6 +17,7 @@ import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
+import io.searchbox.core.Update;
 
 /**
  * Handles elastic search tasks with requests
@@ -124,7 +125,7 @@ public class ElasticRequestController {
             String query = "{ \"from\" : 0, \"size\" : 500,\n" +
                     "  \"query\": {\n" +
                     "    \"bool\": {\n" +
-                    "      \"must\": { \"match\": { \"username\": \"" + params[0] + "\" }}";
+                    "      \"must\": { \"match\": { \"rider.username\": \"" + params[0] + "\" }}";
 
 
             if (params.length > 1) {
@@ -178,7 +179,7 @@ public class ElasticRequestController {
         @Override
         protected Void doInBackground(String... search_parameters) {
             verifySettings();
-            String search_string = "{\"query\": {\"match\": {\"username\": \"" + search_parameters[0] + "\"}}}";
+            String search_string = "{\"query\": {\"match\": {\"rider.username\": \"" + search_parameters[0] + "\"}}}";
 
             DeleteByQuery delete = new DeleteByQuery.Builder(search_string)
                     .addIndex("cmput301f16t01")
@@ -190,6 +191,44 @@ public class ElasticRequestController {
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new IllegalArgumentException();
+            }
+
+            return null;
+        }
+    }
+
+    /**
+     * Add a driver to the list of offering drivers~
+     */
+    public static class AddOfferTask extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... params) {
+            verifySettings();
+            String script =
+                    "{\n" +
+                    "    \"script\" : \"ctx._source.offeringDrivers += newDriver\",\n" +
+                    "    \"params\" : {\n" +
+                    "        \"newDriver\" : {\n" +
+                    "            \"email\" : \"" + params[1] + "\",\n" +
+                    "            \"phoneNumber\" : \"" + params[2] + "\",\n" +
+                    "            \"username\" : \"" + params[3] + "\"\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "}";
+
+            Update update = new Update.Builder(script)
+                    .index("cmput301f16t01")
+                    .type("notification")
+                    .id(params[0])
+                    .build();
+
+            //Put
+
+            try {
+                client.execute( update );
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
             return null;

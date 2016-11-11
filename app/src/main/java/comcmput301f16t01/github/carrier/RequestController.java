@@ -83,9 +83,9 @@ public class RequestController {
      * @param driver  the driver that is being added as a driver for the request.
      */
     public void addDriver(Request request, User driver) {
-        //ElasticRequestController.AddOfferTask aot = new ElasticRequestController().AddOfferTask();
-        //aot.execute( request.getId(), driver )
-        // only on success should we send out a notification!
+        ElasticRequestController.AddOfferTask aot = new ElasticRequestController.AddOfferTask();
+        aot.execute( request.getId(), driver.getEmail(), driver.getPhone(), driver.getUsername() );
+        // only on success should we send out a notification?
         NotificationController nc = new NotificationController();
         nc.addNotification( request.getRider(), request );
         // TODO check for notification success?

@@ -335,11 +335,11 @@ public class NotificationTest extends ApplicationTest {
         // Assertions based on which one is marked as "read"
         if (notificationList.get(0).isRead()) {
             assertFalse( "One of the notifications should be false", notificationList.get(1).isRead() );
-            assertEquals( "The ID that was set to false is not the same",
+            assertEquals( "The ID that was set to true is not the same",
                     rememberReadID, notificationList.get(1).getID() );
         } else {
-            assertFalse( "One of the notifications should be false", notificationList.get(0).isRead() );
-            assertEquals( "The ID that was set to false is not the same",
+            assertTrue( "One of the notifications should be true", notificationList.get(1).isRead() );
+            assertEquals( "The ID that was set to true is not the same",
                     rememberReadID, notificationList.get(0).getID() );
         }
     }
