@@ -1,6 +1,9 @@
 package comcmput301f16t01.github.carrier;
 
-import java.util.concurrent.ExecutionException;
+import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
+import comcmput301f16t01.github.carrier.Requests.Request;
+import comcmput301f16t01.github.carrier.Requests.RequestController;
+import comcmput301f16t01.github.carrier.Requests.RequestList;
 
 /**
  * Test suite for Elastic Requests.

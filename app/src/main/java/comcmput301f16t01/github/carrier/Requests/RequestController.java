@@ -1,14 +1,10 @@
-package comcmput301f16t01.github.carrier;
-
-import android.content.Context;
-import android.support.annotation.IntegerRes;
-import android.support.annotation.Nullable;
+package comcmput301f16t01.github.carrier.Requests;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
-import comcmput301f16t01.github.carrier.Notifications.Notification;
+import comcmput301f16t01.github.carrier.Location;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
+import comcmput301f16t01.github.carrier.User;
 
 /**
  * Uses a singleton pattern to query and get results of requests.

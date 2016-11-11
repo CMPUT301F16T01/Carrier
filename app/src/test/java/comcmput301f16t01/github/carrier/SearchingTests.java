@@ -4,6 +4,9 @@ import org.junit.After;
 import org.junit.Test;
 import java.util.ArrayList;
 
+import comcmput301f16t01.github.carrier.Requests.Request;
+import comcmput301f16t01.github.carrier.Requests.RequestController;
+
 import static org.junit.Assert.*;
 
 public class SearchingTests {

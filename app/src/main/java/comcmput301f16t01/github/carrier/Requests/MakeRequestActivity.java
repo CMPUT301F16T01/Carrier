@@ -1,4 +1,4 @@
-package comcmput301f16t01.github.carrier;
+package comcmput301f16t01.github.carrier.Requests;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -15,6 +15,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import java.util.Locale;
 import android.os.Handler;
+
+import comcmput301f16t01.github.carrier.Location;
+import comcmput301f16t01.github.carrier.MainActivity;
+import comcmput301f16t01.github.carrier.MockFareCalculator;
+import comcmput301f16t01.github.carrier.R;
+import comcmput301f16t01.github.carrier.User;
+import comcmput301f16t01.github.carrier.UserController;
 
 /*
  The code for incrementing/decrementing the fare while holding down

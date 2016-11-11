@@ -1,19 +1,15 @@
 package comcmput301f16t01.github.carrier;
 
-import android.app.Instrumentation;
-import android.support.annotation.UiThread;
-import android.test.InstrumentationTestCase;
-import android.test.UiThreadTest;
-
 import java.util.Collections;
 import java.util.Date;
 
 import comcmput301f16t01.github.carrier.MockObjects.MockNotification;
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
-import comcmput301f16t01.github.carrier.Notifications.ElasticNotificationController;
 import comcmput301f16t01.github.carrier.Notifications.Notification;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationList;
+import comcmput301f16t01.github.carrier.Requests.Request;
+import comcmput301f16t01.github.carrier.Requests.RequestController;
 
 // TODO could probably use a mock RequestController, since it always posts test requests to elastic search
 

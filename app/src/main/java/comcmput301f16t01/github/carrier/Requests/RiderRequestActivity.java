@@ -1,10 +1,16 @@
-package comcmput301f16t01.github.carrier;
+package comcmput301f16t01.github.carrier.Requests;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
+
+import comcmput301f16t01.github.carrier.R;
+import comcmput301f16t01.github.carrier.Requests.Request;
+import comcmput301f16t01.github.carrier.Requests.RequestController;
+import comcmput301f16t01.github.carrier.User;
+import comcmput301f16t01.github.carrier.UserController;
 
 /**
  * This will help us show the request from the perspective of a rider

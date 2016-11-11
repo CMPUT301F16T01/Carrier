@@ -1,7 +1,10 @@
-package comcmput301f16t01.github.carrier;
+package comcmput301f16t01.github.carrier.Requests;
+
+/**
+ * Created by michael on 06/11/16.
+ */
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,14 +17,18 @@ import java.util.ArrayList;
 import java.util.Currency;
 import java.util.Locale;
 
+import comcmput301f16t01.github.carrier.R;
+import comcmput301f16t01.github.carrier.Requests.Request;
+
 /**
  * From hreherch's implementation of LonelyTwitter
  * Takes an array of Requests and molds it into a ListView of requests
  */
-public class RequestAdapter extends ArrayAdapter<Request> {
+
+public class DriverRequestAdapter extends ArrayAdapter<Request> {
     private ArrayList<Request> requestList;
 
-    public RequestAdapter(Context context, int textViewResourceId, ArrayList<Request> requestArrayList) {
+    public DriverRequestAdapter(Context context, int textViewResourceId, ArrayList<Request> requestArrayList) {
         super(context, textViewResourceId, requestArrayList);
         this.requestList = requestArrayList;
     }
@@ -34,7 +41,7 @@ public class RequestAdapter extends ArrayAdapter<Request> {
     public View getView(int position, View v, @NonNull ViewGroup parent) {
         if (v == null) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = inflater.inflate(R.layout.requestlist_item, null);
+            v = inflater.inflate(R.layout.driverrequestlist_item, null);
         }
 
         final Request request = requestList.get(position);
@@ -44,6 +51,7 @@ public class RequestAdapter extends ArrayAdapter<Request> {
             TextView startLocTextView = (TextView) v.findViewById(R.id.textView_toLocation);
             TextView endLocTextView = (TextView) v.findViewById(R.id.textView_fromLocation);
             TextView priceTextView = (TextView) v.findViewById(R.id.textView_price);
+            TextView descriptionTextView = (TextView) v.findViewById(R.id.textView_description);
             ImageView statusImageView = (ImageView) v.findViewById(R.id.imageView_requestStatus);
 
             // Set the start location in the item's view
@@ -64,6 +72,12 @@ public class RequestAdapter extends ArrayAdapter<Request> {
                 String price = localCurrency.getSymbol()
                         + Float.toString(request.getFare() / 100);
                 priceTextView.setText(price);
+            }
+
+            // Set the description in the item's view
+            if (descriptionTextView != null) {
+                String description = "Description: " + request.getDescription();
+                descriptionTextView.setText(description);
             }
 
             // Set up the status icon depending on the status of the request

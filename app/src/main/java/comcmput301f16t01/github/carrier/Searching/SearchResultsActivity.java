@@ -6,9 +6,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import comcmput301f16t01.github.carrier.R;
-import comcmput301f16t01.github.carrier.Request;
-import comcmput301f16t01.github.carrier.RequestController;
-import comcmput301f16t01.github.carrier.RequestList;
+import comcmput301f16t01.github.carrier.Requests.Request;
+import comcmput301f16t01.github.carrier.Requests.RequestController;
+import comcmput301f16t01.github.carrier.Requests.RequestList;
 
 public class SearchResultsActivity extends AppCompatActivity {
 

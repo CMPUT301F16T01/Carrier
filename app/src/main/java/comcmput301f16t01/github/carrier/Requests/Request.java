@@ -1,9 +1,11 @@
-package comcmput301f16t01.github.carrier;
+package comcmput301f16t01.github.carrier.Requests;
 
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 
+import comcmput301f16t01.github.carrier.Location;
+import comcmput301f16t01.github.carrier.User;
 import io.searchbox.annotations.JestId;
 
 /**

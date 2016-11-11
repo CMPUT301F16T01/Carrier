@@ -1,4 +1,4 @@
-package comcmput301f16t01.github.carrier;
+package comcmput301f16t01.github.carrier.Requests;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -8,9 +8,7 @@ import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
 
 import java.io.IOException;
-import java.util.IllegalFormatException;
 import java.util.List;
-import java.util.Objects;
 
 import io.searchbox.client.JestResult;
 import io.searchbox.core.DeleteByQuery;
