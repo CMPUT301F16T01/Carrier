@@ -59,6 +59,9 @@ public class ElasticUserController {
         }
     }
 
+    /**
+     * Async task to search for a user in elastic search and bind it to an object
+     */
     public static class FindUserTask extends AsyncTask<String, Void, User> {
 
         @Override
@@ -89,16 +92,20 @@ public class ElasticUserController {
         }
     }
 
+    /**
+     * Async task to update a user in elastic search
+     */
     public static class EditUserTask extends AsyncTask<String, Void, Void> {
 
         @Override
         protected Void doInBackground(String... update_params) {
              verifySettings();
-            //update_params[0] is the id, update_params[1] is email, update params[2] is phone
+            // update_params[0] is the id, update_params[1] is email, update params[2] is phone
+            // this is the update string
             String script = "{\n" +
-                    "    \"script\" : \"ctx._source.phoneNumber = \\\"9090909\\\"\",\n" +
-                    "}";
-
+                    "  \"doc\": { \"phoneNumber\": " + "\"" + update_params[2] + "\", " +
+                    "\"email\": " + "\"" + update_params[1] + "\"}" +
+                    "\n}";
             Update update = new Update.Builder(script)
                     .index("cmput301f16t01")
                     .type("user")
