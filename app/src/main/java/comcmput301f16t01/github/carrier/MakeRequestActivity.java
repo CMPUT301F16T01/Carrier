@@ -13,8 +13,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-import java.util.Locale;
 import android.os.Handler;
+import com.google.gson.Gson;
+import android.location.Location;
 
 /*
  The code for incrementing/decrementing the fare while holding down
@@ -25,6 +26,8 @@ import android.os.Handler;
 
 public class MakeRequestActivity extends AppCompatActivity {
 
+    // result code for when we return to an instance of this activity
+    private static final int PASS_ACTIVITY_BACK = 1;
     final Activity activity = MakeRequestActivity.this;
     /**
      * Determines how fast the arrows increment/decrement the estimated fare
@@ -39,6 +42,10 @@ public class MakeRequestActivity extends AppCompatActivity {
     private boolean autoIncrement = false;
     private boolean autoDecrement = false;
 
+    /**
+     * Class that runs in a thread to handle the repeated increments/decrements
+     * to the estimated fare.
+     */
     class RepeatUpdater implements Runnable {
         public void run() {
             if(autoIncrement) {
@@ -56,10 +63,34 @@ public class MakeRequestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make_request);
         setTitle("New Request");
-        setButtons();
+        setButtons(); // setting increment and decrement fare buttons
         activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
 
+    // TODO instead of location tuples, allow user to view start-to-end path on a map
+    // from: https://goo.gl/IxFxpG
+    // author: ρяσѕρєя K
+    // retrieved on: November 7th, 2016
+    // This is called when we startActivityForResult from here and get a result back when that activity finishes.
+    // This allows us to do any "clean up actions" when we get back here
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if(requestCode == PASS_ACTIVITY_BACK) {
+            if(resultCode == RESULT_OK){
+                // from LonelyTwitter
+                start = new Gson().fromJson(intent.getStringExtra("startLocation"), Location.class);
+                end = new Gson().fromJson(intent.getStringExtra("endLocation"), Location.class);
+                TextView tv = (TextView) findViewById(R.id.textView_start);
+                tv.setText("Start: (" + String.valueOf(start.getLatitude()) + ", " + String.valueOf(start.getLongitude()) + ")");
+                tv = (TextView) findViewById(R.id.textView_end);
+                tv.setText("End: (" + String.valueOf(end.getLatitude()) + ", " + String.valueOf(end.getLongitude()) + ")");
+            }
+        }
+    }
+
+    /**
+     * Set the buttons for incrementing and decrementing the fare estimate by the user holding it down
+     */
     private void setButtons() {
         ImageButton fareUpButton = (ImageButton) findViewById(R.id.imageButton_fareUp);
         fareUpButton.setOnLongClickListener(new View.OnLongClickListener() {
@@ -75,6 +106,7 @@ public class MakeRequestActivity extends AppCompatActivity {
         fareUpButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
+                // stop auto-incrementing when the user stops pressing down the button
                 if((motionEvent.getAction() == MotionEvent.ACTION_UP
                         || motionEvent.getAction() == MotionEvent.ACTION_CANCEL) && autoIncrement) {
                     autoIncrement = false;
@@ -95,6 +127,7 @@ public class MakeRequestActivity extends AppCompatActivity {
         fareDownButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
+                // stop auto-decrementing when the user stops pressing down the button
                 if((motionEvent.getAction() == MotionEvent.ACTION_UP
                         || motionEvent.getAction() == MotionEvent.ACTION_CANCEL) && autoDecrement) {
                     autoDecrement = false;
@@ -104,29 +137,30 @@ public class MakeRequestActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Choose the start and end locations for the trip on a map
+     *
+     * @param view
+     */
     public void chooseLocations(View view) {
-        Toast.makeText(activity, "Choose locations", Toast.LENGTH_SHORT).show();
+        Bundle bundle = new Bundle();
+        bundle.putString("point","start");
 
-        if(start == null) start = new Location();
-        if(end == null) end = new Location();
+        // if start or end has already been assigned, we will have this marker set on the map
+        if(start == null) {
+            start = new Location("");
+        } else {
+            bundle.putString("startLocation", new Gson().toJson(start));
+        }
+        if(end == null) {
+            end = new Location("");
+        } else {
+            bundle.putString("endLocation", new Gson().toJson(end));
+        }
 
-        // TODO remove fake data
-        // fake data, University of Alberta
-        start.setLocation(53.5232, -113.5263);
-        // fake data, Edmonton City Centre
-        end.setLocation(53.5438, -113.4923);
-
-        // prompts for fake data verification
-        Toast.makeText(activity, "Location 1: (53.5232, -113.5263)", Toast.LENGTH_SHORT).show();
-        Toast.makeText(activity, "Location 2: (53.5438, -113.4923)", Toast.LENGTH_SHORT).show();
-
-        // TODO create the activity for selecting locations of request (later use case)
-        //    the new activity will handle everything and will return back to use the
-        //    start and end location coordinates
-        // SetLocationsActivity does not exist, placeholder name
-        //   this will be where the user sets the start and end locations of their request
-        // Intent intent = new Intent(MakeRequestActivity.this, SetLocationsActivity.class);
-        // startActivity(intent);
+        Intent intent = new Intent(MakeRequestActivity.this, SetLocationsActivity.class);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, PASS_ACTIVITY_BACK);
     }
 
     /**
@@ -205,8 +239,8 @@ public class MakeRequestActivity extends AppCompatActivity {
     // TODO deprecate once toString is available in FareCalculator
     public String formatFare(int intFare) {
         double fare = ((double) intFare)/100;
-        String str = String.format(Locale.getDefault(),"%d",(long)fare) + ".";
-        String dec = String.format(Locale.getDefault(),"0%.0f",(fare%1)*100);
+        String str = String.format("%d",(long)fare) + ".";
+        String dec = String.format("0%.0f",(fare%1)*100);
         // format the fare as a string with 2 decimal points
         str +=  dec.substring(dec.length()-2, dec.length());
         return str;

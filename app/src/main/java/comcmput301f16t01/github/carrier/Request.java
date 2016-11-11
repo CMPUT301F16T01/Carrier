@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import android.location.Location;
 
 /**
  * Represents a request for a ride.
@@ -92,6 +93,8 @@ public class Request {
     public User getChosenDriver() {
         return this.chosenDriver;
     }
+
+    // possibly get rid of?
     public int getFareEstimate(Double distance, Double duration) {
         FareCalculator fareCalc = new FareCalculator();
         return fareCalc.getEstimate(distance, duration);
