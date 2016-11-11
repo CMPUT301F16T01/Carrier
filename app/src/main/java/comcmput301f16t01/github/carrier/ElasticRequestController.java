@@ -12,8 +12,10 @@ import java.util.IllegalFormatException;
 import java.util.List;
 import java.util.Objects;
 
+import io.searchbox.client.JestResult;
 import io.searchbox.core.DeleteByQuery;
 import io.searchbox.core.DocumentResult;
+import io.searchbox.core.Get;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
@@ -194,6 +196,32 @@ public class ElasticRequestController {
             }
 
             return null;
+        }
+    }
+
+    /**
+     * Attempt to get the latest version of a request
+     */
+    public static class GetRequestTask extends AsyncTask<String, Void, Request> {
+
+        @Override
+        protected Request doInBackground(String... params) {
+            verifySettings();
+
+            Get get = new Get.Builder("cmput301f16t01", params[0])
+                    .type( "request" ).build();
+
+            try {
+                JestResult result = client.execute(get);
+                if (result.isSucceeded()) {
+                    return result.getSourceAsObject(Request.class);
+                } else {
+                    throw new IllegalArgumentException( result.getErrorMessage() );
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new IllegalArgumentException();
+            }
         }
     }
 

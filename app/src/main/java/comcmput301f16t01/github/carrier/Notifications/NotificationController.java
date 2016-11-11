@@ -60,7 +60,9 @@ public class NotificationController {
             // Make the Async insync
             e.printStackTrace();
         }
-        notificationList.clear();
+        if (notificationList != null) {
+            notificationList.clear();
+        }
     }
 
     /**

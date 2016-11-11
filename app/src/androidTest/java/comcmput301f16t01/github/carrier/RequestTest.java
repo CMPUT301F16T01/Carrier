@@ -1,5 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
+import java.util.concurrent.ExecutionException;
+
 /**
  * Test suite for Elastic Requests.
  * Test List:
@@ -7,7 +9,9 @@ package comcmput301f16t01.github.carrier;
  *      2) Test getting more than one type of request for a user.
  *      3) Test adding driver to a request (visible on a rider's getRequest)
  *      4) Test getting requests where the driver has offered
- *      5) Test to ensure separation from "offering drivers" and "rider" (when searching)
+ *      5) Test getting a request by its ID.
+ *      
+ *      X) Test to ensure separation from "offering drivers" and "rider" (when searching)
  */
 public class RequestTest extends ApplicationTest {
     private User basicRider = new User( "reqTestUser", "giveMeRide@carrier.com", "41534153" );
@@ -277,5 +281,53 @@ public class RequestTest extends ApplicationTest {
                 requestList.size() == 1);
         assertTrue( "We should expect the same request back that we added to (equal descriptions)",
                 requestList.get(0).getDescription().equals(requestTwo.getDescription()) );
+    }
+
+    /** TEST5 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * Tests that we can get a request by its ID.
+     */
+    public void testGettingRequestByID() {
+        RequestController rc = new RequestController();
+        RequestList requestList;
+        int pass;
+
+        // clear all the requests and make sure we have done so.
+        rc.clearAllRiderRequests( basicRider );
+        requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        pass = 0;
+        while( requestList.size() != 0 ) {
+            chillabit( 1000 );
+            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            pass++;
+            if (pass > 5) { break; }
+        }
+        assertTrue( "There should be no requests fetched because we cleared them.",
+                requestList.size() == 0);
+        
+        Request request = new Request( basicRider, new Location(), new Location(),
+                "testGetMeByID" );
+        rc.addRequest( request );
+
+        pass = 0;
+        while( request.getId() == null ) {
+            chillabit( 1000 );
+            pass++;
+            if (pass > 5) { break; }
+        }
+        assertTrue( "The request should recieve an ID value.",
+                request.getId() != null );
+        
+        // Try getting the request
+        ElasticRequestController.GetRequestTask grt = new ElasticRequestController.GetRequestTask();
+        grt.execute( request.getId() );
+        Request getRequest = null;
+        try {
+            getRequest = grt.get();
+        } catch (Exception e) {
+            fail( "There should be no exceptional case here" );
+        }
+        
+        assertTrue(request.getDescription().equals(getRequest.getDescription()));
     }
 }
