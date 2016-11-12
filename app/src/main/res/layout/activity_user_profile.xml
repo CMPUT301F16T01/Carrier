@@ -111,7 +111,7 @@
             android:layout_height="wrap_content"
             android:inputType="number|phone"
             android:ems="10"
-            android:id="@+id/PhoneEditText"
+            android:id="@+id/EditText_phone"
             android:textSize="24sp"
             android:textColor="@android:color/white"
             android:text="1234567"

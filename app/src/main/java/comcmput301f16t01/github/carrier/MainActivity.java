@@ -77,8 +77,6 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        Toast.makeText(this, UserController.getLoggedInUser().getId(), Toast.LENGTH_SHORT).show();
-
         // THIS LISTENS TO THE TABS BEING MOVED.
         // WE CAN UPDATE LIST VIEWS, FAB, ETC WITH THIS
         TabLayout.OnTabSelectedListener onTabSelectedListener = new TabLayout.OnTabSelectedListener() {
