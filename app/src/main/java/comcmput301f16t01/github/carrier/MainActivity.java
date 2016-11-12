@@ -29,6 +29,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.location.Location;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -445,8 +447,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent intent = new Intent(getActivity(), RiderRequestActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putInt("position", position);
-                    //bundle.putString("activity", "MainActivity");
+                    bundle.putString("request", new Gson().toJson(requestList.get(position)));
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }

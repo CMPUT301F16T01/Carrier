@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 
 /**
@@ -17,39 +19,29 @@ import java.util.ArrayList;
  */
 public class RiderRequestActivity extends AppCompatActivity {
 
-    //this is just used to make it work for now
-    // TODO remove this
-    private Integer position = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_view_request);
 
-        //getting the request controller to get a list of requests
-        RequestController rc = new RequestController();
-        User loggedInUser = UserController.getLoggedInUser();
-        ArrayList<Request> requestList = rc.getRequests(loggedInUser);
-
         // unpacking the bundle to get the position of request
         Bundle bundle = getIntent().getExtras();
-        position = bundle.getInt("position");
-        final Request request = requestList.get(position);
+        Request request = new Gson().fromJson(bundle.getString("request"), Request.class);
 
         TextView descriptionTextView = (TextView) findViewById(R.id.TextView_description);
         descriptionTextView.setText(request.getDescription());
 
         // Set up the UsernameTextView of the rider
         UsernameTextView riderUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_rider);
-        riderUsernameTextView.setText("Rider: " + request.getRider().getUsername());
+        String riderStr = "Rider: " + request.getRider().getUsername();
+        riderUsernameTextView.setText(riderStr);
         riderUsernameTextView.setUser(request.getRider());
 
         // Set up the UsernameTextView of the driver
         UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
-        driverUsernameTextView.setText("Driver: " + request.getChosenDriver().getUsername());
+        String driverStr = "Driver: " + request.getChosenDriver().getUsername();
+        driverUsernameTextView.setText(driverStr);
         driverUsernameTextView.setUser(request.getChosenDriver());
-
-
 
         /**
          * This switch statement changes the status image
