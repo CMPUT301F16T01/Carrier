@@ -13,8 +13,11 @@ import comcmput301f16t01.github.carrier.Requests.RequestList;
  *      3) Test adding driver to a request (visible on a rider's getRequest)
  *      4) Test getting requests where the driver has offered
  *      5) Test getting a request by its ID.
- *      
+ *
+ *      TODO various tests:
  *      X) Test to ensure separation from "offering drivers" and "rider" (when searching)
+ *      X) Test that we remove offers when we set a chosen driver (or just that the functionality works)
+ *      X) Test that we have the most recent version of a user's information (while online) [[ i.e. a offeringDriver changes their info ]]
  */
 public class RequestTest extends ApplicationTest {
     private User basicRider = new User( "reqTestUser", "giveMeRide@carrier.com", "41534153" );
@@ -252,9 +255,6 @@ public class RequestTest extends ApplicationTest {
         Request requestThree = new Request( basicDriver, new Location(), new Location(),
                 "testGetRequestsWhereOffered (driver's request)");
 
-        requestTwo.addOfferingDriver( basicDriver );
-        requestTwo.addOfferingDriver( anotherUser );
-
         rc.addRequest( requestOne );
         rc.addRequest( requestTwo );
         rc.addRequest( requestThree );
@@ -272,21 +272,7 @@ public class RequestTest extends ApplicationTest {
         assertTrue( "The driver posted a request, but it was not found.",
                 requestList.size() == 1);
 
-        // Add the driver to a request and check that we can get this request
-        rc.addDriver( requestTwo, basicDriver );
-        requestList = rc.getOfferedRequests( basicDriver );
-        pass = 0;
-        while( requestList.size() != 1 ) {
-            chillabit( 1000 );
-            requestList = rc.getOfferedRequests( basicRider );
-            pass++;
-            if (pass > 5) { break; }
-        }
-
-        assertTrue( "We only offered to fulfill one request, so there should be only one",
-                requestList.size() == 1);
-        assertTrue( "We should expect the same request back that we added to (equal descriptions)",
-                requestList.get(0).getDescription().equals(requestTwo.getDescription()) );
+        fail( "This test need to be finished..." );
     }
 
     /** TEST5 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

@@ -169,8 +169,67 @@ public class ElasticRequestController {
                 Log.i("Error", "Something went wrong when we tried to talk to elastic search");
             }
 
+            // We need to get all the offers for each of the requests
+            getOffers( foundRequests );
+
             return foundRequests;
         }
+
+        /**
+         * Sub-task: grab the offers for a request
+         */
+        private void getOffers(RequestList foundRequests) {
+            for( Request request : foundRequests ) {
+                // TODO filter requests that will not have offering drivers?
+
+                String query =
+                        "{ \"from\":0, \"size\":1000,\n" +
+                        "    \"query\": { \"match\": { \"requestID\" : \"" + request.getId() + "\" } }\n" +
+                        "}";
+                Search search = new Search.Builder(query)
+                        .addIndex("cmput301f16t01")
+                        .addType("offer")
+                        .build();
+
+                try {
+                    SearchResult result = client.execute(search);
+                    if (result.isSucceeded()) {
+                        List<Offer> offers = result.getSourceAsObjectList(Offer.class);
+                        populate( request, offers );
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } //getOffers sub-task
+
+        /**
+         * Sub-task: grab the user info for each offer, add it to the offer array.
+         */
+        private void populate(Request request, List<Offer> offers) {
+            request.getOfferedDrivers().clear();
+            for( Offer offer : offers ) {
+                String query =
+                        "{ \"from\":0, \"size\":1,\n" +
+                        "    \"query\": { \"match\": { \"username\" : \"" + offer.getOfferingUser() + "\" } }\n" +
+                        "}";
+
+                Search search = new Search.Builder(query)
+                        .addIndex("cmput301f16t01")
+                        .addType("user")
+                        .build();
+
+                try {
+                    SearchResult result = client.execute(search);
+                    if (result.isSucceeded()) {
+                        User offeringUser = result.getSourceAsObject(User.class);
+                        request.addOfferingDriver( offeringUser );
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } // populate sub-task
     } // FetchRiderRequestsTask
 
     /**
@@ -201,7 +260,8 @@ public class ElasticRequestController {
 
     /**
      * Attempt to get the latest version of a request
-     * TODO, find a way to call this within a thread for AddOfferTask...
+     * TODO update this so that it uses the offer type to grab offers and append them to the request
+     * TODO Maybe we don't need this task anymore?
      */
     public static class GetRequestTask extends AsyncTask<String, Void, Request> {
 
@@ -227,106 +287,68 @@ public class ElasticRequestController {
     }
 
     /**
-     * Add a driver to the list of offering drivers~
+     * Adds offers to elastic search
      */
-    public static class AddOfferTask extends AsyncTask<Request, Void, Void> {
-
-        /**
-         * Same as GetRequestTask
-         */
-        private Request getCurrent( String id ) {
-            Get get = new Get.Builder("cmput301f16t01", id)
-                    .type( "request" ).build();
-
-            try {
-                JestResult result = client.execute(get);
-                if (result.isSucceeded()) {
-                    return result.getSourceAsObject(Request.class);
-                } else {
-                    throw new IllegalArgumentException( result.getErrorMessage() );
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new IllegalArgumentException();
-            }
-        }
-
-        /**
-         * checks that all drivers are up to date for this task
-         */
-        private Boolean checkResult( Request calledRequest ) {
-            try {
-                Thread.sleep( 1500 );
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            Request current = getCurrent( calledRequest.getId() );
-            for ( User driver : calledRequest.getOfferedDrivers() ) {
-                if( !current.hasOfferingDriver( driver ) ) {
-                    current.addOfferingDriver( driver );
-                }
-            }
-            return true;
-        }
+    public static class AddOfferTask extends AsyncTask<Offer, Void, Void> {
 
         @Override
-        protected Void doInBackground(Request... params) {
+        protected Void doInBackground(Offer... params) {
             verifySettings();
 
-            for ( Request request : params ) {
-                while ( true ) {
-                    // Get the current version of the request off of elastic search
-                    Request current = getCurrent(request.getId());
-
-                    // Check that every driver in the executed version of the request is in the current ver.
-                    for (User driver : request.getOfferedDrivers()) {
-                        if (!current.hasOfferingDriver(driver)) {
-                            // if not, we add that driver to the current version
-                            current.addOfferingDriver(driver);
-                        }
+            for ( Offer offer : params ) {
+                Index index = new Index.Builder(offer)
+                        .index("cmput301f16t01")
+                        .type("offer")
+                        .build();
+                try {
+                    DocumentResult result = client.execute(index);
+                    if (result.isSucceeded()) {
+                        //offer.setId(result.getId());
+                    } else {
+                        Log.i("Add Request Failure", "Failed to add request to elastic search");
                     }
-
-                    Delete delete = new Delete.Builder( current.getId() ).build();
-
-                    try {
-                        client.execute(delete);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    // Build an index over the same id (full doc replacement)
-                    Index index = new Index.Builder(current)
-                            .type("cmput301f16t01")
-                            .index("request")
-                            .id( current.getId() )
-                            .build();
-
-                    // Try to execute.
-                    try {
-                        DocumentResult result = client.execute(index);
-                        if (result.isSucceeded()) {
-                            if (checkResult(request)) {
-                                if( current.getOfferedDrivers().size() < 1 ) {
-                                    throw new IllegalArgumentException( "FUCL" );
-                                }
-                                break;
-                            } else {
-                                throw new IllegalArgumentException( result.getErrorMessage() );
-                            }
-                        } else {
-                            throw new IllegalArgumentException();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        throw new IllegalArgumentException();
-                    }
+                } catch (IOException e) {
+                    Log.i("Add Request Failure", "Something went wrong adding a request to elastic search.");
+                    e.printStackTrace();
                 }
             }
+
             return null;
         }
     }
 
+    /**
+     * Remove offers from a specified request in elastic search.
+     * This is for when you choose a driver to fulfill a request (no longer need the offers in
+     * elastic search)
+     */
+    public static class RemoveOffersTask extends AsyncTask<String, Void, Void> {
 
+        @Override
+        protected Void doInBackground(String... params) {
+            verifySettings();
+
+            for( String requestID : params ) {
+                String query =
+                        "{\n" +
+                        "    \"query\": { \"match\": { \"requestID\" : \"" + requestID + "\" } }\n" +
+                        "}";
+
+                DeleteByQuery delete = new DeleteByQuery.Builder(query)
+                        .addIndex("cmput301f16t01")
+                        .addType("offer")
+                        .build();
+
+                try {
+                    client.execute( delete );
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+    }
 
     private static void verifySettings() {
         if (client == null) {

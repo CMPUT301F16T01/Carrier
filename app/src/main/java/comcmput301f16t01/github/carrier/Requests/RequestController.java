@@ -24,6 +24,7 @@ public class RequestController {
      * to not be null (i.e. getResult() )
      */
     public RequestController() {
+        // Note that requestList is static, so it will not be null if you create a second instance of RequestController
         if (requestList == null) {
             requestList = new RequestList();
         }
@@ -69,7 +70,6 @@ public class RequestController {
     public void cancelRequest(User rider, Request request) {
         // TODO test elastic search component
         request.setStatus(Request.CANCELLED);
-
     }
 
     /**
@@ -77,15 +77,22 @@ public class RequestController {
      *
      * @param request The request we are modifying
      * @param driver  the driver that is being added as a driver for the request.
+     *
+     * @see Offer
      */
     public void addDriver(Request request, User driver) {
+        // create an offer object [[ potentially throws IllegalArgumentException if called wrong ]]
+        Offer newOffer = new Offer(request, driver);
+        // Add offer to elastic search
         ElasticRequestController.AddOfferTask aot = new ElasticRequestController.AddOfferTask();
-        request.addOfferingDriver( driver );
-        aot.execute( request );
-        // only on success should we send out a notification?
+        aot.execute( newOffer );
+        // TODO add addOffer task to queue if offline
+
+        // Add a notification
         NotificationController nc = new NotificationController();
         nc.addNotification( request.getRider(), request );
-        // TODO check for notification success?
+        // TODO add addNotification to queue if offline
+
         request.addOfferingDriver(driver);
     }
 
@@ -163,19 +170,25 @@ public class RequestController {
      * @return A list of requests from the given criteria
      */
     public RequestList fetchRequestsWhereRider(User rider, Integer... statuses ) {
+        // Open a fetch task for the user
         ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
+
+        // Convert the parameters of this method to a string array for the execution of the task
         String[] vars = new String[1 + statuses.length];
         vars[0] = rider.getUsername();
         for (int i = 1; i <= statuses.length; i++ ) {
             vars[i] = Integer.toString( statuses[i-1] );
         }
-        RequestList foundRequests = new RequestList();
         frrt.execute( vars );
+
+        // Get the found requests from the task
+        RequestList foundRequests = new RequestList();
         try {
             foundRequests = frrt.get();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return foundRequests;
     }
 
