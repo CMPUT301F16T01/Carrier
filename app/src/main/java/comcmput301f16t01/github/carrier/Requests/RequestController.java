@@ -80,7 +80,8 @@ public class RequestController {
      */
     public void addDriver(Request request, User driver) {
         ElasticRequestController.AddOfferTask aot = new ElasticRequestController.AddOfferTask();
-        aot.execute( request.getId(), driver.getEmail(), driver.getPhone(), driver.getUsername() );
+        request.addOfferingDriver( driver );
+        aot.execute( request );
         // only on success should we send out a notification?
         NotificationController nc = new NotificationController();
         nc.addNotification( request.getRider(), request );

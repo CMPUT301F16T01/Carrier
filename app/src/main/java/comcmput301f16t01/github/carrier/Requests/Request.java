@@ -12,12 +12,12 @@ import io.searchbox.annotations.JestId;
  * Represents a request for a ride.
  */
 public class Request {
-    static final int OPEN = 1;            // A user has made the request but no drivers have accepted.
-    static final int OFFERED = 2;         // One or more drivers have offered to fulfill the request.
-    static final int CONFIRMED = 3;       // The user has chosen a driver and accepted one request.
-    static final int COMPLETE = 4;        // The user has gotten to their destination (and payed?)
-    static final int PAID = 7;
-    static final int CANCELLED = 9;        // The rider has cancelled their request
+    public static final int OPEN = 1;            // A user has made the request but no drivers have accepted.
+    public static final int OFFERED = 2;         // One or more drivers have offered to fulfill the request.
+    public static final int CONFIRMED = 3;       // The user has chosen a driver and accepted one request.
+    public static final int COMPLETE = 4;        // The user has gotten to their destination (and payed?)
+    public static final int PAID = 7;
+    public static final int CANCELLED = 9;        // The rider has cancelled their request
 
     /** The current status of a this request */
     private int status = OPEN;
@@ -43,15 +43,9 @@ public class Request {
     /** The price the requesting user is willing to pay for the request to be complete */
     private int fare;
 
-    /** When elastic searching, can search if this is true to notify the rider about the request */
-    private boolean needToNotifyRider = false;
-
-    /** When elastic searching, can search if this is true to notify the driver about the request */
-    private boolean needToNotifyDriver = false;
-
     /** For use with Elastic Search, is the unique ID given to it */
     @JestId
-    private String elasticID;
+    private String elasticID = null;
 
 
     //TODO maybe add the location strings to description by default? Just in case keywords are locations.
@@ -138,5 +132,17 @@ public class Request {
 
     public void addOfferingDriver(User offeredDriver) {
         offeringDrivers.add(offeredDriver);
+    }
+
+    /**
+     * Check if driver is already inside the list of offering drivers for this request.
+     */
+    public boolean hasOfferingDriver( User driver ) {
+        for ( User driverOffering : offeringDrivers ) {
+            if ( driverOffering.getUsername().equals(driver.getUsername()) ) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -198,11 +198,14 @@ public class RequestTest extends ApplicationTest {
         assertTrue( "We should fetch a request here",
                 requestList.size() == 1);
         Request test = requestList.get(0);
+        assertTrue( "The request should have an ID.",
+                test.getId() != null);
         assertTrue( "There should be no offered drivers yet",
                 test.getOfferedDrivers() == null || test.getOfferedDrivers().size() == 0);
 
-        rc.addDriver( request, basicDriver );
+        rc.addDriver( test, basicDriver );
         pass = 0;
+        requestList = rc.fetchAllRequestsWhereRider( basicRider );
         while( requestList.get(0).getOfferedDrivers().size() == 0 ) {
             chillabit( 1000 );
             requestList = rc.fetchAllRequestsWhereRider( basicRider );
@@ -318,7 +321,7 @@ public class RequestTest extends ApplicationTest {
             pass++;
             if (pass > 5) { break; }
         }
-        assertTrue( "The request should recieve an ID value.",
+        assertTrue( "The request should receive an ID value.",
                 request.getId() != null );
         
         // Try getting the request
@@ -331,6 +334,7 @@ public class RequestTest extends ApplicationTest {
             fail( "There should be no exceptional case here" );
         }
         
-        assertTrue(request.getDescription().equals(getRequest.getDescription()));
+        assertTrue( "The descriptions should match.",
+                request.getDescription().equals(getRequest.getDescription()));
     }
 }

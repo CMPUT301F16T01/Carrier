@@ -10,7 +10,10 @@ import com.searchly.jestdroid.JestDroidClient;
 import java.io.IOException;
 import java.util.List;
 
+import comcmput301f16t01.github.carrier.BuildConfig;
+import comcmput301f16t01.github.carrier.User;
 import io.searchbox.client.JestResult;
+import io.searchbox.core.Delete;
 import io.searchbox.core.DeleteByQuery;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Get;
@@ -113,7 +116,6 @@ public class ElasticRequestController {
 
     /**
      * Get all of a rider's requests including a filter by status
-     * Only call this with a [String, Integer, Integer, Integer...] execution array
      */
     public static class FetchRiderRequestsTask extends AsyncTask<String, Void, RequestList> {
 
@@ -199,6 +201,7 @@ public class ElasticRequestController {
 
     /**
      * Attempt to get the latest version of a request
+     * TODO, find a way to call this within a thread for AddOfferTask...
      */
     public static class GetRequestTask extends AsyncTask<String, Void, Request> {
 
@@ -226,37 +229,99 @@ public class ElasticRequestController {
     /**
      * Add a driver to the list of offering drivers~
      */
-    public static class AddOfferTask extends AsyncTask<String, Void, Void> {
+    public static class AddOfferTask extends AsyncTask<Request, Void, Void> {
 
-        @Override
-        protected Void doInBackground(String... params) {
-            verifySettings();
-            String script =
-                    "{\n" +
-                    "    \"script\" : \"ctx._source.offeringDrivers += newDriver\",\n" +
-                    "    \"params\" : {\n" +
-                    "        \"newDriver\" : {\n" +
-                    "            \"email\" : \"" + params[1] + "\",\n" +
-                    "            \"phoneNumber\" : \"" + params[2] + "\",\n" +
-                    "            \"username\" : \"" + params[3] + "\"\n" +
-                    "        }\n" +
-                    "    }\n" +
-                    "}";
-
-            Update update = new Update.Builder(script)
-                    .index("cmput301f16t01")
-                    .type("notification")
-                    .id(params[0])
-                    .build();
-
-            //Put
+        /**
+         * Same as GetRequestTask
+         */
+        private Request getCurrent( String id ) {
+            Get get = new Get.Builder("cmput301f16t01", id)
+                    .type( "request" ).build();
 
             try {
-                client.execute( update );
+                JestResult result = client.execute(get);
+                if (result.isSucceeded()) {
+                    return result.getSourceAsObject(Request.class);
+                } else {
+                    throw new IllegalArgumentException( result.getErrorMessage() );
+                }
             } catch (IOException e) {
                 e.printStackTrace();
+                throw new IllegalArgumentException();
             }
+        }
 
+        /**
+         * checks that all drivers are up to date for this task
+         */
+        private Boolean checkResult( Request calledRequest ) {
+            try {
+                Thread.sleep( 1500 );
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Request current = getCurrent( calledRequest.getId() );
+            for ( User driver : calledRequest.getOfferedDrivers() ) {
+                if( !current.hasOfferingDriver( driver ) ) {
+                    current.addOfferingDriver( driver );
+                }
+            }
+            return true;
+        }
+
+        @Override
+        protected Void doInBackground(Request... params) {
+            verifySettings();
+
+            for ( Request request : params ) {
+                while ( true ) {
+                    // Get the current version of the request off of elastic search
+                    Request current = getCurrent(request.getId());
+
+                    // Check that every driver in the executed version of the request is in the current ver.
+                    for (User driver : request.getOfferedDrivers()) {
+                        if (!current.hasOfferingDriver(driver)) {
+                            // if not, we add that driver to the current version
+                            current.addOfferingDriver(driver);
+                        }
+                    }
+
+                    Delete delete = new Delete.Builder( current.getId() ).build();
+
+                    try {
+                        client.execute(delete);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    // Build an index over the same id (full doc replacement)
+                    Index index = new Index.Builder(current)
+                            .type("cmput301f16t01")
+                            .index("request")
+                            .id( current.getId() )
+                            .build();
+
+                    // Try to execute.
+                    try {
+                        DocumentResult result = client.execute(index);
+                        if (result.isSucceeded()) {
+                            if (checkResult(request)) {
+                                if( current.getOfferedDrivers().size() < 1 ) {
+                                    throw new IllegalArgumentException( "FUCL" );
+                                }
+                                break;
+                            } else {
+                                throw new IllegalArgumentException( result.getErrorMessage() );
+                            }
+                        } else {
+                            throw new IllegalArgumentException();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        throw new IllegalArgumentException();
+                    }
+                }
+            }
             return null;
         }
     }
