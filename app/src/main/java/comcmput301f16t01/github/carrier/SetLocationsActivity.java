@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -33,11 +32,10 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
     // result code for when we return to an instance of this activity
     private static final int PASS_ACTIVITY_BACK = 1;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private static final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 2;
     private GoogleApiClient googleApiClient = null;
     public final Activity activity = SetLocationsActivity.this;
-    Location lastLocation = null;
-    Location locationPoint = null;
+    CarrierLocation lastLocation = null;
+    CarrierLocation locationPoint = null;
     double latitude = 0;
     double longitude = 0;
     String point = "";
@@ -61,11 +59,11 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
                 lastBundle.putString("startLocation", bundle.getString("startLocation"));
             }
             if(intent.hasExtra("endLocation")) {
-                locationPoint = new Gson().fromJson(bundle.getString("endLocation"), Location.class);
+                locationPoint = new Gson().fromJson(bundle.getString("endLocation"), CarrierLocation.class);
             }
         } else if(point.equals("start")) {
             if(intent.hasExtra("startLocation")) {
-                locationPoint = new Gson().fromJson(bundle.getString("startLocation"), Location.class);
+                locationPoint = new Gson().fromJson(bundle.getString("startLocation"), CarrierLocation.class);
             }
             if(intent.hasExtra("endLocation")) {
                 lastBundle.putString("endLocation",bundle.getString("endLocation"));
@@ -187,7 +185,7 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
             // Based on: https://goo.gl/4TKn2y
             // Retrieved on: November 9th, 2016
             MapView map = (MapView) findViewById(R.id.map);
-            locationPoint = new Location("");
+            locationPoint = new CarrierLocation();
             locationPoint.setLatitude(geoPoint.getLatitude());
             locationPoint.setLongitude(geoPoint.getLongitude());
             setLocationMarker(map, geoPoint);
@@ -253,7 +251,7 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         } else {
-            lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+            lastLocation = (CarrierLocation) LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
             latitude = lastLocation.getLatitude();
             longitude = lastLocation.getLongitude();
 

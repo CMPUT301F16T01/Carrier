@@ -26,13 +26,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.location.Location;
 
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationActivity;
@@ -363,8 +360,8 @@ public class MainActivity extends AppCompatActivity {
             RequestList rl = RequestController.getInstance();
             if (rc.getOfferedRequests(loggedInUser).size() == 0){
                 User testUser = new User("TestUser");
-                Request testRequest1 = new Request(testUser, new Location(""), new Location(""));
-                Request testRequest2 = new Request(testUser, new Location(""), new Location(""),
+                Request testRequest1 = new Request(testUser, new CarrierLocation(), new CarrierLocation());
+                Request testRequest2 = new Request(testUser, new CarrierLocation(), new CarrierLocation(),
                         "I gotta go home please.");
                 testRequest1.setFare(100);
                 rl.add(testRequest1);
@@ -401,8 +398,8 @@ public class MainActivity extends AppCompatActivity {
             if (requestList.size() == 0) {
                 
                 // Create sample requests because this is probably not set up yet.
-                Request requestOne = new Request( loggedInUser, new Location(""), new Location(""), "testRequest!" );
-                Request requestTwo = new Request( loggedInUser, new Location(""), new Location(""), "testRequest2!" );
+                Request requestOne = new Request( loggedInUser, new CarrierLocation(), new CarrierLocation(), "testRequest!" );
+                Request requestTwo = new Request( loggedInUser, new CarrierLocation(), new CarrierLocation(), "testRequest2!" );
                 // TODO: remove these tests
                 ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();
                 fut.execute("sarah");

@@ -40,8 +40,8 @@ public class AcceptingTests {
     @Test
     public void driverPendingAccepts(){
         User rider = new User("Mike");
-        Location start = new Location();
-        Location end = new Location();
+        CarrierLocation start = new Location();
+        CarrierLocation end = new Location();
         Request request = new Request(rider, start, end);
         RequestController rc = new RequestController();
         rc.addRequest(request);

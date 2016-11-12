@@ -38,18 +38,18 @@ public class SearchingTests {
         ArrayList<Request> requests;
 
         User rider1 = new User("Mandy");
-        Location startLocation1 = new Location();
-        Location endLocation1 = new Location(latitude1, longitude1);
+        CarrierLocation startLocation1 = new Location();
+        CarrierLocation endLocation1 = new Location(latitude1, longitude1);
         Request request1 = new Request(rider1, startLocation1, endLocation1, "");
 
         User rider2 = new User("Abigail");
-        Location startLocation2 = new Location();
-        Location endLocation2 = new Location(latitude2, longitude2);
+        CarrierLocation startLocation2 = new Location();
+        CarrierLocation endLocation2 = new Location(latitude2, longitude2);
         Request request2 = new Request(rider2, startLocation2, endLocation2, "");
 
         User rider3 = new User("Alison");
-        Location startLocation3 = new Location();
-        Location endLocation3 = new Location(latitude3, longitude3);
+        CarrierLocation startLocation3 = new Location();
+        CarrierLocation endLocation3 = new Location(latitude3, longitude3);
         Request request3 = new Request(rider3, startLocation3, endLocation3, "");
 
         RequestController rc = new RequestController();
@@ -91,20 +91,20 @@ public class SearchingTests {
         ArrayList<Request> requests;
 
         User rider1 = new User("Mandy");
-        Location startLocation1 = new Location();
-        Location endLocation1 = new Location(latitude1, longitude1);
+        CarrierLocation startLocation1 = new Location();
+        CarrierLocation endLocation1 = new Location(latitude1, longitude1);
         String description1 = "Need to get to Whyte Ave for work";
         Request request1 = new Request(rider1, startLocation1, endLocation1, description1);
 
         User rider2 = new User("Abigail");
-        Location startLocation2 = new Location();
-        Location endLocation2 = new Location(latitude2, longitude2);
+        CarrierLocation startLocation2 = new Location();
+        CarrierLocation endLocation2 = new Location(latitude2, longitude2);
         String description2 = "Going home from the bar";
         Request request2 = new Request(rider2, startLocation2, endLocation2, description2);
 
         User rider3 = new User("Alison");
-        Location startLocation3 = new Location();
-        Location endLocation3 = new Location(latitude3, longitude3);
+        CarrierLocation startLocation3 = new Location();
+        CarrierLocation endLocation3 = new Location(latitude3, longitude3);
         String description3 = "Going home from school";
         Request request3 = new Request(rider3, startLocation3, endLocation3, description3);
 

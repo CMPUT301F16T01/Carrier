@@ -28,20 +28,22 @@ public class RiderRequestActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         Request request = new Gson().fromJson(bundle.getString("request"), Request.class);
 
-        TextView descriptionTextView = (TextView) findViewById(R.id.TextView_description);
-        descriptionTextView.setText(request.getDescription());
+        //TextView descriptionTextView = (TextView) findViewById(R.id.TextView_description);
+        //descriptionTextView.setText(request.getDescription());
 
         // Set up the UsernameTextView of the rider
         UsernameTextView riderUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_rider);
-        String riderStr = "Rider: " + request.getRider().getUsername();
+        String riderStr = request.getRider().getUsername();
         riderUsernameTextView.setText(riderStr);
         riderUsernameTextView.setUser(request.getRider());
 
         // Set up the UsernameTextView of the driver
         UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
-        String driverStr = "Driver: " + request.getChosenDriver().getUsername();
+        String driverStr = request.getChosenDriver().getUsername();
         driverUsernameTextView.setText(driverStr);
         driverUsernameTextView.setUser(request.getChosenDriver());
+
+        TextView startAddress = (TextView) findViewById(R.id.textView_start);
 
         /**
          * This switch statement changes the status image

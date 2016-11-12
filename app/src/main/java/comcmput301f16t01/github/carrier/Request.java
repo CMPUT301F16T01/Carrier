@@ -1,11 +1,8 @@
 package comcmput301f16t01.github.carrier;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
-import android.location.Location;
 
 /**
  * Represents a request for a ride.
@@ -31,10 +28,10 @@ public class Request {
     private ArrayList<User> offeringDrivers;
 
     /** The "from" of the request, where the user wants to go from */
-    private Location start;
+    private CarrierLocation start;
 
     /** The "end" of the request, where the user want to go */
-    private Location end;
+    private CarrierLocation end;
 
     /** A description provided by the rider */
     private String description;
@@ -54,8 +51,8 @@ public class Request {
 
     //TODO maybe add the location strings to description by default? Just in case keywords are locations.
     // Constructor with description
-    public Request(@NonNull User requestingRider, @NonNull Location requestedStart,
-                   @NonNull Location requestedEnd, String description) {
+    public Request(@NonNull User requestingRider, @NonNull CarrierLocation requestedStart,
+                   @NonNull CarrierLocation requestedEnd, String description) {
         this.rider = requestingRider;
         this.start = requestedStart;
         this.end = requestedEnd;
@@ -64,7 +61,7 @@ public class Request {
     }
 
     // Constructor without description TODO do we need this?
-    public Request(User rider, Location start, Location end) {
+    public Request(User rider, CarrierLocation start, CarrierLocation end) {
         this.rider = rider;
         this.start = start;
         this.end = end;
@@ -108,11 +105,11 @@ public class Request {
         return this.rider;
     }
 
-    public Location getStart() {
+    public CarrierLocation getStart() {
         return this.start;
     }
 
-    public Location getEnd() {
+    public CarrierLocation getEnd() {
         return this.end;
     }
 

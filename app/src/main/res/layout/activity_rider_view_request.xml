@@ -3,63 +3,99 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:weightSum="12.5">
 
-    <TextView
-        android:text="$XX.XX"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView_$fareAmount"
-        android:gravity="center"/>
-
-    <!-- MISSING MAP THING :( ? -->
-    <!-- TODO source:  http://www.freepik.com/free-icon/map-with-placeholder_736615.htm -->
     <ImageView
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="5dp"
-        android:src="@drawable/map_placeholder"/>
-
-
-    <TextView
-        android:text="Start: 123 ABC Street NW, Edmonton CA"
+        android:id="@+id/map"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/TextView_start"
-        android:gravity="center"/>
+        android:layout_height="0dp"
+        android:layout_weight="9"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Start:"/>
+
+        <TextView
+            android:text="123 ABC Street NW, Edmonton CA"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/TextView_start"
+            android:gravity="center" />
+
+    </LinearLayout>
+
+
 
 
     <TextView
         android:text="End: 324 ABC Ave NW, Edmonton CA"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:id="@+id/TextView_end"
         android:layout_marginTop="5dp"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:layout_weight="0.5"/>
 
     <TextView
         android:text="Description: I just finished working out. I need to go to the Frat."
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:id="@+id/TextView_description"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="20dp"
-        android:gravity="center"/>
-
+        android:gravity="center"
+        android:layout_weight="0.5"/>
 
     <RelativeLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_weight="1">
 
-        style="?android:attr/buttonBarButtonStyle">
-
+        <TextView
+            android:id="@+id/textView_rider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rider: " />
 
         <comcmput301f16t01.github.carrier.UsernameTextView
-            android:text="Driver: Sarah"
+            android:text=""
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/UsernameTextView_rider"
+            android:gravity="center"
+            android:layout_toEndOf="@+id/textView_rider"
+            android:layout_alignBottom="@+id/UsernameTextView_driver"
+            android:layout_alignTop="@+id/UsernameTextView_driver"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@android:drawable/ic_menu_view"
+            android:id="@+id/viewRider"
+            android:background="@android:color/transparent"
+            android:layout_alignBottom="@+id/UsernameTextView_rider"
+            android:layout_toEndOf="@+id/UsernameTextView_rider" />
+
+        <TextView
+            android:id="@+id/textView_driver"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Driver: "
+            android:layout_toStartOf="@+id/UsernameTextView_driver"/>
+
+        <comcmput301f16t01.github.carrier.UsernameTextView
+            android:text=""
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/UsernameTextView_driver"
@@ -76,62 +112,109 @@
             android:background="@android:color/transparent"
             android:layout_alignBottom="@+id/UsernameTextView_driver"
             android:layout_alignParentEnd="true" />
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@android:drawable/ic_menu_view"
-            android:id="@+id/viewRider"
-            android:background="@android:color/transparent"
-            android:layout_alignBottom="@+id/UsernameTextView_driver"
-            android:layout_toEndOf="@+id/UsernameTextView_driver" />
-
-        <comcmput301f16t01.github.carrier.UsernameTextView
-            android:text="Rider: Mike"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/UsernameTextView_rider"
-            android:gravity="center"
-            android:layout_alignBottom="@+id/UsernameTextView_driver"
-            android:layout_alignParentStart="true"
-            android:layout_alignTop="@+id/UsernameTextView_driver"
-            android:textStyle="bold" />
     </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:weightSum="5" >
+
+        <Button
+            android:id="@+id/button_pay"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="@string/Pay"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="2"
+            android:textAllCaps="false"
+            android:textColor="@android:color/background_light"
+            android:background="@color/colorPrimary" />
+
+        <!-- REPRESENTS STATUS OF REQUEST-->
+        <ImageView
+            android:id="@+id/imageView_requestStatus"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_location_on"/>
+
+        <Button
+            android:id="@+id/button_delete"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="@string/Delete"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="2"
+            android:textAllCaps="false"
+            android:textColor="@android:color/background_light"
+            android:background="@color/colorPrimary" />
+
+    </LinearLayout>
+
+    <!--<TextView
+        android:text="$XX.XX"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/textView_$fareAmount"
+        android:gravity="center"
+        android:layout_weight="1"/>
+
+    <org.osmdroid.views.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8"/>
+
+
+
+
+
 
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="3"
-
-        style="?android:attr/buttonBarButtonStyle">
-
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:weightSum="7"
+        style="?android:attr/buttonBarButtonStyle" >
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
             android:gravity="end"
             android:textAlignment="center"
-            android:text="@string/Pay"/>
+            android:text="@string/Pay"
+            android:textColor="@android:color/background_light"
+            android:background="@color/colorPrimary" />
 
-
-        <!-- REPRESENTS STATUS OF REQUEST -->
+        <!- REPRESENTS STATUS OF REQUEST
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_marginTop="5dp"
+            android:layout_weight="1"
             android:id="@+id/imageView_requestStatus"
             android:src="@drawable/ic_location_on"/>
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2.82"
             android:gravity="end"
             android:textAlignment="center"
-            android:text="@string/Delete"/>
-    </LinearLayout>
+            android:text="@string/Delete"
+            android:textColor="@android:color/background_light"
+            android:background="@color/colorPrimary" />
+
+    </LinearLayout>-->
 
 </LinearLayout>

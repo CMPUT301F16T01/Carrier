@@ -161,7 +161,7 @@ public class RequestController {
      * Deprecated: use the void getSearchByLocation
      */
     @Deprecated
-    public ArrayList<Request> getSearchByLocation(Location location) {
+    public ArrayList<Request> getSearchByLocation(CarrierLocation location) {
         return new ArrayList<>();
     }
 

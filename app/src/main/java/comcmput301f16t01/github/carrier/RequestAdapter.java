@@ -1,7 +1,6 @@
 package comcmput301f16t01.github.carrier;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;

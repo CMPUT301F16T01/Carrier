@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Handler;
 import com.google.gson.Gson;
-import android.location.Location;
 
 /*
  The code for incrementing/decrementing the fare while holding down
@@ -34,8 +33,8 @@ public class MakeRequestActivity extends AppCompatActivity {
      */
     final int REP_DEL = 25;
 
-    private Location start = null;
-    private Location end = null;
+    private CarrierLocation start = null;
+    private CarrierLocation end = null;
     private int fareEstimated = -1;
 
     private Handler repeatUpdateHandler = new Handler();
@@ -67,7 +66,6 @@ public class MakeRequestActivity extends AppCompatActivity {
         activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
 
-    // TODO instead of location tuples, allow user to view start-to-end path on a map
     // from: https://goo.gl/IxFxpG
     // author: ρяσѕρєя K
     // retrieved on: November 7th, 2016
@@ -78,8 +76,8 @@ public class MakeRequestActivity extends AppCompatActivity {
         if(requestCode == PASS_ACTIVITY_BACK) {
             if(resultCode == RESULT_OK){
                 // from LonelyTwitter
-                start = new Gson().fromJson(intent.getStringExtra("startLocation"), Location.class);
-                end = new Gson().fromJson(intent.getStringExtra("endLocation"), Location.class);
+                start = new Gson().fromJson(intent.getStringExtra("startLocation"), CarrierLocation.class);
+                end = new Gson().fromJson(intent.getStringExtra("endLocation"), CarrierLocation.class);
                 TextView tv = (TextView) findViewById(R.id.textView_start);
                 tv.setText("Start: (" + String.valueOf(start.getLatitude()) + ", " + String.valueOf(start.getLongitude()) + ")");
                 tv = (TextView) findViewById(R.id.textView_end);
@@ -148,12 +146,12 @@ public class MakeRequestActivity extends AppCompatActivity {
 
         // if start or end has already been assigned, we will have this marker set on the map
         if(start == null) {
-            start = new Location("");
+            start = new CarrierLocation();
         } else {
             bundle.putString("startLocation", new Gson().toJson(start));
         }
         if(end == null) {
-            end = new Location("");
+            end = new CarrierLocation();
         } else {
             bundle.putString("endLocation", new Gson().toJson(end));
         }
