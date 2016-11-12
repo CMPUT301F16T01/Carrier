@@ -46,4 +46,18 @@ public class FareCalculator {
 
         return fare;
     }
+
+    /**
+     * Converts integer fare into a readable string (price format).
+     * @param intFare
+     * @return
+     */
+    public String toString(int intFare) {
+        double fare = ((double) intFare)/100;
+        String str = String.format("%d",(long)fare) + ".";
+        String dec = String.format("0%.0f",(fare%1)*100);
+        // format the fare as a string with 2 decimal points
+        str +=  dec.substring(dec.length()-2, dec.length());
+        return str;
+    }
 }

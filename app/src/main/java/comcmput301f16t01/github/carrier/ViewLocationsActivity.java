@@ -50,6 +50,7 @@ public class ViewLocationsActivity extends AppCompatActivity {
     GeoPoint endPoint = null;
     Road[] roadList = null;
     MapView map;
+    Bundle bundle = new Bundle();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +104,6 @@ public class ViewLocationsActivity extends AppCompatActivity {
     public void onBackPressed() {
         if(type.equals("new")) {
             Intent intent = new Intent(activity, MakeRequestActivity.class);
-            Bundle bundle = new Bundle();
             bundle.putString("startLocation", new Gson().toJson(start));
             bundle.putString("endLocation", new Gson().toJson(end));
             intent.putExtras(bundle);
@@ -114,10 +114,16 @@ public class ViewLocationsActivity extends AppCompatActivity {
         }
     }
 
-    // TODO try to get the addresses to put in the info windows
     // Function based on: https://goo.gl/iMJdJX
     // Author: cristina
     // Retrieved on: November 11th, 2016
+
+    /**
+     * Get address string from a geo point
+     * @param latitude
+     * @param longitude
+     * @return String
+     */
     private String getAddress(double latitude, double longitude) {
         String pointAddress = "";
         try {
@@ -238,6 +244,9 @@ public class ViewLocationsActivity extends AppCompatActivity {
             }
 
             String routeDesc = bestRoad.getLengthDurationText(activity, -1);
+            bundle.putDouble("distance", bestRoad.mLength);
+            bundle.putDouble("duration", bestRoad.mDuration);
+
             Polyline roadPolyline = RoadManager.buildRoadOverlay(bestRoad);
             roadPolyline.setTitle(getString(R.string.app_name) + " - " + routeDesc);
             roadPolyline.setInfoWindow(new BasicInfoWindow(org.osmdroid.bonuspack.R.layout.bonuspack_bubble, map));
