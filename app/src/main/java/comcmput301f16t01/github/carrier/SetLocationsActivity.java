@@ -7,14 +7,12 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -268,7 +266,7 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
                 activity.finish();
             }
         } else {
-            Toast.makeText(activity, "You must first choose a location by long-pressing on the map", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "You must first choose a location", Toast.LENGTH_SHORT).show();
         }
     }
 
