@@ -16,6 +16,8 @@ import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.BoundingBox;
+import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
@@ -68,7 +70,8 @@ public class ViewLocationsActivity extends AppCompatActivity {
         endPoint = new GeoPoint(end);
 
         IMapController mapController = map.getController();
-        mapController.setZoom(18);
+        // TODO figure out a way to zoom dynamically to include both points?
+        mapController.setZoom(16);
         mapController.setCenter(startPoint);
 
         ArrayList<OverlayItem> overlayItems = new ArrayList<>();
@@ -126,7 +129,6 @@ public class ViewLocationsActivity extends AppCompatActivity {
         mapController.setCenter(endPoint);
     }
 
-    // TODO possibly try to just show the shortest route? Use this for fare calculation.
     private class UpdateRoadTask extends AsyncTask<Object, Void, Road[]> {
 
         @Override
@@ -137,8 +139,11 @@ public class ViewLocationsActivity extends AppCompatActivity {
             return roadManager.getRoads(waypoints);
         }
 
+        // TODO try to deal with the path too large to render problem
         @Override
         protected void onPostExecute(Road[] roads) {
+            double minLength = 0;
+            Road bestRoad = null;
             roadList = roads;
             if (roads == null)
                 return;
@@ -147,18 +152,21 @@ public class ViewLocationsActivity extends AppCompatActivity {
             } else if (roads[0].mStatus > Road.STATUS_TECHNICAL_ISSUE) { //functional issues
                 Toast.makeText(activity, "No possible route here", Toast.LENGTH_SHORT).show();
             }
-            Polyline[] roadOverlays = new Polyline[roads.length];
             List<Overlay> mapOverlays = map.getOverlays();
-            for (int i = 0; i < roads.length; i++) {
-                Polyline roadPolyline = RoadManager.buildRoadOverlay(roads[i]);
-                roadOverlays[i] = roadPolyline;
-                String routeDesc = roads[i].getLengthDurationText(activity, -1);
-                roadPolyline.setTitle(getString(R.string.app_name) + " - " + routeDesc);
-                roadPolyline.setInfoWindow(new BasicInfoWindow(org.osmdroid.bonuspack.R.layout.bonuspack_bubble, map));
-                roadPolyline.setRelatedObject(i);
-                mapOverlays.add(0, roadPolyline);
-                map.invalidate();
+            for (Road road : roads) {
+                Toast.makeText(activity, road.getLengthDurationText(activity, -1), Toast.LENGTH_SHORT).show();
+                if(road.mLength < minLength || minLength == 0) {
+                    minLength = road.mLength;
+                    bestRoad = road;
+                }
             }
+
+            String routeDesc = bestRoad.getLengthDurationText(activity, -1);
+            Polyline roadPolyline = RoadManager.buildRoadOverlay(bestRoad);
+            roadPolyline.setTitle(getString(R.string.app_name) + " - " + routeDesc);
+            roadPolyline.setInfoWindow(new BasicInfoWindow(org.osmdroid.bonuspack.R.layout.bonuspack_bubble, map));
+            mapOverlays.add(0, roadPolyline);
+            map.invalidate();
         }
     }
 }
