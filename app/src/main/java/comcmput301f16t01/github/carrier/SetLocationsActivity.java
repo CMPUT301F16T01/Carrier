@@ -7,12 +7,14 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -226,12 +228,13 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
             }
         } else if(requestCode == PASS_ACTIVITY_FORWARD) {
             if(resultCode == RESULT_OK) {
-                Intent forwardIntent = new Intent(activity, MakeRequestActivity.class);
+                Intent forwardIntent = new Intent(activity, ViewLocationsActivity.class);
                 setResult(RESULT_OK,forwardIntent);
                 lastBundle.putString("startLocation", intent.getStringExtra("startLocation"));
                 lastBundle.putString("endLocation", intent.getStringExtra("endLocation"));
                 forwardIntent.putExtras(lastBundle);
                 activity.finish();
+                Toast.makeText(activity, "Route set", Toast.LENGTH_LONG).show();
                 startActivity(forwardIntent);
             }
         }

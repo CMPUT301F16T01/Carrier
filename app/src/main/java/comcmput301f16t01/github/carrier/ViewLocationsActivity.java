@@ -1,9 +1,11 @@
 package comcmput301f16t01.github.carrier;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -41,6 +43,7 @@ public class ViewLocationsActivity extends AppCompatActivity {
     final Activity activity = ViewLocationsActivity.this;
     private Location start = null;
     private Location end = null;
+    String type = null;
     GeoPoint startPoint = null;
     GeoPoint endPoint = null;
     Road[] roadList = null;
@@ -59,6 +62,9 @@ public class ViewLocationsActivity extends AppCompatActivity {
         if(intent.hasExtra("endLocation")) {
             end = new Gson().fromJson(intent.getStringExtra("endLocation"), Location.class);
         }
+        if(intent.hasExtra("type")) {
+            type = intent.getStringExtra("type");
+        }
 
         // set the map
         map = (MapView) findViewById(R.id.map);
@@ -66,8 +72,13 @@ public class ViewLocationsActivity extends AppCompatActivity {
         map.setBuiltInZoomControls(true);
         map.setMultiTouchControls(true);
 
-        startPoint = new GeoPoint(start);
-        endPoint = new GeoPoint(end);
+        try {
+            startPoint = new GeoPoint(start);
+            endPoint = new GeoPoint(end);
+        } catch (NullPointerException e) {
+            startPoint = new GeoPoint(new Location(""));
+            endPoint = new GeoPoint(new Location(""));
+        }
 
         IMapController mapController = map.getController();
         // TODO figure out a way to zoom dynamically to include both points?
@@ -80,6 +91,25 @@ public class ViewLocationsActivity extends AppCompatActivity {
 
         setMarkers();
         getRoadAsync();
+    }
+
+    /**
+     * On back press, if this was a new request, create the make request activity
+     * Otherwise, the user navigated to this screen through the make request activity so
+     * we can just finish the current activity.
+     */
+    public void onBackPressed() {
+        if(type.equals("new")) {
+            Intent intent = new Intent(activity, MakeRequestActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("startLocation", new Gson().toJson(start));
+            bundle.putString("endLocation", new Gson().toJson(end));
+            intent.putExtras(bundle);
+            activity.finish();
+            startActivity(intent);
+        } else {
+            activity.finish();
+        }
     }
 
     // TODO try to get the addresses to put in the info windows
@@ -154,7 +184,6 @@ public class ViewLocationsActivity extends AppCompatActivity {
             }
             List<Overlay> mapOverlays = map.getOverlays();
             for (Road road : roads) {
-                Toast.makeText(activity, road.getLengthDurationText(activity, -1), Toast.LENGTH_SHORT).show();
                 if(road.mLength < minLength || minLength == 0) {
                     minLength = road.mLength;
                     bestRoad = road;
