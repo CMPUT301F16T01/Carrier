@@ -150,7 +150,7 @@ public class MakeRequestActivity extends AppCompatActivity {
     public void chooseLocations(View view) {
         Bundle bundle = new Bundle();
         bundle.putString("point","start");
-        bundle.putString("type","edit");
+        bundle.putString("type","existing");
         // if start or end has already been assigned, we will have this marker set on the map
         if(start == null) {
             start = new Location("");
@@ -175,6 +175,7 @@ public class MakeRequestActivity extends AppCompatActivity {
     public void viewMap(View view) {
         Intent intent = new Intent(activity, ViewLocationsActivity.class);
         Bundle bundle = new Bundle();
+        bundle.putString("type", "existing");
         bundle.putString("startLocation", new Gson().toJson(start));
         bundle.putString("endLocation", new Gson().toJson(end));
         intent.putExtras(bundle);

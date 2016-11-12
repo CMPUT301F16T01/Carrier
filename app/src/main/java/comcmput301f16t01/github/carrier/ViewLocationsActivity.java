@@ -3,6 +3,8 @@ package comcmput301f16t01.github.carrier;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
@@ -113,6 +115,37 @@ public class ViewLocationsActivity extends AppCompatActivity {
     }
 
     // TODO try to get the addresses to put in the info windows
+    // Function based on: https://goo.gl/iMJdJX
+    // Author: cristina
+    // Retrieved on: November 11th, 2016
+    private String getAddress(double latitude, double longitude) {
+        String pointAddress = "";
+        try {
+            Geocoder geocoder = new Geocoder(activity);
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            StringBuilder sb = new StringBuilder();
+            if(addresses.size() > 0) {
+                Address address = addresses.get(0);
+                int n = address.getMaxAddressLineIndex();
+                for(int i = 0; i <= n; i++) {
+                    if(i != 0) {
+                        sb.append("\n");
+                    }
+                    sb.append(address.getAddressLine(i));
+                }
+                pointAddress = new String(sb);
+            } else {
+                pointAddress = null;
+            }
+        } catch (Exception e) {
+            pointAddress = null;
+        }
+        return pointAddress;
+    }
+
+    /**
+     * Set the start and end markers based on the exact positions the user gave for them
+     */
     private void setMarkers() {
         // set the map
         Marker startMarker = new Marker(map);
@@ -120,11 +153,11 @@ public class ViewLocationsActivity extends AppCompatActivity {
 
         startMarker.setPosition(startPoint);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        startMarker.setTitle("Start");
+        startMarker.setTitle(getAddress(start.getLatitude(), start.getLongitude()));
         startMarker.setInfoWindow(new BasicInfoWindow(org.osmdroid.bonuspack.R.layout.bonuspack_bubble, map));
         endMarker.setPosition(endPoint);
         endMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        endMarker.setTitle("End");
+        endMarker.setTitle(getAddress(end.getLatitude(), end.getLongitude()));
         endMarker.setInfoWindow(new BasicInfoWindow(org.osmdroid.bonuspack.R.layout.bonuspack_bubble, map));
 
         map.getOverlays().add(startMarker);
@@ -132,6 +165,27 @@ public class ViewLocationsActivity extends AppCompatActivity {
         map.invalidate();
     }
 
+    /**
+     * Center the map on the start point
+     * @param view
+     */
+    public void centerStart(View view) {
+        IMapController mapController = map.getController();
+        mapController.setCenter(startPoint);
+    }
+
+    /**
+     * Center the map on the end point
+     * @param view
+     */
+    public void centerEnd(View view) {
+        IMapController mapController = map.getController();
+        mapController.setCenter(endPoint);
+    }
+
+    /**
+     * Asynchronous task to get the route between the two points
+     */
     public void getRoadAsync() {
         roadList = null;
 
@@ -149,16 +203,9 @@ public class ViewLocationsActivity extends AppCompatActivity {
         new UpdateRoadTask().execute(waypoints);
     }
 
-    public void centerStart(View view) {
-        IMapController mapController = map.getController();
-        mapController.setCenter(startPoint);
-    }
-
-    public void centerEnd(View view) {
-        IMapController mapController = map.getController();
-        mapController.setCenter(endPoint);
-    }
-
+    /**
+     * Class to update the road on the map
+     */
     private class UpdateRoadTask extends AsyncTask<Object, Void, Road[]> {
 
         @Override
