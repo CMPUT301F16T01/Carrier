@@ -159,34 +159,16 @@ public class ViewLocationsActivity extends AppCompatActivity {
 
         startMarker.setPosition(startPoint);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        startMarker.setTitle(getAddress(start.getLatitude(), start.getLongitude()));
+        startMarker.setTitle("START:\n" + getAddress(start.getLatitude(), start.getLongitude()));
         startMarker.setInfoWindow(new BasicInfoWindow(org.osmdroid.bonuspack.R.layout.bonuspack_bubble, map));
         endMarker.setPosition(endPoint);
         endMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        endMarker.setTitle(getAddress(end.getLatitude(), end.getLongitude()));
+        endMarker.setTitle("END:\n" + getAddress(end.getLatitude(), end.getLongitude()));
         endMarker.setInfoWindow(new BasicInfoWindow(org.osmdroid.bonuspack.R.layout.bonuspack_bubble, map));
 
         map.getOverlays().add(startMarker);
         map.getOverlays().add(endMarker);
         map.invalidate();
-    }
-
-    /**
-     * Center the map on the start point
-     * @param view
-     */
-    public void centerStart(View view) {
-        IMapController mapController = map.getController();
-        mapController.setCenter(startPoint);
-    }
-
-    /**
-     * Center the map on the end point
-     * @param view
-     */
-    public void centerEnd(View view) {
-        IMapController mapController = map.getController();
-        mapController.setCenter(endPoint);
     }
 
     /**
@@ -207,6 +189,19 @@ public class ViewLocationsActivity extends AppCompatActivity {
         waypoints.add(roadStartPoint);
         waypoints.add(roadEndPoint);
         new UpdateRoadTask().execute(waypoints);
+    }
+
+    public void continueToRequest(View view) {
+        if(type.equals("new")) {
+            Intent intent = new Intent(activity, MakeRequestActivity.class);
+            bundle.putString("startLocation", new Gson().toJson(start));
+            bundle.putString("endLocation", new Gson().toJson(end));
+            intent.putExtras(bundle);
+            activity.finish();
+            startActivity(intent);
+        } else {
+            activity.finish();
+        }
     }
 
     /**

@@ -15,37 +15,17 @@
         android:layout_height="0dp"
         android:orientation="horizontal"
         android:layout_weight="1"
-        android:weightSum="1.25" >
-
-        <Button
-            android:id="@+id/button_startLocation"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:text="Start"
-            android:layout_weight="0.5"
-            android:textAllCaps="false"
-            android:textColor="@android:color/background_light"
-            android:background="@color/colorPrimary"
-            android:onClick="centerStart"/>
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.25"
-            android:background="@color/colorPrimary"
-            android:src="@drawable/ic_center_location"/>
+        android:weightSum="1" >
 
         <Button
             android:id="@+id/button_endLocation"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="End"
-            android:layout_weight="0.5"
+            android:text="@string/view_location_button_text"
             android:textAllCaps="false"
             android:textColor="@android:color/background_light"
             android:background="@color/colorPrimary"
-            android:onClick="centerEnd" />
-
+            android:onClick="continueToRequest" />
     </LinearLayout>
 
 </LinearLayout>
