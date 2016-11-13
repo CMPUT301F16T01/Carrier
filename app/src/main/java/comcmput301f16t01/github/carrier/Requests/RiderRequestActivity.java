@@ -17,6 +17,7 @@ import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.User;
 import comcmput301f16t01.github.carrier.UserController;
+import comcmput301f16t01.github.carrier.UsernameTextView;
 
 /**
  * This will help us show the request from the perspective of a rider
@@ -45,6 +46,7 @@ public class RiderRequestActivity extends AppCompatActivity {
         TextView descriptionTextView = (TextView) findViewById(R.id.TextView_description);
         descriptionTextView.setText(request.getDescription());
 
+        // TODO setText could be inside the setUser method?
         // Set up the UsernameTextView of the rider
         UsernameTextView riderUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_rider);
         riderUsernameTextView.setText("Rider: " + request.getRider().getUsername());

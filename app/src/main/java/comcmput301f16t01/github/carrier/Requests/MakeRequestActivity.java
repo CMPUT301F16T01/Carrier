@@ -17,10 +17,11 @@ import android.os.Handler;
 import com.google.gson.Gson;
 import android.location.Location;
 
-import comcmput301f16t01.github.carrier.Location;
+//import comcmput301f16t01.github.carrier.Location;
 import comcmput301f16t01.github.carrier.MainActivity;
 import comcmput301f16t01.github.carrier.MockFareCalculator;
 import comcmput301f16t01.github.carrier.R;
+import comcmput301f16t01.github.carrier.SetLocationsActivity;
 import comcmput301f16t01.github.carrier.User;
 import comcmput301f16t01.github.carrier.UserController;
 
