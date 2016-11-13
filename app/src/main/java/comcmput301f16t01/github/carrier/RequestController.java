@@ -1,6 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
 import android.content.Context;
+import android.location.Location;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -161,7 +162,7 @@ public class RequestController {
      * Deprecated: use the void getSearchByLocation
      */
     @Deprecated
-    public ArrayList<Request> getSearchByLocation(CarrierLocation location) {
+    public ArrayList<Request> getSearchByLocation(Location location) {
         return new ArrayList<>();
     }
 

@@ -49,7 +49,7 @@ public class Request {
     private String elasticID;
 
 
-    //TODO maybe add the location strings to description by default? Just in case keywords are locations.
+    //TODO maybe add the Location strings to description by default? Just in case keywords are CarrierLocations.
     // Constructor with description
     public Request(@NonNull User requestingRider, @NonNull CarrierLocation requestedStart,
                    @NonNull CarrierLocation requestedEnd, String description) {
@@ -89,12 +89,6 @@ public class Request {
 
     public User getChosenDriver() {
         return this.chosenDriver;
-    }
-
-    // possibly get rid of?
-    public int getFareEstimate(Double distance, Double duration) {
-        FareCalculator fareCalc = new FareCalculator();
-        return fareCalc.getEstimate(distance, duration);
     }
 
     public ArrayList<User> getOffers() {

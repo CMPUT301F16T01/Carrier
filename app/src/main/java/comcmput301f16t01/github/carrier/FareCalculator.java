@@ -26,18 +26,9 @@ public class FareCalculator {
     }
 
     public int getEstimate(double distance, double duration) {
-        /* TODO: once we get routing working on our map we'll fetch the distance and duration */
-        /* Assuming we're using OSM we can do road.mLength (a string, in km) and road.mDuration
-        (a string) to get distance and pass it into this function for now I'll arbitrarily set
-        distance and time - Kieter*/
 
-        Random rand = new Random();
         // Distance is in km
-        // Currently decided randomly
-        //distance = 5 + (50 - 5) * rand.nextDouble();
         // Duration is in sec
-        // Currently decided randomly
-        //duration = 300 + (2400 - 300) * rand.nextDouble();
 
         /* Formula from http://www.ridesharingdriver.com/how-much-does-uber-cost-uber-fare-estimator/
         fare = base fare + (cost per minute * time in ride) + (cost per km * ride distance) + booking fee */
@@ -50,7 +41,6 @@ public class FareCalculator {
         // The least a fare could be.
         int minFare = MIN_FARE;
 
-        //Toast.makeText(getContext(), "Calculated fare =" + Integer.toString(calculatedFare), Toast.LENGTH_SHORT).show();
         int fare = Math.max(calculatedFare, minFare);
 
         return fare;

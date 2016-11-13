@@ -1,5 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
+import android.location.Location;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -15,7 +17,7 @@ public class RequestControllerTest {
         User rider = new User("Rider");
         User offeringDriver = new User("Offering Driver");
         RequestList rl = RequestController.getInstance();
-        Request request = new Request(rider, new Location(), new Location());
+        Request request = new Request(rider, new Location(""), new Location(""));
         rl.add(request);
         rc.addDriver(request, offeringDriver);
         assertTrue("Driver is not added as offering to the request.", request.getOfferedDrivers().contains(offeringDriver));
@@ -26,7 +28,7 @@ public class RequestControllerTest {
         User rider = new User("Rider");
         User offeringDriver = new User("Offering Driver");
         RequestList rl = RequestController.getInstance();
-        Request request = new Request(rider, new Location(), new Location());
+        Request request = new Request(rider, new Location(""), new Location(""));
         rl.add(request);
         // Test that the empty requests work
         assertTrue("Driver has offered request when they shouldn't", rc.getOfferedRequests(offeringDriver).size() == 0);
@@ -44,11 +46,11 @@ public class RequestControllerTest {
         RequestList rl = RequestController.getInstance();
         // Make sure rider1 has no requests made
         assertTrue("rider1 has an open request when they shouldn't.", rc.getRequests(rider1).size() == 0);
-        Request request2 = new Request(rider2, new Location(), new Location());
+        Request request2 = new Request(rider2, new Location(""), new Location(""));
         rl.add(request2);
         // Make sure requests aren't added for the wrong rider.
         assertTrue("rider1 has an open request when they shouldn't.", rc.getRequests(rider1).size() == 0);
-        Request request1 = new Request(rider1, new Location(), new Location());
+        Request request1 = new Request(rider1, new Location(""), new Location(""));
         rl.add(request1);
         // Make sure the request is added to rider1's requests.
         assertTrue(rl == RequestController.getInstance());

@@ -1,17 +1,13 @@
 package comcmput301f16t01.github.carrier;
 
 import org.junit.Test;
-import static comcmput301f16t01.github.carrier.FareCalculator.COST_PER_KM;
-import static comcmput301f16t01.github.carrier.FareCalculator.COST_PER_MIN;
 import static org.junit.Assert.*;
 
 public class FareCalculatorTests {
 
     @Test
     public void getEstimateTest() {
-        Location a = new Location();
-        Location b = new Location();
-        FareCalculator fc = new FareCalculator(a, b);
+        FareCalculator fc = new FareCalculator();
 
         // Using the function defined in the class
         int fairFare = fc.getEstimate(5, 300);
