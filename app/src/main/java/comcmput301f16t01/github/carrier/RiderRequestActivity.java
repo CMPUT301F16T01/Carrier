@@ -1,14 +1,13 @@
 package comcmput301f16t01.github.carrier;
 
-import android.graphics.Color;
-import android.support.v4.content.ContextCompat;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import java.util.ArrayList;
 
@@ -20,11 +19,13 @@ public class RiderRequestActivity extends AppCompatActivity {
     //this is just used to make it work for now
     // TODO remove this
     private Integer position = 0;
+    private Request request;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_view_request);
+        // Initialize the view ids
 
         //getting the request controller to get a list of requests
         RequestController rc = new RequestController();
@@ -34,8 +35,9 @@ public class RiderRequestActivity extends AppCompatActivity {
         // unpacking the bundle to get the position of request
         Bundle bundle = getIntent().getExtras();
         position = bundle.getInt("position");
-        final Request request = requestList.get(position);
 
+        //changing the status image
+        request = requestList.get(position);
         TextView descriptionTextView = (TextView) findViewById(R.id.TextView_description);
         descriptionTextView.setText(request.getDescription());
 
@@ -46,10 +48,10 @@ public class RiderRequestActivity extends AppCompatActivity {
 
         // Set up the UsernameTextView of the driver
         UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
-        driverUsernameTextView.setText("Driver: " + request.getChosenDriver().getUsername());
-        driverUsernameTextView.setUser(request.getChosenDriver());
-
-
+        if (request.getChosenDriver() != null) {
+            driverUsernameTextView.setText("Driver: " + request.getChosenDriver().getUsername());
+            driverUsernameTextView.setUser(request.getChosenDriver());
+        }
 
         /**
          * This switch statement changes the status image
@@ -88,6 +90,41 @@ public class RiderRequestActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Will initialize the view ids for all the views in the activity.
+     */
 
+    public void cancelRequest(View v){
+        AlertDialog.Builder adb = new AlertDialog.Builder(RiderRequestActivity.this);
+        if ((request.getStatus() != Request.CANCELLED) && (request.getStatus() != Request.COMPLETE)
+                && (request.getStatus() != Request.PAID)) {
+            adb.setMessage("Cancel request?");
+            adb.setCancelable(true);
+            adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    RequestController rc = new RequestController();
+                    rc.cancelRequest(request.getRider(), request);
+                    finish();
+                }
+            });
 
+            adb.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+        }
+        else {
+            adb.setTitle("Error: ");
+            adb.setMessage("Request cannot be cancelled.");
+            adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+        }
+        adb.show();
+    }
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by Ben on 2016-10-09.
  */
+
 public class RequestList extends ArrayList<Request> {
 
 }

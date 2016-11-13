@@ -27,4 +27,9 @@ public class Location {
     public double getLongitude() {
         return longitude;
     }
+    
+    @Override
+    public String toString(){
+        return String.valueOf(latitude) +", " + String.valueOf(longitude);
+    }
 }

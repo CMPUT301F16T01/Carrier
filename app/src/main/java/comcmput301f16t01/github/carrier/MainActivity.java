@@ -26,7 +26,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.location.Location;
 
 import java.util.ArrayList;
@@ -255,7 +254,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
-
         if (id == R.id.action_logOut) {
             onBackPressed();
         }
@@ -397,11 +395,10 @@ public class MainActivity extends AppCompatActivity {
 
 
             if (requestList.size() == 0) {
-                
                 // Create sample requests because this is probably not set up yet.
                 Request requestOne = new Request( loggedInUser, new Location(""), new Location(""), "testRequest!" );
                 Request requestTwo = new Request( loggedInUser, new Location(""), new Location(""), "testRequest2!" );
-                // TODO: remove these tests
+                Request requestThree = new Request(loggedInUser, new Location(""), new Location(""), "testRequest3!" );
                 ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();
                 fut.execute("sarah");
                 User sarah = null;
@@ -416,6 +413,7 @@ public class MainActivity extends AppCompatActivity {
                 requestTwo.setStatus(Request.PAID);
                 requestList.add(requestOne);
                 requestList.add(requestTwo);
+                requestList.add(requestThree);
             }
 
             // Mike's old line, Kieter rewrote it with Mike, you can probably delete it
@@ -489,4 +487,5 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
+    
 }

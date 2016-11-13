@@ -36,10 +36,9 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".UserProfileActivity"
-            android:label="Carrier" />
-        android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".NewUserActivity" />
-        <activity android:name=".DriverViewRequestActivity" />
+            android:label="Carrier"> </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".NewUserActivity"></activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -51,7 +50,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="0" />
-
         <activity
             android:name=".Searching.SearchMapsActivity"
             android:label="@string/title_activity_search_maps" />

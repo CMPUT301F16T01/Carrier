@@ -131,7 +131,8 @@
             android:layout_weight="1"
             android:gravity="end"
             android:textAlignment="center"
-            android:text="@string/Delete"/>
+            android:text="@string/Delete"
+            android:onClick="cancelRequest"/>
     </LinearLayout>
 
 </LinearLayout>
