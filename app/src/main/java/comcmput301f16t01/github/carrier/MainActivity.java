@@ -401,7 +401,9 @@ public class MainActivity extends AppCompatActivity {
             if (requestList.size() == 0) {
                 
                 // Create sample requests because this is probably not set up yet.
-                Request requestOne = new Request( loggedInUser, new CarrierLocation(53.5232, -113.5263), new CarrierLocation(53.5225, -113.6242), "Here is my description. It is really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really long.\n\nIt also has a new line." );
+                CarrierLocation start = new CarrierLocation(53.5232, -113.5263);
+                CarrierLocation end = new CarrierLocation(53.5225, -113.6242);
+                Request requestOne = new Request( loggedInUser, start, end, "Here is my description. It is really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really long.\n\nIt also has a new line." );
                 // TODO: remove these tests
                 ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();
                 fut.execute("sarah");
@@ -413,6 +415,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 requestOne.getStart().setAddress("11390 87 Avenue Northwest\nEdmonton, AB T6G 2T9\nCanada");
                 requestOne.getEnd().setAddress("8770 170 Street Northwest\nEdmonton, AB T5T 4V4\nCanada");
+                FareCalculator fc = new FareCalculator();
+                requestOne.setFare(fc.getEstimate(10.6,960));
                 requestOne.setChosenDriver(sarah);
                 requestOne.setStatus(Request.COMPLETE);
                 requestList.add(requestOne);

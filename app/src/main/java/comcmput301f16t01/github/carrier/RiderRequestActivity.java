@@ -3,6 +3,7 @@ package comcmput301f16t01.github.carrier;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,7 @@ import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +42,7 @@ public class RiderRequestActivity extends AppCompatActivity {
     GeoPoint endPoint = null;
     Road[] roadList = null;
     MapView map;
+    IMapController mapController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +53,9 @@ public class RiderRequestActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         Request request = new Gson().fromJson(bundle.getString("request"), Request.class);
 
-        /*map = (MapView) findViewById(R.id.map);
+        setTitle("Request");
+
+        map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setBuiltInZoomControls(true);
         map.setMultiTouchControls(true);
@@ -58,18 +63,19 @@ public class RiderRequestActivity extends AppCompatActivity {
         startPoint = new GeoPoint(request.getStart());
         endPoint = new GeoPoint(request.getEnd());
 
-        IMapController mapController = map.getController();
+        mapController = map.getController();
         // TODO figure out a way to zoom dynamically to include both points?
-        mapController.setZoom(16);
-        mapController.setCenter(startPoint);
+        mapController.setZoom(12);
+        GeoPoint centerPoint = getCenter();
+        mapController.setCenter(centerPoint);
 
         ArrayList<OverlayItem> overlayItems = new ArrayList<>();
         overlayItems.add(new OverlayItem("Starting Point", "This is the starting point", startPoint));
-        overlayItems.add(new OverlayItem("Destination", "This is the destination point", endPoint));*/
+        overlayItems.add(new OverlayItem("Destination", "This is the destination point", endPoint));
 
         setViews(request);
-        //setMarkers(request);
-        //getRoadAsync();
+        setMarkers(request);
+        getRoadAsync();
     }
 
     /**
@@ -112,6 +118,37 @@ public class RiderRequestActivity extends AppCompatActivity {
         waypoints.add(roadStartPoint);
         waypoints.add(roadEndPoint);
         new UpdateRoadTask().execute(waypoints);
+    }
+
+    public void centerStart(View view) {
+        mapController.setCenter(startPoint);
+    }
+
+    public void centerEnd(View view) {
+        mapController.setCenter(endPoint);
+    }
+
+    public GeoPoint getCenter() {
+        double startLat = startPoint.getLatitude();
+        double startLong = startPoint.getLongitude();
+        double endLat = endPoint.getLatitude();
+        double endLong = endPoint.getLongitude();
+
+        Location retLoc = new Location("");
+
+        if(startLat > endLat) {
+            retLoc.setLatitude(endLat + ((startLat - endLat)/2));
+        } else {
+            retLoc.setLatitude(startLat + ((endLat - startLat)/2));
+        }
+
+        if(startLong > endLong) {
+            retLoc.setLongitude(endLong + ((startLong - endLong)/2));
+        } else {
+            retLoc.setLatitude(startLong + ((endLong - startLong)/2));
+        }
+
+        return new GeoPoint(retLoc);
     }
 
     /**
@@ -162,7 +199,12 @@ public class RiderRequestActivity extends AppCompatActivity {
      * @param request
      */
     public void setViews(Request request) {
-    // Set up the UsernameTextView of the rider
+        // Set up the fare
+        FareCalculator fc = new FareCalculator();
+        TextView fareTextView = (TextView) findViewById(R.id.textView_$fareAmount);
+        fareTextView.setText("$" + fc.toString(request.getFare()));
+
+        // Set up the UsernameTextView of the rider
         UsernameTextView riderUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_rider);
         riderUsernameTextView.setText(request.getRider().getUsername());
         riderUsernameTextView.setUser(request.getRider());
