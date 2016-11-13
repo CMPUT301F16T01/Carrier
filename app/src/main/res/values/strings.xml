@@ -33,4 +33,8 @@
 
     <!-- dialog_keyword_search.xml -->
     <string name="searchHint">Enter a keyword</string>
+
+    <!--for RiderRequestActivity-->
+    <string name="DriverHere">Driver: </string>
+    <string name="RiderHere">Rider: </string>
 </resources>

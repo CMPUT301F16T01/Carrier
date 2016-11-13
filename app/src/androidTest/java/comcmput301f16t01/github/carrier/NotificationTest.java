@@ -13,6 +13,8 @@ import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 
+import android.location.Location;
+
 // TODO could probably use a mock RequestController, since it always posts test requests to elastic search
 
 /**
@@ -84,9 +86,9 @@ public class NotificationTest extends ApplicationTest {
      * @see MockNotification
      */
     public void testNotificationSorting() {
-        Request requestOne = new Request( loggedInUser, new Location(), new Location(),
+        Request requestOne = new Request( loggedInUser, new Location(""), new Location(""),
                 "testNotificationSorting Desc : requestOne" );
-        Request requestTwo = new Request( loggedInUser, new Location(), new Location(),
+        Request requestTwo = new Request( loggedInUser, new Location(""), new Location(""),
                 "testNotificationSorting Desc: requestTwo" );
 
         MockNotification a = new MockNotification( loggedInUser, requestOne );
@@ -145,10 +147,10 @@ public class NotificationTest extends ApplicationTest {
      * Tests that clearing notifications actually works inside the Notification Controller
      */
     public void testClearingNotifications() {
-        Request requestOne = new Request( loggedInUser, new Location(), new Location(),
+        Request requestOne = new Request( loggedInUser, new Location(""), new Location(""),
                 "testClearingNotifications1" );
         requestOne.setId("testClearing1");
-        Request requestTwo = new Request( loggedInUser, new Location(), new Location(),
+        Request requestTwo = new Request( loggedInUser, new Location(""), new Location(""),
                 "testClearingNotifications2" );
         requestTwo.setId("testClearing2");
 
@@ -158,7 +160,7 @@ public class NotificationTest extends ApplicationTest {
         nc.addNotification( loggedInUser, requestTwo );
         nc.addNotification( loggedInUser, requestOne );
 
-        chillabit( 500 );
+        chillabit( 1000 );
 
         NotificationList notificationList = nc.fetchNotifications( loggedInUser );
 
@@ -200,7 +202,7 @@ public class NotificationTest extends ApplicationTest {
         nc.clearAllNotifications( loggedInUser );
 
         Request newRequest = new Request( UserController.getLoggedInUser(),
-                new Location(), new Location(), "testRiderGetNotified" );
+                new Location(""), new Location(""), "testRiderGetNotified" );
 
         // Unnecessary clutter for request elastic search, and irrelevant to this test (?)
         rc.addRequest( newRequest );
@@ -248,7 +250,7 @@ public class NotificationTest extends ApplicationTest {
         nc.clearAllNotifications( driverOne );
 
         Request newRequest = new Request( UserController.getLoggedInUser(),
-                new Location(), new Location(), "testDriverGetNotified" );
+                new Location(""), new Location(""), "testDriverGetNotified" );
 
         // Unnecessary clutter for request elastic search, and irrelevant to this test (?)
         rc.addRequest( newRequest );
@@ -287,10 +289,10 @@ public class NotificationTest extends ApplicationTest {
      * Also tests that it does not set all other notifications to read.
      */
     public void testMarkingNotificationAsRead() {
-        Request requestOne = new Request( loggedInUser, new Location(), new Location(),
+        Request requestOne = new Request( loggedInUser, new Location(""), new Location(""),
                 "testMarkingNotificationAsRead1" );
         requestOne.setId("testMarkingNotificationAsRead1");
-        Request requestTwo = new Request( loggedInUser, new Location(), new Location(),
+        Request requestTwo = new Request( loggedInUser, new Location(""), new Location(""),
                 "testMarkingNotificationAsRead2" );
         requestTwo.setId("testMarkingNotificationAsRead2");
 
@@ -363,7 +365,7 @@ public class NotificationTest extends ApplicationTest {
      * Test that we can delete or get more than 10 notifications in one call
      */
     public void testDeletingManyNotification() {
-        Request requestOne = new Request( anotherUser, new Location(), new Location(),
+        Request requestOne = new Request( anotherUser, new Location(""), new Location(""),
                 "testDeletingManyNotifications1");
 
         NotificationController nc = new NotificationController();

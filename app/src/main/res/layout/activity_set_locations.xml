@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Code from: https://github.com/MKergall/osmbonuspack/wiki/Tutorial_0 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:weightSum="10">
+
+    <org.osmdroid.views.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="9"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:weightSum="1" >
+
+        <Button
+            android:id="@+id/button_confirmLocation"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text=""
+            android:layout_weight="1"
+            android:textAllCaps="false"
+            android:textColor="@android:color/background_light"
+            android:background="@color/colorPrimary"
+            android:onClick="confirmLocation" />
+
+    </LinearLayout>
+
+</LinearLayout>
