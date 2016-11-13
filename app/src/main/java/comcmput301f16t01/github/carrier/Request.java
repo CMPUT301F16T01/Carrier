@@ -1,5 +1,6 @@
 package comcmput301f16t01.github.carrier;
 
+import android.location.Location;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -65,6 +66,28 @@ public class Request {
         this.rider = rider;
         this.start = start;
         this.end = end;
+        this.offeringDrivers = new ArrayList<User>();
+        this.description = "";
+
+    }
+
+    // TODO Refactor all tests to use CarrierLocation, then these can be deleted
+    // Added these so things don't break while we transition
+    // Constructor with description
+    public Request(@NonNull User requestingRider, @NonNull Location requestedStart,
+                   @NonNull Location requestedEnd, String description) {
+        this.rider = requestingRider;
+        this.start = (CarrierLocation) requestedStart;
+        this.end = (CarrierLocation) requestedEnd;
+        this.description = description;
+        this.offeringDrivers = new ArrayList<User>();
+    }
+
+    // Constructor without description TODO do we need this?
+    public Request(User rider, Location start, Location end) {
+        this.rider = rider;
+        this.start = (CarrierLocation) start;
+        this.end = (CarrierLocation) end;
         this.offeringDrivers = new ArrayList<User>();
         this.description = "";
 

@@ -31,7 +31,7 @@ public class MakeRequestActivity extends AppCompatActivity {
     /**
      * Determines how fast the arrows increment/decrement the estimated fare
      */
-    final int REP_DEL = 25;
+    final int REPEATED_DELAY = 25;
 
     private CarrierLocation start = null;
     private CarrierLocation end = null;
@@ -51,10 +51,10 @@ public class MakeRequestActivity extends AppCompatActivity {
         public void run() {
             if(autoIncrement) {
                 incrementFare(null);
-                repeatUpdateHandler.postDelayed( new RepeatUpdater(), REP_DEL);
+                repeatUpdateHandler.postDelayed( new RepeatUpdater(), REPEATED_DELAY);
             } else if(autoDecrement) {
                 decrementFare(null);
-                repeatUpdateHandler.postDelayed( new RepeatUpdater(), REP_DEL);
+                repeatUpdateHandler.postDelayed( new RepeatUpdater(), REPEATED_DELAY);
             }
         }
     }
