@@ -95,7 +95,8 @@ public class DriverViewRequestActivity extends AppCompatActivity {
     private void setViewIds() {
         fareAmountTextView.setText(new MakeRequestActivity().formatFare(request.getFare()));
         startLocationTextView.setText(request.getStart().toString());
-        descriptionTextView.setText((request.getDescription()));riderUsernameTextView.setText("Rider: " + request.getRider().getUsername());
+        descriptionTextView.setText((request.getDescription()));
+        riderUsernameTextView.setText("Rider: " + request.getRider().getUsername());
         riderUsernameTextView.setUser(request.getRider());
         riderUsernameTextView.setText(request.getRider().getUsername());
         driverUsernameTextView.setText("Driver: " + request.getChosenDriver().getUsername());
@@ -113,26 +114,36 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         riderUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_rider);
     }
 
+    /**
+     * Will add the current user to the list of offering drivers if it is possible to add them to
+     * the list of offering drivers.
+     *
+     * @param v
+     */
     public void MakeOffer(View v) {
         RequestController rc = new RequestController();
         // Can not make an offer on a request that has a confirmed driver.
         // Can not make an offer on a request that you hae already made an offer on.
         // Can not make an offer on a cancelled request.
-        if (request.getConfirmedDriver() != null || request.getOfferedDrivers().contains(loggedInUser) ||
-                request.getStatus() == Request.CANCELLED) {
-            AlertDialog.Builder adb = new AlertDialog.Builder(DriverViewRequestActivity.this);
-            adb.setTitle("Error: ");
-            adb.setMessage("Unable to make an offer on the request.");
-            adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                }
-            });
+        AlertDialog.Builder adb = new AlertDialog.Builder(DriverViewRequestActivity.this);
+        adb.setTitle("Error: ");
+        adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        if (request.getConfirmedDriver() != null) {
+            adb.setMessage("Unable to make an offer on the request. There is already a confirmed driver.");
             adb.show();
-        }
-        else {
+        } else if (request.getOfferedDrivers().contains(loggedInUser)) {
+            adb.setMessage("Unable to make an offer on the request. You have already made an offer.");
+            adb.show();
+        } else if (request.getStatus() == Request.CANCELLED) {
+            adb.setMessage("Unable to make an offer on the request. The request has been cancelled.");
+            adb.show();
+        } else {
             rc.addDriver(request, loggedInUser);
             Toast.makeText(this, "Made an offer.", Toast.LENGTH_SHORT).show();
         }
-
+    }
 }
