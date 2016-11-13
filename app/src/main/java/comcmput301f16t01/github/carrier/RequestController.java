@@ -1,6 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
 import android.content.Context;
+import android.location.Location;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -184,7 +185,7 @@ public class RequestController {
 
     /** Get the results of a searchByKeyword or a getSearchByLocation query. */
     public RequestList getResult() {
-        return (RequestList) requestList;
+        return requestList;
     }
 
     /**

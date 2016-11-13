@@ -47,7 +47,7 @@
         app:srcCompat="@drawable/ic_plus"
         app:backgroundTint="@color/color_rider"
         android:tint="#FFFFFFFF"
-        android:onClick="startMakeRequestActivity" />
+        android:onClick="makeRequest" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_driver"

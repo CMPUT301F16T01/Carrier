@@ -28,6 +28,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.location.Location;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -53,8 +55,6 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
 
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
-    private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private static final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -288,10 +288,13 @@ public class MainActivity extends AppCompatActivity {
         adb.show();
     }
 
-    public void startMakeRequestActivity(View view) {
+    public void makeRequest(View view) {
         // This will start the make request activity for a rider when they press the rider FAB
-        //Toast.makeText(this, "RIDER FAB", Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(MainActivity.this, MakeRequestActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("point","start");
+        bundle.putString("type","new");
+        Intent intent = new Intent(MainActivity.this, SetLocationsActivity.class);
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 
@@ -355,20 +358,21 @@ public class MainActivity extends AppCompatActivity {
         private void fillDriverRequests(ListView requestListView) {
             RequestController rc = new RequestController();
             User loggedInUser = UserController.getLoggedInUser();
-            // TODO fix deprecation usage 
+            // TODO fix deprecation usage
             RequestList rl = RequestController.getInstance();
             if (rc.getOfferedRequests(loggedInUser).size() == 0){
                 User testUser = new User("TestUser");
-                Request testRequest1 = new Request(testUser, new Location(""), new Location(""));
-                Request testRequest2 = new Request(testUser, new Location(""), new Location(""),
-                        "I gotta go home please.");
-                testRequest1.setFare(100);
+                CarrierLocation start = new CarrierLocation(53.5232, -113.5263);
+                CarrierLocation end = new CarrierLocation(53.5225, -113.6242);
+                Request testRequest1 = new Request(testUser, start, end, "Gotta go home from downtown");
+                testRequest1.getStart().setAddress("11390 87 Avenue Northwest\nEdmonton, AB T6G 2T9\nCanada");
+                testRequest1.getEnd().setAddress("8770 170 Street Northwest\nEdmonton, AB T5T 4V4\nCanada");
+                FareCalculator fc = new FareCalculator();
+                testRequest1.setFare(fc.getEstimate(10.6,960));
                 rl.add(testRequest1);
-                rl.add(testRequest2);
                 rc.addDriver(testRequest1, loggedInUser);
-                rc.addDriver(testRequest2, loggedInUser);
             }
-            ArrayList<Request> requestList = rc.getOfferedRequests(loggedInUser);
+            final ArrayList<Request> requestList = rc.getOfferedRequests(loggedInUser);
             DriverRequestAdapter requestArrayAdapter = new DriverRequestAdapter(this.getContext(),
                     R.layout.driverrequestlist_item, requestList);
             requestListView.setAdapter(requestArrayAdapter);
@@ -378,6 +382,16 @@ public class MainActivity extends AppCompatActivity {
              * When we click a request we want to be able to see it in another activity
              * Use bundles to send the position of the request in a list
              */
+            requestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent intent = new Intent(getActivity(), DriverViewRequestActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("request", new Gson().toJson(requestList.get(position)));
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            });
 
         }
 
@@ -391,14 +405,14 @@ public class MainActivity extends AppCompatActivity {
             User loggedInUser = UserController.getLoggedInUser();
             // Mike's old line, Kieter rewrote with Mike, you can probably delete it
             //final ArrayList<Request> requestList = rc.getRequests( loggedInUser );
-            final ArrayList<Request> requestList = rc.getInstance();
-
+            final ArrayList<Request> requestList = rc.getResult();
 
             if (requestList.size() == 0) {
                 // Create sample requests because this is probably not set up yet.
-                Request requestOne = new Request( loggedInUser, new Location(""), new Location(""), "testRequest!" );
-                Request requestTwo = new Request( loggedInUser, new Location(""), new Location(""), "testRequest2!" );
-                Request requestThree = new Request(loggedInUser, new Location(""), new Location(""), "testRequest3!" );
+                CarrierLocation start = new CarrierLocation(53.5232, -113.5263);
+                CarrierLocation end = new CarrierLocation(53.5225, -113.6242);
+                Request requestOne = new Request( loggedInUser, start, end, "Here is my description. It is really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really long.\n\nIt also has a new line." );
+                // TODO: remove these tests
                 ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();
                 fut.execute("sarah");
                 User sarah = null;
@@ -407,13 +421,13 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                requestOne.getStart().setAddress("11390 87 Avenue Northwest\nEdmonton, AB T6G 2T9\nCanada");
+                requestOne.getEnd().setAddress("8770 170 Street Northwest\nEdmonton, AB T5T 4V4\nCanada");
+                FareCalculator fc = new FareCalculator();
+                requestOne.setFare(fc.getEstimate(10.6,960));
                 requestOne.setChosenDriver(sarah);
-                requestTwo.setChosenDriver(sarah);
                 requestOne.setStatus(Request.COMPLETE);
-                requestTwo.setStatus(Request.PAID);
                 requestList.add(requestOne);
-                requestList.add(requestTwo);
-                requestList.add(requestThree);
             }
 
             // Mike's old line, Kieter rewrote it with Mike, you can probably delete it
@@ -443,8 +457,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent intent = new Intent(getActivity(), RiderRequestActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putInt("position", position);
-                    //bundle.putString("activity", "MainActivity");
+                    bundle.putString("request", new Gson().toJson(requestList.get(position)));
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }

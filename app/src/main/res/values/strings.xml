@@ -21,8 +21,8 @@
     <string name="helpPaidText"><b>Paid</b> - A request that has been paid for.</string>
     <string name="helpCancelText"><b>Cancel</b> - A request that has been cancelled. This can occur anytime before the ride is complete.</string>
     <!-- activity_make_request.xml -->
-    <string name="choose_location_button_text">Choose Start and End Points on Map</string>
-    <string name="fare_estimate_prompt">Fare estimate:</string>
+    <string name="change_location_button_text">Change Start and End Points</string>
+    <string name="fare_estimate_prompt">Fare offer:</string>
     <string name="dollar_sign">$</string>
     <string name="empty_fare">0.00</string>
     <string name="estimate_button_text">Estimate</string>
@@ -35,4 +35,9 @@
     <!--for RiderRequestActivity-->
     <string name="DriverHere">Driver: </string>
     <string name="RiderHere">Rider: </string>
+    <string name="view_location_button_text">Continue to request</string>
+    <string name="start_address">Start:</string>
+    <string name="end_address">End:</string>
+    <string name="description">Description:</string>
+    <string name="Cancel">CANCEL</string>
 </resources>

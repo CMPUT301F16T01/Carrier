@@ -1,11 +1,9 @@
 package comcmput301f16t01.github.carrier;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.location.Location;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
-import android.location.Location;
 
 /**
  * Represents a request for a ride.
@@ -32,10 +30,10 @@ public class Request {
     private ArrayList<User> offeringDrivers;
 
     /** The "from" of the request, where the user wants to go from */
-    private Location start;
+    private CarrierLocation start;
 
     /** The "end" of the request, where the user want to go */
-    private Location end;
+    private CarrierLocation end;
 
     /** A description provided by the rider */
     private String description;
@@ -53,10 +51,10 @@ public class Request {
     private String elasticID;
 
 
-    //TODO maybe add the location strings to description by default? Just in case keywords are locations.
+    //TODO maybe add the Location strings to description by default? Just in case keywords are CarrierLocations.
     // Constructor with description
-    public Request(@NonNull User requestingRider, @NonNull Location requestedStart,
-                   @NonNull Location requestedEnd, String description) {
+    public Request(@NonNull User requestingRider, @NonNull CarrierLocation requestedStart,
+                   @NonNull CarrierLocation requestedEnd, String description) {
         this.rider = requestingRider;
         this.start = requestedStart;
         this.end = requestedEnd;
@@ -65,10 +63,32 @@ public class Request {
     }
 
     // Constructor without description TODO do we need this?
-    public Request(User rider, Location start, Location end) {
+    public Request(User rider, CarrierLocation start, CarrierLocation end) {
         this.rider = rider;
         this.start = start;
         this.end = end;
+        this.offeringDrivers = new ArrayList<User>();
+        this.description = "";
+
+    }
+
+    // TODO Refactor all tests to use CarrierLocation, then these can be deleted
+    // Added these so things don't break while we transition
+    // Constructor with description
+    public Request(@NonNull User requestingRider, @NonNull Location requestedStart,
+                   @NonNull Location requestedEnd, String description) {
+        this.rider = requestingRider;
+        this.start = (CarrierLocation) requestedStart;
+        this.end = (CarrierLocation) requestedEnd;
+        this.description = description;
+        this.offeringDrivers = new ArrayList<User>();
+    }
+
+    // Constructor without description TODO do we need this?
+    public Request(User rider, Location start, Location end) {
+        this.rider = rider;
+        this.start = (CarrierLocation) start;
+        this.end = (CarrierLocation) end;
         this.offeringDrivers = new ArrayList<User>();
         this.description = "";
 
@@ -102,12 +122,6 @@ public class Request {
         return this.chosenDriver;
     }
 
-    // possibly get rid of?
-    public int getFareEstimate(Double distance, Double duration) {
-        FareCalculator fareCalc = new FareCalculator();
-        return fareCalc.getEstimate(distance, duration);
-    }
-
     public ArrayList<User> getOffers() {
         return new ArrayList<User>();
     }
@@ -116,11 +130,11 @@ public class Request {
         return this.rider;
     }
 
-    public Location getStart() {
+    public CarrierLocation getStart() {
         return this.start;
     }
 
-    public Location getEnd() {
+    public CarrierLocation getEnd() {
         return this.end;
     }
 
