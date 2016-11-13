@@ -17,43 +17,37 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="1">
+            android:layout_height="64dp"
+            android:weightSum="1"
+            android:layout_marginTop="10dp">
 
             <!-- This button is a placeholder while we decide what we want to do
             with the mapView. This could eventually be one or two buttons. -->
             <Button
-                android:text="@string/choose_location_button_text"
+                android:text="@string/change_location_button_text"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/button_chooseLocation"
-                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:id="@+id/button_changeLocation"
+                android:layout_weight="0.93"
                 android:textAllCaps="false"
                 android:textColor="@android:color/background_light"
                 android:background="@color/colorPrimary"
+                android:layout_marginEnd="10dp"
                 android:onClick="chooseLocations"/>
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="64dp"
+                app:srcCompat="@drawable/ic_menu_mapmode"
+                android:background="@color/colorPrimary"
+                android:tint="@android:color/background_light"
+                android:id="@+id/imageButton_viewMap"
+                android:scaleType="fitXY"
+                android:layout_weight="0.07"
+                android:onClick="viewMap" />
         </LinearLayout>
 
         <!-- right now this is a placeholder to print start and end locations -->
-        <TextView
-            android:text="Start:"
-            android:layout_marginTop="20dp"
-            android:textColor="@color/colorPrimaryDark"
-            android:textAlignment="center"
-            android:textStyle="bold"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView_start" />
-
-        <TextView
-            android:text="End:"
-            android:layout_marginTop="20dp"
-            android:textColor="@color/colorPrimaryDark"
-            android:textAlignment="center"
-            android:textStyle="bold"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView_end" />
 
         <!-- FARE TEXT ENTRY -->
         <TextView
@@ -67,7 +61,7 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:weightSum="6"
+            android:weightSum="5.50"
             android:background="@color/colorPrimaryLighter">
 
             <TextView
@@ -135,11 +129,6 @@
             android:text="@string/description_prompt"
             android:layout_marginTop="15dp"/>
 
-        <!-- TODO code reviewer: play around with the description EditText box in the running app -->
-        <!-- I did a lot of work to try to get it as cohesive as possible with
-            the it being able to scroll, resize, have the keyboard not cover it
-            when it is being edited. Play around with it to see if there are any
-            improvements I could make here. -->
         <EditText
             android:layout_width="match_parent"
             android:layout_height="150dp"

@@ -26,8 +26,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.location.Location;
+
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -35,6 +36,7 @@ import java.util.concurrent.ExecutionException;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationActivity;
 import comcmput301f16t01.github.carrier.Requests.DriverRequestAdapter;
+import comcmput301f16t01.github.carrier.Requests.DriverViewRequestActivity;
 import comcmput301f16t01.github.carrier.Requests.MakeRequestActivity;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestAdapter;
@@ -60,8 +62,6 @@ public class MainActivity extends AppCompatActivity {
 
     // TODO please comment this. Why is it here?
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
-    private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private static final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 2;
 
     // Views contain controllers
     //RequestController rc = new RequestController();
@@ -264,7 +264,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
-
         if (id == R.id.action_logOut) {
             onBackPressed();
         }
@@ -299,10 +298,13 @@ public class MainActivity extends AppCompatActivity {
         adb.show();
     }
 
-    public void startMakeRequestActivity(View view) {
+    public void makeRequest(View view) {
         // This will start the make request activity for a rider when they press the rider FAB
-        //Toast.makeText(this, "RIDER FAB", Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(MainActivity.this, MakeRequestActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("point","start");
+        bundle.putString("type","new");
+        Intent intent = new Intent(MainActivity.this, SetLocationsActivity.class);
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 
@@ -367,7 +369,7 @@ public class MainActivity extends AppCompatActivity {
             RequestController rc = new RequestController();
             User loggedInUser = UserController.getLoggedInUser();
 
-            ArrayList<Request> requestList = rc.getOfferedRequests(loggedInUser);
+            final ArrayList<Request> requestList = rc.getOfferedRequests(loggedInUser);
 
             DriverRequestAdapter requestArrayAdapter = new DriverRequestAdapter(this.getContext(),
                     R.layout.driverrequestlist_item, requestList);
@@ -378,6 +380,16 @@ public class MainActivity extends AppCompatActivity {
              * When we click a request we want to be able to see it in another activity
              * Use bundles to send the position of the request in a list
              */
+            requestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent intent = new Intent(getActivity(), DriverViewRequestActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("request", new Gson().toJson(requestList.get(position)));
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            });
 
         }
 
@@ -405,8 +417,8 @@ public class MainActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent intent = new Intent(getActivity(), RiderRequestActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putInt("position", position);
-                    //bundle.putString("activity", "MainActivity");
+                    //bundle.putString("request", new Gson().toJson(requestList.get(position)));
+                    bundle.putInt( "position", position );
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
@@ -448,4 +460,5 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
+    
 }

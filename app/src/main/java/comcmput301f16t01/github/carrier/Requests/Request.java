@@ -1,13 +1,12 @@
 package comcmput301f16t01.github.carrier.Requests;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.location.Location;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
-import android.location.Location;
 
 //import comcmput301f16t01.github.carrier.Location;
+import comcmput301f16t01.github.carrier.CarrierLocation;
 import comcmput301f16t01.github.carrier.User;
 import io.searchbox.annotations.JestId;
 
@@ -28,17 +27,18 @@ public class Request {
     /** The user who made the request. */
     private User rider;
 
-    /** The driver that the user has chosen to drive for the request */
-    private User chosenDriver;
-
+    /**
+     * The driver that the user has chosen to drive for the request
+     */
+    private User chosenDriver = null;
     /** A list of drivers who have offered to complete the request (but have not been accepted) */
     private ArrayList<User> offeringDrivers;
 
     /** The "from" of the request, where the user wants to go from */
-    private Location start;
+    private CarrierLocation start;
 
     /** The "end" of the request, where the user want to go */
-    private Location end;
+    private CarrierLocation end;
 
     /** A description provided by the rider */
     private String description;
@@ -51,10 +51,10 @@ public class Request {
     private String elasticID = null;
 
 
-    //TODO maybe add the location strings to description by default? Just in case keywords are locations.
+    //TODO maybe add the Location strings to description by default? Just in case keywords are CarrierLocations.
     // Constructor with description
-    public Request(@NonNull User requestingRider, @NonNull Location requestedStart,
-                   @NonNull Location requestedEnd, String description) {
+    public Request(@NonNull User requestingRider, @NonNull CarrierLocation requestedStart,
+                   @NonNull CarrierLocation requestedEnd, String description) {
         this.rider = requestingRider;
         this.start = requestedStart;
         this.end = requestedEnd;
@@ -63,10 +63,32 @@ public class Request {
     }
 
     // Constructor without description TODO do we need this?
-    public Request(User rider, Location start, Location end) {
+    public Request(User rider, CarrierLocation start, CarrierLocation end) {
         this.rider = rider;
         this.start = start;
         this.end = end;
+        this.offeringDrivers = new ArrayList<User>();
+        this.description = "";
+
+    }
+
+    // TODO Refactor all tests to use CarrierLocation, then these can be deleted
+    // Added these so things don't break while we transition
+    // Constructor with description
+    public Request(@NonNull User requestingRider, @NonNull Location requestedStart,
+                   @NonNull Location requestedEnd, String description) {
+        this.rider = requestingRider;
+        this.start = (CarrierLocation) requestedStart;
+        this.end = (CarrierLocation) requestedEnd;
+        this.description = description;
+        this.offeringDrivers = new ArrayList<User>();
+    }
+
+    // Constructor without description TODO do we need this?
+    public Request(User rider, Location start, Location end) {
+        this.rider = rider;
+        this.start = (CarrierLocation) start;
+        this.end = (CarrierLocation) end;
         this.offeringDrivers = new ArrayList<User>();
         this.description = "";
 
@@ -76,8 +98,15 @@ public class Request {
         return status;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setStatus(int newStatus) {
+        // Does not allow the canceling of completed requests or paid requests
+        if ((this.status == COMPLETE) && (newStatus == CANCELLED))
+            return; // Do nothing
+        if ((this.status == PAID) && (newStatus == CANCELLED)) {
+            return; // Do nothing
+        }
+        this.status = newStatus;
+        // TODO make sure you do this right - Mandy (i.e. check that the status can change from one state to another)
         // TODO make an actual test for this (Mandy)
     }
 
@@ -109,16 +138,16 @@ public class Request {
         return this.rider;
     }
 
-    public Location getStart() {
+    public CarrierLocation getStart() {
         return this.start;
     }
 
-    public Location getEnd() {
+    public CarrierLocation getEnd() {
         return this.end;
     }
 
     public User getConfirmedDriver() {
-        return new User("Test");
+        return chosenDriver;
     }
 
     public ArrayList<User> getOfferedDrivers() {
@@ -148,8 +177,20 @@ public class Request {
         return requestAsString;
     }
 
+    /**
+     * Will addthe driver to the list of offering drivers.
+     * @param offeredDriver The driver that is making the offer.
+     */
     public void addOfferingDriver(User offeredDriver) {
         offeringDrivers.add(offeredDriver);
+        if (status == Request.OPEN) {
+            this.setStatus(Request.OFFERED);
+        }
+    }
+
+    public void confirmDriver(User confirmedDriver) {
+        chosenDriver = confirmedDriver;
+        setStatus(Request.CONFIRMED);
     }
 
     /**

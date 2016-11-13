@@ -1,5 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
+import android.location.Location;
+
 import org.junit.After;
 import org.junit.Test;
 import java.util.ArrayList;
@@ -41,18 +43,24 @@ public class SearchingTests {
         ArrayList<Request> requests;
 
         User rider1 = new User("Mandy");
-        Location startLocation1 = new Location();
-        Location endLocation1 = new Location(latitude1, longitude1);
+        Location startLocation1 = new Location("");
+        Location endLocation1 = new Location("");
+        endLocation1.setLatitude(latitude1);
+        endLocation1.setLongitude(longitude1);
         Request request1 = new Request(rider1, startLocation1, endLocation1, "");
 
         User rider2 = new User("Abigail");
-        Location startLocation2 = new Location();
-        Location endLocation2 = new Location(latitude2, longitude2);
+        Location startLocation2 = new Location("");
+        Location endLocation2 = new Location("");
+        endLocation2.setLatitude(latitude2);
+        endLocation2.setLongitude(longitude2);
         Request request2 = new Request(rider2, startLocation2, endLocation2, "");
 
         User rider3 = new User("Alison");
-        Location startLocation3 = new Location();
-        Location endLocation3 = new Location(latitude3, longitude3);
+        Location startLocation3 = new Location("");
+        Location endLocation3 = new Location("");
+        endLocation3.setLatitude(latitude3);
+        endLocation3.setLongitude(longitude3);
         Request request3 = new Request(rider3, startLocation3, endLocation3, "");
 
         RequestController rc = new RequestController();
@@ -60,7 +68,9 @@ public class SearchingTests {
         rc.addRequest(request2);
         rc.addRequest(request3);
 
-        Location driverLocation = new Location(latitude4, longitude4);
+        Location driverLocation = new Location("");
+        driverLocation.setLatitude(latitude4);
+        driverLocation.setLongitude(longitude4);
         // this method should return a list of requests, sorted based on proximity of start location
         // for now I'm assuming there are limits on how far away a request can be to be included in this list
         // TODO would it be better to use ArrayList<Request> or requestList
@@ -94,20 +104,26 @@ public class SearchingTests {
         ArrayList<Request> requests;
 
         User rider1 = new User("Mandy");
-        Location startLocation1 = new Location();
-        Location endLocation1 = new Location(latitude1, longitude1);
+        Location startLocation1 = new Location("");
+        Location endLocation1 = new Location("");
+        endLocation1.setLatitude(latitude1);
+        endLocation1.setLongitude(longitude1);
         String description1 = "Need to get to Whyte Ave for work";
         Request request1 = new Request(rider1, startLocation1, endLocation1, description1);
 
         User rider2 = new User("Abigail");
-        Location startLocation2 = new Location();
-        Location endLocation2 = new Location(latitude2, longitude2);
+        Location startLocation2 = new Location("");
+        Location endLocation2 = new Location("");
+        endLocation2.setLatitude(latitude2);
+        endLocation2.setLongitude(longitude2);
         String description2 = "Going home from the bar";
         Request request2 = new Request(rider2, startLocation2, endLocation2, description2);
 
         User rider3 = new User("Alison");
-        Location startLocation3 = new Location();
-        Location endLocation3 = new Location(latitude3, longitude3);
+        Location startLocation3 = new Location("");
+        Location endLocation3 = new Location("");
+        endLocation3.setLatitude(latitude3);
+        endLocation3.setLongitude(longitude3);
         String description3 = "Going home from school";
         Request request3 = new Request(rider3, startLocation3, endLocation3, description3);
 

@@ -1,63 +1,237 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:orientation="vertical" >
 
-    <TextView
-        android:text="$XX.XX"
-        android:textSize="30sp"
-        android:textStyle="bold"
+    <org.osmdroid.views.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentTop="true" />
+
+    <View
+        android:id="@+id/topDivider"
+        android:layout_below="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorPrimaryLighter" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView_$fareAmount"
-        android:gravity="center"/>
+        android:layout_below="@+id/topDivider"
+        android:isScrollContainer="true"
+        android:layout_above="@+id/layout_footerUser">
 
-    <!-- MISSING MAP THING :( ? -->
-    <!-- TODO source:  http://www.freepik.com/free-icon/map-with-placeholder_736615.htm -->
-    <ImageView
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="5dp"
-        android:src="@drawable/map_placeholder"/>
+        <RelativeLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical" >
 
+            <LinearLayout
+                android:id="@+id/layout_fare"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true">
 
-    <TextView
-        android:text="Start: 123 ABC Street NW, Edmonton CA"
+                <TextView
+                    android:text=""
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView_$fareAmount"
+                    android:gravity="center"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_startAddress"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
+                android:layout_below="@id/layout_fare"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/start_address"
+                    android:layout_marginStart="20dp"
+                    android:gravity="end"
+                    android:layout_weight="1.5"
+                    android:onClick="centerStart"/>
+
+                <TextView
+                    android:text=""
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/textView_start"
+                    android:layout_marginStart="10dp"
+                    android:gravity="start"
+                    android:layout_weight="8.5"
+                    android:onClick="centerStart" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_endAddress"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/layout_startAddress"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/end_address"
+                    android:layout_marginStart="20dp"
+                    android:gravity="end"
+                    android:layout_weight="1.5"
+                    android:onClick="centerEnd"/>
+
+                <TextView
+                    android:text=""
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/textView_end"
+                    android:layout_marginStart="10dp"
+                    android:gravity="start"
+                    android:layout_weight="8.5"
+                    android:onClick="centerEnd" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_description"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/layout_endAddress"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:text="@string/description"
+                    android:layout_marginStart="5dp"
+                    android:gravity="start"
+                    android:layout_weight="1.5"/>
+
+                <TextView
+                    android:text=""
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/textView_description"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="start"
+                    android:layout_weight="8.5" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+    <View
+        android:id="@+id/bottomDivider"
+        android:layout_below="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView_start"
-        android:gravity="center"/>
+        android:layout_height="2dp"
+        android:background="@color/colorPrimaryLighter" />
 
+    <LinearLayout
+        android:id="@+id/layout_footerButtons"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginEnd="5dp"
+        android:orientation="horizontal"
+        android:weightSum="3" >
 
-    <TextView
-        android:text="End: 324 ABC Ave NW, Edmonton CA"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView_end"
-        android:layout_marginTop="5dp"
-        android:gravity="center"/>
+        <!-- REPRESENTS STATUS OF REQUEST-->
+        <ImageView
+            android:id="@+id/imageView_requestStatus"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/ic_location_on"/>
 
-    <TextView
-        android:text="Description: I just finished working out. I need to go to the Frat."
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView_description"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="20dp"
-        android:gravity="center"/>
+        <Button
+            android:id="@+id/button_makeOffer"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="@string/MakeOffer"
+            android:layout_weight="2"
+            android:textAllCaps="false"
+            android:textColor="@android:color/background_light"
+            android:background="@color/colorPrimary"
+            android:onClick="makeOffer" />
 
+    </LinearLayout>
 
     <RelativeLayout
+        android:id="@+id/layout_footerUser"
         android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_above="@+id/layout_footerButtons"
+        android:layout_alignStart="@+id/layout_footerButtons">
 
-        style="?android:attr/buttonBarButtonStyle">
+        <TextView
+            android:id="@+id/textView_rider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rider: " />
 
+        <comcmput301f16t01.github.carrier.UsernameTextView
+            android:text=""
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/UsernameTextView_rider"
+            android:gravity="center"
+            android:layout_toEndOf="@+id/textView_rider"
+            android:layout_alignBottom="@+id/UsernameTextView_driver"
+            android:layout_alignTop="@+id/UsernameTextView_driver"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@android:drawable/ic_menu_view"
+            android:id="@+id/viewRider"
+            android:background="@android:color/transparent"
+            android:layout_alignBottom="@+id/UsernameTextView_rider"
+            android:layout_toEndOf="@+id/UsernameTextView_rider" />
+
+        <TextView
+            android:id="@+id/textView_driver"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Driver: "
+            android:layout_toStartOf="@+id/UsernameTextView_driver"/>
+
+        <comcmput301f16t01.github.carrier.UsernameTextView
+            android:text=""
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/UsernameTextView_driver"
+            android:gravity="center"
+            android:layout_alignParentTop="true"
+            android:layout_toStartOf="@+id/viewDriver"
+            android:textStyle="bold" />
 
         <ImageButton
             android:layout_width="wrap_content"
@@ -67,61 +241,6 @@
             android:background="@android:color/transparent"
             android:layout_alignBottom="@+id/UsernameTextView_driver"
             android:layout_alignParentEnd="true" />
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@android:drawable/ic_menu_view"
-            android:id="@+id/viewRider"
-            android:background="@android:color/transparent"
-            android:layout_alignBottom="@+id/UsernameTextView_driver"
-            android:layout_toEndOf="@+id/UsernameTextView_driver" />
-
-        <TextView
-            android:text="Rider: Mike"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/UsernameTextView_driver"
-            android:gravity="center"
-            android:clickable="true"
-            android:layout_alignBaseline="@+id/UsernameTextView_driver"
-            android:layout_alignBottom="@+id/UsernameTextView_driver"
-            android:layout_alignParentStart="true" />
-
-        <TextView
-            android:text="Driver: Sarah"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/UsernameTextView_driver"
-            android:gravity="center"
-            android:clickable="true"
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/viewDriver" />
     </RelativeLayout>
 
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="3"
-
-        style="?android:attr/buttonBarButtonStyle">
-
-        <!-- REPRESENTS STATUS OF REQUEST -->
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:src="@drawable/ic_location_on"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:textAlignment="center"
-            android:text="@string/MakeOffer"/>
-    </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>

@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Handler;
 import com.google.gson.Gson;
-import android.location.Location;
 
 //import comcmput301f16t01.github.carrier.Location;
 import comcmput301f16t01.github.carrier.MainActivity;
@@ -40,10 +39,12 @@ public class MakeRequestActivity extends AppCompatActivity {
     /**
      * Determines how fast the arrows increment/decrement the estimated fare
      */
-    final int REP_DEL = 25;
+    final int REPEATED_DELAY = 25;
 
-    private Location start = null;
-    private Location end = null;
+    private CarrierLocation start = null;
+    private CarrierLocation end = null;
+    private double distance = 0;
+    private double duration = 0;
     private int fareEstimated = -1;
 
     private Handler repeatUpdateHandler = new Handler();
@@ -58,10 +59,10 @@ public class MakeRequestActivity extends AppCompatActivity {
         public void run() {
             if(autoIncrement) {
                 incrementFare(null);
-                repeatUpdateHandler.postDelayed( new RepeatUpdater(), REP_DEL);
+                repeatUpdateHandler.postDelayed( new RepeatUpdater(), REPEATED_DELAY);
             } else if(autoDecrement) {
                 decrementFare(null);
-                repeatUpdateHandler.postDelayed( new RepeatUpdater(), REP_DEL);
+                repeatUpdateHandler.postDelayed( new RepeatUpdater(), REPEATED_DELAY);
             }
         }
     }
@@ -73,9 +74,23 @@ public class MakeRequestActivity extends AppCompatActivity {
         setTitle("New Request");
         setButtons(); // setting increment and decrement fare buttons
         activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
+        // if this came from the location selector we have data to save here
+        Intent intent = getIntent();
+        if(intent.hasExtra("startLocation")) {
+            start = new Gson().fromJson(intent.getStringExtra("startLocation"), CarrierLocation.class);
+        }
+        if(intent.hasExtra("endLocation")) {
+            end = new Gson().fromJson(intent.getStringExtra("endLocation"), CarrierLocation.class);
+        }
+        if(intent.hasExtra("distance")) {
+            distance = intent.getDoubleExtra("distance", 0);
+        }
+        if(intent.hasExtra("duration")) {
+            duration = intent.getDoubleExtra("duration", 0);
+        }
     }
 
-    // TODO instead of location tuples, allow user to view start-to-end path on a map
     // from: https://goo.gl/IxFxpG
     // author: ρяσѕρєя K
     // retrieved on: November 7th, 2016
@@ -84,14 +99,12 @@ public class MakeRequestActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if(requestCode == PASS_ACTIVITY_BACK) {
-            if(resultCode == RESULT_OK){
+            if(resultCode == RESULT_OK) {
                 // from LonelyTwitter
-                start = new Gson().fromJson(intent.getStringExtra("startLocation"), Location.class);
-                end = new Gson().fromJson(intent.getStringExtra("endLocation"), Location.class);
-                TextView tv = (TextView) findViewById(R.id.textView_start);
-                tv.setText("Start: (" + String.valueOf(start.getLatitude()) + ", " + String.valueOf(start.getLongitude()) + ")");
-                tv = (TextView) findViewById(R.id.textView_end);
-                tv.setText("End: (" + String.valueOf(end.getLatitude()) + ", " + String.valueOf(end.getLongitude()) + ")");
+                start = new Gson().fromJson(intent.getStringExtra("startLocation"), CarrierLocation.class);
+                end = new Gson().fromJson(intent.getStringExtra("endLocation"), CarrierLocation.class);
+                distance = intent.getDoubleExtra("distance", 0);
+                duration = intent.getDoubleExtra("duration", 0);
             }
         }
     }
@@ -153,20 +166,34 @@ public class MakeRequestActivity extends AppCompatActivity {
     public void chooseLocations(View view) {
         Bundle bundle = new Bundle();
         bundle.putString("point","start");
-
+        bundle.putString("type","existing");
         // if start or end has already been assigned, we will have this marker set on the map
         if(start == null) {
-            start = new Location("");
+            start = new CarrierLocation();
         } else {
             bundle.putString("startLocation", new Gson().toJson(start));
         }
         if(end == null) {
-            end = new Location("");
+            end = new CarrierLocation();
         } else {
             bundle.putString("endLocation", new Gson().toJson(end));
         }
 
         Intent intent = new Intent(MakeRequestActivity.this, SetLocationsActivity.class);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, PASS_ACTIVITY_BACK);
+    }
+
+    /**
+     * Allows the user to view a map
+     * @param view
+     */
+    public void viewMap(View view) {
+        Intent intent = new Intent(activity, ViewLocationsActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("type", "existing");
+        bundle.putString("startLocation", new Gson().toJson(start));
+        bundle.putString("endLocation", new Gson().toJson(end));
         intent.putExtras(bundle);
         startActivityForResult(intent, PASS_ACTIVITY_BACK);
     }
@@ -199,17 +226,14 @@ public class MakeRequestActivity extends AppCompatActivity {
      * The start and end locations must have both been selected before the fare can be estimated.
      */
     public void estimateFare(View view) {
-        // TODO possibly do check within FareCalculator...need to wait for this to be completed
         if(start == null || end == null) {
             Toast.makeText(activity, "You must first select a start and end location", Toast.LENGTH_SHORT).show();
         } else {
-            // TODO use FareCalculator once available
-            // the MockFareCalculator generates random numbers so we can see different values on the display
-            MockFareCalculator fc = new MockFareCalculator();
-            int fareEstimate = fc.getEstimate();
+            FareCalculator fc = new FareCalculator();
+            int fareEstimate = fc.getEstimate(distance, duration);
 
             TextView fareTextView = (TextView) findViewById(R.id.textView_fareEstimate);
-            fareTextView.setText(formatFare(fareEstimate));
+            fareTextView.setText(fc.toString(fareEstimate));
 
             fareEstimated = fareEstimate;
         }
@@ -219,10 +243,11 @@ public class MakeRequestActivity extends AppCompatActivity {
      * Increase fare by 1 when up arrow is pressed.
      */
     public void incrementFare(View view) {
+        FareCalculator fc = new FareCalculator();
         if(fareEstimated != -1) {
             fareEstimated++;
             TextView fareTextView = (TextView) findViewById(R.id.textView_fareEstimate);
-            fareTextView.setText(formatFare(fareEstimated));
+            fareTextView.setText(fc.toString(fareEstimated));
         }
     }
 
@@ -230,28 +255,12 @@ public class MakeRequestActivity extends AppCompatActivity {
      * Decrease fare by 1 when down arrow is pressed.
      */
     public void decrementFare(View view) {
+        FareCalculator fc = new FareCalculator();
         if(fareEstimated > 0) {
             fareEstimated--;
             TextView fareTextView = (TextView) findViewById(R.id.textView_fareEstimate);
-            fareTextView.setText(formatFare(fareEstimated));
+            fareTextView.setText(fc.toString(fareEstimated));
         }
-    }
-
-    /**
-     * Format the fare we get as a double as a string to be printed on the screen.
-     * This string will be preceded by a dollar sign (are we concerned about locale?)
-     * and will be to 2 decimal places.
-     * @param intFare
-     * @return String
-     */
-    // TODO deprecate once toString is available in FareCalculator
-    public String formatFare(int intFare) {
-        double fare = ((double) intFare)/100;
-        String str = String.format("%d",(long)fare) + ".";
-        String dec = String.format("0%.0f",(fare%1)*100);
-        // format the fare as a string with 2 decimal points
-        str +=  dec.substring(dec.length()-2, dec.length());
-        return str;
     }
 
     /**

@@ -1,5 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
+import android.location.Location;
+
 import org.junit.Test;
 
 import comcmput301f16t01.github.carrier.Requests.Request;
@@ -25,7 +27,7 @@ public class StatusTests {
         User driver = new User("username2");
 
         RequestController rc = new RequestController();
-        Request request = new Request(rider, new Location(), new Location(), "");
+        Request request = new Request(rider, new Location(""), new Location(""), "");
 
         rc.addRequest(request);
         assertEquals("The status of the request should be OPEN",
@@ -42,7 +44,7 @@ public class StatusTests {
         User driver = new User("username2");
 
         RequestController rc = new RequestController();
-        Request request = new Request(rider, new Location(), new Location(), "");
+        Request request = new Request(rider, new Location(""), new Location(""), "");
 
         rc.addRequest(request);
         rc.addDriver(request, driver);
@@ -60,7 +62,7 @@ public class StatusTests {
         User driver = new User("username2");
 
         RequestController rc = new RequestController();
-        Request request = new Request(rider, new Location(), new Location(), "");
+        Request request = new Request(rider, new Location(""), new Location(""), "");
 
         rc.addRequest(request);
         rc.addDriver(request, driver);
@@ -79,7 +81,7 @@ public class StatusTests {
         User driver = new User("username2");
 
         RequestController rc = new RequestController();
-        Request request = new Request(rider, new Location(), new Location(), "");
+        Request request = new Request(rider, new Location(""), new Location(""), "");
 
         rc.addRequest(request);
         rc.addDriver(request, driver);
@@ -99,7 +101,7 @@ public class StatusTests {
         User driver = new User("username2");
 
         RequestController rc = new RequestController();
-        Request request = new Request(rider, new Location(), new Location(), "");
+        Request request = new Request(rider, new Location(""), new Location(""), "");
 
         rc.addRequest(request);
         rc.addDriver(request, driver);
@@ -120,7 +122,7 @@ public class StatusTests {
         User driver = new User("username2");
 
         RequestController rc = new RequestController();
-        Request request = new Request(rider, new Location(), new Location(), "");
+        Request request = new Request(rider, new Location(""), new Location(""), "");
 
         rc.addRequest(request);
         rc.addDriver(request, driver);

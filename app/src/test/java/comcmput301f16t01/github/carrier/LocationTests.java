@@ -1,5 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
+import android.location.Location;
+
 import org.junit.After;
 import org.junit.Test;
 
@@ -33,11 +35,14 @@ public class LocationTests {
         // TODO better way to get current location (using location manager perhaps?)
 
         // gets current location
-        Location startLocation = new Location();
+        Location startLocation = new Location("");
+        Location endLocation = new Location("");
 
         // user moves pin for start location
-        startLocation.setLocation(latitude1, longitude1);
-        Location endLocation = new Location(latitude2, longitude2);
+        startLocation.setLatitude(latitude1);
+        startLocation.setLongitude(longitude1);
+        endLocation.setLatitude(latitude2);
+        endLocation.setLongitude(longitude2);
 
         Request request = new Request(rider, startLocation, endLocation, "");
 
@@ -55,8 +60,8 @@ public class LocationTests {
     @Test
     public void driverViewRequestLocation() {
         User rider = new User("Mike");
-        Location startLocation = new Location();
-        Location endLocation = new Location();
+        Location startLocation = new Location("");
+        Location endLocation = new Location("");
         Request request = new Request(rider, startLocation, endLocation, "");
 
         Location start = request.getStart();
