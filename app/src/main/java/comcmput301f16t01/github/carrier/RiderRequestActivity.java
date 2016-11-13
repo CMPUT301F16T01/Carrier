@@ -227,8 +227,7 @@ public class RiderRequestActivity extends AppCompatActivity {
         if(startAddress != null) {
             startAddressTextView.setText(startAddress);
         } else {
-            String startPoint = "(" + String.valueOf(request.getStart().getLatitude()) + ", " +
-                    String.valueOf(request.getStart().getLongitude()) + ")";
+            String startPoint = request.getStart().getLatLong();
             startAddressTextView.setText(startPoint);
         }
 
@@ -237,8 +236,7 @@ public class RiderRequestActivity extends AppCompatActivity {
         if(endAddress != null) {
             endAddressTextView.setText(request.getEnd().getAddress());
         } else {
-            String endPoint = "(" + String.valueOf(request.getEnd().getLatitude()) + ", " +
-                    String.valueOf(request.getEnd().getLongitude()) + ")";
+            String endPoint = request.getEnd().getLatLong();
             endAddressTextView.setText(endPoint);
         }
 
