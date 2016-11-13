@@ -8,6 +8,7 @@ import android.location.Location;
  */
 public class CarrierLocation extends Location {
     private String address;
+    private String shortAddress;
 
     public CarrierLocation() {
         // get current location
@@ -26,5 +27,22 @@ public class CarrierLocation extends Location {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getShortAddress() {
+        return shortAddress;
+    }
+
+    public void setShortAddress(String shortAddress) {
+        this.shortAddress = shortAddress;
+    }
+
+    /**
+     * For use when an address is null. Returns a string of a lat/long tuple.
+     * @return String
+     */
+    public String getLatLong() {
+        return "(" + String.valueOf(getLatitude()) + ", " +
+                String.valueOf(getLongitude()) + ")";
     }
 }
