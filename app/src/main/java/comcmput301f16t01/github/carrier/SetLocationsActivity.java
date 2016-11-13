@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 
@@ -27,18 +29,23 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 
-public class SetLocationsActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, MapEventsReceiver {
+import static com.google.android.gms.common.api.GoogleApiClient.*;
+
+public class SetLocationsActivity extends AppCompatActivity implements ConnectionCallbacks,
+        OnConnectionFailedListener, MapEventsReceiver {
     // result code for when we return to an instance of this activity
     private static final int PASS_ACTIVITY_BACK = 1;
+    private static final int PASS_ACTIVITY_FORWARD = 2;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private GoogleApiClient googleApiClient = null;
     public final Activity activity = SetLocationsActivity.this;
-    CarrierLocation lastLocation = null;
+    Location lastLocation = null;
     CarrierLocation locationPoint = null;
+    Marker marker = null;
     double latitude = 0;
     double longitude = 0;
     String point = "";
+    String type = "";
     Bundle lastBundle = new Bundle();
 
     @Override
@@ -48,11 +55,13 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         point = bundle.getString("point");
+        type = bundle.getString("type");
         setTitle("Choose " + point + " point");
 
         Button button = (Button) findViewById(R.id.button_confirmLocation);
         button.setText("Confirm " + point + " point");
 
+        lastBundle.putString("type",type);
         if(point.equals("end")) {
             lastBundle.putString("point", "start");
             if(intent.hasExtra("startLocation")) {
@@ -74,9 +83,9 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
         // From (Android Developer Docs): https://goo.gl/Kpueci
         // Retrieved on: November 9th, 2016
         if (googleApiClient == null) {
-            googleApiClient = new GoogleApiClient.Builder(activity)
-                    .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) activity)
-                    .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) activity)
+            googleApiClient = new Builder(activity)
+                    .addConnectionCallbacks((ConnectionCallbacks) activity)
+                    .addOnConnectionFailedListener((OnConnectionFailedListener) activity)
                     .addApi(LocationServices.API)
                     .build();
         }
@@ -94,6 +103,9 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
         if(locationPoint != null) {
             GeoPoint geoPoint = new GeoPoint(locationPoint.getLatitude(), locationPoint.getLongitude());
             map = (MapView) findViewById(R.id.map);
+            if(marker == null) {
+                marker = new Marker(map);
+            }
             setLocationMarker(map, geoPoint);
             mapController.setCenter(geoPoint);
         }
@@ -119,12 +131,11 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
      * @param geoPoint
      */
     private void setLocationMarker(MapView map, GeoPoint geoPoint) {
-        final Marker startMarker = new Marker(map);
-        startMarker.setPosition(geoPoint);
-        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        marker.setPosition(geoPoint);
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
-        startMarker.setDraggable(true);
-        startMarker.setOnMarkerDragListener(new Marker.OnMarkerDragListener() {
+        marker.setDraggable(true);
+        marker.setOnMarkerDragListener(new Marker.OnMarkerDragListener() {
             @Override
             public void onMarkerDrag(Marker marker) {
 
@@ -142,7 +153,7 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
             }
         });
 
-        map.getOverlays().add(startMarker);
+        map.getOverlays().add(marker);
         map.invalidate();
     }
 
@@ -176,20 +187,23 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
 
     @Override
     public boolean singleTapConfirmedHelper(GeoPoint geoPoint) {
+        // Based on: https://goo.gl/4TKn2y
+        // Retrieved on: November 9th, 2016
+        MapView map = (MapView) findViewById(R.id.map);
+        if(marker == null) {
+            marker = new Marker(map);
+        }
+        if(locationPoint == null) {
+            locationPoint = new CarrierLocation();
+        }
+        locationPoint.setLatitude(geoPoint.getLatitude());
+        locationPoint.setLongitude(geoPoint.getLongitude());
+        setLocationMarker(map, geoPoint);
         return false;
     }
 
     @Override
     public boolean longPressHelper(GeoPoint geoPoint) {
-        if(locationPoint == null){
-            // Based on: https://goo.gl/4TKn2y
-            // Retrieved on: November 9th, 2016
-            MapView map = (MapView) findViewById(R.id.map);
-            locationPoint = new CarrierLocation();
-            locationPoint.setLatitude(geoPoint.getLatitude());
-            locationPoint.setLongitude(geoPoint.getLongitude());
-            setLocationMarker(map, geoPoint);
-        }
         return false;
     }
 
@@ -201,7 +215,7 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if(requestCode == PASS_ACTIVITY_BACK) {
-            if(resultCode == RESULT_OK){
+            if(resultCode == RESULT_OK) {
                 // when done choosing end, go back to request screen and pass bundle of locations
                 Intent backIntent = new Intent();
                 setResult(RESULT_OK, backIntent);
@@ -209,6 +223,17 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
                 lastBundle.putString("endLocation", intent.getStringExtra("endLocation"));
                 backIntent.putExtras(lastBundle);
                 activity.finish();
+            }
+        } else if(requestCode == PASS_ACTIVITY_FORWARD) {
+            if(resultCode == RESULT_OK) {
+                Intent forwardIntent = new Intent(activity, ViewLocationsActivity.class);
+                setResult(RESULT_OK,forwardIntent);
+                lastBundle.putString("startLocation", intent.getStringExtra("startLocation"));
+                lastBundle.putString("endLocation", intent.getStringExtra("endLocation"));
+                forwardIntent.putExtras(lastBundle);
+                activity.finish();
+                Toast.makeText(activity, "Route set", Toast.LENGTH_LONG).show();
+                startActivity(forwardIntent);
             }
         }
     }
@@ -227,7 +252,11 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
                 lastBundle.putString("startLocation", new Gson().toJson(locationPoint));
                 Intent intent = new Intent(activity, SetLocationsActivity.class);
                 intent.putExtras(lastBundle);
-                startActivityForResult(intent, PASS_ACTIVITY_BACK);
+                if(type.equals("new")) {
+                    startActivityForResult(intent, PASS_ACTIVITY_FORWARD);
+                } else {
+                    startActivityForResult(intent, PASS_ACTIVITY_BACK);
+                }
             } else if (point.equals("end")) {
                 // if choosing end point, go back to last activity, passing bundle of locations
                 Intent backIntent = new Intent();
@@ -237,7 +266,7 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
                 activity.finish();
             }
         } else {
-            Toast.makeText(activity, "You must first choose a location by long-pressing on the map", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "You must first choose a location", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -251,7 +280,7 @@ public class SetLocationsActivity extends AppCompatActivity implements GoogleApi
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         } else {
-            lastLocation = (CarrierLocation) LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+            lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
             latitude = lastLocation.getLatitude();
             longitude = lastLocation.getLongitude();
 

@@ -53,8 +53,6 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
 
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
-    private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private static final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -289,10 +287,13 @@ public class MainActivity extends AppCompatActivity {
         adb.show();
     }
 
-    public void startMakeRequestActivity(View view) {
+    public void makeRequest(View view) {
         // This will start the make request activity for a rider when they press the rider FAB
-        //Toast.makeText(this, "RIDER FAB", Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(MainActivity.this, MakeRequestActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("point","start");
+        bundle.putString("type","new");
+        Intent intent = new Intent(MainActivity.this, SetLocationsActivity.class);
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 
