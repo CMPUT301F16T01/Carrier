@@ -128,6 +128,10 @@ public class RiderRequestActivity extends AppCompatActivity {
         mapController.setCenter(endPoint);
     }
 
+    /**
+     * Get the center point of the route to center the screen on
+     * @return GeoPoint
+     */
     public GeoPoint getCenter() {
         double startLat = startPoint.getLatitude();
         double startLong = startPoint.getLongitude();

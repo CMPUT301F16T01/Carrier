@@ -91,10 +91,12 @@ public class MakeRequestActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if(requestCode == PASS_ACTIVITY_BACK) {
-            if(resultCode == RESULT_OK){
+            if(resultCode == RESULT_OK) {
                 // from LonelyTwitter
                 start = new Gson().fromJson(intent.getStringExtra("startLocation"), CarrierLocation.class);
                 end = new Gson().fromJson(intent.getStringExtra("endLocation"), CarrierLocation.class);
+                distance = intent.getDoubleExtra("distance", 0);
+                duration = intent.getDoubleExtra("duration", 0);
             }
         }
     }
@@ -185,7 +187,7 @@ public class MakeRequestActivity extends AppCompatActivity {
         bundle.putString("startLocation", new Gson().toJson(start));
         bundle.putString("endLocation", new Gson().toJson(end));
         intent.putExtras(bundle);
-        startActivity(intent);
+        startActivityForResult(intent, PASS_ACTIVITY_BACK);
     }
 
     /**

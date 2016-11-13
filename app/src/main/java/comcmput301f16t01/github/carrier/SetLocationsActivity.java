@@ -258,6 +258,10 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
                 lastBundle.putString("startLocation", new Gson().toJson(locationPoint));
                 Intent intent = new Intent(activity, SetLocationsActivity.class);
                 intent.putExtras(lastBundle);
+                // TODO I know that there is an error here...
+                // if the user is changing the start or end point, we need to grab the duration
+                // and distance so the fare estimate can be updated.
+                // I tried a quick fix that didn't work...it's going to take a fair bit of work to fix it
                 if(type.equals("new")) {
                     startActivityForResult(intent, PASS_ACTIVITY_FORWARD);
                 } else {

@@ -81,8 +81,8 @@ public class ViewLocationsActivity extends AppCompatActivity {
 
         IMapController mapController = map.getController();
         // TODO figure out a way to zoom dynamically to include both points?
-        mapController.setZoom(16);
-        mapController.setCenter(startPoint);
+        mapController.setZoom(12);
+        mapController.setCenter(getCenter());
 
         ArrayList<OverlayItem> overlayItems = new ArrayList<>();
         overlayItems.add(new OverlayItem("Starting Point", "This is the starting point", startPoint));
@@ -106,8 +106,40 @@ public class ViewLocationsActivity extends AppCompatActivity {
             activity.finish();
             startActivity(intent);
         } else {
+            Intent intent = new Intent();
+            bundle.putString("startLocation", new Gson().toJson(start));
+            bundle.putString("endLocation", new Gson().toJson(end));
+            intent.putExtras(bundle);
+            setResult(RESULT_OK, intent);
             activity.finish();
         }
+    }
+
+    /**
+     * Get the center point of the route to center the screen on
+     * @return GeoPoint
+     */
+    public GeoPoint getCenter() {
+        double startLat = startPoint.getLatitude();
+        double startLong = startPoint.getLongitude();
+        double endLat = endPoint.getLatitude();
+        double endLong = endPoint.getLongitude();
+
+        Location retLoc = new Location("");
+
+        if(startLat > endLat) {
+            retLoc.setLatitude(endLat + ((startLat - endLat)/2));
+        } else {
+            retLoc.setLatitude(startLat + ((endLat - startLat)/2));
+        }
+
+        if(startLong > endLong) {
+            retLoc.setLongitude(endLong + ((startLong - endLong)/2));
+        } else {
+            retLoc.setLongitude(startLong + ((endLong - startLong)/2));
+        }
+
+        return new GeoPoint(retLoc);
     }
 
     /**
@@ -141,6 +173,13 @@ public class ViewLocationsActivity extends AppCompatActivity {
             activity.finish();
             startActivity(intent);
         } else {
+            // TODO do we still need this??
+            // we did to fix the updating start/end location problem but it may not be necessary
+            Intent intent = new Intent();
+            bundle.putString("startLocation", new Gson().toJson(start));
+            bundle.putString("endLocation", new Gson().toJson(end));
+            intent.putExtras(bundle);
+            setResult(RESULT_OK, intent);
             activity.finish();
         }
     }
