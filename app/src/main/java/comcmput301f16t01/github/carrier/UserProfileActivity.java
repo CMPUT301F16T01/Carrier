@@ -23,6 +23,7 @@ public class UserProfileActivity extends AppCompatActivity {
     // Saves the values of the old fields just in case the user cancels their edit.
     private String oldPhoneNumber;
     private String oldEmailAddress;
+    private User currentUser = UserController.getLoggedInUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
         // Get an instance of the UserController
         UserController uc = new UserController();
-//        User currentUser = UserController.getLoggedInUser();
+        //User currentUser = UserController.getLoggedInUser();
 
         String username;
 
@@ -77,8 +78,8 @@ public class UserProfileActivity extends AppCompatActivity {
         unclickable.
          */
         if (!user.getUsername().equals(UserController.getLoggedInUser().getUsername())) {
-            ImageButton phoneEditButton = (ImageButton) findViewById(R.id.PhoneEditIconImageButton);
-            ImageButton emailEditButton = (ImageButton) findViewById(R.id.EmailEditIconImageButton);
+            ImageButton phoneEditButton = (ImageButton) findViewById(R.id.ImageButton_phoneEditIcon);
+            ImageButton emailEditButton = (ImageButton) findViewById(R.id.ImageButton_emailEditIcon);
             phoneEditButton.setClickable(false);
             phoneEditButton.setVisibility(View.INVISIBLE);
             emailEditButton.setClickable(false);
@@ -92,9 +93,9 @@ public class UserProfileActivity extends AppCompatActivity {
      * @param v v is a View, allows usage of on click in xml
      */
     public void editPhoneNumber(View v) {
-        ImageButton cancelButton = (ImageButton) findViewById(R.id.CancelEditPhoneButton);
-        ImageButton saveButton = (ImageButton) findViewById(R.id.PhoneSaveEditButton);
-        ImageButton editButton = (ImageButton) findViewById(R.id.PhoneEditIconImageButton);
+        ImageButton cancelButton = (ImageButton) findViewById(R.id.Button_cancelPhoneEdit);
+        ImageButton saveButton = (ImageButton) findViewById(R.id.EditButton_savePhoneEdit);
+        ImageButton editButton = (ImageButton) findViewById(R.id.ImageButton_phoneEditIcon);
         // Set visibility of the buttons.
         editButton.setVisibility(View.INVISIBLE);
         saveButton.setVisibility(View.VISIBLE);
@@ -103,6 +104,7 @@ public class UserProfileActivity extends AppCompatActivity {
         phoneNumber.setClickable(true);
         // Set it so the user can edit the EditText
         phoneNumber.setFocusableInTouchMode(true);
+        phoneNumber.setFocusable(true);
         phoneNumber.setKeyListener((KeyListener) phoneNumber.getTag());
         phoneNumber.requestFocus();
         phoneNumber.moveCursorToVisibleOffset();
@@ -116,23 +118,30 @@ public class UserProfileActivity extends AppCompatActivity {
      * @param v v is a View, allows usage of on click in xml
      */
     public void saveEditedPhoneNumber(View v) {
-        ImageButton cancelButton = (ImageButton) findViewById(R.id.CancelEditPhoneButton);
-        ImageButton saveButton = (ImageButton) findViewById(R.id.PhoneSaveEditButton);
-        ImageButton editButton = (ImageButton) findViewById(R.id.PhoneEditIconImageButton);
+        ImageButton cancelButton = (ImageButton) findViewById(R.id.Button_cancelPhoneEdit);
+        ImageButton saveButton = (ImageButton) findViewById(R.id.EditButton_savePhoneEdit);
+        ImageButton editButton = (ImageButton) findViewById(R.id.ImageButton_phoneEditIcon);
         // Set visibility of the buttons.
-        editButton.setVisibility(View.VISIBLE);
+
         saveButton.setVisibility(View.INVISIBLE);
         cancelButton.setVisibility(View.INVISIBLE);
         EditText phoneNumberText = (EditText) findViewById(R.id.EditText_phone);
         // Set it so the user can't edit the EditText
         phoneNumberText.setFocusable(false);
         String phoneNumber = phoneNumberText.getText().toString();
-        // Since editing was confirmed, overwrite old value of phone number
-        this.oldPhoneNumber = phoneNumber;
         // TODO Check if it is a valid phoneNumber
-        // TODO Update The information in elasticsearch
         phoneNumberText.setKeyListener(null);
         hideKeyboard(phoneNumberText);
+        // If the user actually made changes to the field, update in elastic search
+        if (!this.oldPhoneNumber.equals(phoneNumber)) {
+            ElasticUserController.EditUserTask eut = new ElasticUserController.EditUserTask();
+            eut.execute(currentUser.getId(), currentUser.getEmail(), phoneNumber);
+        }
+        // Since editing was confirmed, overwrite old value of phone number of the current user
+        this.oldPhoneNumber = phoneNumber;
+        currentUser.setPhone(phoneNumber);
+        // The edit button is weirdly dissapearing? This fixes it.
+        editButton.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -141,9 +150,9 @@ public class UserProfileActivity extends AppCompatActivity {
      * @param v v is a View, allows usage of on click in xml
      */
     public void cancelEditPhoneNumber(View v) {
-        ImageButton cancelButton = (ImageButton) findViewById(R.id.CancelEditPhoneButton);
-        ImageButton saveButton = (ImageButton) findViewById(R.id.PhoneSaveEditButton);
-        ImageButton editButton = (ImageButton) findViewById(R.id.PhoneEditIconImageButton);
+        ImageButton cancelButton = (ImageButton) findViewById(R.id.Button_cancelPhoneEdit);
+        ImageButton saveButton = (ImageButton) findViewById(R.id.EditButton_savePhoneEdit);
+        ImageButton editButton = (ImageButton) findViewById(R.id.ImageButton_phoneEditIcon);
         // Set visibility of the buttons.
         editButton.setVisibility(View.VISIBLE);
         saveButton.setVisibility(View.INVISIBLE);
@@ -165,9 +174,9 @@ public class UserProfileActivity extends AppCompatActivity {
      * @param v v is a View, allows usage of on click in xml
      */
     public void editEmailAddress(View v) {
-        ImageButton cancelButton = (ImageButton) findViewById(R.id.CancelEditEmailButton);
-        ImageButton saveButton = (ImageButton) findViewById(R.id.EmailSaveEditButton);
-        ImageButton editButton = (ImageButton) findViewById(R.id.EmailEditIconImageButton);
+        ImageButton cancelButton = (ImageButton) findViewById(R.id.ImageButton_cancelEmailEdit);
+        ImageButton saveButton = (ImageButton) findViewById(R.id.EditButton_saveEmail);
+        ImageButton editButton = (ImageButton) findViewById(R.id.ImageButton_emailEditIcon);
         // Set visibility of the buttons.
         editButton.setVisibility(View.INVISIBLE);
         saveButton.setVisibility(View.VISIBLE);
@@ -188,9 +197,9 @@ public class UserProfileActivity extends AppCompatActivity {
      * @param v v is a View, allows usage of on click in xml
      */
     public void saveEditedEmailAddress(View v) {
-        ImageButton cancelButton = (ImageButton) findViewById(R.id.CancelEditEmailButton);
-        ImageButton saveButton = (ImageButton) findViewById(R.id.EmailSaveEditButton);
-        ImageButton editButton = (ImageButton) findViewById(R.id.EmailEditIconImageButton);
+        ImageButton cancelButton = (ImageButton) findViewById(R.id.ImageButton_cancelEmailEdit);
+        ImageButton saveButton = (ImageButton) findViewById(R.id.EditButton_saveEmail);
+        ImageButton editButton = (ImageButton) findViewById(R.id.ImageButton_emailEditIcon);
         // Set visibility of the buttons.
         editButton.setVisibility(View.VISIBLE);
         saveButton.setVisibility(View.INVISIBLE);
@@ -201,12 +210,16 @@ public class UserProfileActivity extends AppCompatActivity {
         emailView.setClickable(false);
         String email = emailView.getText().toString();
         // Since editing was confirmed, overwrite old value of email
-        this.oldEmailAddress = email;
-        // TODO Check if valid email and update elasticsearch
-
         hideKeyboard(emailView);
-
         emailView.setKeyListener(null);
+        // If the user actually made changes to the field, update in elastic search
+        if (!this.oldEmailAddress.equals(email)) {
+            ElasticUserController.EditUserTask eut = new ElasticUserController.EditUserTask();
+            eut.execute(currentUser.getId(), email, currentUser.getPhone());
+        }
+        // Since editing was confirmed, overwrite old value of email int he current user.
+        this.oldPhoneNumber = email;
+        currentUser.setEmail(email);
     }
 
     /**
@@ -215,9 +228,9 @@ public class UserProfileActivity extends AppCompatActivity {
      * @param v v is a View, allows usage of on click in xml
      */
     public void cancelEditEmailAddress(View v) {
-        ImageButton cancelButton = (ImageButton) findViewById(R.id.CancelEditEmailButton);
-        ImageButton saveButton = (ImageButton) findViewById(R.id.EmailSaveEditButton);
-        ImageButton editButton = (ImageButton) findViewById(R.id.EmailEditIconImageButton);
+        ImageButton cancelButton = (ImageButton) findViewById(R.id.ImageButton_cancelEmailEdit);
+        ImageButton saveButton = (ImageButton) findViewById(R.id.EditButton_saveEmail);
+        ImageButton editButton = (ImageButton) findViewById(R.id.ImageButton_emailEditIcon);
         // Set visibility of the buttons.
         editButton.setVisibility(View.VISIBLE);
         saveButton.setVisibility(View.INVISIBLE);

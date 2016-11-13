@@ -184,12 +184,12 @@
             android:id="@+id/button_delete"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text="@string/Delete"
+            android:text="@string/Cancel"
             android:layout_weight="2"
             android:textAllCaps="false"
             android:textColor="@android:color/background_light"
             android:background="@color/colorPrimary"
-            android:onClick="deleteRequest" />
+            android:onClick="cancelRequest" />
 
     </LinearLayout>
 

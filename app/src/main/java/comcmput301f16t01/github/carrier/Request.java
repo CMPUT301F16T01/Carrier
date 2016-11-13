@@ -22,9 +22,10 @@ public class Request {
     /** The user who made the request. */
     private User rider;
 
-    /** The driver that the user has chosen to drive for the request */
-    private User chosenDriver;
-
+    /**
+     * The driver that the user has chosen to drive for the request
+     */
+    private User chosenDriver = null;
     /** A list of drivers who have offered to complete the request (but have not been accepted) */
     private ArrayList<User> offeringDrivers;
 
@@ -97,8 +98,15 @@ public class Request {
         return status;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setStatus(int newStatus) {
+        // Does not allow the canceling of completed requests or paid requests
+        if ((this.status == COMPLETE) && (newStatus == CANCELLED))
+            return; // Do nothing
+        if ((this.status == PAID) && (newStatus == CANCELLED)) {
+            return; // Do nothing
+        }
+        this.status = newStatus;
+        // TODO make sure you do this right - Mandy (i.e. check that the status can change from one state to another)
         // TODO make an actual test for this (Mandy)
     }
 
@@ -131,7 +139,7 @@ public class Request {
     }
 
     public User getConfirmedDriver() {
-        return new User("Test");
+        return chosenDriver;
     }
 
     public ArrayList<User> getOfferedDrivers() {
@@ -161,8 +169,20 @@ public class Request {
         return requestAsString;
     }
 
+    /**
+     * Will addthe driver to the list of offering drivers.
+     * @param offeredDriver The driver that is making the offer.
+     */
     public void addOfferingDriver(User offeredDriver) {
         offeringDrivers.add(offeredDriver);
+        if (status == Request.OPEN) {
+            this.setStatus(Request.OFFERED);
+        }
+    }
+
+    public void confirmDriver(User confirmedDriver) {
+        chosenDriver = confirmedDriver;
+        setStatus(Request.CONFIRMED);
     }
 
 }

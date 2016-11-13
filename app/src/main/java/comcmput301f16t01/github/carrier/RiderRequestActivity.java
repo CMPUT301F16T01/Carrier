@@ -1,14 +1,12 @@
 package comcmput301f16t01.github.carrier;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.support.v4.content.ContextCompat;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,7 +26,6 @@ import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,15 +40,17 @@ public class RiderRequestActivity extends AppCompatActivity {
     Road[] roadList = null;
     MapView map;
     IMapController mapController;
+    private Request request;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_view_request);
+        // Initialize the view ids
 
         // unpacking the bundle to get the position of request
         Bundle bundle = getIntent().getExtras();
-        Request request = new Gson().fromJson(bundle.getString("request"), Request.class);
+        request = new Gson().fromJson(bundle.getString("request"), Request.class);
 
         setTitle("Request");
 
@@ -73,16 +72,15 @@ public class RiderRequestActivity extends AppCompatActivity {
         overlayItems.add(new OverlayItem("Starting Point", "This is the starting point", startPoint));
         overlayItems.add(new OverlayItem("Destination", "This is the destination point", endPoint));
 
-        setViews(request);
-        setMarkers(request);
+        setViews();
+        setMarkers();
         getRoadAsync();
     }
 
     /**
      * Given the request passed in by the user, set the map according to the start and end locations
-     * @param request
      */
-    private void setMarkers(Request request) {
+    private void setMarkers() {
         Marker startMarker = new Marker(map);
         Marker endMarker = new Marker(map);
 
@@ -160,11 +158,6 @@ public class RiderRequestActivity extends AppCompatActivity {
         Toast.makeText(activity, "PAY FOR REQUEST", Toast.LENGTH_SHORT).show();
     }
 
-    // TODO fill in
-    public void deleteRequest(View view) {
-        Toast.makeText(activity, "DELETE REQUEST", Toast.LENGTH_SHORT).show();
-    }
-
     /**
      * Class to update the road on the map
      */
@@ -210,9 +203,8 @@ public class RiderRequestActivity extends AppCompatActivity {
 
     /**
      * Given the request passed in by the user, set the views in the layout.
-     * @param request
      */
-    public void setViews(Request request) {
+    public void setViews() {
         // Set up the fare
         FareCalculator fc = new FareCalculator();
         TextView fareTextView = (TextView) findViewById(R.id.textView_$fareAmount);
@@ -225,8 +217,10 @@ public class RiderRequestActivity extends AppCompatActivity {
 
         // Set up the UsernameTextView of the driver
         UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
-        driverUsernameTextView.setText(request.getChosenDriver().getUsername());
-        driverUsernameTextView.setUser(request.getChosenDriver());
+        if (request.getChosenDriver() != null) {
+            driverUsernameTextView.setText(request.getChosenDriver().getUsername());
+            driverUsernameTextView.setUser(request.getChosenDriver());
+        }
 
         TextView startAddressTextView = (TextView) findViewById(R.id.textView_start);
         String startAddress = request.getStart().getAddress();
@@ -278,5 +272,42 @@ public class RiderRequestActivity extends AppCompatActivity {
 
             }
         }
+    }
+
+    /**
+     * Will initialize the view ids for all the views in the activity.
+     */
+    public void cancelRequest(View v){
+        AlertDialog.Builder adb = new AlertDialog.Builder(RiderRequestActivity.this);
+        if ((request.getStatus() != Request.CANCELLED) && (request.getStatus() != Request.COMPLETE)
+                && (request.getStatus() != Request.PAID)) {
+            adb.setMessage("Cancel request?");
+            adb.setCancelable(true);
+            adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    RequestController rc = new RequestController();
+                    rc.cancelRequest(request.getRider(), request);
+                    finish();
+                }
+            });
+
+            adb.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+        }
+        else {
+            adb.setTitle("Error: ");
+            adb.setMessage("Request cannot be cancelled.");
+            adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+        }
+        adb.show();
     }
 }

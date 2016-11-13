@@ -26,7 +26,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.location.Location;
 
 import com.google.gson.Gson;
@@ -255,7 +254,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
-
         if (id == R.id.action_logOut) {
             onBackPressed();
         }
@@ -410,7 +408,6 @@ public class MainActivity extends AppCompatActivity {
             final ArrayList<Request> requestList = rc.getResult();
 
             if (requestList.size() == 0) {
-                
                 // Create sample requests because this is probably not set up yet.
                 CarrierLocation start = new CarrierLocation(53.5232, -113.5263);
                 CarrierLocation end = new CarrierLocation(53.5225, -113.6242);
@@ -503,4 +500,5 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
+    
 }

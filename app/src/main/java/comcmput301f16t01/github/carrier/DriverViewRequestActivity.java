@@ -3,7 +3,9 @@ package comcmput301f16t01.github.carrier;
 import android.app.Activity;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,6 +32,7 @@ import java.util.List;
 
 /**
  * This will help us show the request from the perspective of a driver
+ * Will have the position in the requestcontroller bundled to determine what request to display.
  */
 public class DriverViewRequestActivity extends AppCompatActivity {
     Activity activity = DriverViewRequestActivity.this;
@@ -38,15 +41,19 @@ public class DriverViewRequestActivity extends AppCompatActivity {
     Road[] roadList = null;
     MapView map;
     IMapController mapController;
+    private Request request;
+    private User loggedInUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_view_request);
+        //getting the request controller to get a list of requests
+        loggedInUser = UserController.getLoggedInUser();
 
         // unpacking the bundle to get the position of request
         Bundle bundle = getIntent().getExtras();
-        Request request = new Gson().fromJson(bundle.getString("request"), Request.class);
+        request = new Gson().fromJson(bundle.getString("request"), Request.class);
 
         setTitle("Request");
 
@@ -68,16 +75,17 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         overlayItems.add(new OverlayItem("Starting Point", "This is the starting point", startPoint));
         overlayItems.add(new OverlayItem("Destination", "This is the destination point", endPoint));
 
-        setViews(request);
-        setMarkers(request);
-        getRoadAsync();
+        if ((request != null) && (loggedInUser != null)) {
+            setViews();
+            setMarkers();
+            getRoadAsync();
+        }
     }
 
     /**
      * Given the request passed in by the user, set the map according to the start and end locations
-     * @param request
      */
-    private void setMarkers(Request request) {
+    private void setMarkers() {
         Marker startMarker = new Marker(map);
         Marker endMarker = new Marker(map);
 
@@ -150,9 +158,31 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         return new GeoPoint(retLoc);
     }
 
-    // TODO fill in
     public void makeOffer(View view) {
-        Toast.makeText(activity, "MAKE AN OFFER", Toast.LENGTH_SHORT).show();
+        RequestController rc = new RequestController();
+        // Can not make an offer on a request that has a confirmed driver.
+        // Can not make an offer on a request that you hae already made an offer on.
+        // Can not make an offer on a cancelled request.
+        AlertDialog.Builder adb = new AlertDialog.Builder(DriverViewRequestActivity.this);
+        adb.setTitle("Error: ");
+        adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        if (request.getConfirmedDriver() != null) {
+            adb.setMessage("Unable to make an offer on the request. There is already a confirmed driver.");
+            adb.show();
+        } else if (request.getOfferedDrivers().contains(loggedInUser)) {
+            adb.setMessage("Unable to make an offer on the request. You have already made an offer.");
+            adb.show();
+        } else if (request.getStatus() == Request.CANCELLED) {
+            adb.setMessage("Unable to make an offer on the request. The request has been cancelled.");
+            adb.show();
+        } else {
+            rc.addDriver(request, loggedInUser);
+            Toast.makeText(this, "Made an offer.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
@@ -200,9 +230,8 @@ public class DriverViewRequestActivity extends AppCompatActivity {
 
     /**
      * Given the request passed in by the user, set the views in the layout.
-     * @param request
      */
-    public void setViews(Request request) {
+    public void setViews() {
         UserController uc = new UserController();
 
         // Set up the fare
@@ -222,7 +251,7 @@ public class DriverViewRequestActivity extends AppCompatActivity {
 
         TextView startAddressTextView = (TextView) findViewById(R.id.textView_start);
         String startAddress = request.getStart().getAddress();
-        if(startAddress != null) {
+        if (startAddress != null) {
             startAddressTextView.setText(startAddress);
         } else {
             String startPoint = "(" + String.valueOf(request.getStart().getLatitude()) + ", " +
@@ -232,7 +261,7 @@ public class DriverViewRequestActivity extends AppCompatActivity {
 
         TextView endAddressTextView = (TextView) findViewById(R.id.textView_end);
         String endAddress = request.getEnd().getAddress();
-        if(endAddress != null) {
+        if (endAddress != null) {
             endAddressTextView.setText(request.getEnd().getAddress());
         } else {
             String endPoint = "(" + String.valueOf(request.getEnd().getLatitude()) + ", " +
