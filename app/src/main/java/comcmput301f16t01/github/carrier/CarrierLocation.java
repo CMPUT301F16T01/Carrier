@@ -37,6 +37,10 @@ public class CarrierLocation extends Location {
         this.shortAddress = shortAddress;
     }
 
+    /**
+     * For use when an address is null. Returns a string of a lat/long tuple.
+     * @return String
+     */
     public String getLatLong() {
         return "(" + String.valueOf(getLatitude()) + ", " +
                 String.valueOf(getLongitude()) + ")";
