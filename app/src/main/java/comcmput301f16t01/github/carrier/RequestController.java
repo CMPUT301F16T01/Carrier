@@ -184,7 +184,7 @@ public class RequestController {
 
     /** Get the results of a searchByKeyword or a getSearchByLocation query. */
     public RequestList getResult() {
-        return (RequestList) requestList;
+        return requestList;
     }
 
     /**

@@ -72,9 +72,9 @@ public class NotificationTest extends ApplicationTest {
      * @see MockNotification
      */
     public void testNotificationSorting() {
-        Request requestOne = new Request( loggedInUser, new Location(), new Location(),
+        Request requestOne = new Request( loggedInUser, new CarrierLocation(), new CarrierLocation(),
                 "testNotificationSorting Desc : requestOne" );
-        Request requestTwo = new Request( loggedInUser, new Location(), new Location(),
+        Request requestTwo = new Request( loggedInUser, new CarrierLocation(), new CarrierLocation(),
                 "testNotificationSorting Desc: requestTwo" );
 
         MockNotification a = new MockNotification( loggedInUser, requestOne );
@@ -133,10 +133,10 @@ public class NotificationTest extends ApplicationTest {
      * Tests that clearing notifications actually works inside the Notification Controller
      */
     public void testClearingNotifications() {
-        Request requestOne = new Request( loggedInUser, new Location(), new Location(),
+        Request requestOne = new Request( loggedInUser, new CarrierLocation(), new CarrierLocation(),
                 "testClearingNotifications1" );
         requestOne.setId("testClearing1");
-        Request requestTwo = new Request( loggedInUser, new Location(), new Location(),
+        Request requestTwo = new Request( loggedInUser, new CarrierLocation(), new CarrierLocation(),
                 "testClearingNotifications2" );
         requestTwo.setId("testClearing2");
 
@@ -186,7 +186,7 @@ public class NotificationTest extends ApplicationTest {
         nc.clearAllNotifications( loggedInUser );
 
         Request newRequest = new Request( UserController.getLoggedInUser(),
-                new Location(), new Location(), "testRiderGetNotified" );
+                new CarrierLocation(), new CarrierLocation(), "testRiderGetNotified" );
 
         // Unnecessary clutter for request elastic search, and irrelevant to this test (?)
         rc.addRequest( newRequest );
@@ -234,7 +234,7 @@ public class NotificationTest extends ApplicationTest {
         nc.clearAllNotifications( driverOne );
 
         Request newRequest = new Request( UserController.getLoggedInUser(),
-                new Location(), new Location(), "testDriverGetNotified" );
+                new CarrierLocation(), new CarrierLocation(), "testDriverGetNotified" );
 
         // Unnecessary clutter for request elastic search, and irrelevant to this test (?)
         rc.addRequest( newRequest );
@@ -273,10 +273,10 @@ public class NotificationTest extends ApplicationTest {
      * Also tests that it does not set all other notifications to read.
      */
     public void testMarkingNotificationAsRead() {
-        Request requestOne = new Request( loggedInUser, new Location(), new Location(),
+        Request requestOne = new Request( loggedInUser, new CarrierLocation(), new CarrierLocation(),
                 "testMarkingNotificationAsRead1" );
         requestOne.setId("testMarkingNotificationAsRead1");
-        Request requestTwo = new Request( loggedInUser, new Location(), new Location(),
+        Request requestTwo = new Request( loggedInUser, new CarrierLocation(), new CarrierLocation(),
                 "testMarkingNotificationAsRead2" );
         requestTwo.setId("testMarkingNotificationAsRead2");
 
@@ -349,7 +349,7 @@ public class NotificationTest extends ApplicationTest {
      * Test that we can delete or get more than 10 notifications in one call
      */
     public void testDeletingManyNotification() {
-        Request requestOne = new Request( anotherUser, new Location(), new Location(),
+        Request requestOne = new Request( anotherUser, new CarrierLocation(), new CarrierLocation(),
                 "testDeletingManyNotifications1");
 
         NotificationController nc = new NotificationController();

@@ -26,10 +26,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.location.Location;
 
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationActivity;
@@ -359,7 +362,7 @@ public class MainActivity extends AppCompatActivity {
             User loggedInUser = UserController.getLoggedInUser();
             // TODO fix deprecation usage 
             RequestList rl = RequestController.getInstance();
-            if (rc.getOfferedRequests(loggedInUser).size() == 0){
+            /*if (rc.getOfferedRequests(loggedInUser).size() == 0){
                 User testUser = new User("TestUser");
                 Request testRequest1 = new Request(testUser, new CarrierLocation(), new CarrierLocation());
                 Request testRequest2 = new Request(testUser, new CarrierLocation(), new CarrierLocation(),
@@ -374,7 +377,7 @@ public class MainActivity extends AppCompatActivity {
             DriverRequestAdapter requestArrayAdapter = new DriverRequestAdapter(this.getContext(),
                     R.layout.driverrequestlist_item, requestList);
             requestListView.setAdapter(requestArrayAdapter);
-            final Context ctx = this.getContext();
+            final Context ctx = this.getContext();*/
 
             /**
              * When we click a request we want to be able to see it in another activity
@@ -393,14 +396,12 @@ public class MainActivity extends AppCompatActivity {
             User loggedInUser = UserController.getLoggedInUser();
             // Mike's old line, Kieter rewrote with Mike, you can probably delete it
             //final ArrayList<Request> requestList = rc.getRequests( loggedInUser );
-            final ArrayList<Request> requestList = rc.getInstance();
-
+            final ArrayList<Request> requestList = rc.getResult();
 
             if (requestList.size() == 0) {
                 
                 // Create sample requests because this is probably not set up yet.
-                Request requestOne = new Request( loggedInUser, new CarrierLocation(), new CarrierLocation(), "testRequest!" );
-                Request requestTwo = new Request( loggedInUser, new CarrierLocation(), new CarrierLocation(), "testRequest2!" );
+                Request requestOne = new Request( loggedInUser, new CarrierLocation(53.5232, -113.5263), new CarrierLocation(53.5225, -113.6242), "Here is my description. It is really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really long.\n\nIt also has a new line." );
                 // TODO: remove these tests
                 ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();
                 fut.execute("sarah");
@@ -410,12 +411,11 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                requestOne.getStart().setAddress("11390 87 Avenue Northwest\nEdmonton, AB T6G 2T9\nCanada");
+                requestOne.getEnd().setAddress("8770 170 Street Northwest\nEdmonton, AB T5T 4V4\nCanada");
                 requestOne.setChosenDriver(sarah);
-                requestTwo.setChosenDriver(sarah);
                 requestOne.setStatus(Request.COMPLETE);
-                requestTwo.setStatus(Request.PAID);
                 requestList.add(requestOne);
-                requestList.add(requestTwo);
             }
 
             // Mike's old line, Kieter rewrote it with Mike, you can probably delete it

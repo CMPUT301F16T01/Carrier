@@ -1,13 +1,11 @@
 package comcmput301f16t01.github.carrier;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -20,8 +18,6 @@ import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.util.BoundingBox;
-import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
@@ -43,8 +39,8 @@ import java.util.List;
 
 public class ViewLocationsActivity extends AppCompatActivity {
     final Activity activity = ViewLocationsActivity.this;
-    private Location start = null;
-    private Location end = null;
+    private CarrierLocation start = null;
+    private CarrierLocation end = null;
     String type = null;
     GeoPoint startPoint = null;
     GeoPoint endPoint = null;
@@ -60,10 +56,10 @@ public class ViewLocationsActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if(intent.hasExtra("startLocation")) {
-            start = new Gson().fromJson(intent.getStringExtra("startLocation"), Location.class);
+            start = new Gson().fromJson(intent.getStringExtra("startLocation"), CarrierLocation.class);
         }
         if(intent.hasExtra("endLocation")) {
-            end = new Gson().fromJson(intent.getStringExtra("endLocation"), Location.class);
+            end = new Gson().fromJson(intent.getStringExtra("endLocation"), CarrierLocation.class);
         }
         if(intent.hasExtra("type")) {
             type = intent.getStringExtra("type");
@@ -79,8 +75,8 @@ public class ViewLocationsActivity extends AppCompatActivity {
             startPoint = new GeoPoint(start);
             endPoint = new GeoPoint(end);
         } catch (NullPointerException e) {
-            startPoint = new GeoPoint(new Location(""));
-            endPoint = new GeoPoint(new Location(""));
+            startPoint = new GeoPoint(new CarrierLocation());
+            endPoint = new GeoPoint(new CarrierLocation());
         }
 
         IMapController mapController = map.getController();
@@ -114,41 +110,6 @@ public class ViewLocationsActivity extends AppCompatActivity {
         }
     }
 
-    // Function based on: https://goo.gl/iMJdJX
-    // Author: cristina
-    // Retrieved on: November 11th, 2016
-
-    /**
-     * Get address string from a geo point
-     * @param latitude
-     * @param longitude
-     * @return String
-     */
-    private String getAddress(double latitude, double longitude) {
-        String pointAddress = "";
-        try {
-            Geocoder geocoder = new Geocoder(activity);
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            StringBuilder sb = new StringBuilder();
-            if(addresses.size() > 0) {
-                Address address = addresses.get(0);
-                int n = address.getMaxAddressLineIndex();
-                for(int i = 0; i <= n; i++) {
-                    if(i != 0) {
-                        sb.append("\n");
-                    }
-                    sb.append(address.getAddressLine(i));
-                }
-                pointAddress = new String(sb);
-            } else {
-                pointAddress = null;
-            }
-        } catch (Exception e) {
-            pointAddress = null;
-        }
-        return pointAddress;
-    }
-
     /**
      * Set the start and end markers based on the exact positions the user gave for them
      */
@@ -159,16 +120,29 @@ public class ViewLocationsActivity extends AppCompatActivity {
 
         startMarker.setPosition(startPoint);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        startMarker.setTitle("START:\n" + getAddress(start.getLatitude(), start.getLongitude()));
+        startMarker.setTitle("START:\n" + start.getAddress());
         startMarker.setInfoWindow(new BasicInfoWindow(org.osmdroid.bonuspack.R.layout.bonuspack_bubble, map));
         endMarker.setPosition(endPoint);
         endMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        endMarker.setTitle("END:\n" + getAddress(end.getLatitude(), end.getLongitude()));
+        endMarker.setTitle("END:\n" + end.getAddress());
         endMarker.setInfoWindow(new BasicInfoWindow(org.osmdroid.bonuspack.R.layout.bonuspack_bubble, map));
 
         map.getOverlays().add(startMarker);
         map.getOverlays().add(endMarker);
         map.invalidate();
+    }
+
+    public void continueToRequest(View view) {
+        if(type.equals("new")) {
+            Intent intent = new Intent(activity, MakeRequestActivity.class);
+            bundle.putString("startLocation", new Gson().toJson(start));
+            bundle.putString("endLocation", new Gson().toJson(end));
+            intent.putExtras(bundle);
+            activity.finish();
+            startActivity(intent);
+        } else {
+            activity.finish();
+        }
     }
 
     /**
@@ -189,19 +163,6 @@ public class ViewLocationsActivity extends AppCompatActivity {
         waypoints.add(roadStartPoint);
         waypoints.add(roadEndPoint);
         new UpdateRoadTask().execute(waypoints);
-    }
-
-    public void continueToRequest(View view) {
-        if(type.equals("new")) {
-            Intent intent = new Intent(activity, MakeRequestActivity.class);
-            bundle.putString("startLocation", new Gson().toJson(start));
-            bundle.putString("endLocation", new Gson().toJson(end));
-            intent.putExtras(bundle);
-            activity.finish();
-            startActivity(intent);
-        } else {
-            activity.finish();
-        }
     }
 
     /**

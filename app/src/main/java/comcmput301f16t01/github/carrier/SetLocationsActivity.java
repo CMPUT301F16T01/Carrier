@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,6 +30,8 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
+
+import java.util.List;
 
 import static com.google.android.gms.common.api.GoogleApiClient.*;
 
@@ -145,6 +149,7 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
             public void onMarkerDragEnd(Marker marker) {
                 locationPoint.setLatitude(marker.getPosition().getLatitude());
                 locationPoint.setLongitude(marker.getPosition().getLongitude());
+                locationPoint.setAddress(getAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
             }
 
             @Override
@@ -198,6 +203,7 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         }
         locationPoint.setLatitude(geoPoint.getLatitude());
         locationPoint.setLongitude(geoPoint.getLongitude());
+        locationPoint.setAddress(getAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
         setLocationMarker(map, geoPoint);
         return false;
     }
@@ -268,6 +274,41 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         } else {
             Toast.makeText(activity, "You must first choose a location", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    // Function based on: https://goo.gl/iMJdJX
+    // Author: cristina
+    // Retrieved on: November 11th, 2016
+
+    /**
+     * Get address string from a geo point
+     * @param latitude
+     * @param longitude
+     * @return String
+     */
+    private String getAddress(double latitude, double longitude) {
+        String pointAddress = "";
+        try {
+            Geocoder geocoder = new Geocoder(activity);
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            StringBuilder sb = new StringBuilder();
+            if(addresses.size() > 0) {
+                Address address = addresses.get(0);
+                int n = address.getMaxAddressLineIndex();
+                for(int i = 0; i <= n; i++) {
+                    if(i != 0) {
+                        sb.append("\n");
+                    }
+                    sb.append(address.getAddressLine(i));
+                }
+                pointAddress = new String(sb);
+            } else {
+                pointAddress = null;
+            }
+        } catch (Exception e) {
+            pointAddress = null;
+        }
+        return pointAddress;
     }
 
     // Inspired by ideas from: https://goo.gl/qh3Dzf

@@ -129,11 +129,6 @@
             android:text="@string/description_prompt"
             android:layout_marginTop="15dp"/>
 
-        <!-- TODO code reviewer: play around with the description EditText box in the running app -->
-        <!-- I did a lot of work to try to get it as cohesive as possible with
-            the it being able to scroll, resize, have the keyboard not cover it
-            when it is being edited. Play around with it to see if there are any
-            improvements I could make here. -->
         <EditText
             android:layout_width="match_parent"
             android:layout_height="150dp"
