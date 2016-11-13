@@ -190,7 +190,7 @@ public class RequestController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        requestList = foundRequests;
         return foundRequests;
     }
 
@@ -203,6 +203,7 @@ public class RequestController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        requestList = foundRequests;
         return foundRequests;
     }
 

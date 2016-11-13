@@ -55,14 +55,16 @@ public class MainActivity extends AppCompatActivity {
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
+    /** The {@link ViewPager} that will host the section contents. */
     private ViewPager mViewPager;
 
+    // TODO please comment this. Why is it here?
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 2;
+
+    // Views contain controllers
+    //RequestController rc = new RequestController();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -364,20 +366,9 @@ public class MainActivity extends AppCompatActivity {
         private void fillDriverRequests(ListView requestListView) {
             RequestController rc = new RequestController();
             User loggedInUser = UserController.getLoggedInUser();
-            // TODO fix deprecation usage 
-            RequestList rl = RequestController.getInstance();
-            if (rc.getOfferedRequests(loggedInUser).size() == 0){
-                User testUser = new User("TestUser");
-                Request testRequest1 = new Request(testUser, new Location(""), new Location(""));
-                Request testRequest2 = new Request(testUser, new Location(""), new Location(""),
-                        "I gotta go home please.");
-                testRequest1.setFare(100);
-                rl.add(testRequest1);
-                rl.add(testRequest2);
-                rc.addDriver(testRequest1, loggedInUser);
-                rc.addDriver(testRequest2, loggedInUser);
-            }
+
             ArrayList<Request> requestList = rc.getOfferedRequests(loggedInUser);
+
             DriverRequestAdapter requestArrayAdapter = new DriverRequestAdapter(this.getContext(),
                     R.layout.driverrequestlist_item, requestList);
             requestListView.setAdapter(requestArrayAdapter);
@@ -398,52 +389,14 @@ public class MainActivity extends AppCompatActivity {
         private void fillRiderRequests(ListView requestListView) {
             RequestController rc = new RequestController();
             User loggedInUser = UserController.getLoggedInUser();
-            // Mike's old line, Kieter rewrote with Mike, you can probably delete it
-            //final ArrayList<Request> requestList = rc.getRequests( loggedInUser );
-            final ArrayList<Request> requestList = rc.getInstance();
 
-
-            if (requestList.size() == 0) {
-                
-                // Create sample requests because this is probably not set up yet.
-                Request requestOne = new Request( loggedInUser, new Location(""), new Location(""), "testRequest!" );
-                Request requestTwo = new Request( loggedInUser, new Location(""), new Location(""), "testRequest2!" );
-                // TODO: remove these tests
-                ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();
-                fut.execute("sarah");
-                User sarah = null;
-                try {
-                    sarah = fut.get();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                requestOne.setChosenDriver(sarah);
-                requestTwo.setChosenDriver(sarah);
-                requestOne.setStatus(Request.COMPLETE);
-                requestTwo.setStatus(Request.PAID);
-                requestList.add(requestOne);
-                requestList.add(requestTwo);
-            }
-
-            // Mike's old line, Kieter rewrote it with Mike, you can probably delete it
-//            RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
-//                    R.layout.requestlist_item, requestList );
             RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
-                    R.layout.requestlist_item, rc.getRequests(UserController.getLoggedInUser()) );
+                    R.layout.requestlist_item,
+                    rc.fetchAllRequestsWhereRider(UserController.getLoggedInUser()) );
 
             requestListView.setAdapter( requestArrayAdapter );
-
-            final Context ctx = this.getContext();
-            /*requestListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                @Override
-                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                    System.out.println( "hi" );
-                    return true;
-                }
-            });*/
-
-
-            /**
+    
+            /*
              * When we click a request we want to be able to see it in another activity
              * Use bundles to send the position of the request in a list
              */
@@ -458,7 +411,6 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
-
         }
     }
 

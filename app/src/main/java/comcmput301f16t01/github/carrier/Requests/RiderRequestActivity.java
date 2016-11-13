@@ -28,20 +28,17 @@ public class RiderRequestActivity extends AppCompatActivity {
     // TODO remove this
     private Integer position = 0;
 
+    RequestController rc = new RequestController();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_view_request);
 
-        //getting the request controller to get a list of requests
-        RequestController rc = new RequestController();
-        User loggedInUser = UserController.getLoggedInUser();
-        ArrayList<Request> requestList = rc.getRequests(loggedInUser);
-
         // unpacking the bundle to get the position of request
         Bundle bundle = getIntent().getExtras();
         position = bundle.getInt("position");
-        final Request request = requestList.get(position);
+        final Request request = rc.getResult().get(position);
 
         TextView descriptionTextView = (TextView) findViewById(R.id.TextView_description);
         descriptionTextView.setText(request.getDescription());
@@ -52,10 +49,11 @@ public class RiderRequestActivity extends AppCompatActivity {
         riderUsernameTextView.setText("Rider: " + request.getRider().getUsername());
         riderUsernameTextView.setUser(request.getRider());
 
+        // TODO why does it say "sarah" even though there is no confirmedDriver?
         // Set up the UsernameTextView of the driver
-        UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
-        driverUsernameTextView.setText("Driver: " + request.getChosenDriver().getUsername());
-        driverUsernameTextView.setUser(request.getChosenDriver());
+//        UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
+//        driverUsernameTextView.setText("Driver: " + request.getChosenDriver().getUsername());
+//        driverUsernameTextView.setUser(request.getChosenDriver());
 
 
 
