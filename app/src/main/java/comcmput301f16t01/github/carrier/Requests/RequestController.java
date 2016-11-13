@@ -1,7 +1,9 @@
 package comcmput301f16t01.github.carrier.Requests;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
+import comcmput301f16t01.github.carrier.ElasticUserController;
 import comcmput301f16t01.github.carrier.Location;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.User;
@@ -50,11 +52,9 @@ public class RequestController {
     }
 
     /**
-     * Will return a list of requests that the rider has requested.
-     *
-     * @param rider The rider we are getting the requests for.
-     * @return An array list of requests that the user has made.
+     * Deprecated: see fetch requests where rider?
      */
+    @Deprecated
     public RequestList getRequests(User rider) {
         RequestList returnValue = new RequestList();
         for (Request request : requestList) {
@@ -150,7 +150,14 @@ public class RequestController {
      */
     // TODO rename this method? i.e. getRequestsWhereDriverOffered, or something
     public RequestList getOfferedRequests(User driver) {
-        return new RequestList();
+        ElasticRequestController.GetOfferedRequestsTask gort = new ElasticRequestController.GetOfferedRequestsTask();
+        gort.execute( driver.getUsername() );
+
+        try {
+            return gort.get();
+        } catch (Exception e) {
+            return new RequestList();
+        }
     }
 
     public void clearAllRiderRequests(User rider) {

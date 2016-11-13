@@ -438,6 +438,78 @@ public class ElasticRequestController {
     } // RemoveOffersTask
 
 
+    /**
+     * Get requests where the driver has offered to complete them.
+     */
+    public static class GetOfferedRequestsTask extends AsyncTask<String, Void, RequestList> {
+
+        @Override
+        protected RequestList doInBackground(String... params) {
+            verifySettings();
+
+            RequestList foundRequests;
+
+
+            String query =
+                    "{ \"from\": 0, \"size\": 500,\n" +
+                    "    \"query\": { \"match\": { \"offeringUser\": \"" + params[0] + "\" } }\n" +
+                    "}";
+
+            Search search = new Search.Builder(query)
+                    .addIndex("cmput301f16t01")
+                    .addType("offer")
+                    .build();
+
+            SearchResult result;
+            try {
+                result = client.execute(search);
+                if (!result.isSucceeded()) {
+                    return null;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+            List<Offer> offers = result.getSourceAsObjectList(Offer.class);
+
+            foundRequests = getRequests( offers );
+
+            return foundRequests;
+        }
+
+        /**
+         * Get requests for the given offers
+         */
+        private RequestList getRequests(List<Offer> offers) {
+            RequestList requestList = new RequestList();
+            for (Offer offer : offers ) {
+                // TODO prune ones that no longer relate to a driver? (i.e. cancelled)
+                String query =
+                        "{ \"from\": 0, \"size\": 1,\n" +
+                        "    \"query\": { \"match\": { \"_id\": \"" + offer.getRequestID() + "\" } }\n" +
+                        "}";
+
+                Search search = new Search.Builder(query)
+                        .addIndex("cmput301f16t01")
+                        .addType("request")
+                        .build();
+
+                try {
+                    SearchResult result = client.execute(search);
+                    if (result.isSucceeded()) {
+                        requestList.add( result.getSourceAsObject(Request.class) );
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+            return requestList;
+        }
+    }
+
+
     private static void verifySettings() {
         if (client == null) {
             DroidClientConfig.Builder builder =

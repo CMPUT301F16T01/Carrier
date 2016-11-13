@@ -20,7 +20,6 @@ import io.searchbox.core.Delete;
  *      3) Test adding driver to a request (visible on a rider's getRequest)
  *      4) Test getting requests where the driver has offered
  *      5) Test getting a request by its ID.
- *      6) Test that we can remove offers (and add them to elastic search).
  *
  *      TODO various tests:
  *      X) Test to ensure separation from "offering drivers" and "rider" (when searching)
@@ -364,54 +363,4 @@ public class RequestTest extends ApplicationTest {
                 request.getDescription().equals(getRequest.getDescription()));
     }
 
-    /** TEST6 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-     * Tests that we can add and remove an offer (backend test)
-     *
-     * Also tests how long you can look at code and not laugh about getting gots.
-     */
-    public void testRemoveOffer() {
-        Request request = new Request( anotherUser, new Location(), new Location(),
-                "testRemoveLocation" );
-        request.setId( "heyWorld" );
-        Offer offer = new Offer( request, anotherUser );
-        int pass;
-
-        ElasticRequestController.AddOfferTask aot = new ElasticRequestController.AddOfferTask();
-        aot.execute( offer );
-
-        chillabit( 1000 );
-
-        // Check that we get an offer.
-        ElasticRequestController.GetOffersTask got = new ElasticRequestController.GetOffersTask();
-        got.setMode( got.MODE_REQUEST_ID );
-        got.execute( request.getId() );
-        ArrayList<Offer> offers = new ArrayList<>();
-        try {
-            offers.addAll( got.get() );
-        } catch (Exception e) {
-            fail( "There should be no exceptional case here." );
-        }
-        assertTrue( "There should be at least one offer",
-                offers.size() == 1);
-
-        // remove the offer.
-        ElasticRequestController.RemoveOffersTask rot = new ElasticRequestController.RemoveOffersTask();
-        rot.setMode( rot.MODE_REQUEST_ID );
-        rot.execute( request.getId() );
-
-        chillabit( 1000 );
-
-        ElasticRequestController.GetOffersTask got2 = new ElasticRequestController.GetOffersTask();
-        got2.execute( request.getId() );
-        offers.clear();
-        try {
-            offers.addAll( got2.get() );
-        } catch (Exception e) {
-            fail( "There should be no exceptional case here." );
-        }
-        assertTrue( "There should be no more offers.",
-                offers.size() == 0);
-
-    }
 }

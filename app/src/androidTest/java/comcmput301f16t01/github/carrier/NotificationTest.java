@@ -55,6 +55,7 @@ public class NotificationTest extends ApplicationTest {
         crt.execute( loggedInUser.getUsername(), driverOne.getUsername(), anotherUser.getUsername() );
 
         ElasticRequestController.RemoveOffersTask rot = new ElasticRequestController.RemoveOffersTask();
+        rot.setMode( rot.MODE_USERNAME );
         rot.execute(loggedInUser.getUsername(), driverOne.getUsername(), anotherUser.getUsername());
 
         super.tearDown();
