@@ -218,7 +218,7 @@ public class UserProfileActivity extends AppCompatActivity {
             eut.execute(currentUser.getId(), email, currentUser.getPhone());
         }
         // Since editing was confirmed, overwrite old value of email int he current user.
-        this.oldPhoneNumber = email;
+        this.oldEmailAddress = email;
         currentUser.setEmail(email);
     }
 
