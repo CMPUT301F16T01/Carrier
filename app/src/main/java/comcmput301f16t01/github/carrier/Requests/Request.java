@@ -1,10 +1,13 @@
 package comcmput301f16t01.github.carrier.Requests;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import android.location.Location;
 
-import comcmput301f16t01.github.carrier.Location;
+//import comcmput301f16t01.github.carrier.Location;
 import comcmput301f16t01.github.carrier.User;
 import io.searchbox.annotations.JestId;
 
@@ -82,6 +85,21 @@ public class Request {
         this.fare = fare;
     }
 
+    public void setChosenDriver(User driver) {
+        this.chosenDriver = driver;
+    }
+
+    public User getChosenDriver() {
+        return this.chosenDriver;
+    }
+
+    // possibly get rid of?
+    @Deprecated
+    public int getFareEstimate(Double distance, Double duration) {
+        //FareCalculator fareCalc = new FareCalculator();
+        //return fareCalc.getEstimate(distance, duration);
+        return 0;
+    }
 
     public ArrayList<User> getOffers() {
         return new ArrayList<User>();

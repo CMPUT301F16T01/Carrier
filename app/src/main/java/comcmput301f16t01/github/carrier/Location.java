@@ -3,6 +3,7 @@ package comcmput301f16t01.github.carrier;
 /**
  * Represents a geo-location on the globe.
  */
+@Deprecated
 public class Location {
     private double latitude;
     private double longitude;

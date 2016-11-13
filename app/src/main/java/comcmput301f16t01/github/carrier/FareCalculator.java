@@ -2,8 +2,6 @@ package comcmput301f16t01.github.carrier;
 
 import java.util.Random;
 
-
-
 /**
  * calculates an estimated fare between two locations.
  */
@@ -15,19 +13,11 @@ public class FareCalculator {
     static final double BOOKING_FEE = 1.65;
     static final int MIN_FARE = (int) 5.15 * 100;
 
-    protected Location start;
-    protected Location end;
-
     /**
      * Creates a new object fare calculator, used to estimate a fair fare for a ride between
      * start and end.
      */
     public FareCalculator() {
-    }
-
-    public FareCalculator(Location start, Location end) {
-        this.start = start;
-        this.end = end;
     }
 
     public int getEstimate(double distance, double duration) {

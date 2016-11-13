@@ -2,6 +2,9 @@ package comcmput301f16t01.github.carrier.Requests;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import comcmput301f16t01.github.carrier.R;
 
@@ -14,5 +17,7 @@ public class DriverViewRequestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_view_request);
+
+
     }
 }
