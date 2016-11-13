@@ -64,7 +64,8 @@
                     android:text="@string/start_address"
                     android:layout_marginStart="20dp"
                     android:gravity="end"
-                    android:layout_weight="1.5"/>
+                    android:layout_weight="1.5"
+                    android:onClick="centerStart"/>
 
                 <TextView
                     android:text=""
@@ -92,7 +93,8 @@
                     android:text="@string/end_address"
                     android:layout_marginStart="20dp"
                     android:gravity="end"
-                    android:layout_weight="1.5"/>
+                    android:layout_weight="1.5"
+                    android:onClick="centerEnd"/>
 
                 <TextView
                     android:text=""
@@ -166,7 +168,8 @@
             android:layout_weight="2"
             android:textAllCaps="false"
             android:textColor="@android:color/background_light"
-            android:background="@color/colorPrimary" />
+            android:background="@color/colorPrimary"
+            android:onClick="payForRequest" />
 
         <!-- REPRESENTS STATUS OF REQUEST-->
         <ImageView
@@ -176,6 +179,7 @@
             android:layout_weight="1"
             android:src="@drawable/ic_location_on"/>
 
+        <!-- TODO delete was the word here...would CANCEL be more correct? -->
         <Button
             android:id="@+id/button_delete"
             android:layout_width="0dp"
@@ -184,7 +188,8 @@
             android:layout_weight="2"
             android:textAllCaps="false"
             android:textColor="@android:color/background_light"
-            android:background="@color/colorPrimary" />
+            android:background="@color/colorPrimary"
+            android:onClick="deleteRequest" />
 
     </LinearLayout>
 

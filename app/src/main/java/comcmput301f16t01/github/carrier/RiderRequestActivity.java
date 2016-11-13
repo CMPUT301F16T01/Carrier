@@ -155,6 +155,16 @@ public class RiderRequestActivity extends AppCompatActivity {
         return new GeoPoint(retLoc);
     }
 
+    // TODO fill in
+    public void payForRequest(View view) {
+        Toast.makeText(activity, "PAY FOR REQUEST", Toast.LENGTH_SHORT).show();
+    }
+
+    // TODO fill in
+    public void deleteRequest(View view) {
+        Toast.makeText(activity, "DELETE REQUEST", Toast.LENGTH_SHORT).show();
+    }
+
     /**
      * Class to update the road on the map
      */

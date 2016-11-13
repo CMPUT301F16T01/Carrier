@@ -360,29 +360,40 @@ public class MainActivity extends AppCompatActivity {
         private void fillDriverRequests(ListView requestListView) {
             RequestController rc = new RequestController();
             User loggedInUser = UserController.getLoggedInUser();
-            // TODO fix deprecation usage 
+            // TODO fix deprecation usage
             RequestList rl = RequestController.getInstance();
-            /*if (rc.getOfferedRequests(loggedInUser).size() == 0){
+            if (rc.getOfferedRequests(loggedInUser).size() == 0){
                 User testUser = new User("TestUser");
-                Request testRequest1 = new Request(testUser, new CarrierLocation(), new CarrierLocation());
-                Request testRequest2 = new Request(testUser, new CarrierLocation(), new CarrierLocation(),
-                        "I gotta go home please.");
-                testRequest1.setFare(100);
+                CarrierLocation start = new CarrierLocation(53.5232, -113.5263);
+                CarrierLocation end = new CarrierLocation(53.5225, -113.6242);
+                Request testRequest1 = new Request(testUser, start, end, "Gotta go home from downtown");
+                testRequest1.getStart().setAddress("11390 87 Avenue Northwest\nEdmonton, AB T6G 2T9\nCanada");
+                testRequest1.getEnd().setAddress("8770 170 Street Northwest\nEdmonton, AB T5T 4V4\nCanada");
+                FareCalculator fc = new FareCalculator();
+                testRequest1.setFare(fc.getEstimate(10.6,960));
                 rl.add(testRequest1);
-                rl.add(testRequest2);
                 rc.addDriver(testRequest1, loggedInUser);
-                rc.addDriver(testRequest2, loggedInUser);
             }
-            ArrayList<Request> requestList = rc.getOfferedRequests(loggedInUser);
+            final ArrayList<Request> requestList = rc.getOfferedRequests(loggedInUser);
             DriverRequestAdapter requestArrayAdapter = new DriverRequestAdapter(this.getContext(),
                     R.layout.driverrequestlist_item, requestList);
             requestListView.setAdapter(requestArrayAdapter);
-            final Context ctx = this.getContext();*/
+            final Context ctx = this.getContext();
 
             /**
              * When we click a request we want to be able to see it in another activity
              * Use bundles to send the position of the request in a list
              */
+            requestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent intent = new Intent(getActivity(), DriverViewRequestActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("request", new Gson().toJson(requestList.get(position)));
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            });
 
         }
 
