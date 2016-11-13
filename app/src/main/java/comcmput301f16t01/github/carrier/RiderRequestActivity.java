@@ -1,7 +1,6 @@
 package comcmput301f16t01.github.carrier;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,8 +8,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
 import java.util.ArrayList;
-import java.util.Locale;
 
 /**
  * This will help us show the request from the perspective of a rider
@@ -20,12 +19,6 @@ public class RiderRequestActivity extends AppCompatActivity {
     //this is just used to make it work for now
     // TODO remove this
     private Integer position = 0;
-    private TextView fareAmountTextView;
-    private TextView startLocationTextView;
-    private TextView endLocationTextView;
-    private TextView descriptionTextView;
-    private TextView riderTextView;
-    private TextView driverTextView;
     private Request request;
 
     @Override
@@ -33,7 +26,6 @@ public class RiderRequestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_view_request);
         // Initialize the view ids
-        getViewIds();
 
         //getting the request controller to get a list of requests
         RequestController rc = new RequestController();
@@ -43,10 +35,21 @@ public class RiderRequestActivity extends AppCompatActivity {
         // unpacking the bundle to get the position of request
         Bundle bundle = getIntent().getExtras();
         position = bundle.getInt("position");
-        request = requestList.get(position);
-        // Populate values for the different text views.
-        setViewValues(request);
+
         //changing the status image
+        request = requestList.get(position);
+        TextView descriptionTextView = (TextView) findViewById(R.id.TextView_description);
+        descriptionTextView.setText(request.getDescription());
+
+        // Set up the UsernameTextView of the rider
+        UsernameTextView riderUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_rider);
+        riderUsernameTextView.setText("Rider: " + request.getRider().getUsername());
+        riderUsernameTextView.setUser(request.getRider());
+
+        // Set up the UsernameTextView of the driver
+        UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
+        driverUsernameTextView.setText("Driver: " + request.getChosenDriver().getUsername());
+        driverUsernameTextView.setUser(request.getChosenDriver());
 
         /**
          * This switch statement changes the status image
@@ -86,29 +89,8 @@ public class RiderRequestActivity extends AppCompatActivity {
     }
 
     /**
-     * Will initialize the view values to the values from the request
-     * @param request The request that the values come from
-     */
-    private void setViewValues(Request request) {
-        fareAmountTextView.setText(Integer.toString(request.getFare())); // TODO Add locale support
-        startLocationTextView.setText(request.getStart().toString());
-        endLocationTextView.setText(request.getEnd().toString());
-        descriptionTextView.setText(request.getDescription());
-        riderTextView.setText(request.getRider().getUsername());
-        driverTextView.setText(request.getConfirmedDriver().getUsername());
-    }
-
-    /**
      * Will initialize the view ids for all the views in the activity.
      */
-    private void getViewIds() {
-        fareAmountTextView = (TextView) findViewById(R.id.textView_$fareAmount);
-        startLocationTextView = (TextView) findViewById(R.id.textView_start);
-        endLocationTextView = (TextView) findViewById(R.id.textView_end);
-        descriptionTextView = (TextView) findViewById(R.id.textView_description);
-        riderTextView = (TextView) findViewById(R.id.textView_rider);
-        driverTextView = (TextView) findViewById(R.id.textView_driver);
-    }
 
     public void cancelRequest(View v){
         AlertDialog.Builder adb = new AlertDialog.Builder(RiderRequestActivity.this);

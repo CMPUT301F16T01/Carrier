@@ -1,15 +1,16 @@
 package comcmput301f16t01.github.carrier;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import android.location.Location;
 
 /**
  * Represents a request for a ride.
  */
 public class Request {
-    // These are not static because they will be used with an instance of Request
-    // i.e. request.setStatus( request.OPEN );
     static final int OPEN = 1;            // A user has made the request but no drivers have accepted.
     static final int OFFERED = 2;         // One or more drivers have offered to fulfill the request.
     static final int CONFIRMED = 3;       // The user has chosen a driver and accepted one request.
@@ -17,57 +18,37 @@ public class Request {
     static final int PAID = 7;
     static final int CANCELLED = 9;        // The rider has cancelled their request
 
-    /** */
+    /** The current status of a this request */
     private int status = OPEN;
 
-    /**
-     * The user who made the request.
-     */
+    /** The user who made the request. */
     private User rider;
 
-    /**
-     * The driver that the user has chosen to drive for the request
-     */
+    /** The driver that the user has chosen to drive for the request */
     private User chosenDriver;
 
-    /**
-     * A list of drivers who have offered to complete the request (but have not been accepted)
-     */
+    /** A list of drivers who have offered to complete the request (but have not been accepted) */
     private ArrayList<User> offeringDrivers;
 
-    /**
-     * The "from" of the request, where the user wants to go from
-     */
+    /** The "from" of the request, where the user wants to go from */
     private Location start;
 
-    /**
-     * The "end" of the request, where the user want to go
-     */
+    /** The "end" of the request, where the user want to go */
     private Location end;
 
-    /**
-     * A description provided by the rider,
-     */
+    /** A description provided by the rider */
     private String description;
 
-    /**
-     * The price the requesting user is willing to pay for the request to be complete
-     */
+    /** The price the requesting user is willing to pay for the request to be complete */
     private int fare;
 
-    /**
-     * When elastic searching, can search if this is true to notify the rider about the request
-     */
+    /** When elastic searching, can search if this is true to notify the rider about the request */
     private boolean needToNotifyRider = false;
 
-    /**
-     * When elastic searching, can search if this is true to notify the driver about the request
-     */
+    /** When elastic searching, can search if this is true to notify the driver about the request */
     private boolean needToNotifyDriver = false;
 
-    /**
-     * For use with Elastic Search, is the unique ID given to it
-     */
+    /** For use with Elastic Search, is the unique ID given to it */
     private String elasticID;
 
 
@@ -112,6 +93,19 @@ public class Request {
         this.fare = fare;
     }
 
+    public void setChosenDriver(User driver) {
+        this.chosenDriver = driver;
+    }
+
+    public User getChosenDriver() {
+        return this.chosenDriver;
+    }
+
+    // possibly get rid of?
+    public int getFareEstimate(Double distance, Double duration) {
+        FareCalculator fareCalc = new FareCalculator();
+        return fareCalc.getEstimate(distance, duration);
+    }
 
     public ArrayList<User> getOffers() {
         return new ArrayList<User>();
@@ -127,10 +121,6 @@ public class Request {
 
     public Location getEnd() {
         return this.end;
-    }
-
-    public void notifyRider() {
-
     }
 
     public User getConfirmedDriver() {
@@ -156,9 +146,16 @@ public class Request {
     public String getId() {
         return elasticID;
     }
-    // TODO confirm these as the states for a Request.
+
+    @Override
+    public String toString() {
+        String requestAsString = "Request From: " + rider.getUsername() + "\n";
+        requestAsString += "Description: " + description;
+        return requestAsString;
+    }
 
     public void addOfferingDriver(User offeredDriver) {
         offeringDrivers.add(offeredDriver);
     }
+
 }
