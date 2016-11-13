@@ -48,8 +48,10 @@ public class RiderRequestActivity extends AppCompatActivity {
 
         // Set up the UsernameTextView of the driver
         UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
-        driverUsernameTextView.setText("Driver: " + request.getChosenDriver().getUsername());
-        driverUsernameTextView.setUser(request.getChosenDriver());
+        if (request.getChosenDriver() != null) {
+            driverUsernameTextView.setText("Driver: " + request.getChosenDriver().getUsername());
+            driverUsernameTextView.setUser(request.getChosenDriver());
+        }
 
         /**
          * This switch statement changes the status image
