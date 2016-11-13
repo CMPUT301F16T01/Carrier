@@ -121,7 +121,8 @@
             android:layout_weight="1"
             android:gravity="end"
             android:textAlignment="center"
-            android:text="@string/MakeOffer"/>
+            android:text="@string/MakeOffer"
+            android:onClick="MakeOffer" />
     </LinearLayout>
 
 </LinearLayout>
