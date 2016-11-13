@@ -109,7 +109,7 @@ public class UserProfileActivity extends AppCompatActivity {
         phoneNumber.requestFocus();
         phoneNumber.moveCursorToVisibleOffset();
         phoneNumber.setText("");
-        phoneNumber.append(oldPhoneNumber);
+        phoneNumber.append(currentUser.getPhone());
     }
 
     /**
@@ -188,7 +188,7 @@ public class UserProfileActivity extends AppCompatActivity {
         emailView.setKeyListener((KeyListener) emailView.getTag());
         emailView.requestFocus();
         emailView.setText("");
-        emailView.append(oldEmailAddress);
+        emailView.append(currentUser.getEmail());
     }
 
     /**
@@ -218,7 +218,7 @@ public class UserProfileActivity extends AppCompatActivity {
             eut.execute(currentUser.getId(), email, currentUser.getPhone());
         }
         // Since editing was confirmed, overwrite old value of email int he current user.
-        this.oldPhoneNumber = email;
+        this.oldEmailAddress = email;
         currentUser.setEmail(email);
     }
 
