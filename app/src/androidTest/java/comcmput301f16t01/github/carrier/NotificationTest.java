@@ -5,9 +5,11 @@ import java.util.Date;
 
 import comcmput301f16t01.github.carrier.MockObjects.MockNotification;
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
+import comcmput301f16t01.github.carrier.Notifications.ElasticNotificationController;
 import comcmput301f16t01.github.carrier.Notifications.Notification;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationList;
+import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 
@@ -43,6 +45,19 @@ public class NotificationTest extends ApplicationTest {
         }
 
         assertTrue( "Failed to log in for test.", uc.logInUser( loggedInUser.getUsername() ) );
+    }
+
+    protected void tearDown() throws Exception {
+        ElasticNotificationController.ClearAllTask cat = new ElasticNotificationController.ClearAllTask();
+        cat.execute( loggedInUser.getUsername(), driverOne.getUsername(), anotherUser.getUsername() );
+
+        ElasticRequestController.ClearRiderRequestsTask crt = new ElasticRequestController.ClearRiderRequestsTask();
+        crt.execute( loggedInUser.getUsername(), driverOne.getUsername(), anotherUser.getUsername() );
+
+        ElasticRequestController.RemoveOffersTask rot = new ElasticRequestController.RemoveOffersTask();
+        rot.execute(loggedInUser.getUsername(), driverOne.getUsername(), anotherUser.getUsername());
+
+        super.tearDown();
     }
 
     // abstracts reused code to prevent mistakes and aid in readability of tests
@@ -142,9 +157,11 @@ public class NotificationTest extends ApplicationTest {
         nc.addNotification( loggedInUser, requestTwo );
         nc.addNotification( loggedInUser, requestOne );
 
+        chillabit( 500 );
+
         NotificationList notificationList = nc.fetchNotifications( loggedInUser );
 
-        // Make sure this test is useful by ensuring there are notfications now
+        // Make sure this test is useful by ensuring there are notifications now
         assertTrue( "There should be at least one notification so far", notificationList.size() != 0 );
 
         // Try to clear them

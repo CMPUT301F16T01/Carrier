@@ -96,18 +96,21 @@ public class ElasticNotificationController {
         @Override
         protected Void doInBackground(String... search_parameters) {
             verifySettings();
-            String search_string = "{\"query\": {\"match\": {\"username\": \"" + search_parameters[0] + "\"}}}";
 
-            DeleteByQuery delete = new DeleteByQuery.Builder(search_string)
-                    .addIndex("cmput301f16t01")
-                    .addType("notification")
-                    .build();
+            for (String searchParam : search_parameters ) {
+                String search_string = "{\"query\": {\"match\": {\"username\": \"" + searchParam + "\"}}}";
 
-            try {
-                client.execute( delete );
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new IllegalArgumentException();
+                DeleteByQuery delete = new DeleteByQuery.Builder(search_string)
+                        .addIndex("cmput301f16t01")
+                        .addType("notification")
+                        .build();
+
+                try {
+                    client.execute(delete);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    throw new IllegalArgumentException();
+                }
             }
 
             return null;

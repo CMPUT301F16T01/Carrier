@@ -1,9 +1,16 @@
 package comcmput301f16t01.github.carrier;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import comcmput301f16t01.github.carrier.Notifications.ElasticNotificationController;
 import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
+import comcmput301f16t01.github.carrier.Requests.Offer;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestList;
+import io.searchbox.core.Delete;
 
 /**
  * Test suite for Elastic Requests.
@@ -13,10 +20,10 @@ import comcmput301f16t01.github.carrier.Requests.RequestList;
  *      3) Test adding driver to a request (visible on a rider's getRequest)
  *      4) Test getting requests where the driver has offered
  *      5) Test getting a request by its ID.
+ *      6) Test that we can remove offers (and add them to elastic search).
  *
  *      TODO various tests:
  *      X) Test to ensure separation from "offering drivers" and "rider" (when searching)
- *      X) Test that we remove offers when we set a chosen driver (or just that the functionality works)
  *      X) Test that we have the most recent version of a user's information (while online) [[ i.e. a offeringDriver changes their info ]]
  */
 public class RequestTest extends ApplicationTest {
@@ -32,6 +39,22 @@ public class RequestTest extends ApplicationTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Resets all the elastic search for the test users, after each test.
+     * @throws Exception
+     */
+    @Override
+    protected void tearDown() throws Exception {
+        ElasticRequestController.ClearRiderRequestsTask crt = new ElasticRequestController.ClearRiderRequestsTask();
+        ElasticNotificationController.ClearAllTask cat = new ElasticNotificationController.ClearAllTask();
+        ElasticRequestController.RemoveOffersTask rot = new ElasticRequestController.RemoveOffersTask();
+        rot.setMode( rot.MODE_USERNAME );
+        rot.execute( basicRider.getUsername(), anotherUser.getUsername(), basicDriver.getUsername() );
+        cat.execute( basicRider.getUsername(), anotherUser.getUsername(), basicDriver.getUsername() );
+        crt.execute( basicRider.getUsername(), anotherUser.getUsername(), basicDriver.getUsername() );
+        super.tearDown();
     }
 
     /** TEST1 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -206,6 +229,7 @@ public class RequestTest extends ApplicationTest {
         assertTrue( "There should be no offered drivers yet",
                 test.getOfferedDrivers() == null || test.getOfferedDrivers().size() == 0);
 
+        // Add the driver then assert that we could fetch it from elastic search
         rc.addDriver( test, basicDriver );
         pass = 0;
         requestList = rc.fetchAllRequestsWhereRider( basicRider );
@@ -215,7 +239,6 @@ public class RequestTest extends ApplicationTest {
             pass++;
             if (pass > 5) { break; }
         }
-
         assertTrue( "We should have added a driver to this request.",
                 requestList.get(0).getOfferedDrivers().size() == 1 );
     }
@@ -268,11 +291,28 @@ public class RequestTest extends ApplicationTest {
             pass++;
             if (pass > 5) { break; }
         }
-
         assertTrue( "The driver posted a request, but it was not found.",
                 requestList.size() == 1);
 
-        fail( "This test need to be finished..." );
+        // add the driver to the previous two requests
+        rc.addDriver( requestOne, basicDriver );
+        rc.addDriver( requestTwo, basicDriver );
+
+        requestList = rc.getOfferedRequests( basicDriver );
+        pass = 0;
+        while( requestList.size() != 2 ) {
+            chillabit( 1000 );
+            requestList = rc.getOfferedRequests( basicDriver );
+            pass++;
+            if (pass > 5) { break; }
+        }
+
+        assertTrue( "There should be two requests where this driver has offered.",
+                requestList.size() == 2);
+        assertFalse( "[1] We are not looking for requests the driver has issued.",
+                requestList.get(0).getRider().getUsername().equals(basicDriver.getUsername()));
+        assertFalse( "[2] We are not looking for requests the driver has issued.",
+                requestList.get(1).getRider().getUsername().equals(basicDriver.getUsername()));
     }
 
     /** TEST5 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -322,5 +362,56 @@ public class RequestTest extends ApplicationTest {
         
         assertTrue( "The descriptions should match.",
                 request.getDescription().equals(getRequest.getDescription()));
+    }
+
+    /** TEST6 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * Tests that we can add and remove an offer (backend test)
+     *
+     * Also tests how long you can look at code and not laugh about getting gots.
+     */
+    public void testRemoveOffer() {
+        Request request = new Request( anotherUser, new Location(), new Location(),
+                "testRemoveLocation" );
+        request.setId( "heyWorld" );
+        Offer offer = new Offer( request, anotherUser );
+        int pass;
+
+        ElasticRequestController.AddOfferTask aot = new ElasticRequestController.AddOfferTask();
+        aot.execute( offer );
+
+        chillabit( 1000 );
+
+        // Check that we get an offer.
+        ElasticRequestController.GetOffersTask got = new ElasticRequestController.GetOffersTask();
+        got.setMode( got.MODE_REQUEST_ID );
+        got.execute( request.getId() );
+        ArrayList<Offer> offers = new ArrayList<>();
+        try {
+            offers.addAll( got.get() );
+        } catch (Exception e) {
+            fail( "There should be no exceptional case here." );
+        }
+        assertTrue( "There should be at least one offer",
+                offers.size() == 1);
+
+        // remove the offer.
+        ElasticRequestController.RemoveOffersTask rot = new ElasticRequestController.RemoveOffersTask();
+        rot.setMode( rot.MODE_REQUEST_ID );
+        rot.execute( request.getId() );
+
+        chillabit( 1000 );
+
+        ElasticRequestController.GetOffersTask got2 = new ElasticRequestController.GetOffersTask();
+        got2.execute( request.getId() );
+        offers.clear();
+        try {
+            offers.addAll( got2.get() );
+        } catch (Exception e) {
+            fail( "There should be no exceptional case here." );
+        }
+        assertTrue( "There should be no more offers.",
+                offers.size() == 0);
+
     }
 }

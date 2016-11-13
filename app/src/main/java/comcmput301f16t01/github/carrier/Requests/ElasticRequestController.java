@@ -240,18 +240,21 @@ public class ElasticRequestController {
         @Override
         protected Void doInBackground(String... search_parameters) {
             verifySettings();
-            String search_string = "{\"query\": {\"match\": {\"rider.username\": \"" + search_parameters[0] + "\"}}}";
 
-            DeleteByQuery delete = new DeleteByQuery.Builder(search_string)
-                    .addIndex("cmput301f16t01")
-                    .addType("request")
-                    .build();
+            for ( String searchParam : search_parameters ) {
+                String search_string = "{\"query\": {\"match\": {\"rider.username\": \"" + searchParam + "\"}}}";
 
-            try {
-                client.execute( delete );
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new IllegalArgumentException();
+                DeleteByQuery delete = new DeleteByQuery.Builder(search_string)
+                        .addIndex("cmput301f16t01")
+                        .addType("request")
+                        .build();
+
+                try {
+                    client.execute(delete);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    throw new IllegalArgumentException();
+                }
             }
 
             return null;
@@ -324,15 +327,37 @@ public class ElasticRequestController {
      */
     public static class RemoveOffersTask extends AsyncTask<String, Void, Void> {
 
+        /**
+         * Set the mode for the type of "delete by" query you would like to do.
+         * Default mode is to delete by request ID.
+         */
+        public int MODE_REQUEST_ID = 0;
+        public int MODE_USERNAME = 1;
+        private int mode = 1;
+        public void setMode(int mode) {
+            if( mode != MODE_REQUEST_ID && mode != MODE_USERNAME ) {
+                throw new IllegalArgumentException( "Invalid mode usage." );
+            }
+            this.mode = mode;
+        }
+
         @Override
         protected Void doInBackground(String... params) {
             verifySettings();
 
-            for( String requestID : params ) {
-                String query =
-                        "{\n" +
-                        "    \"query\": { \"match\": { \"requestID\" : \"" + requestID + "\" } }\n" +
-                        "}";
+            for( String searchParam : params ) {
+                String query = "";
+
+                // Depending on the mode we execute a different query.
+                if (mode == MODE_REQUEST_ID) {
+                    query = "{\n" +
+                            "    \"query\": { \"match\": { \"requestID\" : \"" + searchParam + "\" } }\n" +
+                            "}";
+                } else {
+                    query = "{\n" +
+                            "    \"query\": { \"match\": { \"offeringUser\" : \"" + searchParam + "\" } }\n" +
+                            "}";
+                }
 
                 DeleteByQuery delete = new DeleteByQuery.Builder(query)
                         .addIndex("cmput301f16t01")
@@ -348,7 +373,70 @@ public class ElasticRequestController {
 
             return null;
         }
-    }
+    } // RemoveOffersTask
+
+
+    /**
+     * Remove offers from a specified request in elastic search.
+     * This is for when you choose a driver to fulfill a request (no longer need the offers in
+     * elastic search)
+     */
+    public static class GetOffersTask extends AsyncTask<String, Void, List<Offer>> {
+
+        /**
+         * Set the mode for the type of "search by" query you would like to do.
+         * Default mode is to search by request ID.
+         */
+        public int MODE_REQUEST_ID = 0;
+        public int MODE_USERNAME = 1;
+        private int mode = 1;
+        public void setMode(int mode) {
+            if( mode != MODE_REQUEST_ID && mode != MODE_USERNAME ) {
+                throw new IllegalArgumentException( "Invalid mode usage." );
+            }
+            this.mode = mode;
+        }
+
+        @Override
+        protected List<Offer> doInBackground(String... params) {
+            verifySettings();
+
+            for( String searchParam : params ) {
+                String query = "";
+
+                // Depending on the mode we execute a different query.
+                if (mode == MODE_REQUEST_ID) {
+                    query = "{\n" +
+                            "    \"query\": { \"match\": { \"requestID\" : \"" + searchParam + "\" } }\n" +
+                            "}";
+                } else {
+                    query = "{\n" +
+                            "    \"query\": { \"match\": { \"offeringUser\" : \"" + searchParam + "\" } }\n" +
+                            "}";
+                }
+
+                Search search = new Search.Builder(query)
+                        .addIndex("cmput301f16t01")
+                        .addType("offer")
+                        .build();
+
+                try {
+                    SearchResult result = client.execute(search);
+                    if (result.isSucceeded()) {
+                        // TODO Bad style, prevents multiple string params.
+                        return result.getSourceAsObjectList(Offer.class);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                    return null;
+            }
+
+            return null;
+        }
+    } // RemoveOffersTask
+
 
     private static void verifySettings() {
         if (client == null) {

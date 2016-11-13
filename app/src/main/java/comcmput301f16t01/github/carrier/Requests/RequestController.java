@@ -148,14 +148,9 @@ public class RequestController {
      *               but the rider has no confirmed their choice in driver.
      * @return An ArrayList of requests that the driver has offered to give a ride on.
      */
+    // TODO rename this method? i.e. getRequestsWhereDriverOffered, or something
     public RequestList getOfferedRequests(User driver) {
-        RequestList returnValue = new RequestList();
-        for (Request request : requestList) {
-            if (request.getOfferedDrivers().contains(driver)) {
-                returnValue.add(request);
-            }
-        }
-        return returnValue;
+        return new RequestList();
     }
 
     public void clearAllRiderRequests(User rider) {
