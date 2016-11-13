@@ -1,15 +1,19 @@
 package comcmput301f16t01.github.carrier;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -20,12 +24,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.location.Location;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+
+import comcmput301f16t01.github.carrier.Notifications.NotificationController;
+import comcmput301f16t01.github.carrier.Notifications.NotificationActivity;
+import comcmput301f16t01.github.carrier.Searching.SearchActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,14 +53,20 @@ public class MainActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
 
+    private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
+    private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private static final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        checkPermissions();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
+        // Create the adapter that will return a fragment for each of the two
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
@@ -104,7 +119,35 @@ public class MainActivity extends AppCompatActivity {
         // We start on the rider tab, so we hide the driver fab
         FloatingActionButton driver_fab = (FloatingActionButton) findViewById(R.id.fab_driver);
         driver_fab.hide();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        NotificationController nc = new NotificationController();
+        if (nc.unreadNotification( UserController.getLoggedInUser() )) {
+            promptViewNotifications();
+        }
+    }
+
+    /**
+     * Creates a dialogue that tells the user to go view their notifications, if they have unread
+     * ones.
+     */
+    private void promptViewNotifications() {
+        AlertDialog.Builder adb = new AlertDialog.Builder( this );
+        adb.setTitle( "New Notifications!" );
+        adb.setMessage( "You've received notifications, do you want to see them?" );
+        adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(MainActivity.this, NotificationActivity.class );
+                startActivity(intent);
+            }
+        });
+        adb.setNegativeButton( "Later", null );
+        adb.show();
     }
 
     /**
@@ -129,6 +172,57 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Based on (Android Developer Docs): https://goo.gl/9FTnEL
+    // Retrieved on: November 9th, 2016
+    /**
+     * Result of the user granting or denying permissions. If they grant the permissions
+     * we don't need to do anything. If they do not grant the permissions, we should tell
+     * them that they are required for the map to be displayed and the app to function.
+     *
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay!
+                } else {
+                    // permission denied, boo!
+                    AlertDialog.Builder adb = new AlertDialog.Builder(this);
+                    adb.setTitle("Permissions Denied");
+                    adb.setMessage("You cannot view the map to select locations without " +
+                            "allowing the app to access your device's storage. You can change " +
+                            "this permission from the app info.");
+                    adb.setCancelable(true);
+                    adb.setPositiveButton("OK", null);
+                    adb.show();
+                }
+                break;
+            }
+        }
+    }
+
+    // Based on (Android Developer Docs): https://goo.gl/9FTnEL
+    // Retrieved on: November 9th, 2016
+    /**
+     * Asks user to grant required permissions for the maps to work.
+     */
+    private void checkPermissions() {
+        // if statement from https://developer.android.com/training/permissions/requesting.html
+        if(ContextCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -144,15 +238,20 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_viewProfile) {
-            Toast.makeText(MainActivity.this, "Wanna view your profile? Nope!",
-                    Toast.LENGTH_SHORT).show();
-            // TODO Bundle information to give to the user profile activity. (UserController or ElasticController)?
             Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", UserController.getLoggedInUser());
+            intent.putExtras(bundle);
             startActivity(intent);
         }
 
         if (id == R.id.action_help) {
             Intent intent = new Intent(MainActivity.this, HelpActivity.class);
+            startActivity(intent);
+        }
+
+        if (id == R.id.action_viewNotifications ) {
+            Intent intent = new Intent(MainActivity.this, NotificationActivity.class );
             startActivity(intent);
         }
 
@@ -258,11 +357,12 @@ public class MainActivity extends AppCompatActivity {
         private void fillDriverRequests(ListView requestListView) {
             RequestController rc = new RequestController();
             User loggedInUser = UserController.getLoggedInUser();
+            // TODO fix deprecation usage 
             RequestList rl = RequestController.getInstance();
             if (rc.getOfferedRequests(loggedInUser).size() == 0){
                 User testUser = new User("TestUser");
-                Request testRequest1 = new Request(testUser, new Location(), new Location());
-                Request testRequest2 = new Request(testUser, new Location(), new Location(),
+                Request testRequest1 = new Request(testUser, new Location(""), new Location(""));
+                Request testRequest2 = new Request(testUser, new Location(""), new Location(""),
                         "I gotta go home please.");
                 testRequest1.setFare(100);
                 rl.add(testRequest1);
@@ -297,15 +397,25 @@ public class MainActivity extends AppCompatActivity {
 
 
             if (requestList.size() == 0) {
+                
                 // Create sample requests because this is probably not set up yet.
-                Request requestOne = new Request( loggedInUser, new Location(), new Location(), "testRequest!" );
-                Request requestTwo = new Request( loggedInUser, new Location(), new Location(), "testRequest2!" );
-
-
+                Request requestOne = new Request( loggedInUser, new Location(""), new Location(""), "testRequest!" );
+                Request requestTwo = new Request( loggedInUser, new Location(""), new Location(""), "testRequest2!" );
+                // TODO: remove these tests
+                ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();
+                fut.execute("sarah");
+                User sarah = null;
+                try {
+                    sarah = fut.get();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                requestOne.setChosenDriver(sarah);
+                requestTwo.setChosenDriver(sarah);
                 requestOne.setStatus(Request.COMPLETE);
                 requestTwo.setStatus(Request.PAID);
-                requestList.add( requestOne );
-                requestList.add( requestTwo );
+                requestList.add(requestOne);
+                requestList.add(requestTwo);
             }
 
             // Mike's old line, Kieter rewrote it with Mike, you can probably delete it

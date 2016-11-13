@@ -3,20 +3,27 @@ package comcmput301f16t01.github.carrier;
 import android.content.Context;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+
+import comcmput301f16t01.github.carrier.Notifications.Notification;
+import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 
 /**
- * Singleton Pattern
- * We will be using RequestController as a middleman between the activity and elasticController.
- * * modifies/returns a RequestList model
- * * @see Request
- * * @see RequestList
+ * Uses a singleton pattern to query and get results of requests.
+ *
+ * Typical use:
+ *      rc.searchType( params );            // Change the singleton's information
+ *      requestList = rc.getResults();      // Get the results of that search (global to program)
+ *
+ * Or use one of the getX() functions to get immediate info.
  */
 public class RequestController {
-    private Context saveContext = null;
-    private static RequestList requestList = null;
+    /** Singleton instance of RequestController */
+    private static RequestList requestList;
 
     /**
-     * Since we are using elastic search to get the request list.
+     * Prevents errors when a RequestController is initialized and methods that require requestList
+     * to not be null (i.e. getResult() )
      */
     public RequestController() {
         if (requestList == null) {
@@ -24,19 +31,7 @@ public class RequestController {
         }
     }
 
-    /**
-     * @return the RequestList held by this controller.
-     */
-    public static RequestList getInstance() {
-        if (requestList == null) {
-            requestList = new RequestList();
-        }
-        return requestList;
-    }
-
-    /**
-     * @param request
-     */
+    /** Adds a request to elastic search. */
     public String addRequest(Request request) {
         if (request.getStart() == null || request.getEnd() == null) {
             return "You must first select a start and end location";
@@ -45,9 +40,14 @@ public class RequestController {
         } else {
             ElasticRequestController.AddRequestTask art = new ElasticRequestController.AddRequestTask();
             art.execute(request);
-
             return null;
         }
+    }
+
+    /** Clears information in the singleton, not exactly necessary */
+    // TODO check the necessity of this function.
+    public void clear() {
+        requestList = new RequestList();
     }
 
     /**
@@ -56,8 +56,8 @@ public class RequestController {
      * @param rider The rider we are getting the requests for.
      * @return An array list of requests that the user has made.
      */
-    public ArrayList<Request> getRequests(User rider) {
-        ArrayList<Request> returnValue = new ArrayList<>();
+    public RequestList getRequests(User rider) {
+        RequestList returnValue = new RequestList();
         for (Request request : requestList) {
             if (request.getRider() == rider) {
                 returnValue.add(request);
@@ -66,12 +66,8 @@ public class RequestController {
         return returnValue;
     }
 
-    /**
-     *
-     */
-    public void reset() {
-    }
 
+    // TODO Why does this need a rider? You can cancel a request just knowing the request.
     public void cancelRequest(User rider, Request request) {
         // TODO test elastic search component
         request.setStatus(Request.CANCELLED);
@@ -85,8 +81,12 @@ public class RequestController {
      * @param driver  the driver that is being added as a driver for the request.
      */
     public void addDriver(Request request, User driver) {
+        // TODO Elastic Requests...
+        // only on success should we send out a notification!
+        NotificationController nc = new NotificationController();
+        nc.addNotification( request.getRider(), request );
+        // TODO check for notification success?
         request.addOfferingDriver(driver);
-
     }
 
     /**
@@ -97,6 +97,12 @@ public class RequestController {
      * @param driver  The driver that is being accepted
      */
     public void confirmDriver(Request request, User driver) {
+
+        // TODO Elastic Requests...
+        // only on success should we send out a notification!
+        NotificationController nc = new NotificationController();
+        nc.addNotification( driver, request );
+        // TODO check for notification success?
     }
 
     public void completeRequest(Request request) {
@@ -105,41 +111,27 @@ public class RequestController {
     public void payForRequest(Request request) {
     }
 
-
     /**
-     * Is used to search open requests by a location submitted by a driver. The search results
-     * should return an ordered list with priority given to requests that begin in closest
-     * proximity to the driver-submitted location. Search results are limited to a range of
-     * locations that are within a reasonable distance to the driver-submitted location.
-     *
-     * @param location The location submitted by the user to query by
-     * @return Returns the search results
+     * Search requests by the keyword, will set it so the singleton contains the information for
+     * this query. Use getResults() to get the information.
+     * @param keyword
      */
-    public ArrayList<Request> searchByLocation(Location location) {
-        return new ArrayList<>();
+    public void searchByKeyword(String keyword) {
+        ElasticRequestController.SearchByKeywordTask sbkt = new ElasticRequestController.SearchByKeywordTask();
+        sbkt.execute(keyword);
+        try {
+            requestList = sbkt.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    /**
-     * Is used to search open requests by a keyword query submitted by a driver. The query string
-     * should not be case-dependent. The search matches the query string to the request description
-     * to determine whether a request should be included in the search results or not.
-     *
-     * @param query
-     * @return Returns the search results
+        /**
+     * Search requests by a location. This sets it so the singleton contains the information for
+     * this query. Use getResults() to get the information.
      */
-    // TODO consider having these search results sorted by location and limited to a location range
-    //   this will require us to compare against the driver's current location...how do we get that?
-    public ArrayList<Request> searchByKeyword(String query) {
-        return new ArrayList<>();
-    }
+    public void searchByLocation( /* location parameters? */ ) {
 
-    /**
-     * Is used to provide a driver with a list of all open requests.
-     *
-     * @return An array list of open requests.
-     */
-    public ArrayList<Request> getOpenRequests() {
-        return new ArrayList<Request>();
     }
 
     /**
@@ -159,33 +151,85 @@ public class RequestController {
         return returnValue;
     }
 
+
+
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * * * * * * * * * * * * * * * * *    DEPRECATED FUNCTIONS   * * * * * * * * * * * * * * * * * *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
     /**
-     * Will be used to get a list of drivers that the user can choose to confirm as there driver
-     *
-     * @param request The request that is being queried for a list of drivers.
-     * @return An ArrayList of drivers that have offered to give a ride on the request.
+     * Deprecated: use the void getSearchByLocation
      */
+    @Deprecated
+    public ArrayList<Request> getSearchByLocation(Location location) {
+        return new ArrayList<>();
+    }
+
+    /**
+     * Deprecated: This is literally built into a Request. (see the ArrayList of offered drivers)
+     */
+    @Deprecated
     public ArrayList<User> getDrivers(Request request) {
         return new ArrayList<User>();
     }
 
     /**
-     * Provides a list of requests that are available for a driver to accept.
-     *
-     * @return an arraylist of requests that a driver is able to accept.
-     * @See getOpenRequests
+     * Deprecated: There are several other functions that do this. Also, try to only use
+     * getSearchByKeyword or getSearchByLocation
      */
+    @Deprecated
     public ArrayList<Request> getAvailableRequests() {
+        return new ArrayList<Request>();
+    }
+
+    /** Get the results of a searchByKeyword or a getSearchByLocation query. */
+    public RequestList getResult() {
+        return (RequestList) requestList;
+    }
+
+    /**
+     * Deprecated: Use getResult instead.
+     */
+    @Deprecated
+    public static RequestList getInstance() {
+        if (requestList == null) {
+            //requestList = new ArrayList<Request>();
+        }
+        return requestList;
+    }
+
+    /**
+     * Deprecated: There is no user story that says we need to modify a request description after it has been
+     * created
+     */
+    @Deprecated
+    public void setRequestDescription(Request request, String description) {
+    }
+
+    /**
+     * Deprecated: Only use getSearchByKeyword or getSearchByLocation?
+     */
+    @Deprecated
+    public ArrayList<Request> getOpenRequests() {
         return new ArrayList<Request>();
     }
 
 
     /**
-     * This is used to set the Request description.
-     *
-     * @param request     The request that we are modifying
-     * @param description The description that we are setting it to.
+     * Deprecated: use the void function instead (singleton changer) so that this can be used with
+     * the getResults() method
      */
-    public void setRequestDescription(Request request, String description) {
+    @Deprecated
+    public ArrayList<Request> getSearchByKeyword(String query) {
+        return new ArrayList<>();
     }
+
+//    /**
+//     * Deprecated: should use new function that uses elastic search or FileIO (depending on
+//     * connectivity), not singleton?
+//     */
+//    @Deprecated
+//    public ArrayList<Request> getRequests(User rider) {
+//        return requestList;
+//    }
 }

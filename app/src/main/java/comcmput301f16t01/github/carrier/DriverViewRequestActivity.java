@@ -8,10 +8,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import org.w3c.dom.Text;
-
 import java.util.ArrayList;
+import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * This will help us show the request from the perspective of a driver
@@ -82,8 +82,11 @@ public class DriverViewRequestActivity extends AppCompatActivity {
     private TextView fareAmountTextView;
     private TextView startLocationTextView;
     private TextView descriptionTextView;
-    private TextView riderTextView;
-    private TextView driverTextView;
+    private UsernameTextView riderUsernameTextView;
+
+    // Set up the UsernameTextView of the driver
+    private UsernameTextView driverUsernameTextView;
+
 
     /**
      * Will set the various views to display the correct information for the
@@ -92,14 +95,11 @@ public class DriverViewRequestActivity extends AppCompatActivity {
     private void setViewIds() {
         fareAmountTextView.setText(new MakeRequestActivity().formatFare(request.getFare()));
         startLocationTextView.setText(request.getStart().toString());
-        descriptionTextView.setText((request.getDescription()));
-        riderTextView.setText(request.getRider().getUsername());
-        if (request.getConfirmedDriver() != null) {
-            driverTextView.setText(request.getConfirmedDriver().getUsername());
-        }
-        else {
-            driverTextView.setText("");
-        }
+        descriptionTextView.setText((request.getDescription()));riderUsernameTextView.setText("Rider: " + request.getRider().getUsername());
+        riderUsernameTextView.setUser(request.getRider());
+        riderUsernameTextView.setText(request.getRider().getUsername());
+        driverUsernameTextView.setText("Driver: " + request.getChosenDriver().getUsername());
+        driverUsernameTextView.setUser(request.getChosenDriver());
     }
 
     /**
@@ -109,8 +109,8 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         fareAmountTextView = (TextView) findViewById(R.id.textView_$fareAmount);
         startLocationTextView = (TextView) findViewById(R.id.textView_start);
         descriptionTextView = (TextView) findViewById(R.id.textView_description);
-        riderTextView = (TextView) findViewById(R.id.textView_rider);
-        driverTextView = (TextView) findViewById(R.id.textView_driver);
+        driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
+        riderUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_rider);
     }
 
     public void MakeOffer(View v) {
@@ -134,5 +134,5 @@ public class DriverViewRequestActivity extends AppCompatActivity {
             rc.addDriver(request, loggedInUser);
             Toast.makeText(this, "Made an offer.", Toast.LENGTH_SHORT).show();
         }
-    }
+
 }
