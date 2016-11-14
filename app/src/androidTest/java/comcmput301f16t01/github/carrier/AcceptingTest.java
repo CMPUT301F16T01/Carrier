@@ -11,9 +11,6 @@ import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestList;
 
-/**
- * Created by michael on 13/11/16.
- */
 
 public class AcceptingTest extends ApplicationTest {
     // abstracts reused code to prevent mistakes and aid in readability of tests
@@ -238,7 +235,7 @@ public class AcceptingTest extends ApplicationTest {
      *  Will be added later.
      */
     public void testConfirmation() {
-        
+
     }
     private void setUpUser() {
         UserController uc = new UserController();
