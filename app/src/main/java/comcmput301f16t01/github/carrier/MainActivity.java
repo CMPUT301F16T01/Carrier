@@ -85,12 +85,6 @@ public class MainActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 RequestController rc = new RequestController();
                 mViewPager.setCurrentItem(tab.getPosition());
-                changeFab(tab.getPosition());
-                if( tab.getPosition() == 0 && rc.getResult() == null ) {
-                    rc.fetchRequestsWhereRider( UserController.getLoggedInUser() );
-                } else {
-                    rc.getOfferedRequests( UserController.getLoggedInUser() );
-                }
             }
 
             @Override
@@ -137,13 +131,19 @@ public class MainActivity extends AppCompatActivity {
             promptViewNotifications();
         }
 
-//        // TODO might not need this now that we have listeners
-//        RequestController rc = new RequestController();
-//        if( mViewPager.getCurrentItem() == 0 ) {
-//            //rc.fetchRequestsWhereRider(UserController.getLoggedInUser());
-//        } else {
-//            rc.getOfferedRequests( UserController.getLoggedInUser());
-//        }
+        try {
+            Thread.sleep( 1000 );
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // TODO might not need this now that we have listeners
+        RequestController rc = new RequestController();
+        if( mViewPager.getCurrentItem() == 0 ) {
+            rc.fetchRequestsWhereRider(UserController.getLoggedInUser());
+        } else {
+            rc.getOfferedRequests( UserController.getLoggedInUser());
+        }
     }
 
     /**
