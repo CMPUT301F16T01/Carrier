@@ -13,6 +13,7 @@ import comcmput301f16t01.github.carrier.Requests.RequestList;
 
 
 public class SearchingTests extends ApplicationTest {
+
     // University of Alberta, Edmonton
     static final double latitude1 = 53.5232;
     static final double longitude1 = -113.5263;

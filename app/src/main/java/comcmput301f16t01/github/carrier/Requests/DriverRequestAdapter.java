@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Currency;
 import java.util.Locale;
 
+import comcmput301f16t01.github.carrier.FareCalculator;
 import comcmput301f16t01.github.carrier.R;
 import comcmput301f16t01.github.carrier.Requests.Request;
 
@@ -68,9 +69,9 @@ public class DriverRequestAdapter extends ArrayAdapter<Request> {
 
             // Set the price in the item's view
             if (priceTextView != null) {
+                FareCalculator fc = new FareCalculator();
                 Currency localCurrency = Currency.getInstance( Locale.getDefault() );
-                String price = localCurrency.getSymbol()
-                        + Float.toString(request.getFare() / 100);
+                String price = localCurrency.getSymbol() + fc.toString(request.getFare());
                 priceTextView.setText(price);
             }
 
@@ -85,27 +86,21 @@ public class DriverRequestAdapter extends ArrayAdapter<Request> {
                 switch( request.getStatus() ) {
                     case( Request.OPEN ):
                         statusImageView.setImageResource(R.drawable.open);
-                        //statusImageView.setBackgroundResource(R.color.openStatus);
                         break;
                     case( Request.OFFERED ):
                         statusImageView.setImageResource(R.drawable.offered);
-                        //statusImageView.setBackgroundResource(R.color.offeredStatus);
                         break;
                     case( Request.CONFIRMED ):
                         statusImageView.setImageResource(R.drawable.confirmed);
-                        //statusImageView.setBackgroundResource(R.color.confirmedStatus);
                         break;
                     case( Request.COMPLETE):
                         statusImageView.setImageResource(R.drawable.complete);
-                        //statusImageView.setBackgroundResource(R.color.completeStatus);
                         break;
                     case( Request.PAID):
                         statusImageView.setImageResource(R.drawable.paid);
-                        //statusImageView.setBackgroundResource(R.color.paidStatus);
                         break;
                     case( Request.CANCELLED):
                         statusImageView.setImageResource(R.drawable.cancel);
-                        //statusImageView.setBackgroundResource(R.color.cancelledStatus);
                         break;
                 }
             }

@@ -21,6 +21,7 @@ import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 import io.searchbox.core.Update;
+import io.searchbox.core.search.aggregation.ScriptedMetricAggregation;
 
 /**
  * Handles elastic search tasks with requests
@@ -55,6 +56,32 @@ public class ElasticRequestController {
         }
     } // AddRequestTask
 
+    /**
+     * Cancels a request in elastic search.
+     */
+    public static class CancelRequestTask extends AsyncTask<Request, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Request... requests) {
+            verifySettings();
+            for (Request request : requests) {
+                String script = "{\n" +
+                        "  \"doc\": { \"status\": " + "\"" + Request.CANCELLED + "\"" +"}" +
+                        "\n}";
+                Update update = new Update.Builder(script)
+                        .index("cmput301f16t01")
+                        .type("request")
+                        .id(request.getId())
+                        .build();
+                try {
+                    client.execute(update);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+    }
 // TODO May need this to edit it later...
 //    { "from" : 0, "size" : 500,
 //      "query": {
@@ -507,6 +534,52 @@ public class ElasticRequestController {
                 }
             }
             return requestList;
+        }
+    } // GetOfferedRequestsTask
+
+    public static class UpdateRequestTask extends AsyncTask<Request, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Request... params) {
+            verifySettings();
+
+            for (Request request : params ) {
+                // Start with basic query to change the status
+                String query =
+                        "{\n" +
+                        "    \"doc\": {\n" +
+                        "        \"status\": " + request.getStatus();
+
+                // If there is a chosenDriver, update that as well.
+                // TODO if the status is changing to complete or paid or cancelled we might not need this.
+                if ( request.getChosenDriver() != null ) {
+                    User chosen = request.getChosenDriver();
+                    query += ",\n" +
+                        "        \"chosenDriver\": {\n" +
+                        "            \"email\": \"" + chosen.getEmail() + "\",\n" +
+                        "            \"phoneNumber\": \"" + chosen.getPhone() + "\",\n" +
+                        "            \"username\": \"" + chosen.getUsername() + "\"\n" +
+                        "        }\n";
+                }
+
+                // finishing brackets for the query.
+                query += "    }\n" +
+                        "}";
+
+                Update update = new Update.Builder(query)
+                        .index("cmput301f16t01")
+                        .type("request")
+                        .id(request.getId())
+                        .build();
+
+                try {
+                    client.execute( update );
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
         }
     }
 
