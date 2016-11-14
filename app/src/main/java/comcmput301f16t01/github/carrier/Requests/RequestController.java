@@ -100,6 +100,7 @@ public class RequestController {
         // TODO add addNotification to queue if offline
 
         request.addOfferingDriver(driver);
+        requestList.notifyListeners();
     }
 
     /**
