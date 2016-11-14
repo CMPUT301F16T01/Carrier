@@ -1,12 +1,12 @@
-package comcmput301f16t01.github.carrier;
+package comcmput301f16t01.github.carrier.Requests;
 
 import android.app.Activity;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.content.DialogInterface;
-import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,30 +30,37 @@ import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
 import java.util.ArrayList;
 import java.util.List;
 
+import comcmput301f16t01.github.carrier.FareCalculator;
+import comcmput301f16t01.github.carrier.R;
+import comcmput301f16t01.github.carrier.Requests.Request;
+import comcmput301f16t01.github.carrier.Requests.RequestController;
+import comcmput301f16t01.github.carrier.User;
+import comcmput301f16t01.github.carrier.UserController;
+import comcmput301f16t01.github.carrier.UsernameTextView;
+
 /**
- * This will help us show the request from the perspective of a driver
- * Will have the position in the requestcontroller bundled to determine what request to display.
+ * This will help us show the request from the perspective of a rider
  */
-public class DriverViewRequestActivity extends AppCompatActivity {
-    Activity activity = DriverViewRequestActivity.this;
+public class RiderRequestActivity extends AppCompatActivity {
+    Activity activity = RiderRequestActivity.this;
     GeoPoint startPoint = null;
     GeoPoint endPoint = null;
     Road[] roadList = null;
     MapView map;
     IMapController mapController;
     private Request request;
-    private User loggedInUser;
+
+    RequestController rc = new RequestController();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_driver_view_request);
-        //getting the request controller to get a list of requests
-        loggedInUser = UserController.getLoggedInUser();
+        setContentView(R.layout.activity_rider_view_request);
 
         // unpacking the bundle to get the position of request
         Bundle bundle = getIntent().getExtras();
-        request = new Gson().fromJson(bundle.getString("request"), Request.class);
+        int position = bundle.getInt("position");
+        request = rc.getResult().get(position);
 
         setTitle("Request");
 
@@ -75,11 +82,9 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         overlayItems.add(new OverlayItem("Starting Point", "This is the starting point", startPoint));
         overlayItems.add(new OverlayItem("Destination", "This is the destination point", endPoint));
 
-        if ((request != null) && (loggedInUser != null)) {
-            setViews();
-            setMarkers();
-            getRoadAsync();
-        }
+        setViews();
+        setMarkers();
+        getRoadAsync();
     }
 
     /**
@@ -103,6 +108,14 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         map.invalidate();
     }
 
+    // Based on: https://goo.gl/4TKn2y
+    // Retrieved on: November 10th, 2016
+
+    // Updated with: https://goo.gl/h2CKyn
+    // Author: yubaraj poudel
+    // Posted: August 6th, 2016
+    // Retrieved on: November 10th, 2016
+
     /**
      * Asynchronous task to get the route between the two points
      */
@@ -121,68 +134,6 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         waypoints.add(roadStartPoint);
         waypoints.add(roadEndPoint);
         new UpdateRoadTask().execute(waypoints);
-    }
-
-    public void centerStart(View view) {
-        mapController.setCenter(startPoint);
-    }
-
-    public void centerEnd(View view) {
-        mapController.setCenter(endPoint);
-    }
-
-    /**
-     * Get the center point of the route to center the screen on
-     * @return GeoPoint
-     */
-    public GeoPoint getCenter() {
-        double startLat = startPoint.getLatitude();
-        double startLong = startPoint.getLongitude();
-        double endLat = endPoint.getLatitude();
-        double endLong = endPoint.getLongitude();
-
-        Location retLoc = new Location("");
-
-        if(startLat > endLat) {
-            retLoc.setLatitude(endLat + ((startLat - endLat)/2));
-        } else {
-            retLoc.setLatitude(startLat + ((endLat - startLat)/2));
-        }
-
-        if(startLong > endLong) {
-            retLoc.setLongitude(endLong + ((startLong - endLong)/2));
-        } else {
-            retLoc.setLatitude(startLong + ((endLong - startLong)/2));
-        }
-
-        return new GeoPoint(retLoc);
-    }
-
-    public void makeOffer(View view) {
-        RequestController rc = new RequestController();
-        // Can not make an offer on a request that has a confirmed driver.
-        // Can not make an offer on a request that you hae already made an offer on.
-        // Can not make an offer on a cancelled request.
-        AlertDialog.Builder adb = new AlertDialog.Builder(DriverViewRequestActivity.this);
-        adb.setTitle("Error: ");
-        adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        });
-        if (request.getConfirmedDriver() != null) {
-            adb.setMessage("Unable to make an offer on the request. There is already a confirmed driver.");
-            adb.show();
-        } else if (request.getOfferedDrivers().contains(loggedInUser)) {
-            adb.setMessage("Unable to make an offer on the request. You have already made an offer.");
-            adb.show();
-        } else if (request.getStatus() == Request.CANCELLED) {
-            adb.setMessage("Unable to make an offer on the request. The request has been cancelled.");
-            adb.show();
-        } else {
-            rc.addDriver(request, loggedInUser);
-            Toast.makeText(this, "Made an offer.", Toast.LENGTH_SHORT).show();
-        }
     }
 
     /**
@@ -228,44 +179,84 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         }
     }
 
+    public void centerStart(View view) {
+        mapController.setCenter(startPoint);
+    }
+
+    public void centerEnd(View view) {
+        mapController.setCenter(endPoint);
+    }
+
+    /**
+     * Get the center point of the route to center the screen on
+     * @return GeoPoint
+     */
+    public GeoPoint getCenter() {
+        double startLat = startPoint.getLatitude();
+        double startLong = startPoint.getLongitude();
+        double endLat = endPoint.getLatitude();
+        double endLong = endPoint.getLongitude();
+
+        Location retLoc = new Location("");
+
+        if(startLat > endLat) {
+            retLoc.setLatitude(endLat + ((startLat - endLat)/2));
+        } else {
+            retLoc.setLatitude(startLat + ((endLat - startLat)/2));
+        }
+
+        if(startLong > endLong) {
+            retLoc.setLongitude(endLong + ((startLong - endLong)/2));
+        } else {
+            retLoc.setLatitude(startLong + ((endLong - startLong)/2));
+        }
+
+        return new GeoPoint(retLoc);
+    }
+
+    // TODO fill in
+    public void payForRequest(View view) {
+        Toast.makeText(activity, "PAY FOR REQUEST", Toast.LENGTH_SHORT).show();
+    }
+
     /**
      * Given the request passed in by the user, set the views in the layout.
      */
     public void setViews() {
-        UserController uc = new UserController();
-
         // Set up the fare
         FareCalculator fc = new FareCalculator();
         TextView fareTextView = (TextView) findViewById(R.id.textView_$fareAmount);
         fareTextView.setText("$" + fc.toString(request.getFare()));
 
+        // TODO setText could be inside the setUser method?
         // Set up the UsernameTextView of the rider
         UsernameTextView riderUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_rider);
         riderUsernameTextView.setText(request.getRider().getUsername());
         riderUsernameTextView.setUser(request.getRider());
 
+        // TODO why does it say "sarah" even though there is no confirmedDriver?
         // Set up the UsernameTextView of the driver
         UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
-        driverUsernameTextView.setText(uc.getLoggedInUser().getUsername());
-        driverUsernameTextView.setUser(uc.getLoggedInUser());
+        if (request.getChosenDriver() != null) {
+            driverUsernameTextView.setText(request.getChosenDriver().getUsername());
+            driverUsernameTextView.setUser(request.getChosenDriver());
+        }
 
         TextView startAddressTextView = (TextView) findViewById(R.id.textView_start);
         String startAddress = request.getStart().getAddress();
-        if (startAddress != null) {
+        if(startAddress != null) {
             startAddressTextView.setText(startAddress);
         } else {
-            String startPoint = "(" + String.valueOf(request.getStart().getLatitude()) + ", " +
-                    String.valueOf(request.getStart().getLongitude()) + ")";
+            String startPoint = request.getStart().getLatLong();
             startAddressTextView.setText(startPoint);
         }
 
         TextView endAddressTextView = (TextView) findViewById(R.id.textView_end);
         String endAddress = request.getEnd().getAddress();
-        if (endAddress != null) {
+        if(endAddress != null) {
             endAddressTextView.setText(request.getEnd().getAddress());
         } else {
-            String endPoint = "(" + String.valueOf(request.getEnd().getLatitude()) + ", " +
-                    String.valueOf(request.getEnd().getLongitude()) + ")";
+            String endPoint = request.getEnd().getLatLong();
             endAddressTextView.setText(endPoint);
         }
 
@@ -299,5 +290,42 @@ public class DriverViewRequestActivity extends AppCompatActivity {
 
             }
         }
+    }
+
+    /**
+     * Will initialize the view ids for all the views in the activity.
+     */
+    public void cancelRequest(View v){
+        AlertDialog.Builder adb = new AlertDialog.Builder(RiderRequestActivity.this);
+        if ((request.getStatus() != Request.CANCELLED) && (request.getStatus() != Request.COMPLETE)
+                && (request.getStatus() != Request.PAID)) {
+            adb.setMessage("Cancel request?");
+            adb.setCancelable(true);
+            adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    RequestController rc = new RequestController();
+                    rc.cancelRequest(request.getRider(), request);
+                    finish();
+                }
+            });
+
+            adb.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+        }
+        else {
+            adb.setTitle("Error: ");
+            adb.setMessage("Request cannot be cancelled.");
+            adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+        }
+        adb.show();
     }
 }

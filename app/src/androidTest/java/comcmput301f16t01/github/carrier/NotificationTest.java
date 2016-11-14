@@ -1,10 +1,5 @@
 package comcmput301f16t01.github.carrier;
 
-import android.app.Instrumentation;
-import android.support.annotation.UiThread;
-import android.test.InstrumentationTestCase;
-import android.test.UiThreadTest;
-
 import java.util.Collections;
 import java.util.Date;
 
@@ -14,6 +9,11 @@ import comcmput301f16t01.github.carrier.Notifications.ElasticNotificationControl
 import comcmput301f16t01.github.carrier.Notifications.Notification;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationList;
+import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
+import comcmput301f16t01.github.carrier.Requests.Request;
+import comcmput301f16t01.github.carrier.Requests.RequestController;
+
+import android.location.Location;
 
 // TODO could probably use a mock RequestController, since it always posts test requests to elastic search
 
@@ -49,9 +49,23 @@ public class NotificationTest extends ApplicationTest {
         assertTrue( "Failed to log in for test.", uc.logInUser( loggedInUser.getUsername() ) );
     }
 
+    protected void tearDown() throws Exception {
+        ElasticNotificationController.ClearAllTask cat = new ElasticNotificationController.ClearAllTask();
+        cat.execute( loggedInUser.getUsername(), driverOne.getUsername(), anotherUser.getUsername() );
+
+        ElasticRequestController.ClearRiderRequestsTask crt = new ElasticRequestController.ClearRiderRequestsTask();
+        crt.execute( loggedInUser.getUsername(), driverOne.getUsername(), anotherUser.getUsername() );
+
+        ElasticRequestController.RemoveOffersTask rot = new ElasticRequestController.RemoveOffersTask();
+        rot.setMode( rot.MODE_USERNAME );
+        rot.execute(loggedInUser.getUsername(), driverOne.getUsername(), anotherUser.getUsername());
+
+        super.tearDown();
+    }
+
     // abstracts reused code to prevent mistakes and aid in readability of tests
     // Makes the current thread sleep for the specified amount of time (in ms)
-    // TODO convert to a full out AsyncWait method to generalize waiting for .size() == x tasks?
+    // TODO convert to a full out AsyncWait method to generalize waiting for .size() == RequestAdapter tasks?
     private void chillabit( long time ) {
         try {
             Thread.sleep( time );
@@ -133,6 +147,7 @@ public class NotificationTest extends ApplicationTest {
      * Tests that clearing notifications actually works inside the Notification Controller
      */
     public void testClearingNotifications() {
+
         Request requestOne = new Request( loggedInUser, new CarrierLocation(), new CarrierLocation(),
                 "testClearingNotifications1" );
         requestOne.setId("testClearing1");
@@ -146,9 +161,11 @@ public class NotificationTest extends ApplicationTest {
         nc.addNotification( loggedInUser, requestTwo );
         nc.addNotification( loggedInUser, requestOne );
 
+        chillabit( 1000 );
+
         NotificationList notificationList = nc.fetchNotifications( loggedInUser );
 
-        // Make sure this test is useful by ensuring there are notfications now
+        // Make sure this test is useful by ensuring there are notifications now
         assertTrue( "There should be at least one notification so far", notificationList.size() != 0 );
 
         // Try to clear them
@@ -260,7 +277,7 @@ public class NotificationTest extends ApplicationTest {
             if (pass > 5) { break; }
         }
 
-        nc.clearAllNotifications( driverOne );
+        //nc.clearAllNotifications( driverOne );
 
         assertTrue( "The driver should have one and only one notification.",
                 notificationList.size() == 1);
@@ -315,7 +332,6 @@ public class NotificationTest extends ApplicationTest {
         assertFalse( "Both notifications should be unread", notificationList.get(0).isRead() );
         assertFalse( "Both notifications should be unread", notificationList.get(1).isRead() );
 
-        String rememberReadID = notificationList.get(0).getID();
         nc.markNotificationAsRead( notificationList.get(0) );
 
         notificationList = nc.fetchNotifications( loggedInUser );
@@ -335,12 +351,8 @@ public class NotificationTest extends ApplicationTest {
         // Assertions based on which one is marked as "read"
         if (notificationList.get(0).isRead()) {
             assertFalse( "One of the notifications should be false", notificationList.get(1).isRead() );
-            assertEquals( "The ID that was set to false is not the same",
-                    rememberReadID, notificationList.get(1).getID() );
         } else {
-            assertFalse( "One of the notifications should be false", notificationList.get(0).isRead() );
-            assertEquals( "The ID that was set to false is not the same",
-                    rememberReadID, notificationList.get(0).getID() );
+            assertTrue( "One of the notifications should be true", notificationList.get(1).isRead() );
         }
     }
 
@@ -370,14 +382,14 @@ public class NotificationTest extends ApplicationTest {
         assertTrue( "There should be no notification", notificationList.size() == 0 );
 
         for( int i = 0; i < 15; i++ ) {
-            nc.addNotification( anotherUser, requestOne );
+            nc.addNotification( anotherUser, requestOne );  //
         }
 
         notificationList = nc.fetchNotifications( anotherUser );
 
         // wait for async tasks to finish (need 15 or more unique requests)
         pass = 0;
-        while( notificationList.size() <= 10 ) {
+        while( notificationList.size() != 15 ) {
             chillabit( 1000 );
             notificationList = nc.fetchNotifications( anotherUser );
             pass++;

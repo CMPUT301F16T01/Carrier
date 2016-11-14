@@ -25,16 +25,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.location.Location;
 
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationActivity;
+import comcmput301f16t01.github.carrier.Requests.DriverRequestAdapter;
+import comcmput301f16t01.github.carrier.Requests.DriverViewRequestActivity;
+import comcmput301f16t01.github.carrier.Requests.MakeRequestActivity;
+import comcmput301f16t01.github.carrier.Requests.Request;
+import comcmput301f16t01.github.carrier.Requests.RequestAdapter;
+import comcmput301f16t01.github.carrier.Requests.RequestController;
+import comcmput301f16t01.github.carrier.Requests.RequestList;
+import comcmput301f16t01.github.carrier.Requests.RiderRequestActivity;
 import comcmput301f16t01.github.carrier.Searching.SearchActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -49,17 +54,20 @@ public class MainActivity extends AppCompatActivity {
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
+    /** The {@link ViewPager} that will host the section contents. */
     private ViewPager mViewPager;
 
+    // TODO please comment this. Why is it here?
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
+
+    // Views contain controllers
+    //RequestController rc = new RequestController();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("Carrier");
 
         checkPermissions();
 
@@ -128,6 +136,15 @@ public class MainActivity extends AppCompatActivity {
         if (nc.unreadNotification( UserController.getLoggedInUser() )) {
             promptViewNotifications();
         }
+
+        // get segment number, but for now it doesn't matter
+        System.out.print( mViewPager.getCurrentItem() );
+        RequestController rc = new RequestController();
+        if( mViewPager.getCurrentItem() == 0 ) {
+            rc.fetchRequestsWhereRider(UserController.getLoggedInUser());
+        } else {
+            rc.getOfferedRequests( UserController.getLoggedInUser());
+        }
     }
 
     /**
@@ -171,7 +188,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Based on (Android Developer Docs): https://goo.gl/9FTnEL
+    // Based on: https://goo.gl/9FTnEL
+    // Author: Android Dev Docs
     // Retrieved on: November 9th, 2016
     /**
      * Result of the user granting or denying permissions. If they grant the permissions
@@ -207,7 +225,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Based on (Android Developer Docs): https://goo.gl/9FTnEL
+    // Based on: https://goo.gl/9FTnEL
+    // Author: Android Dev Docs
     // Retrieved on: November 9th, 2016
     /**
      * Asks user to grant required permissions for the maps to work.
@@ -336,8 +355,6 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
 
             // TODO (after) allow the ability to toggle between what requests are shown (?)
 
@@ -358,25 +375,20 @@ public class MainActivity extends AppCompatActivity {
         private void fillDriverRequests(ListView requestListView) {
             RequestController rc = new RequestController();
             User loggedInUser = UserController.getLoggedInUser();
-            // TODO fix deprecation usage
-            RequestList rl = RequestController.getInstance();
-            if (rc.getOfferedRequests(loggedInUser).size() == 0){
-                User testUser = new User("TestUser");
-                CarrierLocation start = new CarrierLocation(53.5232, -113.5263);
-                CarrierLocation end = new CarrierLocation(53.5225, -113.6242);
-                Request testRequest1 = new Request(testUser, start, end, "Gotta go home from downtown");
-                testRequest1.getStart().setAddress("11390 87 Avenue Northwest\nEdmonton, AB T6G 2T9\nCanada");
-                testRequest1.getEnd().setAddress("8770 170 Street Northwest\nEdmonton, AB T5T 4V4\nCanada");
-                FareCalculator fc = new FareCalculator();
-                testRequest1.setFare(fc.getEstimate(10.6,960));
-                rl.add(testRequest1);
-                rc.addDriver(testRequest1, loggedInUser);
-            }
+
             final ArrayList<Request> requestList = rc.getOfferedRequests(loggedInUser);
-            DriverRequestAdapter requestArrayAdapter = new DriverRequestAdapter(this.getContext(),
+
+            final DriverRequestAdapter requestArrayAdapter = new DriverRequestAdapter(this.getContext(),
                     R.layout.driverrequestlist_item, requestList);
             requestListView.setAdapter(requestArrayAdapter);
-            final Context ctx = this.getContext();
+
+            // add listener to update this view
+            rc.addListener( new Listener() {
+                @Override
+                public void update() {
+                    requestArrayAdapter.notifyDataSetChanged();
+                }
+            });
 
             /**
              * When we click a request we want to be able to see it in another activity
@@ -403,52 +415,22 @@ public class MainActivity extends AppCompatActivity {
         private void fillRiderRequests(ListView requestListView) {
             RequestController rc = new RequestController();
             User loggedInUser = UserController.getLoggedInUser();
-            // Mike's old line, Kieter rewrote with Mike, you can probably delete it
-            //final ArrayList<Request> requestList = rc.getRequests( loggedInUser );
-            final ArrayList<Request> requestList = rc.getResult();
 
-            if (requestList.size() == 0) {
-                // Create sample requests because this is probably not set up yet.
-                CarrierLocation start = new CarrierLocation(53.5232, -113.5263);
-                CarrierLocation end = new CarrierLocation(53.5225, -113.6242);
-                Request requestOne = new Request( loggedInUser, start, end, "Here is my description. It is really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really long.\n\nIt also has a new line." );
-                // TODO: remove these tests
-                ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();
-                fut.execute("sarah");
-                User sarah = null;
-                try {
-                    sarah = fut.get();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                requestOne.getStart().setAddress("11390 87 Avenue Northwest\nEdmonton, AB T6G 2T9\nCanada");
-                requestOne.getEnd().setAddress("8770 170 Street Northwest\nEdmonton, AB T5T 4V4\nCanada");
-                FareCalculator fc = new FareCalculator();
-                requestOne.setFare(fc.getEstimate(10.6,960));
-                requestOne.setChosenDriver(sarah);
-                requestOne.setStatus(Request.COMPLETE);
-                requestList.add(requestOne);
-            }
-
-            // Mike's old line, Kieter rewrote it with Mike, you can probably delete it
-//            RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
-//                    R.layout.requestlist_item, requestList );
-            RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
-                    R.layout.requestlist_item, rc.getRequests(UserController.getLoggedInUser()) );
+            final RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
+                    R.layout.requestlist_item,
+                    rc.fetchAllRequestsWhereRider(UserController.getLoggedInUser()) );
 
             requestListView.setAdapter( requestArrayAdapter );
 
-            final Context ctx = this.getContext();
-            /*requestListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            // add a listener to listen to changes and update this view.
+            rc.addListener(new Listener() {
                 @Override
-                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                    System.out.println( "hi" );
-                    return true;
+                public void update() {
+                    requestArrayAdapter.notifyDataSetChanged();
                 }
-            });*/
-
-
-            /**
+            });
+    
+            /*
              * When we click a request we want to be able to see it in another activity
              * Use bundles to send the position of the request in a list
              */
@@ -457,12 +439,12 @@ public class MainActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent intent = new Intent(getActivity(), RiderRequestActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putString("request", new Gson().toJson(requestList.get(position)));
+                    //bundle.putString("request", new Gson().toJson(requestList.get(position)));
+                    bundle.putInt( "position", position );
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
             });
-
         }
     }
 
@@ -493,9 +475,9 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "RIDER ACTIVITY";
+                    return "RIDER REQUESTS";
                 case 1:
-                    return "DRIVER ACTIVITY";
+                    return "DRIVER REQUESTS";
             }
             return null;
         }

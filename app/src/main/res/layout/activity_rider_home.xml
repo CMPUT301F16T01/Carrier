@@ -4,9 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!-- HOLDS TOGGLE BUTTONS FOR REQUEST TYPES
-        i.e. "show cancelled, show open, etc" -->
-    <!-- TODO need better symbols to increase understanding? on/off type etc -->
+    <!-- TODO part 5? -->
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -20,7 +18,7 @@
             android:textOff="no cancelled"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/toggleButton"
+            android:id="@+id/toggleButton1"
             android:checked="true"
             android:layout_weight="1" />
 
@@ -30,7 +28,7 @@
             android:textOff="no open"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/toggleButton"
+            android:id="@+id/toggleButton2"
             android:checked="true"
             android:layout_weight="1" />
 
@@ -40,7 +38,7 @@
             android:textOff="no waiting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/toggleButton"
+            android:id="@+id/toggleButton3"
             android:checked="true"
             android:layout_weight="1" />
 
@@ -50,7 +48,7 @@
             android:textOff="no complete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/toggleButton"
+            android:id="@+id/toggleButton4"
             android:checked="true"
             android:layout_weight="1" />
     </LinearLayout>

@@ -3,6 +3,9 @@ package comcmput301f16t01.github.carrier;
 import android.location.Location;
 
 import org.junit.Test;
+
+import comcmput301f16t01.github.carrier.Requests.Request;
+
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
@@ -120,7 +123,7 @@ public class UserProfileTests {
     public void showUsernameIfyouAreRider() {
         User you = new User("you");
         String description = "thing";
-        Request request = new Request(you, new Location(""), new Location(""), description);
+        Request request = new Request(you, new CarrierLocation(), new CarrierLocation(), description);
         UserController uc = new UserController();
         User driver = new User("Mandy");
         uc.addDriver(driver);
@@ -150,7 +153,7 @@ public class UserProfileTests {
     public void showUsernameIfyouAreDriver() {
         User rider = new User("Sarah");
         String description = "thing";
-        Request request = new Request(rider, new Location(""), new Location(""), description);
+        Request request = new Request(rider, new CarrierLocation(), new CarrierLocation(), description);
         UserController uc = new UserController();
         User you = new User("you");
         uc.addDriver(you);

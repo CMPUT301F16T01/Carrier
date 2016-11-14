@@ -4,6 +4,9 @@ import android.location.Location;
 
 import org.junit.Test;
 
+import comcmput301f16t01.github.carrier.Requests.Request;
+import comcmput301f16t01.github.carrier.Requests.RequestController;
+
 import static org.junit.Assert.*;
 /**
  * Created by michael on 11/10/16.
@@ -17,7 +20,7 @@ public class AcceptingTests {
     @Test
     public void driverAccept(){
         User rider = new User("Mike");
-        Request request = new Request(rider, new Location(""), new Location(""));
+        Request request = new Request(rider, new CarrierLocation(), new CarrierLocation());
         RequestController rc = new RequestController();
         rc.addRequest(request);
         User driver = new User("Cole");
@@ -42,8 +45,8 @@ public class AcceptingTests {
     @Test
     public void driverPendingAccepts(){
         User rider = new User("Mike");
-        Location start = new Location("");
-        Location end = new Location("");
+        CarrierLocation start = new CarrierLocation();
+        CarrierLocation end = new CarrierLocation();
         Request request = new Request(rider, start, end);
         RequestController rc = new RequestController();
         rc.addRequest(request);
@@ -55,7 +58,7 @@ public class AcceptingTests {
         rc.addDriver(request, driver);
         // Add another driver to compare
         User driver1 = new User("WASD");
-        Request request1 = new Request(rider, new Location(""), new Location(""));
+        Request request1 = new Request(rider, new CarrierLocation(), new CarrierLocation());
         rc.addRequest(request1);
         rc.addDriver(request1,driver1);
         // Make sure that the request is only added to the offering driver.
@@ -81,7 +84,7 @@ public class AcceptingTests {
     public void driverAcceptedRequests(){
         User rider = new User("Josh");
         User driver = new User("Kevin");
-        Request request = new Request(rider, new Location(""), new Location(""));
+        Request request = new Request(rider, new CarrierLocation(), new CarrierLocation());
         RequestController rc = new RequestController();
         rc.addRequest(request);
         rc.addDriver(request, driver);
@@ -103,7 +106,7 @@ public class AcceptingTests {
     public void notifyDriver(){
         User rider = new User("Josh");
         User driver = new User("Kevin");
-        Request request = new Request(rider, new Location(""), new Location(""));
+        Request request = new Request(rider, new CarrierLocation(), new CarrierLocation());
         RequestController rc = new RequestController();
         rc.addRequest(request);
         rc.addDriver(request,driver);

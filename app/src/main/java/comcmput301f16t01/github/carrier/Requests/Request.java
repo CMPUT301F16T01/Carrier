@@ -1,20 +1,25 @@
-package comcmput301f16t01.github.carrier;
+package comcmput301f16t01.github.carrier.Requests;
 
 import android.location.Location;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 
+//import comcmput301f16t01.github.carrier.Location;
+import comcmput301f16t01.github.carrier.CarrierLocation;
+import comcmput301f16t01.github.carrier.User;
+import io.searchbox.annotations.JestId;
+
 /**
  * Represents a request for a ride.
  */
 public class Request {
-    static final int OPEN = 1;            // A user has made the request but no drivers have accepted.
-    static final int OFFERED = 2;         // One or more drivers have offered to fulfill the request.
-    static final int CONFIRMED = 3;       // The user has chosen a driver and accepted one request.
-    static final int COMPLETE = 4;        // The user has gotten to their destination (and payed?)
-    static final int PAID = 7;
-    static final int CANCELLED = 9;        // The rider has cancelled their request
+    public static final int OPEN = 1;            // A user has made the request but no drivers have accepted.
+    public static final int OFFERED = 2;         // One or more drivers have offered to fulfill the request.
+    public static final int CONFIRMED = 3;       // The user has chosen a driver and accepted one request.
+    public static final int COMPLETE = 4;        // The user has gotten to their destination (and payed?)
+    public static final int PAID = 7;
+    public static final int CANCELLED = 9;        // The rider has cancelled their request
 
     /** The current status of a this request */
     private int status = OPEN;
@@ -41,14 +46,9 @@ public class Request {
     /** The price the requesting user is willing to pay for the request to be complete */
     private int fare;
 
-    /** When elastic searching, can search if this is true to notify the rider about the request */
-    private boolean needToNotifyRider = false;
-
-    /** When elastic searching, can search if this is true to notify the driver about the request */
-    private boolean needToNotifyDriver = false;
-
     /** For use with Elastic Search, is the unique ID given to it */
-    private String elasticID;
+    @JestId
+    private String elasticID = null;
 
 
     //TODO maybe add the Location strings to description by default? Just in case keywords are CarrierLocations.
@@ -67,28 +67,6 @@ public class Request {
         this.rider = rider;
         this.start = start;
         this.end = end;
-        this.offeringDrivers = new ArrayList<User>();
-        this.description = "";
-
-    }
-
-    // TODO Refactor all tests to use CarrierLocation, then these can be deleted
-    // Added these so things don't break while we transition
-    // Constructor with description
-    public Request(@NonNull User requestingRider, @NonNull Location requestedStart,
-                   @NonNull Location requestedEnd, String description) {
-        this.rider = requestingRider;
-        this.start = (CarrierLocation) requestedStart;
-        this.end = (CarrierLocation) requestedEnd;
-        this.description = description;
-        this.offeringDrivers = new ArrayList<User>();
-    }
-
-    // Constructor without description TODO do we need this?
-    public Request(User rider, Location start, Location end) {
-        this.rider = rider;
-        this.start = (CarrierLocation) start;
-        this.end = (CarrierLocation) end;
         this.offeringDrivers = new ArrayList<User>();
         this.description = "";
 
@@ -120,6 +98,14 @@ public class Request {
 
     public User getChosenDriver() {
         return this.chosenDriver;
+    }
+
+    // possibly get rid of?
+    @Deprecated
+    public int getFareEstimate(Double distance, Double duration) {
+        //FareCalculator fareCalc = new FareCalculator();
+        //return fareCalc.getEstimate(distance, duration);
+        return 0;
     }
 
     public ArrayList<User> getOffers() {
@@ -185,4 +171,15 @@ public class Request {
         setStatus(Request.CONFIRMED);
     }
 
+    /**
+     * Check if driver is already inside the list of offering drivers for this request.
+     */
+    public boolean hasOfferingDriver( User driver ) {
+        for ( User driverOffering : offeringDrivers ) {
+            if ( driverOffering.getUsername().equals(driver.getUsername()) ) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

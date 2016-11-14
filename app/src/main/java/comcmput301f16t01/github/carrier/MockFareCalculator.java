@@ -14,7 +14,9 @@ public class MockFareCalculator extends FareCalculator {
     public int getEstimate() {
         double upper = 20000;
         double lower = 1;
-        // next line from https://goo.gl/mpm34N, author: user2512642, retrieved on October 31st, 2016
+        // next line from https://goo.gl/mpm34N
+        // Author: user2512642
+        // Retrieved on: October 31st, 2016
         return (int)((Math.random() * (upper - lower)) + lower);
     }
 }
