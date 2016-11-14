@@ -21,6 +21,7 @@ import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 import io.searchbox.core.Update;
+import io.searchbox.core.search.aggregation.ScriptedMetricAggregation;
 
 /**
  * Handles elastic search tasks with requests
@@ -55,6 +56,32 @@ public class ElasticRequestController {
         }
     } // AddRequestTask
 
+    /**
+     * Cancels a request in elastic search.
+     */
+    public static class CancelRequestTask extends AsyncTask<Request, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Request... requests) {
+            verifySettings();
+            for (Request request : requests) {
+                String script = "{\n" +
+                        "  \"doc\": { \"status\": " + "\"" + Request.CANCELLED + "\"" +"}" +
+                        "\n}";
+                Update update = new Update.Builder(script)
+                        .index("cmput301f16t01")
+                        .type("request")
+                        .id(request.getId())
+                        .build();
+                try {
+                    client.execute(update);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+    }
 // TODO May need this to edit it later...
 //    { "from" : 0, "size" : 500,
 //      "query": {

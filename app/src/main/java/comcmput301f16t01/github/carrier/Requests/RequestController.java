@@ -72,7 +72,10 @@ public class RequestController {
     // TODO Why does this need a rider? You can cancel a request just knowing the request.
     public void cancelRequest(User rider, Request request) {
         // TODO test elastic search component
+        ElasticRequestController.CancelRequestTask crt = new ElasticRequestController.CancelRequestTask();
+        crt.execute(request);
         request.setStatus(Request.CANCELLED);
+        requestList.notifyListeners();
     }
 
     /**
