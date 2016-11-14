@@ -365,4 +365,12 @@ public class RequestTest extends ApplicationTest {
                 request.getDescription().equals(getRequest.getDescription()));
     }
 
+
+    /** TEST6 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * Tests that the status changes as expected through each step of the request lifecycle.
+     */
+    public void testRequestStatus() {
+        
+    }
 }
