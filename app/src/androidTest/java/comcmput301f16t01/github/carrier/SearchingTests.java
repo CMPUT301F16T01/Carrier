@@ -4,6 +4,7 @@ import junit.framework.Assert;
 
 import java.util.ArrayList;
 
+<<<<<<< HEAD:app/src/androidTest/java/comcmput301f16t01/github/carrier/SearchingTests.java
 <<<<<<< HEAD:app/src/test/java/comcmput301f16t01/github/carrier/SearchingTests.java
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
@@ -11,6 +12,9 @@ import comcmput301f16t01.github.carrier.Requests.RequestController;
 import static org.junit.Assert.*;
 
 public class SearchingTests {
+=======
+public class SearchingTests extends ApplicationTest {
+>>>>>>> cefb5f9b6fd93acb4ee0a3741a72fc5eb9adf359:app/src/androidTest/java/comcmput301f16t01/github/carrier/SearchingTests.java
 =======
 public class SearchingTests extends ApplicationTest {
 >>>>>>> cefb5f9b6fd93acb4ee0a3741a72fc5eb9adf359:app/src/androidTest/java/comcmput301f16t01/github/carrier/SearchingTests.java
