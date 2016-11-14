@@ -72,28 +72,6 @@ public class Request {
 
     }
 
-    // TODO Refactor all tests to use CarrierLocation, then these can be deleted
-    // Added these so things don't break while we transition
-    // Constructor with description
-    public Request(@NonNull User requestingRider, @NonNull Location requestedStart,
-                   @NonNull Location requestedEnd, String description) {
-        this.rider = requestingRider;
-        this.start = (CarrierLocation) requestedStart;
-        this.end = (CarrierLocation) requestedEnd;
-        this.description = description;
-        this.offeringDrivers = new ArrayList<User>();
-    }
-
-    // Constructor without description TODO do we need this?
-    public Request(User rider, Location start, Location end) {
-        this.rider = rider;
-        this.start = (CarrierLocation) start;
-        this.end = (CarrierLocation) end;
-        this.offeringDrivers = new ArrayList<User>();
-        this.description = "";
-
-    }
-
     public int getStatus() {
         return status;
     }
