@@ -26,7 +26,7 @@ public class OfflineTests {
         // Setting up
         User rider = new User("Kieter");
         User driver = new User("Baenett");
-        Request request = new Request(rider, new Location(""), new Location(""));
+        Request request = new Request(rider, new CarrierLocation(), new CarrierLocation());
 
         // Adding a request while online
         RequestController rc = new RequestController();
@@ -53,7 +53,7 @@ public class OfflineTests {
         // Setting up
         User rider = new User("Kieter");
         User driver = new User("Baenett");
-        Request request = new Request(rider, new Location(""), new Location(""));
+        Request request = new Request(rider, new CarrierLocation(), new CarrierLocation());
         RequestController rc = new RequestController();
         rc.addRequest(request);
 
@@ -76,7 +76,7 @@ public class OfflineTests {
 
         // Setting up
         User rider = new User("Mandy");
-        Request request = new Request(rider, new Location(""), new Location(""));
+        Request request = new Request(rider, new CarrierLocation(), new CarrierLocation());
         RequestController rc = new RequestController();
 
         // adding a request offline will send it to the queue in the SyncController
@@ -102,7 +102,7 @@ public class OfflineTests {
         // Setting up
         User rider = new User("Mandy");
         User driver = new User("Abigail");
-        Request request = new Request(rider, new Location(""), new Location(""));
+        Request request = new Request(rider, new CarrierLocation(), new CarrierLocation());
         RequestController rc = new RequestController();
         rc.addRequest(request);
 
