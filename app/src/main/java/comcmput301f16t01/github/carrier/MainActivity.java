@@ -2,7 +2,6 @@ package comcmput301f16t01.github.carrier;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -28,14 +27,9 @@ import android.widget.ListView;
 
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
-
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationActivity;
-import comcmput301f16t01.github.carrier.Requests.DriverRequestAdapter;
 import comcmput301f16t01.github.carrier.Requests.DriverViewRequestActivity;
-import comcmput301f16t01.github.carrier.Requests.MakeRequestActivity;
-import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestAdapter;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestList;
@@ -137,11 +131,10 @@ public class MainActivity extends AppCompatActivity {
             promptViewNotifications();
         }
 
-        // get segment number, but for now it doesn't matter
-        System.out.print( mViewPager.getCurrentItem() );
+        // TODO might not need this now that we have listeners
         RequestController rc = new RequestController();
         if( mViewPager.getCurrentItem() == 0 ) {
-            rc.fetchRequestsWhereRider(UserController.getLoggedInUser());
+            //rc.fetchRequestsWhereRider(UserController.getLoggedInUser());
         } else {
             rc.getOfferedRequests( UserController.getLoggedInUser());
         }
@@ -376,7 +369,8 @@ public class MainActivity extends AppCompatActivity {
             RequestController rc = new RequestController();
             User loggedInUser = UserController.getLoggedInUser();
 
-            final ArrayList<Request> requestList = rc.getOfferedRequests(loggedInUser);
+            final RequestList requestList = rc.getOfferedRequests(loggedInUser);
+
             final RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
                     R.layout.requestlist_item, requestList);
             requestListView.setAdapter(requestArrayAdapter);
@@ -414,9 +408,11 @@ public class MainActivity extends AppCompatActivity {
         private void fillRiderRequests(ListView requestListView) {
             RequestController rc = new RequestController();
             User loggedInUser = UserController.getLoggedInUser();
+            final RequestList requestList = rc.fetchAllRequestsWhereRider(UserController.getLoggedInUser());
+
             final RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
                     R.layout.requestlist_item,
-                    rc.fetchAllRequestsWhereRider(UserController.getLoggedInUser()) );
+                    requestList );
 
             requestListView.setAdapter( requestArrayAdapter );
 
@@ -437,8 +433,8 @@ public class MainActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent intent = new Intent(getActivity(), RiderRequestActivity.class);
                     Bundle bundle = new Bundle();
-                    //bundle.putString("request", new Gson().toJson(requestList.get(position)));
-                    bundle.putInt( "position", position );
+                    bundle.putString("request", new Gson().toJson(requestList.get(position)));
+                    //bundle.putInt( "position", position );
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }

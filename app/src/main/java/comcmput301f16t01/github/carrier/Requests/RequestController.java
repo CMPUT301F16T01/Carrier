@@ -44,14 +44,15 @@ public class RequestController {
         } else {
             ElasticRequestController.AddRequestTask art = new ElasticRequestController.AddRequestTask();
             art.execute(request);
-            return null;
+            requestList.add( request ); // Add new request to requestList (will notify listeners)
         }
+        return null;
     }
 
     /** Clears information in the singleton, not exactly necessary */
     @Deprecated
     public void clear() {
-        requestList = new RequestList();
+        requestList.replaceList( new RequestList() );
     }
 
     /**
@@ -73,8 +74,8 @@ public class RequestController {
     public void cancelRequest(User rider, Request request) {
         // TODO test elastic search component
         ElasticRequestController.CancelRequestTask crt = new ElasticRequestController.CancelRequestTask();
-        crt.execute(request);
         request.setStatus(Request.CANCELLED);
+        crt.execute(request);
         requestList.notifyListeners();
     }
 
@@ -88,6 +89,11 @@ public class RequestController {
      */
     public void addDriver(Request request, User driver) {
         // create an offer object [[ potentially throws IllegalArgumentException if called wrong ]]
+        try {
+            request.addOfferingDriver(driver);
+        } catch ( Exception e ) {
+            return; // If the driver is already offered we shouldn't do this action.
+        }
         Offer newOffer = new Offer(request, driver);
         // Add offer to elastic search
         ElasticRequestController.AddOfferTask aot = new ElasticRequestController.AddOfferTask();
@@ -112,7 +118,11 @@ public class RequestController {
      * @param driver  The driver that is being accepted
      */
     public void confirmDriver(Request request, User driver) {
-        // TODO Elastic Requests...
+        ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
+        request.setChosenDriver( driver );
+        request.setStatus( Request.CONFIRMED );
+        requestList.notifyListeners();  // TODO is this an okay line of code?
+        urt.execute( request );
         // only on success should we send out a notification!
         NotificationController nc = new NotificationController();
         nc.addNotification( driver, request );
@@ -120,9 +130,17 @@ public class RequestController {
     }
 
     public void completeRequest(Request request) {
+        ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
+        request.setStatus( Request.COMPLETE );
+        urt.execute( request );
+        requestList.notifyListeners(); // TODO is this an okay line of code?
     }
 
     public void payForRequest(Request request) {
+        ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
+        request.setStatus( Request.PAID );
+        urt.execute( request );
+        requestList.notifyListeners(); // TODO is this an okay line of code?
     }
 
     /**
