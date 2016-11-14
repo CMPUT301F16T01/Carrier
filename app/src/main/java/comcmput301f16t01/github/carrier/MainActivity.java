@@ -139,7 +139,8 @@ public class MainActivity extends AppCompatActivity {
             promptViewNotifications();
         }
 
-        // get segment number, but for not it doesn't matter
+        // get segment number, but for now it doesn't matter
+        System.out.print( mViewPager.getCurrentItem() );
         RequestController rc = new RequestController();
         if( mViewPager.getCurrentItem() == 0 ) {
             rc.fetchRequestsWhereRider(UserController.getLoggedInUser());
@@ -382,10 +383,9 @@ public class MainActivity extends AppCompatActivity {
             final DriverRequestAdapter requestArrayAdapter = new DriverRequestAdapter(this.getContext(),
                     R.layout.driverrequestlist_item, requestList);
             requestListView.setAdapter(requestArrayAdapter);
-            final Context ctx = this.getContext();
 
             // add listener to update this view
-            rc.addListener(new Listener() {
+            rc.addListener( new Listener() {
                 @Override
                 public void update() {
                     requestArrayAdapter.notifyDataSetChanged();

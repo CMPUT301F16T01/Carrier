@@ -39,7 +39,7 @@ import java.util.List;
 
 /**
  * This will help us show the request from the perspective of a driver
- * Will have the position in the requestcontroller bundled to determine what request to display.
+ * Will have the position in the request controller bundled to determine what request to display.
  */
 public class DriverViewRequestActivity extends AppCompatActivity {
     Activity activity = DriverViewRequestActivity.this;
