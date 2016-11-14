@@ -108,8 +108,10 @@ public class RequestController {
      * @param driver  The driver that is being accepted
      */
     public void confirmDriver(Request request, User driver) {
-
-        // TODO Elastic Requests...
+        ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
+        request.setChosenDriver( driver );
+        request.setStatus( Request.CONFIRMED );
+        urt.execute( request );
         // only on success should we send out a notification!
         NotificationController nc = new NotificationController();
         nc.addNotification( driver, request );
@@ -117,9 +119,15 @@ public class RequestController {
     }
 
     public void completeRequest(Request request) {
+        ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
+        request.setStatus( Request.COMPLETE );
+        urt.execute( request );
     }
 
     public void payForRequest(Request request) {
+        ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
+        request.setStatus( Request.PAID );
+        urt.execute( request );
     }
 
     /**

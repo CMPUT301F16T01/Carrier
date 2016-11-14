@@ -22,10 +22,12 @@ import android.location.Location;
  *      3) Test adding driver to a request (visible on a rider's getRequest)
  *      4) Test getting requests where the driver has offered
  *      5) Test getting a request by its ID.
+ *      6) Tests that the request statuses are properly up to date at each step of the request life-cycle
  *
  *      TODO various tests:
  *      X) Test to ensure separation from "offering drivers" and "rider" (when searching)
  *      X) Test that we have the most recent version of a user's information (while online) [[ i.e. a offeringDriver changes their info ]]
+ *      X) Subtle issues, like we can't add drivers when we have a confirmed one!
  */
 public class RequestTest extends ApplicationTest {
     private User basicRider = new User( "reqTestUser", "giveMeRide@carrier.com", "41534153" );
@@ -68,7 +70,7 @@ public class RequestTest extends ApplicationTest {
         int pass;
 
         // add and make a request for elastic search
-        Request request = new Request( basicRider, new Location(""), new Location(""),
+        Request request = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 "testClearingRequests" );
         rc.addRequest( request );
 
@@ -124,20 +126,20 @@ public class RequestTest extends ApplicationTest {
 
         // Two requests for basicRider with differing statuses
         String rOneString = "testFilteringRequests1";
-        Request requestOne = new Request( basicRider, new Location(""), new Location(""),
+        Request requestOne = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 rOneString );
         requestOne.setStatus( Request.CANCELLED );
         rc.addRequest( requestOne );
 
         String rTwoString = "testFilteringRequests2";
-        Request requestTwo = new Request( basicRider, new Location(""), new Location(""),
+        Request requestTwo = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 rTwoString );
         requestTwo.setStatus( Request.COMPLETE );
         rc.addRequest( requestTwo );
 
         // A request with another user, but the same status as requestOne
         String rThreeString = "testFilteringRequests3";
-        Request requestThree = new Request( anotherUser, new Location(""), new Location(""),
+        Request requestThree = new Request( anotherUser, new CarrierLocation(), new CarrierLocation(),
                 rThreeString );
         requestThree.setStatus( Request.CANCELLED );
         rc.addRequest( requestThree );
@@ -162,7 +164,7 @@ public class RequestTest extends ApplicationTest {
 
         // Add another request to basic rider to allow checking for 2+ status types
         String rFourString = "testFilteringRequests3";
-        Request requestFour = new Request( basicRider, new Location(""), new Location(""),
+        Request requestFour = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 rFourString );
         requestFour.setStatus( Request.OPEN );
         rc.addRequest( requestFour );
@@ -211,7 +213,7 @@ public class RequestTest extends ApplicationTest {
                 requestList.size() == 0);
 
         // Add a request and check that it is there
-        Request request = new Request( basicRider, new Location(""), new Location(""),
+        Request request = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 "testAddingDriverToRequest" );
         rc.addRequest( request );
         requestList = rc.fetchAllRequestsWhereRider( basicRider );
@@ -272,11 +274,11 @@ public class RequestTest extends ApplicationTest {
                 requestList.size() == 0);
 
         // Create and add three requests
-        Request requestOne = new Request( basicRider, new Location(""), new Location(""),
+        Request requestOne = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 "testGetRequestsWhereOffered (no offers)" );
-        Request requestTwo = new Request( basicRider, new Location(""), new Location(""),
+        Request requestTwo = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 "testGetRequestsWhereOffered (offers)" );
-        Request requestThree = new Request( basicDriver, new Location(""), new Location(""),
+        Request requestThree = new Request( basicDriver, new CarrierLocation(), new CarrierLocation(),
                 "testGetRequestsWhereOffered (driver's request)");
 
         rc.addRequest( requestOne );
@@ -338,7 +340,7 @@ public class RequestTest extends ApplicationTest {
         assertTrue( "There should be no requests fetched because we cleared them.",
                 requestList.size() == 0);
         
-        Request request = new Request( basicRider, new Location(""), new Location(""),
+        Request request = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 "testGetMeByID" );
         rc.addRequest( request );
 
@@ -365,4 +367,97 @@ public class RequestTest extends ApplicationTest {
                 request.getDescription().equals(getRequest.getDescription()));
     }
 
+
+    /** TEST6 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * Tests that the status changes as expected through each step of the request lifecycle.
+     */
+    public void testRequestStatus() {
+        RequestController rc = new RequestController();
+        int pass;
+
+        // Create and add a request
+        Request request = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
+                "testRequestStatus" );
+        rc.addRequest( request );
+
+        // Get the request from the controller
+        RequestList requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        pass = 0;
+        while( requestList.size() != 1 ) {
+            chillabit( 1000 );
+            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            pass++;
+            if (pass > 5) { break; }
+        }
+        request = requestList.get(0);
+        assertTrue( "The request should be OPEN, initially.",
+                request.getStatus() == Request.OPEN);
+
+        request = requestList.get(0);
+        // Add a driver to the request
+        rc.addDriver( request, basicDriver );
+        // Get the request from the controller (wait until there is an offered driver)
+        requestList.clear();
+        requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        pass = 0;
+        while( requestList.get(0).getOfferedDrivers().size() != 1 ) {
+            chillabit( 1000 );
+            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            pass++;
+            if (pass > 5) { break; }
+        }
+        request = requestList.get(0);
+        assertTrue( "There should be an offered driver.",
+                request.getOfferedDrivers().size() == 1);
+        assertTrue( "The status should be OFFERED",
+                request.getStatus() == Request.OFFERED );
+
+        // Confirm the driver for a request.
+        rc.confirmDriver( request, basicDriver );
+        requestList.clear();
+        requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        pass = 0;
+        while( requestList.get(0).getConfirmedDriver() == null ) {
+            chillabit( 1000 );
+            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            pass++;
+            if (pass > 5) { break; }
+        }
+        request = requestList.get(0);
+        assertTrue( "There should be a confirmed driver and it should be the same user we passed in.",
+                request.getConfirmedDriver() != null && request.getConfirmedDriver().getUsername().equals(basicDriver.getUsername()));
+        assertTrue( "The status should be ",
+                request.getStatus() == Request.CONFIRMED );
+
+        // Complete the request
+        rc.completeRequest( request );
+        requestList.clear();
+        requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        pass = 0;
+        while( requestList.get(0).getStatus() != Request.COMPLETE ) {
+            chillabit( 1000 );
+            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            pass++;
+            if (pass > 5) { break; }
+        }
+        request = requestList.get(0);
+        assertTrue( "The request should be complete now.",
+                request.getStatus() == Request.COMPLETE );
+
+        // Pay for the request
+        rc.payForRequest( request );
+        requestList.clear();
+        requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        pass = 0;
+        while( requestList.get(0).getStatus() != Request.PAID ) {
+            chillabit( 1000 );
+            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            pass++;
+            if (pass > 5) { break; }
+        }
+        request = requestList.get(0);
+        assertTrue( "The request should be paid for now.",
+                request.getStatus() == Request.PAID );
+    }
 }
