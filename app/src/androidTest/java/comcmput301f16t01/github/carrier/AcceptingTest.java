@@ -231,6 +231,15 @@ public class AcceptingTest extends ApplicationTest {
         assertTrue( "The driver should have one and only one notification.",
                 notificationList.size() == 1);
     }
+
+    /**
+     * Test5 to test the confirmation of a driver
+     * (US 05.03.01) As a driver, I want to see if my acceptance was accepted.
+     *  Will be added later.
+     */
+    public void testConfirmation() {
+        
+    }
     private void setUpUser() {
         UserController uc = new UserController();
         String result = uc.createNewUser( loggedInUser.getUsername(),
