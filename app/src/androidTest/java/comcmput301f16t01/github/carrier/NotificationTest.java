@@ -51,7 +51,7 @@ public class NotificationTest extends ApplicationTest {
 
     // abstracts reused code to prevent mistakes and aid in readability of tests
     // Makes the current thread sleep for the specified amount of time (in ms)
-    // TODO convert to a full out AsyncWait method to generalize waiting for .size() == x tasks?
+    // TODO convert to a full out AsyncWait method to generalize waiting for .size() == RequestAdapter tasks?
     private void chillabit( long time ) {
         try {
             Thread.sleep( time );
