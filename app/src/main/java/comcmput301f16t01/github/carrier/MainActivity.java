@@ -378,7 +378,7 @@ public class MainActivity extends AppCompatActivity {
 
             final ArrayList<Request> requestList = rc.getOfferedRequests(loggedInUser);
             final RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
-                    R.layout.driverrequestlist_item, requestList);
+                    R.layout.requestlist_item, requestList);
             requestListView.setAdapter(requestArrayAdapter);
 
             // add listener to update this view
