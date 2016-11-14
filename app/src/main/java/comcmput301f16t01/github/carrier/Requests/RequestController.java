@@ -119,6 +119,7 @@ public class RequestController {
         request.setStatus( Request.CONFIRMED );
         requestList.notifyListeners();  // TODO is this an okay line of code?
         urt.execute( request );
+        // TODO Elastic Requests...
         // only on success should we send out a notification!
         NotificationController nc = new NotificationController();
         nc.addNotification( driver, request );
@@ -233,6 +234,11 @@ public class RequestController {
     }
 
 
+    /** Get the results of a searchByKeyword or a getSearchByLocation query. */
+    public RequestList getResult() {
+        return requestList;
+    }
+
     /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      * * * * * * * * * * * * * * * * *    DEPRECATED FUNCTIONS   * * * * * * * * * * * * * * * * * *
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -260,11 +266,6 @@ public class RequestController {
     @Deprecated
     public ArrayList<Request> getAvailableRequests() {
         return new ArrayList<Request>();
-    }
-
-    /** Get the results of a searchByKeyword or a getSearchByLocation query. */
-    public RequestList getResult() {
-        return requestList;
     }
 
     /**

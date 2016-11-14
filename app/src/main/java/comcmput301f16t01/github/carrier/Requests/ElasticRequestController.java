@@ -86,7 +86,8 @@ public class ElasticRequestController {
                     "      \"should\": [\n" +
                     "              { \"match\": { \"status\": 1 }},\n" +
                     "              { \"match\": { \"status\": 2 }}\n" +
-                    "      ]\n" +
+                    "      ],\n" +
+                    "      \"minimum_should_match\": \"1\"\n" +
                     "    }\n" +
                     "  }\n" +
                     "}";
@@ -554,7 +555,6 @@ public class ElasticRequestController {
             return null;
         }
     }
-
 
     private static void verifySettings() {
         if (client == null) {

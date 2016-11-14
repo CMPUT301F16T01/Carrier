@@ -83,8 +83,14 @@ public class MainActivity extends AppCompatActivity {
         TabLayout.OnTabSelectedListener onTabSelectedListener = new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                RequestController rc = new RequestController();
                 mViewPager.setCurrentItem(tab.getPosition());
                 changeFab(tab.getPosition());
+                if( tab.getPosition() == 0 && rc.getResult() == null ) {
+                    rc.fetchRequestsWhereRider( UserController.getLoggedInUser() );
+                } else {
+                    rc.getOfferedRequests( UserController.getLoggedInUser() );
+                }
             }
 
             @Override
@@ -120,14 +126,6 @@ public class MainActivity extends AppCompatActivity {
         // We start on the rider tab, so we hide the driver fab
         FloatingActionButton driver_fab = (FloatingActionButton) findViewById(R.id.fab_driver);
         driver_fab.hide();
-
-        // TODO might not need this now that we have listeners
-        RequestController rc = new RequestController();
-        if( mViewPager.getCurrentItem() == 0 ) {
-            //rc.fetchRequestsWhereRider(UserController.getLoggedInUser());
-        } else {
-            rc.getOfferedRequests( UserController.getLoggedInUser());
-        }
     }
 
     @Override
@@ -139,13 +137,13 @@ public class MainActivity extends AppCompatActivity {
             promptViewNotifications();
         }
 
-        // TODO might not need this now that we have listeners
-        RequestController rc = new RequestController();
-        if( mViewPager.getCurrentItem() == 0 ) {
-            //rc.fetchRequestsWhereRider(UserController.getLoggedInUser());
-        } else {
-            rc.getOfferedRequests( UserController.getLoggedInUser());
-        }
+//        // TODO might not need this now that we have listeners
+//        RequestController rc = new RequestController();
+//        if( mViewPager.getCurrentItem() == 0 ) {
+//            //rc.fetchRequestsWhereRider(UserController.getLoggedInUser());
+//        } else {
+//            rc.getOfferedRequests( UserController.getLoggedInUser());
+//        }
     }
 
     /**
@@ -380,7 +378,8 @@ public class MainActivity extends AppCompatActivity {
             final RequestList requestList = rc.getOfferedRequests(loggedInUser);
 
             final RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
-                    R.layout.requestlist_item, requestList);
+                    R.layout.requestlist_item,
+                    requestList);
             requestListView.setAdapter(requestArrayAdapter);
 
             // add listener to update this view
