@@ -39,7 +39,7 @@ import java.util.List;
 
 /**
  * This will help us show the request from the perspective of a driver
- * Will have the position in the requestcontroller bundled to determine what request to display.
+ * Will have the position in the requestController bundled to determine what request to display.
  */
 public class DriverViewRequestActivity extends AppCompatActivity {
     Activity activity = DriverViewRequestActivity.this;
@@ -110,6 +110,14 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         map.invalidate();
     }
 
+    // Based on: https://goo.gl/4TKn2y
+    // Retrieved on: November 10th, 2016
+
+    // Updated with: https://goo.gl/h2CKyn
+    // Author: yubaraj poudel
+    // Posted: August 6th, 2016
+    // Retrieved on: November 10th, 2016
+
     /**
      * Asynchronous task to get the route between the two points
      */
@@ -130,67 +138,6 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         new UpdateRoadTask().execute(waypoints);
     }
 
-    public void centerStart(View view) {
-        mapController.setCenter(startPoint);
-    }
-
-    public void centerEnd(View view) {
-        mapController.setCenter(endPoint);
-    }
-
-    /**
-     * Get the center point of the route to center the screen on
-     * @return GeoPoint
-     */
-    public GeoPoint getCenter() {
-        double startLat = startPoint.getLatitude();
-        double startLong = startPoint.getLongitude();
-        double endLat = endPoint.getLatitude();
-        double endLong = endPoint.getLongitude();
-
-        Location retLoc = new Location("");
-
-        if(startLat > endLat) {
-            retLoc.setLatitude(endLat + ((startLat - endLat)/2));
-        } else {
-            retLoc.setLatitude(startLat + ((endLat - startLat)/2));
-        }
-
-        if(startLong > endLong) {
-            retLoc.setLongitude(endLong + ((startLong - endLong)/2));
-        } else {
-            retLoc.setLatitude(startLong + ((endLong - startLong)/2));
-        }
-
-        return new GeoPoint(retLoc);
-    }
-
-    public void makeOffer(View view) {
-        RequestController rc = new RequestController();
-        // Can not make an offer on a request that has a confirmed driver.
-        // Can not make an offer on a request that you hae already made an offer on.
-        // Can not make an offer on a cancelled request.
-        AlertDialog.Builder adb = new AlertDialog.Builder(DriverViewRequestActivity.this);
-        adb.setTitle("Error: ");
-        adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        });
-        if (request.getConfirmedDriver() != null) {
-            adb.setMessage("Unable to make an offer on the request. There is already a confirmed driver.");
-            adb.show();
-        } else if (request.getOfferedDrivers().contains(loggedInUser)) {
-            adb.setMessage("Unable to make an offer on the request. You have already made an offer.");
-            adb.show();
-        } else if (request.getStatus() == Request.CANCELLED) {
-            adb.setMessage("Unable to make an offer on the request. The request has been cancelled.");
-            adb.show();
-        } else {
-            rc.addDriver(request, loggedInUser);
-            Toast.makeText(this, "Made an offer.", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     /**
      * Class to update the road on the map
@@ -235,6 +182,41 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         }
     }
 
+    public void centerStart(View view) {
+        mapController.setCenter(startPoint);
+    }
+
+    public void centerEnd(View view) {
+        mapController.setCenter(endPoint);
+    }
+
+    /**
+     * Get the center point of the route to center the screen on
+     * @return GeoPoint
+     */
+    public GeoPoint getCenter() {
+        double startLat = startPoint.getLatitude();
+        double startLong = startPoint.getLongitude();
+        double endLat = endPoint.getLatitude();
+        double endLong = endPoint.getLongitude();
+
+        Location retLoc = new Location("");
+
+        if(startLat > endLat) {
+            retLoc.setLatitude(endLat + ((startLat - endLat)/2));
+        } else {
+            retLoc.setLatitude(startLat + ((endLat - startLat)/2));
+        }
+
+        if(startLong > endLong) {
+            retLoc.setLongitude(endLong + ((startLong - endLong)/2));
+        } else {
+            retLoc.setLatitude(startLong + ((endLong - startLong)/2));
+        }
+
+        return new GeoPoint(retLoc);
+    }
+
     /**
      * Given the request passed in by the user, set the views in the layout.
      */
@@ -253,8 +235,10 @@ public class DriverViewRequestActivity extends AppCompatActivity {
 
         // Set up the UsernameTextView of the driver
         UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
-        driverUsernameTextView.setText(uc.getLoggedInUser().getUsername());
-        driverUsernameTextView.setUser(uc.getLoggedInUser());
+        if (request.getChosenDriver() != null) {
+            driverUsernameTextView.setText(request.getChosenDriver().getUsername());
+            driverUsernameTextView.setUser(request.getChosenDriver());
+        }
 
         TextView startAddressTextView = (TextView) findViewById(R.id.textView_start);
         String startAddress = request.getStart().getAddress();
@@ -305,6 +289,33 @@ public class DriverViewRequestActivity extends AppCompatActivity {
                     break;
 
             }
+        }
+    }
+
+    public void makeOffer(View view) {
+        RequestController rc = new RequestController();
+        // Can not make an offer on a request that has a confirmed driver.
+        // Can not make an offer on a request that you hae already made an offer on.
+        // Can not make an offer on a cancelled request.
+        AlertDialog.Builder adb = new AlertDialog.Builder(DriverViewRequestActivity.this);
+        adb.setTitle("Error: ");
+        adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        if (request.getConfirmedDriver() != null) {
+            adb.setMessage("Unable to make an offer on the request. There is already a confirmed driver.");
+            adb.show();
+        } else if (request.getOfferedDrivers().contains(loggedInUser)) {
+            adb.setMessage("Unable to make an offer on the request. You have already made an offer.");
+            adb.show();
+        } else if (request.getStatus() == Request.CANCELLED) {
+            adb.setMessage("Unable to make an offer on the request. The request has been cancelled.");
+            adb.show();
+        } else {
+            rc.addDriver(request, loggedInUser);
+            Toast.makeText(this, "Made an offer.", Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -108,6 +108,14 @@ public class RiderRequestActivity extends AppCompatActivity {
         map.invalidate();
     }
 
+    // Based on: https://goo.gl/4TKn2y
+    // Retrieved on: November 10th, 2016
+
+    // Updated with: https://goo.gl/h2CKyn
+    // Author: yubaraj poudel
+    // Posted: August 6th, 2016
+    // Retrieved on: November 10th, 2016
+
     /**
      * Asynchronous task to get the route between the two points
      */
@@ -126,46 +134,6 @@ public class RiderRequestActivity extends AppCompatActivity {
         waypoints.add(roadStartPoint);
         waypoints.add(roadEndPoint);
         new UpdateRoadTask().execute(waypoints);
-    }
-
-    public void centerStart(View view) {
-        mapController.setCenter(startPoint);
-    }
-
-    public void centerEnd(View view) {
-        mapController.setCenter(endPoint);
-    }
-
-    /**
-     * Get the center point of the route to center the screen on
-     * @return GeoPoint
-     */
-    public GeoPoint getCenter() {
-        double startLat = startPoint.getLatitude();
-        double startLong = startPoint.getLongitude();
-        double endLat = endPoint.getLatitude();
-        double endLong = endPoint.getLongitude();
-
-        Location retLoc = new Location("");
-
-        if(startLat > endLat) {
-            retLoc.setLatitude(endLat + ((startLat - endLat)/2));
-        } else {
-            retLoc.setLatitude(startLat + ((endLat - startLat)/2));
-        }
-
-        if(startLong > endLong) {
-            retLoc.setLongitude(endLong + ((startLong - endLong)/2));
-        } else {
-            retLoc.setLatitude(startLong + ((endLong - startLong)/2));
-        }
-
-        return new GeoPoint(retLoc);
-    }
-
-    // TODO fill in
-    public void payForRequest(View view) {
-        Toast.makeText(activity, "PAY FOR REQUEST", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -209,6 +177,46 @@ public class RiderRequestActivity extends AppCompatActivity {
             mapOverlays.add(0, roadPolyline);
             map.invalidate();
         }
+    }
+
+    public void centerStart(View view) {
+        mapController.setCenter(startPoint);
+    }
+
+    public void centerEnd(View view) {
+        mapController.setCenter(endPoint);
+    }
+
+    /**
+     * Get the center point of the route to center the screen on
+     * @return GeoPoint
+     */
+    public GeoPoint getCenter() {
+        double startLat = startPoint.getLatitude();
+        double startLong = startPoint.getLongitude();
+        double endLat = endPoint.getLatitude();
+        double endLong = endPoint.getLongitude();
+
+        Location retLoc = new Location("");
+
+        if(startLat > endLat) {
+            retLoc.setLatitude(endLat + ((startLat - endLat)/2));
+        } else {
+            retLoc.setLatitude(startLat + ((endLat - startLat)/2));
+        }
+
+        if(startLong > endLong) {
+            retLoc.setLongitude(endLong + ((startLong - endLong)/2));
+        } else {
+            retLoc.setLatitude(startLong + ((endLong - startLong)/2));
+        }
+
+        return new GeoPoint(retLoc);
+    }
+
+    // TODO fill in
+    public void payForRequest(View view) {
+        Toast.makeText(activity, "PAY FOR REQUEST", Toast.LENGTH_SHORT).show();
     }
 
     /**

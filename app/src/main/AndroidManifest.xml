@@ -23,7 +23,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".LoginActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,6 +34,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".UserProfileActivity"
@@ -40,6 +42,9 @@
         android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".NewUserActivity" />
         <activity android:name=".Requests.DriverViewRequestActivity" />
+            android:label="Carrier"
+            android:screenOrientation="portrait">
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -55,16 +60,17 @@
         <activity
             android:name=".Searching.SearchMapsActivity"
             android:label="@string/title_activity_search_maps" />
-        <activity android:name=".Searching.SearchActivity" />
-        <activity android:name=".HelpActivity" />
-        <activity android:name=".Requests.RiderRequestActivity" />
+        <activity android:name=".Searching.SearchActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".HelpActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".Requests.RiderRequestActivity" android:screenOrientation="portrait"/>
         <activity
             android:name=".Requests.MakeRequestActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".Notifications.NotificationActivity" />
-        <activity android:name=".Searching.SearchResultsActivity" />
-        <activity android:name=".SetLocationsActivity" />
-        <activity android:name=".ViewLocationsActivity" />
+        <activity android:name=".Notifications.NotificationActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".Searching.SearchResultsActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".SetLocationsActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ViewLocationsActivity" android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

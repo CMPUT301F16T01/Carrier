@@ -50,13 +50,23 @@ public class RequestAdapter extends ArrayAdapter<Request> {
 
             // Set the start location in the item's view
             if (startLocTextView != null) {
-                String startLoc = "From: " + request.getStart().toString();
+                String startLoc = null;
+                if (request.getStart().getShortAddress() != null) {
+                    startLoc = "From: " + request.getStart().getShortAddress();
+                } else {
+                    startLoc = "Froml: " + request.getStart().getLatLong();
+                }
                 startLocTextView.setText(startLoc);
             }
 
             // Set the end location in the item's view
             if (endLocTextView != null) {
-                String endLoc = "To: " + request.getEnd().toString();
+                String endLoc = null;
+                if (request.getEnd().getShortAddress() != null) {
+                    endLoc = "To: " + request.getEnd().getShortAddress();
+                } else {
+                    endLoc = "Tol: " + request.getEnd().getLatLong();
+                }
                 endLocTextView.setText(endLoc);
             }
 
@@ -73,27 +83,21 @@ public class RequestAdapter extends ArrayAdapter<Request> {
                 switch( request.getStatus() ) {
                     case( Request.OPEN ):
                         statusImageView.setImageResource(R.drawable.open);
-                        //statusImageView.setBackgroundResource(R.color.openStatus);
                         break;
                     case( Request.OFFERED ):
                         statusImageView.setImageResource(R.drawable.offered);
-                        //statusImageView.setBackgroundResource(R.color.offeredStatus);
                         break;
                     case( Request.CONFIRMED ):
                         statusImageView.setImageResource(R.drawable.confirmed);
-                        //statusImageView.setBackgroundResource(R.color.confirmedStatus);
                         break;
                     case( Request.COMPLETE):
                         statusImageView.setImageResource(R.drawable.complete);
-                        //statusImageView.setBackgroundResource(R.color.completeStatus);
                         break;
                     case( Request.PAID):
                         statusImageView.setImageResource(R.drawable.paid);
-                        //statusImageView.setBackgroundResource(R.color.paidStatus);
                         break;
                     case( Request.CANCELLED):
                         statusImageView.setImageResource(R.drawable.cancel);
-                        //statusImageView.setBackgroundResource(R.color.cancelledStatus);
                         break;
                 }
             }
