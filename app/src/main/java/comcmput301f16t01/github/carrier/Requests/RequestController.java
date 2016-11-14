@@ -49,7 +49,7 @@ public class RequestController {
     }
 
     /** Clears information in the singleton, not exactly necessary */
-    // TODO check the necessity of this function.
+    @Deprecated
     public void clear() {
         requestList = new RequestList();
     }
