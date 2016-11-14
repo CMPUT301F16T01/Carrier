@@ -7,10 +7,11 @@ import java.util.Random;
  */
 
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 public class ElasticUserControllerTest extends ApplicationTest {
 
-    public void testAddUserTask() {
+    public void testAddUserTask() throws InterruptedException, ExecutionException {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_-";
         int length = 5;
         Random random = new Random();
@@ -25,9 +26,9 @@ public class ElasticUserControllerTest extends ApplicationTest {
         user.setUsername(username);
 
         UserController uc = new UserController();
-        uc.createNewUser(username, "@", "1");
+        uc.createNewUser(username, "s@mail.com", "12345678");
 
-        thread.sleep()
+        Thread.sleep(3000);
 
         User elasticUser = uc.findUser(username);
 
