@@ -150,6 +150,7 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
                 locationPoint.setLatitude(marker.getPosition().getLatitude());
                 locationPoint.setLongitude(marker.getPosition().getLongitude());
                 locationPoint.setAddress(getAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
+                locationPoint.setShortAddress(getShortAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
             }
 
             @Override
@@ -204,6 +205,7 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         locationPoint.setLatitude(geoPoint.getLatitude());
         locationPoint.setLongitude(geoPoint.getLongitude());
         locationPoint.setAddress(getAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
+        locationPoint.setShortAddress(getShortAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
         setLocationMarker(map, geoPoint);
         return false;
     }
@@ -291,7 +293,7 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
      * @return String
      */
     private String getAddress(double latitude, double longitude) {
-        String pointAddress = "";
+        String pointAddress;
         try {
             Geocoder geocoder = new Geocoder(activity);
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
@@ -309,6 +311,29 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
             } else {
                 pointAddress = null;
             }
+        } catch (Exception e) {
+            pointAddress = null;
+        }
+        return pointAddress;
+    }
+
+    /**
+     * Get short address string from a geo point
+     * @param latitude
+     * @param longitude
+     * @return String
+     */
+    private String getShortAddress(double latitude, double longitude) {
+        String pointAddress;
+        try {
+            Geocoder geocoder = new Geocoder(activity);
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            StringBuilder sb = new StringBuilder();
+            if(addresses.size() > 0) {
+                Address address = addresses.get(0);
+                sb.append(address.getAddressLine(0));
+            }
+            pointAddress = new String(sb);
         } catch (Exception e) {
             pointAddress = null;
         }
