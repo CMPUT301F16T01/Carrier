@@ -11,29 +11,17 @@ import java.util.concurrent.ExecutionException;
 
 public class ElasticUserControllerTest extends ApplicationTest {
 
-    public void testAddUserTask() throws InterruptedException, ExecutionException {
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_-";
-        int length = 5;
-        Random random = new Random();
-
-        char[] usernameArray = new char[length];
-        for (int i = 0; i < length; i++) {
-            usernameArray[i] = characters.charAt(random.nextInt(characters.length()));
-        }
-        String username = new String(usernameArray);
-
-        User user = new User();
-        user.setUsername(username);
-
+    private void setUpUser() throws InterruptedException {
         UserController uc = new UserController();
-        uc.createNewUser(username, "s@mail.com", "12345678");
-
+        uc.createNewUser("ElasticUserControllerTest", "test@test.com", "1234567890");
         Thread.sleep(3000);
+    }
 
-        User elasticUser = uc.findUser(username);
-
-//        System.out.println(user.getUsername());
-//        System.out.println(elasticUser.getUsername());
+    public void testAddUserTask() throws InterruptedException, ExecutionException {
+        UserController uc = new UserController();
+        User user = new User("ElasticUserControllerTest", "test@test.com", "1234567890");
+        User elasticUser = uc.findUser("ElasticUserControllerTest");
+        Thread.sleep(3000);
 
         assertEquals("Users are not the same", user.getUsername(), elasticUser.getUsername());
     }
