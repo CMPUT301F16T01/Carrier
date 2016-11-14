@@ -84,7 +84,8 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         }
 
         // Create an instance of GoogleAPIClient.
-        // From (Android Developer Docs): https://goo.gl/Kpueci
+        // Based on: https://goo.gl/Kpueci
+        // Author: Android Dev Docs
         // Retrieved on: November 9th, 2016
         if (googleApiClient == null) {
             googleApiClient = new Builder(activity)
@@ -95,6 +96,7 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         }
 
         // Based on: https://goo.gl/4TKn2y
+        // Author: MKergall
         // Retrieved on: November 9th, 2016
         // Center our map on our current location
         MapView map = (MapView) findViewById(R.id.map);
@@ -116,13 +118,17 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
 
     }
 
-    // From (Android Developer Docs): https://goo.gl/Kpueci
+    // Based on: https://goo.gl/Kpueci
+    // Author: Android Dev Docs
     // Retrieved on: November 9th, 2016
     protected void onStart() {
         googleApiClient.connect();
         super.onStart();
     }
 
+    // Based on: https://goo.gl/Kpueci
+    // Author: Android Dev Docs
+    // Retrieved on: November 9th, 2016
     protected void onStop() {
         googleApiClient.disconnect();
         super.onStop();
@@ -194,6 +200,7 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
     @Override
     public boolean singleTapConfirmedHelper(GeoPoint geoPoint) {
         // Based on: https://goo.gl/4TKn2y
+        // Author: MKergall
         // Retrieved on: November 9th, 2016
         MapView map = (MapView) findViewById(R.id.map);
         if(marker == null) {
@@ -260,10 +267,6 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
                 lastBundle.putString("startLocation", new Gson().toJson(locationPoint));
                 Intent intent = new Intent(activity, SetLocationsActivity.class);
                 intent.putExtras(lastBundle);
-                // TODO I know that there is an error here...
-                // if the user is changing the start or end point, we need to grab the duration
-                // and distance so the fare estimate can be updated.
-                // I tried a quick fix that didn't work...it's going to take a fair bit of work to fix it
                 if(type.equals("new")) {
                     startActivityForResult(intent, PASS_ACTIVITY_FORWARD);
                 } else {
@@ -282,10 +285,9 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         }
     }
 
-    // Function based on: https://goo.gl/iMJdJX
+    // Based on: https://goo.gl/iMJdJX
     // Author: cristina
     // Retrieved on: November 11th, 2016
-
     /**
      * Get address string from a geo point
      * @param latitude
@@ -340,7 +342,7 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         return pointAddress;
     }
 
-    // Inspired by ideas from: https://goo.gl/qh3Dzf
+    // Inspired by: https://goo.gl/qh3Dzf
     // Author: antonio
     // Retrieved on: November 9th, 2016
     public void getCurrentLocation() {
@@ -355,6 +357,7 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
             longitude = lastLocation.getLongitude();
 
             // Based on: https://goo.gl/4TKn2y
+            // Author: MKergall
             // Retrieved on: November 9th, 2016
             // Center our map on our current location
             MapView map = (MapView) findViewById(R.id.map);
