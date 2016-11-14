@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 /**
  * Created by michael on 11/10/16.
  */
-
+@Deprecated
 public class AcceptingTests {
 
     /**
