@@ -25,13 +25,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.location.Location;
 
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationActivity;
@@ -70,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("Carrier");
 
         checkPermissions();
 
@@ -190,7 +188,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Based on (Android Developer Docs): https://goo.gl/9FTnEL
+    // Based on: https://goo.gl/9FTnEL
+    // Author: Android Dev Docs
     // Retrieved on: November 9th, 2016
     /**
      * Result of the user granting or denying permissions. If they grant the permissions
@@ -226,7 +225,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Based on (Android Developer Docs): https://goo.gl/9FTnEL
+    // Based on: https://goo.gl/9FTnEL
+    // Author: Android Dev Docs
     // Retrieved on: November 9th, 2016
     /**
      * Asks user to grant required permissions for the maps to work.
@@ -355,8 +355,6 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
 
             // TODO (after) allow the ability to toggle between what requests are shown (?)
 
@@ -477,9 +475,9 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "RIDER ACTIVITY";
+                    return "RIDER REQUESTS";
                 case 1:
-                    return "DRIVER ACTIVITY";
+                    return "DRIVER REQUESTS";
             }
             return null;
         }

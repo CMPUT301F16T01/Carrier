@@ -179,7 +179,6 @@
             android:layout_weight="1"
             android:src="@drawable/ic_location_on"/>
 
-        <!-- TODO delete was the word here...would CANCEL be more correct? -->
         <Button
             android:id="@+id/button_delete"
             android:layout_width="0dp"
