@@ -2,38 +2,43 @@
 <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="80dp"
-    android:background="@color/colorPrimaryLight"
     android:clickable="false"
     android:focusable="false">
 
     <TextView
-        android:layout_width="300dp"
+        android:layout_width="240dp"
         android:layout_height="wrap_content"
-        android:text="To: location brap brap 101010108 street"
+        android:text="From: location"
         android:textSize="15sp"
-        android:id="@+id/textView_toLocation"
+        android:id="@+id/textView_fromLocation"
         android:layout_row="0"
         android:layout_column="0"
         android:layout_marginTop="5dp"
         android:layout_marginStart="5dp"
         android:clickable="false"
-        android:focusable="false"/>
+        android:focusable="false"
+        android:lines="1"
+        android:scrollHorizontally="true"
+        android:ellipsize="end"/>
 
     <TextView
-        android:layout_width="300dp"
+        android:layout_width="240dp"
         android:layout_height="wrap_content"
-        android:text="From: location"
+        android:text="To: location brap brap 101010108 long long long long long street"
         android:textSize="15sp"
-        android:id="@+id/textView_fromLocation"
+        android:id="@+id/textView_toLocation"
         android:layout_row="1"
         android:layout_column="0"
         android:layout_marginTop="5dp"
         android:layout_marginStart="5dp"
         android:clickable="false"
-        android:focusable="false"/>
+        android:focusable="false"
+        android:lines="1"
+        android:scrollHorizontally="true"
+        android:ellipsize="end" />
 
     <TextView
-        android:layout_width="300dp"
+        android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:text="Price: $XX.XX"
         android:textSize="15sp"
@@ -43,7 +48,10 @@
         android:layout_marginTop="5dp"
         android:layout_marginStart="5dp"
         android:clickable="false"
-        android:focusable="false"/>
+        android:focusable="false"
+        android:lines="1"
+        android:scrollHorizontally="true"
+        android:ellipsize="end"/>
 
     <ImageView
         android:src="@android:drawable/ic_menu_compass"

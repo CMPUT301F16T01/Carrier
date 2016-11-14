@@ -18,14 +18,7 @@ public class FareCalculator {
     static final double BOOKING_FEE = 1.65;
     static final int MIN_FARE = (int) 5.00 * 100;
 
-    /**
-     * Creates a new object fare calculator, used to estimate a fair fare for a ride between
-     * start and end.
-     */
-    public FareCalculator() {
-    }
-
-    public int getEstimate(double distance, double duration) {
+    public static int getEstimate(double distance, double duration) {
 
         // Distance is in km
         // Duration is in sec

@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("Carrier");
 
         checkPermissions();
 
@@ -336,8 +337,6 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
 
             // TODO (after) allow the ability to toggle between what requests are shown (?)
 
@@ -493,9 +492,9 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "RIDER ACTIVITY";
+                    return "RIDER REQUESTS";
                 case 1:
-                    return "DRIVER ACTIVITY";
+                    return "DRIVER REQUESTS";
             }
             return null;
         }
