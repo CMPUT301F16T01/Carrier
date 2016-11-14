@@ -12,7 +12,9 @@ import android.net.NetworkInfo;
 
 public class ConnectionChecker {
 
-    // TODO https://developer.android.com/training/monitoring-device-state/connectivity-monitoring.html
+    // Based on: https://goo.gl/oximGj
+    // Author: Android Dev Docs
+    // Retrieved on: November 13, 2016
     public static boolean isConnected( Context context ) {
         ConnectivityManager cm =
                 (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);

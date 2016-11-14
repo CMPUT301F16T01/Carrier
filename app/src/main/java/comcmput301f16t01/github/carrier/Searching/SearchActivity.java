@@ -31,9 +31,9 @@ public class SearchActivity extends AppCompatActivity {
      * @param view
      */
     public void searchByKeyword(View view) {
-        /* Code based on: https://developer.android.com/guide/topics/ui/dialogs.html
-         * Retrieved on October 28, 2016
-         */
+        // Based on: https://goo.gl/6AAnXP
+        // Author: Android Dev Docs
+        // Retrieved on: October 28, 2016
         AlertDialog.Builder adb = new AlertDialog.Builder(activity);
         final LayoutInflater inflater = activity.getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.dialog_keyword_search, null);

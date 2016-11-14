@@ -26,12 +26,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.location.Location;
 
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationActivity;
@@ -172,7 +170,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Based on (Android Developer Docs): https://goo.gl/9FTnEL
+    // Based on: https://goo.gl/9FTnEL
+    // Author: Android Dev Docs
     // Retrieved on: November 9th, 2016
     /**
      * Result of the user granting or denying permissions. If they grant the permissions
@@ -208,7 +207,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Based on (Android Developer Docs): https://goo.gl/9FTnEL
+    // Based on: https://goo.gl/9FTnEL
+    // Author: Android Dev Docs
     // Retrieved on: November 9th, 2016
     /**
      * Asks user to grant required permissions for the maps to work.
