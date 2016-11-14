@@ -97,6 +97,7 @@ public class RequestController {
         // TODO add addNotification to queue if offline
 
         request.addOfferingDriver(driver);
+        requestList.add( request ); // TODO dunno. but like this is how we do it.
     }
 
     /**
@@ -155,9 +156,9 @@ public class RequestController {
     public RequestList getOfferedRequests(User driver) {
         ElasticRequestController.GetOfferedRequestsTask gort = new ElasticRequestController.GetOfferedRequestsTask();
         gort.execute( driver.getUsername() );
-
         try {
-            return gort.get();
+            requestList.replaceList( gort.get() );
+            return requestList;
         } catch (Exception e) {
             return new RequestList();
         }
