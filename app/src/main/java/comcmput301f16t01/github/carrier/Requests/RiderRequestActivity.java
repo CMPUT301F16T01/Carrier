@@ -28,7 +28,9 @@ import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
 
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 
 import comcmput301f16t01.github.carrier.FareCalculator;
 import comcmput301f16t01.github.carrier.R;
@@ -210,7 +212,7 @@ public class RiderRequestActivity extends AppCompatActivity {
         if(startLong > endLong) {
             retLoc.setLongitude(endLong + ((startLong - endLong)/2));
         } else {
-            retLoc.setLatitude(startLong + ((endLong - startLong)/2));
+            retLoc.setLongitude(startLong + ((endLong - startLong)/2));
         }
 
         return new GeoPoint(retLoc);
@@ -227,8 +229,10 @@ public class RiderRequestActivity extends AppCompatActivity {
     public void setViews() {
         // Set up the fare
         FareCalculator fc = new FareCalculator();
+        Currency localCurrency = Currency.getInstance( Locale.getDefault() );
+        String price = localCurrency.getSymbol() + fc.toString(request.getFare());
         TextView fareTextView = (TextView) findViewById(R.id.textView_$fareAmount);
-        fareTextView.setText("$" + fc.toString(request.getFare()));
+        fareTextView.setText(price);
 
         // TODO setText could be inside the setUser method?
         // Set up the UsernameTextView of the rider

@@ -35,15 +35,13 @@ import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
 
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * This will help us show the request from the perspective of a driver
-<<<<<<< HEAD:app/src/main/java/comcmput301f16t01/github/carrier/Requests/DriverViewRequestActivity.java
  * Will have the position in the request controller bundled to determine what request to display.
-=======
- * Will have the position in the requestController bundled to determine what request to display.
->>>>>>> refs/remotes/origin/master:app/src/main/java/comcmput301f16t01/github/carrier/DriverViewRequestActivity.java
  */
 public class DriverViewRequestActivity extends AppCompatActivity {
     Activity activity = DriverViewRequestActivity.this;
@@ -215,7 +213,7 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         if(startLong > endLong) {
             retLoc.setLongitude(endLong + ((startLong - endLong)/2));
         } else {
-            retLoc.setLatitude(startLong + ((endLong - startLong)/2));
+            retLoc.setLongitude(startLong + ((endLong - startLong)/2));
         }
 
         return new GeoPoint(retLoc);
@@ -229,8 +227,10 @@ public class DriverViewRequestActivity extends AppCompatActivity {
 
         // Set up the fare
         FareCalculator fc = new FareCalculator();
+        Currency localCurrency = Currency.getInstance( Locale.getDefault() );
+        String price = localCurrency.getSymbol() + fc.toString(request.getFare());
         TextView fareTextView = (TextView) findViewById(R.id.textView_$fareAmount);
-        fareTextView.setText("$" + fc.toString(request.getFare()));
+        fareTextView.setText(price);
 
         // Set up the UsernameTextView of the rider
         UsernameTextView riderUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_rider);
