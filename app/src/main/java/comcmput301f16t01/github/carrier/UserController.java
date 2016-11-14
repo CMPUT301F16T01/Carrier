@@ -4,6 +4,7 @@ import android.util.Log;
 import android.util.Patterns;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Singleton Pattern
@@ -222,6 +223,21 @@ public class UserController {
 
         loggedInUser = newUser;
         return null;
+    }
+
+    public User findUser(String username) {
+        User foundUser = null;
+
+        ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();
+
+        fut.execute(username);
+        try {
+            foundUser = fut.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return foundUser;
     }
 
     public void logOutUser() {
