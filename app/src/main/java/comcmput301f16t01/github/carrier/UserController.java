@@ -75,7 +75,7 @@ public class UserController {
         return false;
     }
 
-    private boolean checkUniqueUsername(String username) {
+    private static boolean checkUniqueUsername(String username) {
         ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();
         fut.execute(username);
         User foundUser = null;
@@ -180,7 +180,7 @@ public class UserController {
      * @param phoneNumber
      * @return
      */
-    public String createNewUser(String username, String email, String phoneNumber) {
+    public static String createNewUser(String username, String email, String phoneNumber) {
         // TODO testing offline behaviour
         User newUser = new User();
 
@@ -240,9 +240,14 @@ public class UserController {
         return foundUser;
     }
 
-    public void editUser(String newEmail, String newPhone) {
+    public static void editUser(String newEmail, String newPhone) {
         ElasticUserController.EditUserTask eut = new ElasticUserController.EditUserTask();
         eut.execute(UserController.getLoggedInUser().getId(), newEmail, newPhone);
+    }
+
+    public void deleteUser(String usernameToDelete) {
+        ElasticUserController.DeleteUserTask dut = new ElasticUserController.DeleteUserTask();
+        dut.execute(usernameToDelete);
     }
 
     public void logOutUser() {
