@@ -2,7 +2,6 @@ package comcmput301f16t01.github.carrier;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -28,13 +27,10 @@ import android.widget.ListView;
 
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
-
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationActivity;
 import comcmput301f16t01.github.carrier.Requests.DriverRequestAdapter;
 import comcmput301f16t01.github.carrier.Requests.DriverViewRequestActivity;
-import comcmput301f16t01.github.carrier.Requests.MakeRequestActivity;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestAdapter;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
@@ -90,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition());
-                changeFab(tab.getPosition());
+                changeTab(tab.getPosition());
             }
 
             @Override
@@ -113,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                changeFab(position);
+                changeTab(position);
             }
 
             @Override
@@ -171,18 +167,21 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param position the current screen tab we are in (i.e. 0=Rider, 1=Driver)
      */
-    private void changeFab(int position) {
+    private void changeTab(int position) {
         FloatingActionButton rider_fab = (FloatingActionButton) findViewById(R.id.fab_rider);
         FloatingActionButton driver_fab = (FloatingActionButton) findViewById(R.id.fab_driver);
+        RequestController rc = new RequestController();
         switch (position) {
             case 0:
                 driver_fab.hide();
                 rider_fab.show();
+                rc.fetchRequestsWhereRider( UserController.getLoggedInUser() );
                 break;
 
             case 1:
                 rider_fab.hide();
                 driver_fab.show();
+                rc.getOfferedRequests( UserController.getLoggedInUser() );
                 break;
 
         }
@@ -376,10 +375,10 @@ public class MainActivity extends AppCompatActivity {
             RequestController rc = new RequestController();
             User loggedInUser = UserController.getLoggedInUser();
 
-            final ArrayList<Request> requestList = rc.getOfferedRequests(loggedInUser);
+            final RequestList requestList = rc.getOfferedRequests(loggedInUser);
 
-            final DriverRequestAdapter requestArrayAdapter = new DriverRequestAdapter(this.getContext(),
-                    R.layout.driverrequestlist_item, requestList);
+            final RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
+                    R.layout.requestlist_item, requestList);
             requestListView.setAdapter(requestArrayAdapter);
 
             // add listener to update this view
@@ -416,9 +415,11 @@ public class MainActivity extends AppCompatActivity {
             RequestController rc = new RequestController();
             User loggedInUser = UserController.getLoggedInUser();
 
+            final RequestList requestList = rc.fetchAllRequestsWhereRider(UserController.getLoggedInUser());
+
             final RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
                     R.layout.requestlist_item,
-                    rc.fetchAllRequestsWhereRider(UserController.getLoggedInUser()) );
+                    requestList );
 
             requestListView.setAdapter( requestArrayAdapter );
 
@@ -439,8 +440,8 @@ public class MainActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent intent = new Intent(getActivity(), RiderRequestActivity.class);
                     Bundle bundle = new Bundle();
-                    //bundle.putString("request", new Gson().toJson(requestList.get(position)));
-                    bundle.putInt( "position", position );
+                    bundle.putString("request", new Gson().toJson(requestList.get(position)));
+                    //bundle.putInt( "position", position );
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
