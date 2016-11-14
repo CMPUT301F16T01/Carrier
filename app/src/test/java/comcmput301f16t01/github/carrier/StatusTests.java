@@ -1,6 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
 import android.location.Location;
+import android.provider.Settings;
 
 import org.junit.Test;
 
@@ -43,8 +44,11 @@ public class StatusTests {
         User rider = new User("Mandy");
         User driver = new User("username2");
 
+        CarrierLocation car = new CarrierLocation(445.67,44.6);
+        System.out.print(car.getLatLong());
+
         RequestController rc = new RequestController();
-        Request request = new Request(rider, new CarrierLocation(), new CarrierLocation(), "");
+        Request request = new Request(rider, new CarrierLocation(32.2,43.2), new CarrierLocation(117.6,32.5), "");
 
         rc.addRequest(request);
         rc.addDriver(request, driver);
