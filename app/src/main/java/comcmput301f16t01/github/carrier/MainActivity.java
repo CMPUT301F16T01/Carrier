@@ -141,7 +141,11 @@ public class MainActivity extends AppCompatActivity {
 
         // get segment number, but for not it doesn't matter
         RequestController rc = new RequestController();
-        rc.fetchRequestsWhereRider( UserController.getLoggedInUser() );
+        if( mViewPager.getCurrentItem() == 0 ) {
+            rc.fetchRequestsWhereRider(UserController.getLoggedInUser());
+        } else {
+            rc.getOfferedRequests( UserController.getLoggedInUser());
+        }
     }
 
     /**
@@ -375,10 +379,18 @@ public class MainActivity extends AppCompatActivity {
 
             final ArrayList<Request> requestList = rc.getOfferedRequests(loggedInUser);
 
-            DriverRequestAdapter requestArrayAdapter = new DriverRequestAdapter(this.getContext(),
+            final DriverRequestAdapter requestArrayAdapter = new DriverRequestAdapter(this.getContext(),
                     R.layout.driverrequestlist_item, requestList);
             requestListView.setAdapter(requestArrayAdapter);
             final Context ctx = this.getContext();
+
+            // add listener to update this view 
+            rc.addListener(new Listener() {
+                @Override
+                public void update() {
+                    requestArrayAdapter.notifyDataSetChanged();
+                }
+            });
 
             /**
              * When we click a request we want to be able to see it in another activity
