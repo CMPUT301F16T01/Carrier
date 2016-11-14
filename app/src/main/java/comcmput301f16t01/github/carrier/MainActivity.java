@@ -29,9 +29,7 @@ import com.google.gson.Gson;
 
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationActivity;
-import comcmput301f16t01.github.carrier.Requests.DriverRequestAdapter;
 import comcmput301f16t01.github.carrier.Requests.DriverViewRequestActivity;
-import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestAdapter;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestList;
@@ -86,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition());
-                changeTab(tab.getPosition());
+                changeFab(tab.getPosition());
             }
 
             @Override
@@ -109,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                changeTab(position);
+                changeFab(position);
             }
 
             @Override
@@ -133,11 +131,10 @@ public class MainActivity extends AppCompatActivity {
             promptViewNotifications();
         }
 
-        // get segment number, but for now it doesn't matter
-        System.out.print( mViewPager.getCurrentItem() );
+        // TODO might not need this now that we have listeners
         RequestController rc = new RequestController();
         if( mViewPager.getCurrentItem() == 0 ) {
-            rc.fetchRequestsWhereRider(UserController.getLoggedInUser());
+            //rc.fetchRequestsWhereRider(UserController.getLoggedInUser());
         } else {
             rc.getOfferedRequests( UserController.getLoggedInUser());
         }
@@ -167,21 +164,18 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param position the current screen tab we are in (i.e. 0=Rider, 1=Driver)
      */
-    private void changeTab(int position) {
+    private void changeFab(int position) {
         FloatingActionButton rider_fab = (FloatingActionButton) findViewById(R.id.fab_rider);
         FloatingActionButton driver_fab = (FloatingActionButton) findViewById(R.id.fab_driver);
-        RequestController rc = new RequestController();
         switch (position) {
             case 0:
                 driver_fab.hide();
                 rider_fab.show();
-                rc.fetchRequestsWhereRider( UserController.getLoggedInUser() );
                 break;
 
             case 1:
                 rider_fab.hide();
                 driver_fab.show();
-                rc.getOfferedRequests( UserController.getLoggedInUser() );
                 break;
 
         }

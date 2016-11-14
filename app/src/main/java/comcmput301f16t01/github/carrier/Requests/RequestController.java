@@ -44,14 +44,15 @@ public class RequestController {
         } else {
             ElasticRequestController.AddRequestTask art = new ElasticRequestController.AddRequestTask();
             art.execute(request);
-            return null;
+            requestList.add( request ); // Add new request to requestList (will notify listeners)
         }
+        return null;
     }
 
     /** Clears information in the singleton, not exactly necessary */
     @Deprecated
     public void clear() {
-        requestList = new RequestList();
+        requestList.replaceList( new RequestList() );
     }
 
     /**
@@ -85,6 +86,11 @@ public class RequestController {
      */
     public void addDriver(Request request, User driver) {
         // create an offer object [[ potentially throws IllegalArgumentException if called wrong ]]
+        try {
+            request.addOfferingDriver(driver);
+        } catch ( Exception e ) {
+            return; // If the driver is already offered we shouldn't do this action.
+        }
         Offer newOffer = new Offer(request, driver);
         // Add offer to elastic search
         ElasticRequestController.AddOfferTask aot = new ElasticRequestController.AddOfferTask();
@@ -96,7 +102,6 @@ public class RequestController {
         nc.addNotification( request.getRider(), request );
         // TODO add addNotification to queue if offline
 
-        request.addOfferingDriver(driver);
         requestList.add( request ); // TODO dunno. but like this is how we do it.
     }
 
@@ -111,6 +116,7 @@ public class RequestController {
         ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
         request.setChosenDriver( driver );
         request.setStatus( Request.CONFIRMED );
+        requestList.notifyListeners();  // TODO is this an okay line of code?
         urt.execute( request );
         // only on success should we send out a notification!
         NotificationController nc = new NotificationController();
@@ -122,12 +128,14 @@ public class RequestController {
         ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
         request.setStatus( Request.COMPLETE );
         urt.execute( request );
+        requestList.notifyListeners(); // TODO is this an okay line of code?
     }
 
     public void payForRequest(Request request) {
         ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
         request.setStatus( Request.PAID );
         urt.execute( request );
+        requestList.notifyListeners(); // TODO is this an okay line of code?
     }
 
     /**

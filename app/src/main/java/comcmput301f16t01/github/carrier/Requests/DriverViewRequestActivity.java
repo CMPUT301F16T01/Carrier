@@ -306,6 +306,7 @@ public class DriverViewRequestActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
             }
         });
+        // TODO this code needs to be in the controller, because it's used in multiple locations?
         if (request.getConfirmedDriver() != null) {
             adb.setMessage("Unable to make an offer on the request. There is already a confirmed driver.");
             adb.show();
