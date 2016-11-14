@@ -68,7 +68,7 @@ public class RequestTest extends ApplicationTest {
         int pass;
 
         // add and make a request for elastic search
-        Request request = new Request( basicRider, new Location(""), new Location(""),
+        Request request = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 "testClearingRequests" );
         rc.addRequest( request );
 
@@ -124,20 +124,20 @@ public class RequestTest extends ApplicationTest {
 
         // Two requests for basicRider with differing statuses
         String rOneString = "testFilteringRequests1";
-        Request requestOne = new Request( basicRider, new Location(""), new Location(""),
+        Request requestOne = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 rOneString );
         requestOne.setStatus( Request.CANCELLED );
         rc.addRequest( requestOne );
 
         String rTwoString = "testFilteringRequests2";
-        Request requestTwo = new Request( basicRider, new Location(""), new Location(""),
+        Request requestTwo = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 rTwoString );
         requestTwo.setStatus( Request.COMPLETE );
         rc.addRequest( requestTwo );
 
         // A request with another user, but the same status as requestOne
         String rThreeString = "testFilteringRequests3";
-        Request requestThree = new Request( anotherUser, new Location(""), new Location(""),
+        Request requestThree = new Request( anotherUser, new CarrierLocation(), new CarrierLocation(),
                 rThreeString );
         requestThree.setStatus( Request.CANCELLED );
         rc.addRequest( requestThree );
@@ -162,7 +162,7 @@ public class RequestTest extends ApplicationTest {
 
         // Add another request to basic rider to allow checking for 2+ status types
         String rFourString = "testFilteringRequests3";
-        Request requestFour = new Request( basicRider, new Location(""), new Location(""),
+        Request requestFour = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 rFourString );
         requestFour.setStatus( Request.OPEN );
         rc.addRequest( requestFour );
@@ -211,7 +211,7 @@ public class RequestTest extends ApplicationTest {
                 requestList.size() == 0);
 
         // Add a request and check that it is there
-        Request request = new Request( basicRider, new Location(""), new Location(""),
+        Request request = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 "testAddingDriverToRequest" );
         rc.addRequest( request );
         requestList = rc.fetchAllRequestsWhereRider( basicRider );
@@ -272,11 +272,11 @@ public class RequestTest extends ApplicationTest {
                 requestList.size() == 0);
 
         // Create and add three requests
-        Request requestOne = new Request( basicRider, new Location(""), new Location(""),
+        Request requestOne = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 "testGetRequestsWhereOffered (no offers)" );
-        Request requestTwo = new Request( basicRider, new Location(""), new Location(""),
+        Request requestTwo = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 "testGetRequestsWhereOffered (offers)" );
-        Request requestThree = new Request( basicDriver, new Location(""), new Location(""),
+        Request requestThree = new Request( basicDriver, new CarrierLocation(), new CarrierLocation(),
                 "testGetRequestsWhereOffered (driver's request)");
 
         rc.addRequest( requestOne );
@@ -338,7 +338,7 @@ public class RequestTest extends ApplicationTest {
         assertTrue( "There should be no requests fetched because we cleared them.",
                 requestList.size() == 0);
         
-        Request request = new Request( basicRider, new Location(""), new Location(""),
+        Request request = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 "testGetMeByID" );
         rc.addRequest( request );
 
