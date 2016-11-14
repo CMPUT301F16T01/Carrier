@@ -138,6 +138,10 @@ public class MainActivity extends AppCompatActivity {
         if (nc.unreadNotification( UserController.getLoggedInUser() )) {
             promptViewNotifications();
         }
+
+        // get segment number, but for not it doesn't matter
+        RequestController rc = new RequestController();
+        rc.fetchRequestsWhereRider( UserController.getLoggedInUser() );
     }
 
     /**
@@ -402,11 +406,19 @@ public class MainActivity extends AppCompatActivity {
             RequestController rc = new RequestController();
             User loggedInUser = UserController.getLoggedInUser();
 
-            RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
+            final RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
                     R.layout.requestlist_item,
                     rc.fetchAllRequestsWhereRider(UserController.getLoggedInUser()) );
 
             requestListView.setAdapter( requestArrayAdapter );
+
+            // add a listener to listen to changes and update this view.
+            rc.addListener(new Listener() {
+                @Override
+                public void update() {
+                    requestArrayAdapter.notifyDataSetChanged();
+                }
+            });
     
             /*
              * When we click a request we want to be able to see it in another activity

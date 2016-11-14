@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import comcmput301f16t01.github.carrier.ElasticUserController;
+import comcmput301f16t01.github.carrier.Listener;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.User;
 
@@ -192,7 +193,7 @@ public class RequestController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        requestList = foundRequests;
+        requestList.replaceList( foundRequests );
         return foundRequests;
     }
 
@@ -205,8 +206,12 @@ public class RequestController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        requestList = foundRequests;
+        requestList.replaceList( foundRequests );
         return foundRequests;
+    }
+
+    public void addListener( Listener listener ) {
+        requestList.addListener( listener );
     }
 
 
