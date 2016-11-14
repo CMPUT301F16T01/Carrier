@@ -18,12 +18,12 @@ public class RequestControllerTest {
         RequestController rc = new RequestController();
         User user = new User("Name");
         // Create different types of requests
-        Request cancelledRequest = new Request(user, new Location(), new Location());
+        Request cancelledRequest = new Request(user, new Location(""), new Location(""));
         cancelledRequest.setStatus(Request.CANCELLED);
-        Request openRequest = new Request(user, new Location(), new Location());
-        Request paidRequest = new Request(user, new Location(), new Location());
+        Request openRequest = new Request(user, new Location(""), new Location(""));
+        Request paidRequest = new Request(user, new Location(""), new Location(""));
         paidRequest.setStatus(Request.PAID);
-        Request completedRequest = new Request(user, new Location(), new Location());
+        Request completedRequest = new Request(user, new Location(""), new Location(""));
         completedRequest.setStatus(Request.COMPLETE);
         // Add the different requests.
         rc.addRequest(openRequest);
