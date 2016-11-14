@@ -28,6 +28,11 @@ public class ElasticUserControllerTest extends ApplicationTest {
         uc.deleteUser("ElasticUserControllerTest");
     }
 
+    /**
+     * Tests adding a user to elastic search
+     * @throws InterruptedException
+     * @throws ExecutionException
+     */
     public void testAddUserTask() throws InterruptedException, ExecutionException {
         User elasticUser = uc.findUser("ElasticUserControllerTest");
         Thread.sleep(1000);
@@ -39,6 +44,9 @@ public class ElasticUserControllerTest extends ApplicationTest {
 
     }
 
+    /**
+     * Tests the uniqueness of a username.
+     */
     public void testUniqueUsername() {
 
 //        Test for uniqueness, createNewUser returns the string "That username is already taken" if
@@ -47,6 +55,10 @@ public class ElasticUserControllerTest extends ApplicationTest {
                 ("ElasticUserControllerTest", "j@j.com", "1234567"));
     }
 
+    /**
+     * Tests the functionality of editing a user in elastic search
+     * @throws InterruptedException
+     */
     public void testEditUserTask() throws InterruptedException {
         String newEmail = "new@test.com";
         String newPhone = "000000000";
@@ -58,6 +70,10 @@ public class ElasticUserControllerTest extends ApplicationTest {
         assertEquals("The phone did not update", newPhone, UserController.getLoggedInUser().getPhone());
     }
 
+    /**
+     * Tests the functionality of deleting a user from elastic search
+     * @throws InterruptedException
+     */
     public void testUserDeleteTask() throws InterruptedException {
         uc.deleteUser("ElasticUserControllerTest2");
         User deletedUser = uc.findUser("ElasticUserControllerTest2");

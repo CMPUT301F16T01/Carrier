@@ -225,6 +225,11 @@ public class UserController {
         return null;
     }
 
+    /**
+     * Searches elastic search for the given username and returns a User object matching that username
+     * @param username The username to search for
+     * @return
+     */
     public User findUser(String username) {
         User foundUser = null;
 
@@ -240,11 +245,20 @@ public class UserController {
         return foundUser;
     }
 
+    /**
+     * Edits the logged in user given a newEmail and newPhone
+     * @param newEmail The email to change to
+     * @param newPhone The phone number to change to
+     */
     public static void editUser(String newEmail, String newPhone) {
         ElasticUserController.EditUserTask eut = new ElasticUserController.EditUserTask();
         eut.execute(UserController.getLoggedInUser().getId(), newEmail, newPhone);
     }
 
+    /**
+     * Deletes a user from elastic search
+     * @param usernameToDelete The username to delete from ElasticSearch
+     */
     public void deleteUser(String usernameToDelete) {
         ElasticUserController.DeleteUserTask dut = new ElasticUserController.DeleteUserTask();
         dut.execute(usernameToDelete);
