@@ -10,6 +10,7 @@ import com.searchly.jestdroid.JestDroidClient;
 
 import java.io.IOException;
 
+import io.searchbox.core.DeleteByQuery;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
@@ -112,12 +113,38 @@ public class ElasticUserController {
 
             try {
                 client.execute(update);
+                UserController.getLoggedInUser().setEmail(update_params[1]);
+                UserController.getLoggedInUser().setPhone(update_params[2]);
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
             return null;
         }
+    }
+
+    public static class DeleteUserTask extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... search_params) {
+            verifySettings();
+
+            String script = "{\"query\": {\"match\": {\"username\": \"" + search_params[0] + "\"}}}";
+            DeleteByQuery delete = new DeleteByQuery.Builder(script)
+                    .addIndex("cmput301f16t01")
+                    .addType("user")
+                    .build();
+
+            try {
+                client.execute(delete);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new IllegalArgumentException();
+            }
+
+            return null;
+        }
+
     }
 
     /** Sets up the client to be used for Elastic Search */
