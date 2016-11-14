@@ -13,7 +13,7 @@ public class RequestList extends ArrayList<Request> {
     private ArrayList<Listener> listeners = new ArrayList<>();
 
     @Override
-    public boolean add(Request e ) {
+    public boolean add(Request e) {
         Boolean returnValue = super.add(e);
         notifyListeners();
         return returnValue;

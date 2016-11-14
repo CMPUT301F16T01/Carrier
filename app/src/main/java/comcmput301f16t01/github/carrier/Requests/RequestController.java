@@ -49,7 +49,7 @@ public class RequestController {
     }
 
     /** Clears information in the singleton, not exactly necessary */
-    // TODO check the necessity of this function.
+    @Deprecated
     public void clear() {
         requestList = new RequestList();
     }
@@ -101,6 +101,7 @@ public class RequestController {
 
         request.addOfferingDriver(driver);
         requestList.notifyListeners();
+        requestList.add( request ); // TODO dunno. but like this is how we do it.
     }
 
     /**
@@ -159,9 +160,9 @@ public class RequestController {
     public RequestList getOfferedRequests(User driver) {
         ElasticRequestController.GetOfferedRequestsTask gort = new ElasticRequestController.GetOfferedRequestsTask();
         gort.execute( driver.getUsername() );
-
         try {
-            return gort.get();
+            requestList.replaceList( gort.get() );
+            return requestList;
         } catch (Exception e) {
             return new RequestList();
         }

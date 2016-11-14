@@ -36,14 +36,16 @@
             android:label="@string/title_activity_main"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+
+
+        <activity android:name=".NewUserActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Requests.DriverViewRequestActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".UserProfileActivity"
-            android:label="Carrier" />
-        android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".NewUserActivity" />
-        <activity android:name=".Requests.DriverViewRequestActivity" />
             android:label="Carrier"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <!--
@@ -59,7 +61,8 @@
             android:value="0" />
         <activity
             android:name=".Searching.SearchMapsActivity"
-            android:label="@string/title_activity_search_maps" />
+            android:label="@string/title_activity_search_maps"
+            android:screenOrientation="portrait"/>
         <activity android:name=".Searching.SearchActivity" android:screenOrientation="portrait"/>
         <activity android:name=".HelpActivity" android:screenOrientation="portrait"/>
         <activity android:name=".Requests.RiderRequestActivity" android:screenOrientation="portrait"/>

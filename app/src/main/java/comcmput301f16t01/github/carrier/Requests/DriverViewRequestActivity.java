@@ -39,7 +39,11 @@ import java.util.List;
 
 /**
  * This will help us show the request from the perspective of a driver
+<<<<<<< HEAD:app/src/main/java/comcmput301f16t01/github/carrier/Requests/DriverViewRequestActivity.java
+ * Will have the position in the request controller bundled to determine what request to display.
+=======
  * Will have the position in the requestController bundled to determine what request to display.
+>>>>>>> refs/remotes/origin/master:app/src/main/java/comcmput301f16t01/github/carrier/DriverViewRequestActivity.java
  */
 public class DriverViewRequestActivity extends AppCompatActivity {
     Activity activity = DriverViewRequestActivity.this;
