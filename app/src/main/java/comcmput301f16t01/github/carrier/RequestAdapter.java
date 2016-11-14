@@ -47,13 +47,23 @@ public class RequestAdapter extends ArrayAdapter<Request> {
 
             // Set the start location in the item's view
             if (startLocTextView != null) {
-                String startLoc = "From: " + request.getStart().getAddress();
+                String startLoc = null;
+                if (request.getStart().getShortAddress() != null) {
+                    startLoc = "From: " + request.getStart().getShortAddress();
+                } else {
+                    startLoc = "Froml: " + request.getStart().getLatLong();
+                }
                 startLocTextView.setText(startLoc);
             }
 
             // Set the end location in the item's view
             if (endLocTextView != null) {
-                String endLoc = "To: " + request.getEnd().toString();
+                String endLoc = null;
+                if (request.getEnd().getShortAddress() != null) {
+                    endLoc = "To: " + request.getEnd().getShortAddress();
+                } else {
+                    endLoc = "Tol: " + request.getEnd().getLatLong();
+                }
                 endLocTextView.setText(endLoc);
             }
 

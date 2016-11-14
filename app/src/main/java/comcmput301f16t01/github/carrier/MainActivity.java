@@ -421,7 +421,9 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 requestOne.getStart().setAddress("11390 87 Avenue Northwest\nEdmonton, AB T6G 2T9\nCanada");
+                requestOne.getStart().setShortAddress("11390 87 Avenue Northwest");
                 requestOne.getEnd().setAddress("8770 170 Street Northwest\nEdmonton, AB T5T 4V4\nCanada");
+                requestOne.getEnd().setShortAddress("8770 170 Street Northwest");
                 FareCalculator fc = new FareCalculator();
                 requestOne.setFare(fc.getEstimate(10.6,960));
                 requestOne.setChosenDriver(sarah);
