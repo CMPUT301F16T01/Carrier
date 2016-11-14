@@ -240,6 +240,11 @@ public class UserController {
         return foundUser;
     }
 
+    public void editUser(String newEmail, String newPhone) {
+        ElasticUserController.EditUserTask eut = new ElasticUserController.EditUserTask();
+        eut.execute(UserController.getLoggedInUser().getId(), newEmail, newPhone);
+    }
+
     public void logOutUser() {
         loggedInUser = null;
     }

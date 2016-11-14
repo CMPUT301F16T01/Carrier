@@ -113,6 +113,8 @@ public class ElasticUserController {
 
             try {
                 client.execute(update);
+                UserController.getLoggedInUser().setEmail(update_params[1]);
+                UserController.getLoggedInUser().setPhone(update_params[2]);
             } catch (IOException e) {
                 e.printStackTrace();
             }
