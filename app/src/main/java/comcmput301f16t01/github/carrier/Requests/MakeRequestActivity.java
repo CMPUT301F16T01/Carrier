@@ -17,10 +17,12 @@ import android.os.Handler;
 import com.google.gson.Gson;
 
 //import comcmput301f16t01.github.carrier.Location;
+import java.util.Currency;
+import java.util.Locale;
+
 import comcmput301f16t01.github.carrier.CarrierLocation;
 import comcmput301f16t01.github.carrier.FareCalculator;
 import comcmput301f16t01.github.carrier.MainActivity;
-import comcmput301f16t01.github.carrier.MockFareCalculator;
 import comcmput301f16t01.github.carrier.R;
 import comcmput301f16t01.github.carrier.SetLocationsActivity;
 import comcmput301f16t01.github.carrier.User;
@@ -234,8 +236,10 @@ public class MakeRequestActivity extends AppCompatActivity {
         } else {
             FareCalculator fc = new FareCalculator();
             int fareEstimate = fc.getEstimate(distance, duration);
-
+            Currency localCurrency = Currency.getInstance( Locale.getDefault() );
+            TextView currencyTextView = (TextView) findViewById(R.id.textView_currencySign);
             TextView fareTextView = (TextView) findViewById(R.id.textView_fareEstimate);
+            currencyTextView.setText(localCurrency.getSymbol());
             fareTextView.setText(fc.toString(fareEstimate));
 
             fareEstimated = fareEstimate;
