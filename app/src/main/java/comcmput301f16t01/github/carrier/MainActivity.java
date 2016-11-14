@@ -120,6 +120,14 @@ public class MainActivity extends AppCompatActivity {
         // We start on the rider tab, so we hide the driver fab
         FloatingActionButton driver_fab = (FloatingActionButton) findViewById(R.id.fab_driver);
         driver_fab.hide();
+
+        // TODO might not need this now that we have listeners
+        RequestController rc = new RequestController();
+        if( mViewPager.getCurrentItem() == 0 ) {
+            //rc.fetchRequestsWhereRider(UserController.getLoggedInUser());
+        } else {
+            rc.getOfferedRequests( UserController.getLoggedInUser());
+        }
     }
 
     @Override
