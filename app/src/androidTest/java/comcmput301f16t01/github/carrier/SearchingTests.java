@@ -4,6 +4,11 @@ import junit.framework.Assert;
 
 import java.util.ArrayList;
 
+
+import comcmput301f16t01.github.carrier.Requests.Request;
+import comcmput301f16t01.github.carrier.Requests.RequestController;
+
+
 public class SearchingTests extends ApplicationTest {
     // University of Alberta, Edmonton
     static final double latitude1 = 53.5232;

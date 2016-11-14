@@ -79,6 +79,7 @@ public class ElasticNotificationController {
                     List<Notification> notificationList = result.getSourceAsObjectList(Notification.class);
                     foundNotifications.addAll( notificationList );
                 } else {
+                    // TODO is there an issue with this?
                     return null;
                 }
             } catch (IOException e) {
@@ -95,18 +96,21 @@ public class ElasticNotificationController {
         @Override
         protected Void doInBackground(String... search_parameters) {
             verifySettings();
-            String search_string = "{\"query\": {\"match\": {\"username\": \"" + search_parameters[0] + "\"}}}";
 
-            DeleteByQuery delete = new DeleteByQuery.Builder(search_string)
-                    .addIndex("cmput301f16t01")
-                    .addType("notification")
-                    .build();
+            for (String searchParam : search_parameters ) {
+                String search_string = "{\"query\": {\"match\": {\"username\": \"" + searchParam + "\"}}}";
 
-            try {
-                client.execute( delete );
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new IllegalArgumentException();
+                DeleteByQuery delete = new DeleteByQuery.Builder(search_string)
+                        .addIndex("cmput301f16t01")
+                        .addType("notification")
+                        .build();
+
+                try {
+                    client.execute(delete);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    throw new IllegalArgumentException();
+                }
             }
 
             return null;
@@ -120,7 +124,9 @@ public class ElasticNotificationController {
         protected Void doInBackground(String... id_parameter) {
             String script =
                     "{\n" +
-                    "    \"script\" : \"ctx._source.read = true\",\n" +
+                    "    \"doc\": {\n" +
+                    "        \"read\": true \n" +
+                    "    }\n" +
                     "}";
 
             Update update = new Update.Builder(script)

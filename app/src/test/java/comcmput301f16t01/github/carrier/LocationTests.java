@@ -5,6 +5,9 @@ import android.location.Location;
 import org.junit.After;
 import org.junit.Test;
 
+import comcmput301f16t01.github.carrier.Requests.Request;
+import comcmput301f16t01.github.carrier.Requests.RequestController;
+
 import static org.junit.Assert.*;
 
 public class LocationTests {
