@@ -1,4 +1,4 @@
-package comcmput301f16t01.github.carrier;
+package comcmput301f16t01.github.carrier.Requests;
 
 import android.app.Activity;
 import android.location.Location;
@@ -30,6 +30,14 @@ import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
 import java.util.ArrayList;
 import java.util.List;
 
+import comcmput301f16t01.github.carrier.FareCalculator;
+import comcmput301f16t01.github.carrier.R;
+import comcmput301f16t01.github.carrier.Requests.Request;
+import comcmput301f16t01.github.carrier.Requests.RequestController;
+import comcmput301f16t01.github.carrier.User;
+import comcmput301f16t01.github.carrier.UserController;
+import comcmput301f16t01.github.carrier.UsernameTextView;
+
 /**
  * This will help us show the request from the perspective of a rider
  */
@@ -42,15 +50,17 @@ public class RiderRequestActivity extends AppCompatActivity {
     IMapController mapController;
     private Request request;
 
+    RequestController rc = new RequestController();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_view_request);
-        // Initialize the view ids
 
         // unpacking the bundle to get the position of request
         Bundle bundle = getIntent().getExtras();
-        request = new Gson().fromJson(bundle.getString("request"), Request.class);
+        int position = bundle.getInt("position");
+        request = rc.getResult().get(position);
 
         setTitle("Request");
 
@@ -210,11 +220,13 @@ public class RiderRequestActivity extends AppCompatActivity {
         TextView fareTextView = (TextView) findViewById(R.id.textView_$fareAmount);
         fareTextView.setText("$" + fc.toString(request.getFare()));
 
+        // TODO setText could be inside the setUser method?
         // Set up the UsernameTextView of the rider
         UsernameTextView riderUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_rider);
         riderUsernameTextView.setText(request.getRider().getUsername());
         riderUsernameTextView.setUser(request.getRider());
 
+        // TODO why does it say "sarah" even though there is no confirmedDriver?
         // Set up the UsernameTextView of the driver
         UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
         if (request.getChosenDriver() != null) {

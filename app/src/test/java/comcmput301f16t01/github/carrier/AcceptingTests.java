@@ -4,6 +4,9 @@ import android.location.Location;
 
 import org.junit.Test;
 
+import comcmput301f16t01.github.carrier.Requests.Request;
+import comcmput301f16t01.github.carrier.Requests.RequestController;
+
 import static org.junit.Assert.*;
 /**
  * Created by michael on 11/10/16.

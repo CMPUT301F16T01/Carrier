@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import java.util.Date;
 
 import comcmput301f16t01.github.carrier.Notifications.Notification;
-import comcmput301f16t01.github.carrier.Request;
+import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.User;
 
 /**

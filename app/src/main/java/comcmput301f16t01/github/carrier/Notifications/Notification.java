@@ -4,8 +4,9 @@ import android.support.annotation.NonNull;
 
 import java.util.Date;
 
-import comcmput301f16t01.github.carrier.Request;
+import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.User;
+import io.searchbox.annotations.JestId;
 
 /**
  * Notification class for storing and retrieving notifications.
@@ -16,6 +17,8 @@ public class Notification implements Comparable<Notification> {
     protected boolean read;
     protected boolean isRider;
     protected Date date;
+
+    @JestId
     private String elasticID;
 
     public Notification(@NonNull User userToBeNotified, @NonNull Request relatedRequest) {
