@@ -1,16 +1,11 @@
 package comcmput301f16t01.github.carrier.Notifications;
 
-import android.content.Context;
-import android.os.health.SystemHealthManager;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import java.util.Collection;
 import java.util.Collections;
-import java.util.concurrent.ExecutionException;
 
-import comcmput301f16t01.github.carrier.Request;
+import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.User;
 
 /**
@@ -60,7 +55,9 @@ public class NotificationController {
             // Make the Async insync
             e.printStackTrace();
         }
-        notificationList.clear();
+        if (notificationList != null) {
+            notificationList.clear();
+        }
     }
 
     /**

@@ -1,16 +1,23 @@
-package comcmput301f16t01.github.carrier;
+package comcmput301f16t01.github.carrier.Requests;
 
 import android.app.Activity;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import comcmput301f16t01.github.carrier.FareCalculator;
+import comcmput301f16t01.github.carrier.R;
+import comcmput301f16t01.github.carrier.User;
+import comcmput301f16t01.github.carrier.UserController;
+import comcmput301f16t01.github.carrier.Requests.RequestController;
+import comcmput301f16t01.github.carrier.UsernameTextView;
 
 import com.google.gson.Gson;
 
@@ -31,22 +38,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This will help us show the request from the perspective of a rider
+ * This will help us show the request from the perspective of a driver
+<<<<<<< HEAD:app/src/main/java/comcmput301f16t01/github/carrier/Requests/DriverViewRequestActivity.java
+ * Will have the position in the request controller bundled to determine what request to display.
+=======
+ * Will have the position in the requestController bundled to determine what request to display.
+>>>>>>> refs/remotes/origin/master:app/src/main/java/comcmput301f16t01/github/carrier/DriverViewRequestActivity.java
  */
-public class RiderRequestActivity extends AppCompatActivity {
-    Activity activity = RiderRequestActivity.this;
+public class DriverViewRequestActivity extends AppCompatActivity {
+    Activity activity = DriverViewRequestActivity.this;
     GeoPoint startPoint = null;
     GeoPoint endPoint = null;
     Road[] roadList = null;
     MapView map;
     IMapController mapController;
     private Request request;
+    private User loggedInUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_rider_view_request);
-        // Initialize the view ids
+        setContentView(R.layout.activity_driver_view_request);
+        //getting the request controller to get a list of requests
+        loggedInUser = UserController.getLoggedInUser();
 
         // unpacking the bundle to get the position of request
         Bundle bundle = getIntent().getExtras();
@@ -72,9 +86,11 @@ public class RiderRequestActivity extends AppCompatActivity {
         overlayItems.add(new OverlayItem("Starting Point", "This is the starting point", startPoint));
         overlayItems.add(new OverlayItem("Destination", "This is the destination point", endPoint));
 
-        setViews();
-        setMarkers();
-        getRoadAsync();
+        if ((request != null) && (loggedInUser != null)) {
+            setViews();
+            setMarkers();
+            getRoadAsync();
+        }
     }
 
     /**
@@ -125,6 +141,7 @@ public class RiderRequestActivity extends AppCompatActivity {
         waypoints.add(roadEndPoint);
         new UpdateRoadTask().execute(waypoints);
     }
+
 
     /**
      * Class to update the road on the map
@@ -204,15 +221,12 @@ public class RiderRequestActivity extends AppCompatActivity {
         return new GeoPoint(retLoc);
     }
 
-    // TODO fill in
-    public void payForRequest(View view) {
-        Toast.makeText(activity, "PAY FOR REQUEST", Toast.LENGTH_SHORT).show();
-    }
-
     /**
      * Given the request passed in by the user, set the views in the layout.
      */
     public void setViews() {
+        UserController uc = new UserController();
+
         // Set up the fare
         FareCalculator fc = new FareCalculator();
         TextView fareTextView = (TextView) findViewById(R.id.textView_$fareAmount);
@@ -225,26 +239,26 @@ public class RiderRequestActivity extends AppCompatActivity {
 
         // Set up the UsernameTextView of the driver
         UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
-        if (request.getChosenDriver() != null) {
-            driverUsernameTextView.setText(request.getChosenDriver().getUsername());
-            driverUsernameTextView.setUser(request.getChosenDriver());
-        }
+        driverUsernameTextView.setText(uc.getLoggedInUser().getUsername());
+        driverUsernameTextView.setUser(uc.getLoggedInUser());
 
         TextView startAddressTextView = (TextView) findViewById(R.id.textView_start);
         String startAddress = request.getStart().getAddress();
-        if(startAddress != null) {
+        if (startAddress != null) {
             startAddressTextView.setText(startAddress);
         } else {
-            String startPoint = request.getStart().getLatLong();
+            String startPoint = "(" + String.valueOf(request.getStart().getLatitude()) + ", " +
+                    String.valueOf(request.getStart().getLongitude()) + ")";
             startAddressTextView.setText(startPoint);
         }
 
         TextView endAddressTextView = (TextView) findViewById(R.id.textView_end);
         String endAddress = request.getEnd().getAddress();
-        if(endAddress != null) {
+        if (endAddress != null) {
             endAddressTextView.setText(request.getEnd().getAddress());
         } else {
-            String endPoint = request.getEnd().getLatLong();
+            String endPoint = "(" + String.valueOf(request.getEnd().getLatitude()) + ", " +
+                    String.valueOf(request.getEnd().getLongitude()) + ")";
             endAddressTextView.setText(endPoint);
         }
 
@@ -280,40 +294,30 @@ public class RiderRequestActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Will initialize the view ids for all the views in the activity.
-     */
-    public void cancelRequest(View v){
-        AlertDialog.Builder adb = new AlertDialog.Builder(RiderRequestActivity.this);
-        if ((request.getStatus() != Request.CANCELLED) && (request.getStatus() != Request.COMPLETE)
-                && (request.getStatus() != Request.PAID)) {
-            adb.setMessage("Cancel request?");
-            adb.setCancelable(true);
-            adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    RequestController rc = new RequestController();
-                    rc.cancelRequest(request.getRider(), request);
-                    finish();
-                }
-            });
-
-            adb.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                }
-            });
+    public void makeOffer(View view) {
+        RequestController rc = new RequestController();
+        // Can not make an offer on a request that has a confirmed driver.
+        // Can not make an offer on a request that you hae already made an offer on.
+        // Can not make an offer on a cancelled request.
+        AlertDialog.Builder adb = new AlertDialog.Builder(DriverViewRequestActivity.this);
+        adb.setTitle("Error: ");
+        adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        if (request.getConfirmedDriver() != null) {
+            adb.setMessage("Unable to make an offer on the request. There is already a confirmed driver.");
+            adb.show();
+        } else if (request.getOfferedDrivers().contains(loggedInUser)) {
+            adb.setMessage("Unable to make an offer on the request. You have already made an offer.");
+            adb.show();
+        } else if (request.getStatus() == Request.CANCELLED) {
+            adb.setMessage("Unable to make an offer on the request. The request has been cancelled.");
+            adb.show();
+        } else {
+            rc.addDriver(request, loggedInUser);
+            Toast.makeText(this, "Made an offer.", Toast.LENGTH_SHORT).show();
         }
-        else {
-            adb.setTitle("Error: ");
-            adb.setMessage("Request cannot be cancelled.");
-            adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                }
-            });
-        }
-        adb.show();
     }
 }

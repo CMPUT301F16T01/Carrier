@@ -3,6 +3,9 @@ package comcmput301f16t01.github.carrier;
 import android.location.Location;
 
 import org.junit.Test;
+
+import comcmput301f16t01.github.carrier.Requests.Request;
+
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
