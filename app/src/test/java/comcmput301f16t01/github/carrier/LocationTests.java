@@ -35,8 +35,8 @@ public class LocationTests {
         // TODO better way to get current location (using location manager perhaps?)
 
         // gets current location
-        Location startLocation = new Location("");
-        Location endLocation = new Location("");
+        CarrierLocation startLocation = new CarrierLocation();
+        CarrierLocation endLocation = new CarrierLocation();
 
         // user moves pin for start location
         startLocation.setLatitude(latitude1);
@@ -60,12 +60,12 @@ public class LocationTests {
     @Test
     public void driverViewRequestLocation() {
         User rider = new User("Mike");
-        Location startLocation = new Location("");
-        Location endLocation = new Location("");
+        CarrierLocation startLocation = new CarrierLocation();
+        CarrierLocation endLocation = new CarrierLocation();
         Request request = new Request(rider, startLocation, endLocation, "");
 
-        Location start = request.getStart();
-        Location end = request.getEnd();
+        CarrierLocation start = request.getStart();
+        CarrierLocation end = request.getEnd();
 
         // assert that the start locations match
         assertEquals("The start locations should match", startLocation, start);

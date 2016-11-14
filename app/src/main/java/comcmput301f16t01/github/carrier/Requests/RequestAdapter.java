@@ -54,7 +54,7 @@ public class RequestAdapter extends ArrayAdapter<Request> {
                 if (request.getStart().getShortAddress() != null) {
                     startLoc = "From: " + request.getStart().getShortAddress();
                 } else {
-                    startLoc = "Froml: " + request.getStart().getLatLong();
+                    startLoc = "From: " + request.getStart().getLatLong();
                 }
                 startLocTextView.setText(startLoc);
             }
@@ -65,7 +65,7 @@ public class RequestAdapter extends ArrayAdapter<Request> {
                 if (request.getEnd().getShortAddress() != null) {
                     endLoc = "To: " + request.getEnd().getShortAddress();
                 } else {
-                    endLoc = "Tol: " + request.getEnd().getLatLong();
+                    endLoc = "To: " + request.getEnd().getLatLong();
                 }
                 endLocTextView.setText(endLoc);
             }

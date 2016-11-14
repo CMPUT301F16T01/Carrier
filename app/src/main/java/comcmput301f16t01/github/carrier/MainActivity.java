@@ -25,7 +25,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
 
@@ -377,8 +376,7 @@ public class MainActivity extends AppCompatActivity {
             User loggedInUser = UserController.getLoggedInUser();
 
             final ArrayList<Request> requestList = rc.getOfferedRequests(loggedInUser);
-
-            final DriverRequestAdapter requestArrayAdapter = new DriverRequestAdapter(this.getContext(),
+            final RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
                     R.layout.driverrequestlist_item, requestList);
             requestListView.setAdapter(requestArrayAdapter);
             final Context ctx = this.getContext();
