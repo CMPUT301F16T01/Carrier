@@ -384,7 +384,7 @@ public class MainActivity extends AppCompatActivity {
             requestListView.setAdapter(requestArrayAdapter);
             final Context ctx = this.getContext();
 
-            // add listener to update this view 
+            // add listener to update this view
             rc.addListener(new Listener() {
                 @Override
                 public void update() {

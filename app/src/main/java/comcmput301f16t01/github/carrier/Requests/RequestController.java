@@ -130,7 +130,7 @@ public class RequestController {
         ElasticRequestController.SearchByKeywordTask sbkt = new ElasticRequestController.SearchByKeywordTask();
         sbkt.execute(keyword);
         try {
-            requestList = sbkt.get();
+            requestList.replaceList( sbkt.get() );
         } catch (Exception e) {
             e.printStackTrace();
         }
