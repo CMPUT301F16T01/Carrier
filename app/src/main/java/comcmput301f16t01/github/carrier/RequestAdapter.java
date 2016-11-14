@@ -47,7 +47,7 @@ public class RequestAdapter extends ArrayAdapter<Request> {
 
             // Set the start location in the item's view
             if (startLocTextView != null) {
-                String startLoc = "From: " + request.getStart().toString();
+                String startLoc = "From: " + request.getStart().getAddress();
                 startLocTextView.setText(startLoc);
             }
 
