@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -71,6 +72,11 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         } else {
             // else we can grab it from the request controller.
             request = rc.getOffersInstance().get(pos);
+
+            // They have already made an offer, so we can turn off "make offer" button
+            Button makeOfferButton = (Button) findViewById( R.id.button_makeOffer );
+            makeOfferButton.setEnabled( false ); // Make the button un-clickable
+            makeOfferButton.getBackground().setAlpha( 128 ); // Set transparency to 50%
         }
 
         setTitle("Request");
@@ -328,6 +334,8 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         } else {
             rc.addDriver(request, loggedInUser);
             Toast.makeText(this, "Made an offer.", Toast.LENGTH_SHORT).show();
+            view.setEnabled(false); // Make the button un-clickable after offering.
+            view.getBackground().setAlpha( 128 ); // The button becomes 50% transparent
         }
     }
 }

@@ -123,13 +123,13 @@ public class MainActivity extends AppCompatActivity {
         // We start on the rider tab, so we hide the driver fab
         FloatingActionButton driver_fab = (FloatingActionButton) findViewById(R.id.fab_driver);
         driver_fab.hide();
-
-        rc.performAsyncUpdate();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        rc.performAsyncUpdate();
 
         NotificationController nc = new NotificationController();
         if (nc.unreadNotification( UserController.getLoggedInUser() )) {
