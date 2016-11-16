@@ -27,6 +27,8 @@ import android.widget.ListView;
 
 import com.google.gson.Gson;
 
+import java.util.List;
+
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationActivity;
 import comcmput301f16t01.github.carrier.Requests.DriverViewRequestActivity;
@@ -37,6 +39,7 @@ import comcmput301f16t01.github.carrier.Requests.RiderRequestActivity;
 import comcmput301f16t01.github.carrier.Searching.SearchActivity;
 
 public class MainActivity extends AppCompatActivity {
+    RequestController rc = new RequestController();
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -46,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
      * may be best to switch to a
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private static SectionsPagerAdapter mSectionsPagerAdapter;
 
     /** The {@link ViewPager} that will host the section contents. */
     private ViewPager mViewPager;
@@ -83,8 +86,8 @@ public class MainActivity extends AppCompatActivity {
         TabLayout.OnTabSelectedListener onTabSelectedListener = new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                RequestController rc = new RequestController();
                 mViewPager.setCurrentItem(tab.getPosition());
+                changeFab( tab.getPosition() );
             }
 
             @Override
@@ -117,9 +120,14 @@ public class MainActivity extends AppCompatActivity {
         };
         mViewPager.addOnPageChangeListener(onPageChangeListener);
 
+        // Keep no views in memory ;)
+        mViewPager.setOffscreenPageLimit(0);
+
         // We start on the rider tab, so we hide the driver fab
         FloatingActionButton driver_fab = (FloatingActionButton) findViewById(R.id.fab_driver);
         driver_fab.hide();
+
+        rc.performAsyncUpdate();
     }
 
     @Override
@@ -129,20 +137,6 @@ public class MainActivity extends AppCompatActivity {
         NotificationController nc = new NotificationController();
         if (nc.unreadNotification( UserController.getLoggedInUser() )) {
             promptViewNotifications();
-        }
-
-        try {
-            Thread.sleep( 1000 );
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        // TODO might not need this now that we have listeners
-        RequestController rc = new RequestController();
-        if( mViewPager.getCurrentItem() == 0 ) {
-            rc.fetchRequestsWhereRider(UserController.getLoggedInUser());
-        } else {
-            rc.getOfferedRequests( UserController.getLoggedInUser());
         }
     }
 
@@ -357,7 +351,13 @@ public class MainActivity extends AppCompatActivity {
 
             // TODO (after) allow the ability to toggle between what requests are shown (?)
 
-            ListView requestListView = (ListView) rootView.findViewById( R.id.listView_homeRequestList );
+            ListView requestListView;
+            if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+                requestListView = (ListView) rootView.findViewById( R.id.listView_requestListView );
+            } else {
+                requestListView = (ListView) rootView.findViewById( R.id.listView_offerListView );
+            }
+
             if( getArguments().getInt(ARG_SECTION_NUMBER) == 1 ) {
                 fillRiderRequests( requestListView );
             } else {
@@ -371,22 +371,22 @@ public class MainActivity extends AppCompatActivity {
          * Sets up the ListView for the driver.
          * @param requestListView
          */
-        private void fillDriverRequests(ListView requestListView) {
+        private void fillDriverRequests(final ListView requestListView) {
             RequestController rc = new RequestController();
-            User loggedInUser = UserController.getLoggedInUser();
 
-            final RequestList requestList = rc.getOfferedRequests(loggedInUser);
+            final RequestList requestList = rc.getOffersInstance();
 
             final RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
                     R.layout.requestlist_item,
                     requestList);
+
             requestListView.setAdapter(requestArrayAdapter);
 
-            // add listener to update this view
-            rc.addListener( new Listener() {
+            requestList.addListener(new Listener() {
                 @Override
                 public void update() {
                     requestArrayAdapter.notifyDataSetChanged();
+                    mSectionsPagerAdapter.notifyDataSetChanged();
                 }
             });
 
@@ -399,7 +399,8 @@ public class MainActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent intent = new Intent(getActivity(), DriverViewRequestActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putString("request", new Gson().toJson(requestList.get(position)));
+                    //bundle.putString("request", new Gson().toJson(requestList.get(position)));
+                    bundle.putInt( "position", position );
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
@@ -411,27 +412,24 @@ public class MainActivity extends AppCompatActivity {
          * Sets up the ListView for the rider.
          * @param requestListView
          */
-
-        private void fillRiderRequests(ListView requestListView) {
+        private void fillRiderRequests(final ListView requestListView) {
             RequestController rc = new RequestController();
-            User loggedInUser = UserController.getLoggedInUser();
 
-            final RequestList requestList = rc.fetchAllRequestsWhereRider(UserController.getLoggedInUser());
+            final RequestList requestList = rc.getRiderInstance();
 
             final RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
                     R.layout.requestlist_item,
-                    requestList );
+                    requestList);
 
-            requestListView.setAdapter( requestArrayAdapter );
+            requestListView.setAdapter(requestArrayAdapter);
 
-            // add a listener to listen to changes and update this view.
-            rc.addListener(new Listener() {
+            requestList.addListener(new Listener() {
                 @Override
                 public void update() {
                     requestArrayAdapter.notifyDataSetChanged();
                 }
             });
-    
+
             /*
              * When we click a request we want to be able to see it in another activity
              * Use bundles to send the position of the request in a list
@@ -441,8 +439,8 @@ public class MainActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent intent = new Intent(getActivity(), RiderRequestActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putString("request", new Gson().toJson(requestList.get(position)));
-                    //bundle.putInt( "position", position );
+                    //bundle.putString("request", new Gson().toJson(requestList.get(position)));
+                    bundle.putInt( "position", position );
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }

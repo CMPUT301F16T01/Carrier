@@ -62,7 +62,11 @@ public class DriverViewRequestActivity extends AppCompatActivity {
 
         // unpacking the bundle to get the position of request
         Bundle bundle = getIntent().getExtras();
-        request = new Gson().fromJson(bundle.getString("request"), Request.class);
+        //request = new Gson().fromJson(bundle.getString("request"), Request.class);
+
+        RequestController rc = new RequestController();
+        int pos = bundle.getInt( "position" );
+        request = rc.getOffersInstance().get(pos);
 
         setTitle("Request");
 

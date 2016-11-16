@@ -61,10 +61,10 @@ public class RiderRequestActivity extends AppCompatActivity {
 
         // unpacking the bundle to get the position of request
         Bundle bundle = getIntent().getExtras();
-        //int position = bundle.getInt("position");
-        //request = rc.getResult().get(position);
+        int position = bundle.getInt("position");
+        request = rc.getRiderInstance().get(position);
 
-        request = new Gson().fromJson( bundle.getString("request"), Request.class );
+        //request = new Gson().fromJson( bundle.getString("request"), Request.class );
 
         setTitle("Request");
 

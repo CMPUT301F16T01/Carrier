@@ -120,6 +120,8 @@ public class ElasticRequestController {
      */
     public static class FetchRiderRequestsTask extends AsyncTask<String, Void, RequestList> {
 
+        public boolean withAsync = false;
+
         @Override
         protected RequestList doInBackground(String... params) {
             verifySettings();
@@ -173,6 +175,10 @@ public class ElasticRequestController {
             // We need to get all the offers for each of the requests
             getOffers( foundRequests );
 
+            if (withAsync) {
+                RequestController rc = new RequestController();
+                rc.getRiderInstance().replaceList( foundRequests );
+            }
             return foundRequests;
         }
 
@@ -444,6 +450,8 @@ public class ElasticRequestController {
      */
     public static class GetOfferedRequestsTask extends AsyncTask<String, Void, RequestList> {
 
+        public boolean withAsync = false;
+
         @Override
         protected RequestList doInBackground(String... params) {
             verifySettings();
@@ -476,6 +484,10 @@ public class ElasticRequestController {
 
             foundRequests = getRequests( offers );
 
+            if (withAsync) {
+                RequestController rc = new RequestController();
+                rc.getOffersInstance().replaceList( foundRequests );
+            }
             return foundRequests;
         }
 
