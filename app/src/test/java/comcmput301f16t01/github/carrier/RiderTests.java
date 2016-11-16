@@ -3,6 +3,9 @@ package comcmput301f16t01.github.carrier;
 import org.junit.After;
 import org.junit.Test;
 
+import comcmput301f16t01.github.carrier.Users.User;
+import comcmput301f16t01.github.carrier.Users.UserController;
+
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;

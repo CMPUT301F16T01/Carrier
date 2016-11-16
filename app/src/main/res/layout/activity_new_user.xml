@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="comcmput301f16t01.github.carrier.NewUserActivity"
+    tools:context="comcmput301f16t01.github.carrier.Users.NewUserActivity"
     android:orientation="vertical">
 
     <TextView

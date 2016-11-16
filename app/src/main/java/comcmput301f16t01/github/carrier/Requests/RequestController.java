@@ -1,17 +1,12 @@
 package comcmput301f16t01.github.carrier.Requests;
 
-import android.content.Context;
 import android.location.Location;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
-import comcmput301f16t01.github.carrier.ElasticUserController;
-import comcmput301f16t01.github.carrier.Listener;
-import comcmput301f16t01.github.carrier.Notifications.ElasticNotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
-import comcmput301f16t01.github.carrier.User;
-import comcmput301f16t01.github.carrier.UserController;
+import comcmput301f16t01.github.carrier.Users.User;
+import comcmput301f16t01.github.carrier.Users.UserController;
 
 /**
  * Uses a singleton pattern to query and get results of requests.

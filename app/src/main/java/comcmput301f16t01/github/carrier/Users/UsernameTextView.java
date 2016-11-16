@@ -1,4 +1,4 @@
-package comcmput301f16t01.github.carrier;
+package comcmput301f16t01.github.carrier.Users;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +10,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import comcmput301f16t01.github.carrier.R;
+import comcmput301f16t01.github.carrier.UserProfileActivity;
 
 /**
  * This TextView is specifically used for usernames. It contains logic that highlights on touch

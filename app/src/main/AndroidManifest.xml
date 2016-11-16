@@ -39,7 +39,7 @@
 
             android:label="Carrier" />
         android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".NewUserActivity"
+        <activity android:name=".Users.NewUserActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".Requests.DriverViewRequestActivity"
             android:screenOrientation="portrait"/>

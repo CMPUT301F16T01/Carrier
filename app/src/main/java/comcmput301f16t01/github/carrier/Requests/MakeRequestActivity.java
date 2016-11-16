@@ -25,8 +25,8 @@ import comcmput301f16t01.github.carrier.FareCalculator;
 import comcmput301f16t01.github.carrier.MainActivity;
 import comcmput301f16t01.github.carrier.R;
 import comcmput301f16t01.github.carrier.SetLocationsActivity;
-import comcmput301f16t01.github.carrier.User;
-import comcmput301f16t01.github.carrier.UserController;
+import comcmput301f16t01.github.carrier.Users.User;
+import comcmput301f16t01.github.carrier.Users.UserController;
 import comcmput301f16t01.github.carrier.ViewLocationsActivity;
 
 /*
