@@ -16,7 +16,7 @@ public class FareCalculatorTests {
                 (FareCalculator.COST_PER_KM * 20)) * 100) * 100) / 100;
         realFare /= 10;
         // Assure that the formula and the function produce the same result
-        assertEquals("Fare and calcualted fair unequal", realFare, fairFare);
+        assertEquals("Fare and calculated fair unequal", realFare, fairFare);
 
         // A trip that goes nowhere, of course, this can't ever happen
         int isItMinFare = fc.getEstimate(0, 0);

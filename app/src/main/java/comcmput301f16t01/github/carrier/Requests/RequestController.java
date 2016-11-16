@@ -1,12 +1,8 @@
 package comcmput301f16t01.github.carrier.Requests;
 
-import android.content.Context;
 import android.location.Location;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-
-import comcmput301f16t01.github.carrier.ElasticUserController;
 import comcmput301f16t01.github.carrier.Listener;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.User;
@@ -143,7 +139,7 @@ public class RequestController {
     /**
      * Search requests by the keyword, will set it so the singleton contains the information for
      * this query. Use getResults() to get the information.
-     * @param keyword
+     * @param keyword This is the keyword that the user wants to look for requests with. We use to Query.
      */
     public void searchByKeyword(String keyword) {
         ElasticRequestController.SearchByKeywordTask sbkt = new ElasticRequestController.SearchByKeywordTask();
