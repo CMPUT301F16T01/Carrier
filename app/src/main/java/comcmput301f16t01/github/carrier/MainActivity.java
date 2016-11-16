@@ -14,9 +14,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,10 +26,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationActivity;
 import comcmput301f16t01.github.carrier.Requests.DriverViewRequestActivity;
+import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestAdapter;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestList;
@@ -123,13 +128,13 @@ public class MainActivity extends AppCompatActivity {
         // We start on the rider tab, so we hide the driver fab
         FloatingActionButton driver_fab = (FloatingActionButton) findViewById(R.id.fab_driver);
         driver_fab.hide();
+
+        rc.performAsyncUpdate();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        rc.performAsyncUpdate();
 
         NotificationController nc = new NotificationController();
         if (nc.unreadNotification( UserController.getLoggedInUser() )) {
@@ -346,20 +351,49 @@ public class MainActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-            // TODO (after) allow the ability to toggle between what requests are shown (?)
-
+            // Set up the fragments to contain their respective ListView
             ListView requestListView;
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 requestListView = (ListView) rootView.findViewById( R.id.listView_requestListView );
             } else {
                 requestListView = (ListView) rootView.findViewById( R.id.listView_offerListView );
             }
-
             if( getArguments().getInt(ARG_SECTION_NUMBER) == 1 ) {
                 fillRiderRequests( requestListView );
             } else {
                 fillDriverRequests( requestListView );
             }
+
+            // Set up SwipeRefresh and what should happen on a swipe action
+            final SwipeRefreshLayout srl = (SwipeRefreshLayout) rootView.findViewById( R.id.swiperefresh );
+            srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    Log.i( "onCreateView", "onRefresh called from SwipeRefreshLayout");
+
+                    if(!ConnectionChecker.isConnected(getContext())) {
+                        Toast.makeText(getContext(), "You have no network connection!", Toast.LENGTH_LONG ).show();
+                        srl.setRefreshing( false );
+                        return;
+                    }
+
+                    // Checks for when the AsyncTask is finished
+                    ElasticRequestController.setListener(new Listener() {
+                        private int finish = 0;
+                        @Override
+                        public void update() {
+                            finish += 1;
+                            if (finish >= 2) {
+                                finish = 0;
+                                srl.setRefreshing( false );
+                            }
+                        }
+                    });
+
+                    RequestController rc = new RequestController();
+                    rc.performAsyncUpdate();
+                }
+            });
 
             return rootView;
         }
@@ -383,7 +417,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void update() {
                     requestArrayAdapter.notifyDataSetChanged();
-                    mSectionsPagerAdapter.notifyDataSetChanged();
+                    //mSectionsPagerAdapter.notifyDataSetChanged();
                 }
             });
 

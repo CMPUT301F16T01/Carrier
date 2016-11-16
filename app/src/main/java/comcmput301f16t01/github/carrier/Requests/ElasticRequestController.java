@@ -10,6 +10,7 @@ import com.searchly.jestdroid.JestDroidClient;
 import java.io.IOException;
 import java.util.List;
 
+import comcmput301f16t01.github.carrier.Listener;
 import comcmput301f16t01.github.carrier.Users.User;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.DeleteByQuery;
@@ -25,6 +26,17 @@ import io.searchbox.core.Update;
  */
 public class ElasticRequestController {
     private static JestDroidClient client;
+
+    /** listener for the main tasks of getting requests for MainActivity */
+    private static Listener listener = null;
+    public static void setListener( Listener newListener ) {
+        listener = newListener;
+    }
+    public static void notifyListener() {
+        if (listener != null) {
+            listener.update();
+        }
+    }
 
     /**
      * Adds a request to Elastic Search.
@@ -173,10 +185,6 @@ public class ElasticRequestController {
             // We need to get all the offers for each of the requests
             getOffers( foundRequests );
 
-            if (withAsync) {
-                RequestController rc = new RequestController();
-                rc.getRiderInstance().replaceList( foundRequests );
-            }
             return foundRequests;
         }
 
@@ -235,6 +243,17 @@ public class ElasticRequestController {
                 }
             }
         } // populate sub-task
+
+        @Override
+        protected void onPostExecute(RequestList requests) {
+            // Perform our update on the UI thread
+            if (withAsync) {
+                RequestController rc = new RequestController();
+                rc.getRiderInstance().replaceList( requests );
+                notifyListener();
+            }
+            super.onPostExecute(requests);
+        }
     } // FetchRiderRequestsTask
 
     /**
@@ -482,10 +501,6 @@ public class ElasticRequestController {
 
             foundRequests = getRequests( offers );
 
-            if (withAsync) {
-                RequestController rc = new RequestController();
-                rc.getOffersInstance().replaceList( foundRequests );
-            }
             return foundRequests;
         }
 
@@ -517,6 +532,17 @@ public class ElasticRequestController {
                 }
             }
             return requestList;
+        }
+
+        @Override
+        protected void onPostExecute(RequestList requests) {
+            // Perform result update on UI thread
+            if (withAsync) {
+                RequestController rc = new RequestController();
+                rc.getOffersInstance().replaceList( requests );
+                notifyListener();
+            }
+            super.onPostExecute(requests);
         }
     } // GetOfferedRequestsTask
 
