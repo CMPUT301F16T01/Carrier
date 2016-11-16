@@ -369,7 +369,7 @@ public class MainActivity extends AppCompatActivity {
 
         /**
          * Sets up the ListView for the driver.
-         * @param requestListView
+         * @param requestListView The calling view used in the function
          */
         private void fillDriverRequests(ListView requestListView) {
             RequestController rc = new RequestController();

@@ -20,8 +20,8 @@ public class UsernameTextView extends TextView {
 
     /**
      * Constructor
-     * @param context
-     * @param attrs
+     * @param context Where the UsernameTextView is situated
+     * @param attrs A list of attributes
      */
     public UsernameTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
