@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import comcmput301f16t01.github.carrier.FareCalculator;
 import comcmput301f16t01.github.carrier.R;
 import comcmput301f16t01.github.carrier.Users.User;
@@ -63,7 +65,13 @@ public class DriverViewRequestActivity extends AppCompatActivity {
 
         RequestController rc = new RequestController();
         int pos = bundle.getInt( "position" );
-        request = rc.getOffersInstance().get(pos);
+        if (pos == -1) {
+            // signal that the request was searched and has not been related to the user yet
+            request = new Gson().fromJson( bundle.getString( "request" ), Request.class );
+        } else {
+            // else we can grab it from the request controller.
+            request = rc.getOffersInstance().get(pos);
+        }
 
         setTitle("Request");
 

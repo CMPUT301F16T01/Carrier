@@ -36,6 +36,7 @@ public class SearchResultsActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(SearchResultsActivity.this, DriverViewRequestActivity.class);
                 Bundle bundle = new Bundle();
+                bundle.putInt( "position", -1 );
                 bundle.putString("request", new Gson().toJson(requestList.get(position)));
                 intent.putExtras(bundle);
                 startActivity(intent);
