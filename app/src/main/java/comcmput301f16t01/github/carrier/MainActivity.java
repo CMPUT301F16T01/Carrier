@@ -264,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (id == R.id.action_logOut) {
-            onBackPressed();
+            logout();
         }
 
         return super.onOptionsItemSelected(item);
@@ -275,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
      * Pop up a AlertDialog to confirm and open a new LoginActivity, while closing the current
      * RiderMainActivity.
      */
-    public void onBackPressed() {
+    public void logout() {
         AlertDialog.Builder adb = new AlertDialog.Builder(this);
         adb.setTitle("Are you sure?");
         adb.setMessage("Log out and return to the login screen?");
