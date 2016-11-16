@@ -1,12 +1,8 @@
 package comcmput301f16t01.github.carrier.Requests;
 
-import android.content.Context;
 import android.location.Location;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-
-import comcmput301f16t01.github.carrier.ElasticUserController;
 import comcmput301f16t01.github.carrier.Listener;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.User;
@@ -44,14 +40,15 @@ public class RequestController {
         } else {
             ElasticRequestController.AddRequestTask art = new ElasticRequestController.AddRequestTask();
             art.execute(request);
-            return null;
+            requestList.add( request ); // Add new request to requestList (will notify listeners)
         }
+        return null;
     }
 
     /** Clears information in the singleton, not exactly necessary */
     @Deprecated
     public void clear() {
-        requestList = new RequestList();
+        requestList.replaceList( new RequestList() );
     }
 
     /**
@@ -71,8 +68,9 @@ public class RequestController {
 
     // TODO Why does this need a rider? You can cancel a request just knowing the request.
     public void cancelRequest(User rider, Request request) {
-        // TODO test elastic search component
+        ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
         request.setStatus(Request.CANCELLED);
+        urt.execute( request );
     }
 
     /**
@@ -85,6 +83,11 @@ public class RequestController {
      */
     public void addDriver(Request request, User driver) {
         // create an offer object [[ potentially throws IllegalArgumentException if called wrong ]]
+        try {
+            request.addOfferingDriver(driver);
+        } catch ( Exception e ) {
+            return; // If the driver is already offered we shouldn't do this action.
+        }
         Offer newOffer = new Offer(request, driver);
         // Add offer to elastic search
         ElasticRequestController.AddOfferTask aot = new ElasticRequestController.AddOfferTask();
@@ -96,7 +99,6 @@ public class RequestController {
         nc.addNotification( request.getRider(), request );
         // TODO add addNotification to queue if offline
 
-        request.addOfferingDriver(driver);
         requestList.add( request ); // TODO dunno. but like this is how we do it.
     }
 
@@ -108,7 +110,11 @@ public class RequestController {
      * @param driver  The driver that is being accepted
      */
     public void confirmDriver(Request request, User driver) {
-
+        ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
+        request.setChosenDriver( driver );
+        request.setStatus( Request.CONFIRMED );
+        requestList.notifyListeners();  // TODO is this an okay line of code?
+        urt.execute( request );
         // TODO Elastic Requests...
         // only on success should we send out a notification!
         NotificationController nc = new NotificationController();
@@ -117,15 +123,23 @@ public class RequestController {
     }
 
     public void completeRequest(Request request) {
+        ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
+        request.setStatus( Request.COMPLETE );
+        urt.execute( request );
+        requestList.notifyListeners(); // TODO is this an okay line of code?
     }
 
     public void payForRequest(Request request) {
+        ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
+        request.setStatus( Request.PAID );
+        urt.execute( request );
+        requestList.notifyListeners(); // TODO is this an okay line of code?
     }
 
     /**
      * Search requests by the keyword, will set it so the singleton contains the information for
      * this query. Use getResults() to get the information.
-     * @param keyword
+     * @param keyword This is the keyword that the user wants to look for requests with. We use to Query.
      */
     public void searchByKeyword(String keyword) {
         ElasticRequestController.SearchByKeywordTask sbkt = new ElasticRequestController.SearchByKeywordTask();
@@ -216,6 +230,11 @@ public class RequestController {
     }
 
 
+    /** Get the results of a searchByKeyword or a getSearchByLocation query. */
+    public RequestList getResult() {
+        return requestList;
+    }
+
     /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      * * * * * * * * * * * * * * * * *    DEPRECATED FUNCTIONS   * * * * * * * * * * * * * * * * * *
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -243,11 +262,6 @@ public class RequestController {
     @Deprecated
     public ArrayList<Request> getAvailableRequests() {
         return new ArrayList<Request>();
-    }
-
-    /** Get the results of a searchByKeyword or a getSearchByLocation query. */
-    public RequestList getResult() {
-        return requestList;
     }
 
     /**

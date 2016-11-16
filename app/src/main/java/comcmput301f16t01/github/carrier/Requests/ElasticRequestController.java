@@ -86,7 +86,8 @@ public class ElasticRequestController {
                     "      \"should\": [\n" +
                     "              { \"match\": { \"status\": 1 }},\n" +
                     "              { \"match\": { \"status\": 2 }}\n" +
-                    "      ]\n" +
+                    "      ],\n" +
+                    "      \"minimum_should_match\": \"1\"\n" +
                     "    }\n" +
                     "  }\n" +
                     "}";
@@ -507,8 +508,53 @@ public class ElasticRequestController {
             }
             return requestList;
         }
-    }
+    } // GetOfferedRequestsTask
 
+    public static class UpdateRequestTask extends AsyncTask<Request, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Request... params) {
+            verifySettings();
+
+            for (Request request : params ) {
+                // Start with basic query to change the status
+                String query =
+                        "{\n" +
+                        "    \"doc\": {\n" +
+                        "        \"status\": " + request.getStatus();
+
+                // If there is a chosenDriver, update that as well.
+                // TODO if the status is changing to complete or paid or cancelled we might not need this.
+                if ( request.getChosenDriver() != null ) {
+                    User chosen = request.getChosenDriver();
+                    query += ",\n" +
+                        "        \"chosenDriver\": {\n" +
+                        "            \"email\": \"" + chosen.getEmail() + "\",\n" +
+                        "            \"phoneNumber\": \"" + chosen.getPhone() + "\",\n" +
+                        "            \"username\": \"" + chosen.getUsername() + "\"\n" +
+                        "        }\n";
+                }
+
+                // finishing brackets for the query.
+                query += "    }\n" +
+                        "}";
+
+                Update update = new Update.Builder(query)
+                        .index("cmput301f16t01")
+                        .type("request")
+                        .id(request.getId())
+                        .build();
+
+                try {
+                    client.execute( update );
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+    }
 
     private static void verifySettings() {
         if (client == null) {

@@ -219,6 +219,21 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
 
     @Override
     public boolean longPressHelper(GeoPoint geoPoint) {
+        // Based on: https://goo.gl/4TKn2y
+        // Author: MKergall
+        // Retrieved on: November 9th, 2016
+        MapView map = (MapView) findViewById(R.id.map);
+        if(marker == null) {
+            marker = new Marker(map);
+        }
+        if(locationPoint == null) {
+            locationPoint = new CarrierLocation();
+        }
+        locationPoint.setLatitude(geoPoint.getLatitude());
+        locationPoint.setLongitude(geoPoint.getLongitude());
+        locationPoint.setAddress(getAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
+        locationPoint.setShortAddress(getShortAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
+        setLocationMarker(map, geoPoint);
         return false;
     }
 

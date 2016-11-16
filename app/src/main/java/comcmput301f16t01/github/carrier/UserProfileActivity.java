@@ -57,7 +57,7 @@ public class UserProfileActivity extends AppCompatActivity {
         }
 
         // Get the TextViews for the information that is going to be shown.
-        EditText usernameEditText = (EditText) findViewById(R.id.EditText_name);
+        EditText usernameEditText = (EditText) findViewById(R.id.TextView_name);
         EditText emailAddressEditText = (EditText) findViewById(R.id.EditText_email);
         EditText phoneNumberEditText = (EditText) findViewById(R.id.EditText_phone);
 
@@ -134,12 +134,10 @@ public class UserProfileActivity extends AppCompatActivity {
         hideKeyboard(phoneNumberText);
         // If the user actually made changes to the field, update in elastic search
         if (!this.oldPhoneNumber.equals(phoneNumber)) {
-            ElasticUserController.EditUserTask eut = new ElasticUserController.EditUserTask();
-            eut.execute(currentUser.getId(), currentUser.getEmail(), phoneNumber);
+            UserController.editUser(currentUser.getEmail(), phoneNumber);
         }
         // Since editing was confirmed, overwrite old value of phone number of the current user
         this.oldPhoneNumber = phoneNumber;
-        currentUser.setPhone(phoneNumber);
         // The edit button is weirdly dissapearing? This fixes it.
         editButton.setVisibility(View.VISIBLE);
     }
@@ -214,12 +212,10 @@ public class UserProfileActivity extends AppCompatActivity {
         emailView.setKeyListener(null);
         // If the user actually made changes to the field, update in elastic search
         if (!this.oldEmailAddress.equals(email)) {
-            ElasticUserController.EditUserTask eut = new ElasticUserController.EditUserTask();
-            eut.execute(currentUser.getId(), email, currentUser.getPhone());
+            UserController.editUser(email, currentUser.getPhone());
         }
         // Since editing was confirmed, overwrite old value of email int he current user.
         this.oldEmailAddress = email;
-        currentUser.setEmail(email);
     }
 
     /**

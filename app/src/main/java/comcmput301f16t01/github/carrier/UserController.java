@@ -4,6 +4,7 @@ import android.util.Log;
 import android.util.Patterns;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Singleton Pattern
@@ -74,7 +75,7 @@ public class UserController {
         return false;
     }
 
-    private boolean checkUniqueUsername(String username) {
+    private static boolean checkUniqueUsername(String username) {
         ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();
         fut.execute(username);
         User foundUser = null;
@@ -179,7 +180,7 @@ public class UserController {
      * @param phoneNumber
      * @return
      */
-    public String createNewUser(String username, String email, String phoneNumber) {
+    public static String createNewUser(String username, String email, String phoneNumber) {
         // TODO testing offline behaviour
         User newUser = new User();
 
@@ -222,6 +223,45 @@ public class UserController {
 
         loggedInUser = newUser;
         return null;
+    }
+
+    /**
+     * Searches elastic search for the given username and returns a User object matching that username
+     * @param username The username to search for
+     * @return
+     */
+    public User findUser(String username) {
+        User foundUser = null;
+
+        ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();
+
+        fut.execute(username);
+        try {
+            foundUser = fut.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return foundUser;
+    }
+
+    /**
+     * Edits the logged in user given a newEmail and newPhone
+     * @param newEmail The email to change to
+     * @param newPhone The phone number to change to
+     */
+    public static void editUser(String newEmail, String newPhone) {
+        ElasticUserController.EditUserTask eut = new ElasticUserController.EditUserTask();
+        eut.execute(UserController.getLoggedInUser().getId(), newEmail, newPhone);
+    }
+
+    /**
+     * Deletes a user from elastic search
+     * @param usernameToDelete The username to delete from ElasticSearch
+     */
+    public void deleteUser(String usernameToDelete) {
+        ElasticUserController.DeleteUserTask dut = new ElasticUserController.DeleteUserTask();
+        dut.execute(usernameToDelete);
     }
 
     public void logOutUser() {

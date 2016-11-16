@@ -44,7 +44,7 @@ public class NotificationController {
 
     /**
      * Clears all notifications for a user.
-     * @param user
+     * @param user A user is anyone who uses our app. This is who we clear notifications for
      */
     public void clearAllNotifications( User user ) {
         ElasticNotificationController.ClearAllTask cat = new ElasticNotificationController.ClearAllTask();
@@ -77,7 +77,7 @@ public class NotificationController {
 
     /**
      * Marks the given notification as read
-     * @param notification
+     * @param notification This is a message that is sent to a user
      */
     public void markNotificationAsRead( Notification notification ) {
         ElasticNotificationController.MarkAsReadTask mart = new ElasticNotificationController.MarkAsReadTask();
@@ -92,7 +92,7 @@ public class NotificationController {
 
     /**
      * Marks all request for user as read, if they are currently unread.
-     * @param user
+     * @param user A user is anyone who uses our app. This is who we will clear notifications for.
      */
     public void markAllAsRead( User user ) {
         NotificationList notificationList = this.fetchNotifications( user );

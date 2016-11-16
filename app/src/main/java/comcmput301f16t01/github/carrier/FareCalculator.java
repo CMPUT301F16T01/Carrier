@@ -34,9 +34,8 @@ public class FareCalculator {
         // The least a fare could be.
         int minFare = MIN_FARE;
 
-        int fare = Math.max(calculatedFare, minFare);
-
-        return fare;
+        //fixed issue 3. local variable fare was redundant.
+        return Math.max(calculatedFare, minFare);
     }
 
     /**
