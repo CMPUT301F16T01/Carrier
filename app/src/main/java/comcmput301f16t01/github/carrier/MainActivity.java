@@ -24,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -352,7 +353,7 @@ public class MainActivity extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
             // Set up the fragments to contain their respective ListView
-            ListView requestListView;
+            final ListView requestListView;
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 requestListView = (ListView) rootView.findViewById( R.id.listView_requestListView );
             } else {
@@ -364,8 +365,23 @@ public class MainActivity extends AppCompatActivity {
                 fillDriverRequests( requestListView );
             }
 
-            // Set up SwipeRefresh and what should happen on a swipe action
             final SwipeRefreshLayout srl = (SwipeRefreshLayout) rootView.findViewById( R.id.swiperefresh );
+
+            /* src: http://stackoverflow.com/questions/26295481/android-swiperefreshlayout-how-to-implement-canchildscrollup-if-child-is-not-a-l
+             * user: iamlukeyb
+             * accessed 2016-11-16
+             */
+            // Set up a scroll listener to turn off swipe to refresh if the view is not at the top.
+            requestListView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+                @Override
+                public void onScrollChanged() {
+                    int scrollY = requestListView.getScrollY();
+                    if(scrollY == 0) requestListView.setEnabled(true);
+                    else srl.setEnabled(false);
+                }
+            });
+
+            // Set up SwipeRefresh and what should happen on a swipe action
             srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
