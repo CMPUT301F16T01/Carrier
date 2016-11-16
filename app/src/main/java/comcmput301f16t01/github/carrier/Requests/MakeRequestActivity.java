@@ -166,7 +166,7 @@ public class MakeRequestActivity extends AppCompatActivity {
     /**
      * Choose the start and end locations for the trip on a map
      *
-     * @param view
+     * @param view The calling view of this function
      */
     public void chooseLocations(View view) {
         Bundle bundle = new Bundle();
@@ -191,7 +191,7 @@ public class MakeRequestActivity extends AppCompatActivity {
 
     /**
      * Allows the user to view a map
-     * @param view
+     * @param view The calling view of this function
      */
     public void viewMap(View view) {
         Intent intent = new Intent(activity, ViewLocationsActivity.class);

@@ -3,7 +3,7 @@
     android:orientation="vertical" android:layout_width="wrap_content"
     android:layout_height="wrap_content">
     <!-- Code based on: https://developer.android.com/guide/topics/ui/dialogs.html
-         Retrieved on Octoebr 28, 2016
+         Retrieved on October 28, 2016
     -->
     <EditText
         android:id="@+id/editText_keywordSearch"

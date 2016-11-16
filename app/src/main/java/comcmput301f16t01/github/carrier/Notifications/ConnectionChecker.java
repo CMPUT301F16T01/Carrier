@@ -6,7 +6,7 @@ import android.net.NetworkInfo;
 
 /**
  * Call to the static function ConnectionChecker.isConnected( context ) to check if you have
- * an avaliable network connection. Note that this does not test if they actually have an internet
+ * an available network connection. Note that this does not test if they actually have an internet
  * connection, just that they have access to some network (which may not have internet connection).
  */
 

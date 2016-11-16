@@ -60,7 +60,7 @@ public class UserProfileActivity extends AppCompatActivity {
         }
 
         // Get the TextViews for the information that is going to be shown.
-        EditText usernameEditText = (EditText) findViewById(R.id.EditText_name);
+        EditText usernameEditText = (EditText) findViewById(R.id.TextView_name);
         EditText emailAddressEditText = (EditText) findViewById(R.id.EditText_email);
         EditText phoneNumberEditText = (EditText) findViewById(R.id.EditText_phone);
 
