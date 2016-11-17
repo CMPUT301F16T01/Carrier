@@ -1,8 +1,5 @@
 package comcmput301f16t01.github.carrier;
 
-import android.location.Location;
-import android.provider.Settings;
-
 import junit.framework.Assert;
 
 import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
@@ -19,7 +16,7 @@ public class StatusTests extends ApplicationTest {
      * As a rider or driver, I want to see the status of a request that I am involved in
      * Related: US 02.01.01
      */
-    public void teststatusOpen() {
+    public void testStatusOpen() {
         User rider = new User("Mandy");
         User driver = new User("username2");
 
@@ -39,7 +36,7 @@ public class StatusTests extends ApplicationTest {
      * As a rider or driver, I want to see the status of a request that I am involved in
      * Related: US 02.01.01
      */
-    public void teststatusAccepted() {
+    public void testStatusAccepted() {
         User rider = new User("Mandy");
         User driver = new User("username2");
 
@@ -63,7 +60,7 @@ public class StatusTests extends ApplicationTest {
      * As a rider or driver, I want to see the status of a request that I am involved in
      * Related: US 02.01.01
      */
-    public void teststatusConfirmed() {
+    public void testStatusConfirmed() {
         User rider = new User("Mandy");
         User driver = new User("username2");
 
@@ -85,7 +82,7 @@ public class StatusTests extends ApplicationTest {
      * As a rider or driver, I want to see the status of a request that I am involved in
      * Related: US 02.01.01
      */
-    public void teststatusComplete() {
+    public void testStatusComplete() {
         User rider = new User("Mandy");
         User driver = new User("username2");
 
@@ -108,7 +105,7 @@ public class StatusTests extends ApplicationTest {
      * As a rider or driver, I want to see the status of a request that I am involved in
      * Related: US 02.01.01
      */
-    public void teststatusPaid() {
+    public void testStatusPaid() {
         User rider = new User("Mandy");
         User driver = new User("username2");
 
@@ -132,7 +129,7 @@ public class StatusTests extends ApplicationTest {
      * As a rider or driver, I want to see the status of a request that I am involved in
      * Related: US 02.01.01
      */
-    public void teststatusCancelled() {
+    public void testStatusCancelled() {
         User rider = new User("Mandy");
         User driver = new User("username2");
 

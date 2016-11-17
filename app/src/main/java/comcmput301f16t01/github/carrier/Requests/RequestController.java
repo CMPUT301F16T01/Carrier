@@ -140,7 +140,7 @@ public class RequestController {
     /**
      * Search requests by the keyword, will set it so the singleton contains the information for
      * this query. Use getResults() to get the information.
-     * @param keyword
+     * @param keyword This is the keyword that the user wants to look for requests with. We use to Query.
      */
     public void searchByKeyword(String keyword) {
         ElasticRequestController.SearchByKeywordTask sbkt = new ElasticRequestController.SearchByKeywordTask();
