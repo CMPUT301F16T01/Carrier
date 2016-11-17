@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import comcmput301f16t01.github.carrier.R;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
+import comcmput301f16t01.github.carrier.SetLocationsActivity;
 
 public class SearchActivity extends AppCompatActivity {
     final Activity activity = SearchActivity.this;
@@ -43,12 +44,11 @@ public class SearchActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 EditText searchEditText = (EditText) dialogView.findViewById(R.id.editText_keywordSearch);
                 String query = searchEditText.getText().toString();
-                Toast.makeText(activity, query, Toast.LENGTH_SHORT).show();
                 // TODO consider any input handling on the keyword?
                 RequestController rc = new RequestController();
-                rc.searchByKeyword( query );
-                Intent intent = new Intent( SearchActivity.this, SearchResultsActivity.class );
-                startActivity( intent );
+                rc.searchByKeyword(query);
+                Intent intent = new Intent(activity, SearchResultsActivity.class);
+                startActivity(intent);
             }
         });
         adb.setNegativeButton("Cancel", null);
@@ -63,10 +63,11 @@ public class SearchActivity extends AppCompatActivity {
      */
     public void searchByLocation(View view) {
         Toast.makeText(this, "Search by Location", Toast.LENGTH_LONG).show();
-        //Intent intent = new Intent(SearchActivity.this, SearchMapsActivity.class);
-        //startActivity(intent);
-        // opening the SearchMapsActivity doesn't work right now because the API key has not been shared
-        // we are using a different method anyways so we will do an overhaul of SearchMapsActivity
-        // TODO do the search by opening a map activity to query by location
+        Intent intent = new Intent(activity, SetLocationsActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("point", "search");
+        bundle.putString("type", "search");
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

@@ -17,15 +17,13 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        android:layout_weight="1"
-        android:weightSum="1" >
+        android:layout_weight="1" >
 
         <Button
             android:id="@+id/button_confirmLocation"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text=""
-            android:layout_weight="1"
             android:textAllCaps="false"
             android:textColor="@android:color/background_light"
             android:background="@color/colorPrimary"

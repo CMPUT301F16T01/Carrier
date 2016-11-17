@@ -1,5 +1,6 @@
 package comcmput301f16t01.github.carrier.Requests;
 
+import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -10,10 +11,8 @@ import com.searchly.jestdroid.JestDroidClient;
 import java.io.IOException;
 import java.util.List;
 
-import comcmput301f16t01.github.carrier.BuildConfig;
 import comcmput301f16t01.github.carrier.User;
 import io.searchbox.client.JestResult;
-import io.searchbox.core.Delete;
 import io.searchbox.core.DeleteByQuery;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Get;
@@ -114,6 +113,95 @@ public class ElasticRequestController {
             return foundRequests;
         }
     } // SearchByKeywordTask
+
+    /**
+     * Searches requests by a location.
+     *
+     * Query:
+     * { "query" : {
+     *     "filtered" : {
+     *       "query" : {
+     *         "match_all" : {}
+     *       },
+     *       "filter" : {
+     *         "geo_distance" : {
+     *           "distance" : "50km",
+     *           "location" : [-113, 52]
+     *         }
+     *       }
+     *     }
+     *   },
+     *   "sort": [ {
+     *     "_geo_distance": {
+     *       "location": [-113.4909, 53.5444],
+     *       "order": "asc",
+     *       "unit": "km",
+     *       "distance_type": "plane"
+     *     }
+     *   } ]
+     * }
+     */
+    public static class SearchByLocationTask extends AsyncTask<Location, Void, RequestList>{
+
+        /**
+         * Distance represents how far our search query will reach.
+         */
+        private static final int DISTANCE = 50;
+
+        @Override
+        protected RequestList doInBackground(Location... search_parameters) {
+            verifySettings();
+
+            String query =
+                    "{ \"from\" : 0, \"size\" : 500,\n" +
+                    "  \"query\" : {\n" +
+                    "    \"filtered\" : {\n" +
+                    "      \"query\" : {\n" +
+                    "        \"match_all\" : {}\n" +
+                    "      },\n" +
+                    "      \"filter\" : {\n" +
+                    "        \"geo_distance\" : {\n" +
+                    "          \"distance\" : \"" + DISTANCE + "km\",\n" +
+                    "          \"location\" : [" + search_parameters[0].getLongitude() + ", "
+                                                 + search_parameters[0].getLatitude() + "]\n" +
+                    "        }\n" +
+                    "      }\n" +
+                    "    }\n" +
+                    "  },\n" +
+                    "  \"sort\": [ {\n" +
+                    "    \"_geo_distance\": {\n" +
+                    "      \"location\" : [" + search_parameters[0].getLongitude() + ", "
+                                             + search_parameters[0].getLatitude() + "],\n" +
+                    "      \"order\": \"asc\",\n" +
+                    "      \"unit\": \"km\",\n" +
+                    "      \"distance_type\": \"plane\"\n" +
+                    "    }\n" +
+                    "  } ]\n" +
+                    "}";
+
+            Search search = new Search.Builder(query)
+                    .addIndex("cmput301f16t01")
+                    .addType("request")
+                    .build();
+
+            RequestList foundRequests = new RequestList();
+
+            try {
+                SearchResult result = client.execute(search);
+                Log.i("Result", result.toString());
+                if (result.isSucceeded()) {
+                    List<Request> notificationList = result.getSourceAsObjectList(Request.class);
+                    foundRequests.addAll( notificationList );
+                } else {
+                    throw new IllegalArgumentException();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.i("Error", "Something went wrong when we tried to talk to elastic search");
+            }
+            return foundRequests;
+        }
+    }
 
     /**
      * Get all of a rider's requests including a filter by status

@@ -1,12 +1,9 @@
 package comcmput301f16t01.github.carrier.Requests;
 
-import android.content.Context;
 import android.location.Location;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
-import comcmput301f16t01.github.carrier.ElasticUserController;
 import comcmput301f16t01.github.carrier.Listener;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.User;
@@ -155,12 +152,19 @@ public class RequestController {
         }
     }
 
-        /**
+    /**
      * Search requests by a location. This sets it so the singleton contains the information for
      * this query. Use getResults() to get the information.
      */
-    public void searchByLocation( /* location parameters? */ ) {
-
+    public void searchByLocation(Location location) {
+        // TODO check how these are sorted, we want to sort them by those closest to those furthest away
+        ElasticRequestController.SearchByLocationTask sblt = new ElasticRequestController.SearchByLocationTask();
+        sblt.execute(location);
+        try {
+            requestList.replaceList(sblt.get());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
