@@ -1,13 +1,13 @@
 package comcmput301f16t01.github.carrier;
 
-import java.util.Random;
-
 /**
  * Created by kiete on 11/13/2016.
  */
 
-import java.util.Random;
 import java.util.concurrent.ExecutionException;
+
+import comcmput301f16t01.github.carrier.User.User;
+        import comcmput301f16t01.github.carrier.User.UserController;
 
 public class ElasticUserControllerTest extends ApplicationTest {
     UserController uc = new UserController();

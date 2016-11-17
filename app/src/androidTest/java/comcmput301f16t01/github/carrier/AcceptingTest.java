@@ -1,7 +1,5 @@
 package comcmput301f16t01.github.carrier;
 
-import android.app.Application;
-
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Notifications.ElasticNotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
@@ -10,6 +8,8 @@ import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestList;
+import comcmput301f16t01.github.carrier.User.User;
+import comcmput301f16t01.github.carrier.User.UserController;
 
 
 public class AcceptingTest extends ApplicationTest {

@@ -6,7 +6,7 @@ import android.util.Log;
 import java.util.Collections;
 
 import comcmput301f16t01.github.carrier.Requests.Request;
-import comcmput301f16t01.github.carrier.User;
+import comcmput301f16t01.github.carrier.User.User;
 
 /**
  * Controls a user's notifications for elastic search

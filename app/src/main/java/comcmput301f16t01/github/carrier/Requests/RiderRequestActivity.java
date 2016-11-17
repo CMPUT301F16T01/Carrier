@@ -34,11 +34,7 @@ import java.util.Locale;
 
 import comcmput301f16t01.github.carrier.FareCalculator;
 import comcmput301f16t01.github.carrier.R;
-import comcmput301f16t01.github.carrier.Requests.Request;
-import comcmput301f16t01.github.carrier.Requests.RequestController;
-import comcmput301f16t01.github.carrier.User;
-import comcmput301f16t01.github.carrier.UserController;
-import comcmput301f16t01.github.carrier.UsernameTextView;
+import comcmput301f16t01.github.carrier.User.UsernameTextView;
 
 /**
  * This will help us show the request from the perspective of a rider

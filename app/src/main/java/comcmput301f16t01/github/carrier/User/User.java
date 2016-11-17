@@ -1,4 +1,4 @@
-package comcmput301f16t01.github.carrier;
+package comcmput301f16t01.github.carrier.User;
 
 import io.searchbox.annotations.JestId;
 import android.os.Parcel;
@@ -15,6 +15,11 @@ public class User implements Parcelable{
     private String username;
     private String email;
     private String phoneNumber;
+    private String vehicleMake;
+    private String vehicleModel;
+    private String vehicleYear;
+    private String vehicleColor;
+    private String vehicleOther;
 
     /**
      * For use with Elastic Search, is the unique ID given to it

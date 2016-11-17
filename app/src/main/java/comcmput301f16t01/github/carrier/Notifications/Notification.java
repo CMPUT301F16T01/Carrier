@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import java.util.Date;
 
 import comcmput301f16t01.github.carrier.Requests.Request;
-import comcmput301f16t01.github.carrier.User;
+import comcmput301f16t01.github.carrier.User.User;
 import io.searchbox.annotations.JestId;
 
 /**

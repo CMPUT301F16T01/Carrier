@@ -207,7 +207,7 @@
             android:layout_height="wrap_content"
             android:text="Rider: " />
 
-        <comcmput301f16t01.github.carrier.UsernameTextView
+        <comcmput301f16t01.github.carrier.User.UsernameTextView
             android:text=""
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -234,7 +234,7 @@
             android:text="Driver: "
             android:layout_toStartOf="@+id/UsernameTextView_driver"/>
 
-        <comcmput301f16t01.github.carrier.UsernameTextView
+        <comcmput301f16t01.github.carrier.User.UsernameTextView
             android:text=""
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

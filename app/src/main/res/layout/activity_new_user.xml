@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="comcmput301f16t01.github.carrier.NewUserActivity"
+    tools:context="comcmput301f16t01.github.carrier.User.NewUserActivity"
     android:orientation="vertical">
 
     <TextView
@@ -59,7 +59,8 @@
         android:text="Next"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/button_createNewUser"
+        android:id="@+id/button_nextVehicle"
+        android:onClick="nextVehicle"
         android:layout_marginTop="10dp"/>
 
 </LinearLayout>
