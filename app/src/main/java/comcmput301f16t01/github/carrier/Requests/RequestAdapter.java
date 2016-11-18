@@ -15,7 +15,6 @@ import java.util.Locale;
 
 import comcmput301f16t01.github.carrier.FareCalculator;
 import comcmput301f16t01.github.carrier.R;
-import comcmput301f16t01.github.carrier.Requests.Request;
 
 /**
  * From hreherch's implementation of LonelyTwitter
@@ -44,8 +43,8 @@ public class RequestAdapter extends ArrayAdapter<Request> {
 
         if (request != null) {
             // Get all sub views of requestlist_item
-            TextView startLocTextView = (TextView) v.findViewById(R.id.textView_toLocation);
-            TextView endLocTextView = (TextView) v.findViewById(R.id.textView_fromLocation);
+            TextView endLocTextView = (TextView) v.findViewById(R.id.textView_endLocation);
+            TextView startLocTextView = (TextView) v.findViewById(R.id.textView_startLocation);
             TextView priceTextView = (TextView) v.findViewById(R.id.textView_price);
             ImageView statusImageView = (ImageView) v.findViewById(R.id.imageView_requestStatus);
 
@@ -53,9 +52,9 @@ public class RequestAdapter extends ArrayAdapter<Request> {
             if (startLocTextView != null) {
                 String startLoc = null;
                 if (request.getStart().getShortAddress() != null) {
-                    startLoc = "From: " + request.getStart().getShortAddress();
+                    startLoc = "Start: " + request.getStart().getShortAddress();
                 } else {
-                    startLoc = "From: " + request.getStart().getLatLong();
+                    startLoc = "Start: " + request.getStart().getLatLong();
                 }
                 startLocTextView.setText(startLoc);
             }
@@ -64,9 +63,9 @@ public class RequestAdapter extends ArrayAdapter<Request> {
             if (endLocTextView != null) {
                 String endLoc = null;
                 if (request.getEnd().getShortAddress() != null) {
-                    endLoc = "To: " + request.getEnd().getShortAddress();
+                    endLoc = "End: " + request.getEnd().getShortAddress();
                 } else {
-                    endLoc = "To: " + request.getEnd().getLatLong();
+                    endLoc = "End: " + request.getEnd().getLatLong();
                 }
                 endLocTextView.setText(endLoc);
             }
