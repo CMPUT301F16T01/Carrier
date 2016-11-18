@@ -243,6 +243,7 @@ public class RiderRequestActivity extends AppCompatActivity {
         // TODO why does it say "sarah" even though there is no confirmedDriver?
         // Set up the UsernameTextView of the driver
         UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
+        // If no driver has been selected we need to display the list of drivers who have made an offer.
         if (request.getChosenDriver() != null) {
             driverUsernameTextView.setText(request.getChosenDriver().getUsername());
             driverUsernameTextView.setUser(request.getChosenDriver());

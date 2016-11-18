@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.RadioButton;
 
 import java.util.ArrayList;
 
@@ -24,7 +25,7 @@ public class OfferingDriversArrayAdapter extends ArrayAdapter<User> {
     /**
      * Sets up individual items in the ListView, by position in the ArrayList
      *
-     * @See ArrayAdapter
+     * @see ArrayAdapter
      */
     @NonNull
     public View getView(int position, View v, @NonNull ViewGroup parent) {
