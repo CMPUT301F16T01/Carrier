@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -43,6 +44,10 @@ import comcmput301f16t01.github.carrier.Requests.RiderRequestActivity;
 import comcmput301f16t01.github.carrier.Searching.SearchActivity;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
+/**
+ * Central activity for a user. After logging in, this is the activity the user will be taken to
+ * whenever they open the app henceforth.
+ */
 public class MainActivity extends AppCompatActivity {
     RequestController rc = new RequestController();
 
@@ -75,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         // Create the adapter that will return a fragment for each of the two
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -83,16 +89,17 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        // TabLayout class is injected with viewpager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        // THIS LISTENS TO THE TABS BEING MOVED.
-        // WE CAN UPDATE LIST VIEWS, FAB, ETC WITH THIS
+        // The two listeners below listen to tabs being moved and perform the "change the fab to
+        // look different" operation. (Fab is Floating Action Button)
         TabLayout.OnTabSelectedListener onTabSelectedListener = new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition());
-                changeFab( tab.getPosition() );
+                changeFab( tab.getPosition() );     // Changes the fab between driver and rider fab
             }
 
             @Override
@@ -107,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
         };
         tabLayout.addOnTabSelectedListener(onTabSelectedListener);
 
-        // Maybe necessary, maybe not, need to do research.
         ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -115,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                changeFab(position);
+                changeFab(position); // Changes the fab between driver and rider fab
             }
 
             @Override
@@ -125,10 +131,11 @@ public class MainActivity extends AppCompatActivity {
         };
         mViewPager.addOnPageChangeListener(onPageChangeListener);
 
-        // We start on the rider tab, so we hide the driver fab
+        // We start on the rider tab, so we hide the driver fab before launching.
         FloatingActionButton driver_fab = (FloatingActionButton) findViewById(R.id.fab_driver);
         driver_fab.hide();
 
+        // Perform an update using RequestController
         rc.performAsyncUpdate();
     }
 
@@ -136,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        // Inform the user of unread notifications.
         NotificationController nc = new NotificationController();
         if (nc.unreadNotification( UserController.getLoggedInUser() )) {
             promptViewNotifications();
@@ -144,7 +152,8 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Creates a dialogue that tells the user to go view their notifications, if they have unread
-     * ones.
+     * ones. (Called from onResume).
+     * TODO link this to swipe-refreshing?
      */
     private void promptViewNotifications() {
         AlertDialog.Builder adb = new AlertDialog.Builder( this );
@@ -191,19 +200,20 @@ public class MainActivity extends AppCompatActivity {
      * we don't need to do anything. If they do not grant the permissions, we should tell
      * them that they are required for the map to be displayed and the app to function.
      *
+     * TODO these need to be filled out
      * @param requestCode
      * @param permissions
      * @param grantResults
      */
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay!
+                    break; // permission was granted, yay!
                 } else {
                     // permission denied, boo!
                     AlertDialog.Builder adb = new AlertDialog.Builder(this);
@@ -250,6 +260,7 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        // User selected to view profile
         if (id == R.id.action_viewProfile) {
             Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
             Bundle bundle = new Bundle();
@@ -258,27 +269,31 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
+        // User selected "help" (goto help activity)
         if (id == R.id.action_help) {
             Intent intent = new Intent(MainActivity.this, HelpActivity.class);
             startActivity(intent);
         }
 
+        // User selected view notifications (goto view notification activity)
         if (id == R.id.action_viewNotifications ) {
             Intent intent = new Intent(MainActivity.this, NotificationActivity.class );
             startActivity(intent);
         }
 
+        // User has selected to logout, see: logout() function (creates a logout prompt)
         if (id == R.id.action_logOut) {
             logout();
         }
 
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item); // user has selected none of the above, have superclass handle it.
     }
 
     /**
      * When back is pressed or the "Log Out" menu option is selected:
-     * Pop up a AlertDialog to confirm and open a new LoginActivity, while closing the current
-     * RiderMainActivity.
+     * Pop up a AlertDialog to confirm
+     * If they do indeed what to log out: open a new LoginActivity, while closing the current MainActivity
+     * otherwise remain in MainActivity.
      */
     public void logout() {
         AlertDialog.Builder adb = new AlertDialog.Builder(this);
@@ -298,12 +313,17 @@ public class MainActivity extends AppCompatActivity {
                 uc.logOutUser();
             }
         });
-        adb.setNegativeButton("Cancel", null);
+        adb.setNegativeButton("Cancel", null);  // have cancel only close the dialog and nothing else
         adb.show();
     }
 
+    /**
+     * When the user clicks on the add button this will start the make request activity so they
+     * can add a new request to our system
+     *
+     * @param view The calling view (Rider Floating Action Button)
+     */
     public void makeRequest(View view) {
-        // This will start the make request activity for a rider when they press the rider FAB
         Bundle bundle = new Bundle();
         bundle.putString("point","start");
         bundle.putString("type","new");
@@ -312,10 +332,12 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * This will start the Search activity for a driver when they want to search requests
+     * after they press the driver FAB
+     * @param view The calling view (Driver Floating Action Button)
+     */
     public void startSearchActivity(View view) {
-        // This will start the Search activity for a driver when they want to search requests
-        // after they press the driver FAB
-        //Toast.makeText(this, "DRIVER FAB", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(MainActivity.this, SearchActivity.class);
         startActivity(intent);
     }
@@ -323,16 +345,11 @@ public class MainActivity extends AppCompatActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-
     public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
+        /** The fragment argument representing the section number for this fragment */
         private static final String ARG_SECTION_NUMBER = "section_number";
 
-        public PlaceholderFragment() {
-        }
+        public PlaceholderFragment() {}
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -381,13 +398,17 @@ public class MainActivity extends AppCompatActivity {
                 public void onRefresh() {
                     Log.i( "onCreateView", "onRefresh called from SwipeRefreshLayout");
 
+                    // We first check if there is connection, if not, we stop refreshing and
+                    // inform them that we cannot perform a live update.
                     if(!ConnectionChecker.isConnected(getContext())) {
                         Toast.makeText(getContext(), "You have no network connection!", Toast.LENGTH_LONG ).show();
                         srl.setRefreshing( false );
                         return;
                     }
 
-                    // Checks for when the AsyncTask is finished
+                    // Checks for when the AsyncTask is finished. It waits for two calls from the
+                    // onPostExecute methods of the task, meaning that the two tasks (get driver requests
+                    // and get rider requests) have finished.
                     ElasticRequestController.setListener(new Listener() {
                         private int finish = 0;
                         @Override
@@ -400,6 +421,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
+                    // Perform the async update with the listener in place to stop the refresh
+                    // symbol when the async tasks have finished.
                     RequestController rc = new RequestController();
                     rc.performAsyncUpdate();
                 }
@@ -410,19 +433,19 @@ public class MainActivity extends AppCompatActivity {
 
         /**
          * Sets up the ListView for the driver.
-         * @param requestListView The calling view used in the function
+         * @param requestListView The view that will contain the request items to be presented
          */
         private void fillDriverRequests(final ListView requestListView) {
             RequestController rc = new RequestController();
 
+            // Get the reference to the list of offered requests and adapt it to the listview
             final RequestList requestList = rc.getOffersInstance();
-
             final RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
                     R.layout.requestlist_item,
                     requestList);
-
             requestListView.setAdapter(requestArrayAdapter);
 
+            // Add a listener to listen and update the view when the arraylist changes
             requestList.addListener(new Listener() {
                 @Override
                 public void update() {
@@ -430,7 +453,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-            /**
+            /*
              * When we click a request we want to be able to see it in another activity
              * Use bundles to send the position of the request in a list
              */
@@ -439,7 +462,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent intent = new Intent(getActivity(), DriverViewRequestActivity.class);
                     Bundle bundle = new Bundle();
-                    //bundle.putString("request", new Gson().toJson(requestList.get(position)));
+                    // We give the position it is in the arraylist so that it can pull it up later
                     bundle.putInt( "position", position );
                     intent.putExtras(bundle);
                     startActivity(intent);
@@ -450,19 +473,19 @@ public class MainActivity extends AppCompatActivity {
 
         /**
          * Sets up the ListView for the rider.
-         * @param requestListView
+         * @param requestListView The view that will contain the request items to be presented
          */
         private void fillRiderRequests(final ListView requestListView) {
             RequestController rc = new RequestController();
 
+            // Get the reference to the list of requested requests and adapt it to the listview
             final RequestList requestList = rc.getRiderInstance();
-
             final RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
                     R.layout.requestlist_item,
                     requestList);
-
             requestListView.setAdapter(requestArrayAdapter);
 
+            // Add a listener to listen and update the view when the arraylist changes
             requestList.addListener(new Listener() {
                 @Override
                 public void update() {
@@ -479,7 +502,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent intent = new Intent(getActivity(), RiderRequestActivity.class);
                     Bundle bundle = new Bundle();
-                    //bundle.putString("request", new Gson().toJson(requestList.get(position)));
+                    // We give the position it is in the arraylist so that it can pull it up later
                     bundle.putInt( "position", position );
                     intent.putExtras(bundle);
                     startActivity(intent);
