@@ -114,14 +114,17 @@ public class ElasticRequestController {
         }
     } // SearchByKeywordTask
 
-    /**
-     * Searches requests by a location.
-     *
+    /*
      * Query:
      * { "query" : {
      *     "filtered" : {
      *       "query" : {
-     *         "match_all" : {}
+     *         "bool": {
+     *           "should": [
+     *             { "match": { "status": 1 }},
+     *             { "match": { "status": 2 }}
+     *           ]
+     *         }
      *       },
      *       "filter" : {
      *         "geo_distance" : {
@@ -141,6 +144,10 @@ public class ElasticRequestController {
      *   } ]
      * }
      */
+
+    /**
+     * Searches requests by a geo-location.
+     */
     public static class SearchByLocationTask extends AsyncTask<Location, Void, RequestList>{
 
         /**
@@ -153,31 +160,37 @@ public class ElasticRequestController {
             verifySettings();
 
             String query =
-                    "{ \"from\" : 0, \"size\" : 500,\n" +
-                    "  \"query\" : {\n" +
-                    "    \"filtered\" : {\n" +
-                    "      \"query\" : {\n" +
-                    "        \"match_all\" : {}\n" +
-                    "      },\n" +
-                    "      \"filter\" : {\n" +
-                    "        \"geo_distance\" : {\n" +
-                    "          \"distance\" : \"" + DISTANCE + "km\",\n" +
-                    "          \"location\" : [" + search_parameters[0].getLongitude() + ", "
-                                                 + search_parameters[0].getLatitude() + "]\n" +
-                    "        }\n" +
-                    "      }\n" +
-                    "    }\n" +
-                    "  },\n" +
-                    "  \"sort\": [ {\n" +
-                    "    \"_geo_distance\": {\n" +
-                    "      \"location\" : [" + search_parameters[0].getLongitude() + ", "
-                                             + search_parameters[0].getLatitude() + "],\n" +
-                    "      \"order\": \"asc\",\n" +
-                    "      \"unit\": \"km\",\n" +
-                    "      \"distance_type\": \"plane\"\n" +
-                    "    }\n" +
-                    "  } ]\n" +
-                    "}";
+                "{ \"from\" : 0, \"size\" : 500,\n" +
+                "  \"query\" : {\n" +
+                "    \"filtered\" : {\n" +
+                "      \"query\" : {\n" +
+                "        \"bool\": { " +
+                "          \"should\": [\n" +
+                "            { \"match\": { \"status\": 1 }},\n" +
+                "            { \"match\": { \"status\": 2 }}\n" +
+                "          ],\n" +
+                "          \"minimum_should_match\": \"1\"\n" +
+                "        }\n" +
+                "      },\n" +
+                "      \"filter\" : {\n" +
+                "        \"geo_distance\" : {\n" +
+                "          \"distance\" : \"" + DISTANCE + "km\",\n" +
+                "          \"location\" : [" + search_parameters[0].getLongitude() + ", "
+                                             + search_parameters[0].getLatitude() + "]\n" +
+                "        }\n" +
+                "      }\n" +
+                "    }\n" +
+                "  },\n" +
+                "  \"sort\": [ {\n" +
+                "    \"_geo_distance\": {\n" +
+                "      \"location\" : [" + search_parameters[0].getLongitude() + ", "
+                                         + search_parameters[0].getLatitude() + "],\n" +
+                "      \"order\": \"asc\",\n" +
+                "      \"unit\": \"km\",\n" +
+                "      \"distance_type\": \"plane\"\n" +
+                "    }\n" +
+                "  } ]\n" +
+                "}";
 
             Search search = new Search.Builder(query)
                     .addIndex("cmput301f16t01")
