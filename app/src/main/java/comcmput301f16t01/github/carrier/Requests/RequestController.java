@@ -211,34 +211,6 @@ public class RequestController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // Need to populate the list of offering drivers
-        for (Request request: foundRequests) {
-            String requestID = request.getId();
-            ElasticRequestController.GetOffersTask got = new ElasticRequestController.GetOffersTask();
-            got.setMode(got.MODE_REQUEST_ID);
-            // Get all offers for a request
-            got.execute(requestID);
-            List<Offer> offers = new ArrayList<Offer>();
-            ArrayList<User> offeringDrivers = new ArrayList<>();
-            try {
-                offers = got.get();
-                // Get the user that made the offer and then add them to the list of offeringDrivers
-                for(Offer offer: offers) {
-                    String username = offer.getOfferingUser();
-                    ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();
-                    fut.execute(username);
-                    try {
-                        User offeringDriver = fut.get();
-                        offeringDrivers.add(offeringDriver);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                request.setOfferingDrivers(offeringDrivers);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
         requestList.replaceList( foundRequests );
         return foundRequests;
     }

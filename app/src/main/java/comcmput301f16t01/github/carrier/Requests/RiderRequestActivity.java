@@ -1,6 +1,7 @@
 package comcmput301f16t01.github.carrier.Requests;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.content.DialogInterface;
@@ -9,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,9 +35,11 @@ import java.util.List;
 import java.util.Locale;
 
 import comcmput301f16t01.github.carrier.FareCalculator;
+import comcmput301f16t01.github.carrier.OfferingDriversArrayAdapter;
 import comcmput301f16t01.github.carrier.R;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
+import comcmput301f16t01.github.carrier.RiderViewOfferingDriversActivity;
 import comcmput301f16t01.github.carrier.User;
 import comcmput301f16t01.github.carrier.UserController;
 import comcmput301f16t01.github.carrier.UsernameTextView;
@@ -64,7 +68,7 @@ public class RiderRequestActivity extends AppCompatActivity {
         //int position = bundle.getInt("position");
         //request = rc.getResult().get(position);
 
-        request = new Gson().fromJson( bundle.getString("request"), Request.class );
+        request = new Gson().fromJson(bundle.getString("request"), Request.class);
 
         setTitle("Request");
 
@@ -168,7 +172,7 @@ public class RiderRequestActivity extends AppCompatActivity {
             }
             List<Overlay> mapOverlays = map.getOverlays();
             for (Road road : roads) {
-                if(road.mLength < minLength || minLength == 0) {
+                if (road.mLength < minLength || minLength == 0) {
                     minLength = road.mLength;
                     bestRoad = road;
                 }
@@ -193,6 +197,7 @@ public class RiderRequestActivity extends AppCompatActivity {
 
     /**
      * Get the center point of the route to center the screen on
+     *
      * @return GeoPoint
      */
     public GeoPoint getCenter() {
@@ -203,16 +208,16 @@ public class RiderRequestActivity extends AppCompatActivity {
 
         Location retLoc = new Location("");
 
-        if(startLat > endLat) {
-            retLoc.setLatitude(endLat + ((startLat - endLat)/2));
+        if (startLat > endLat) {
+            retLoc.setLatitude(endLat + ((startLat - endLat) / 2));
         } else {
-            retLoc.setLatitude(startLat + ((endLat - startLat)/2));
+            retLoc.setLatitude(startLat + ((endLat - startLat) / 2));
         }
 
-        if(startLong > endLong) {
-            retLoc.setLongitude(endLong + ((startLong - endLong)/2));
+        if (startLong > endLong) {
+            retLoc.setLongitude(endLong + ((startLong - endLong) / 2));
         } else {
-            retLoc.setLongitude(startLong + ((endLong - startLong)/2));
+            retLoc.setLongitude(startLong + ((endLong - startLong) / 2));
         }
 
         return new GeoPoint(retLoc);
@@ -229,7 +234,7 @@ public class RiderRequestActivity extends AppCompatActivity {
     public void setViews() {
         // Set up the fare
         FareCalculator fc = new FareCalculator();
-        Currency localCurrency = Currency.getInstance( Locale.getDefault() );
+        Currency localCurrency = Currency.getInstance(Locale.getDefault());
         String price = localCurrency.getSymbol() + fc.toString(request.getFare());
         TextView fareTextView = (TextView) findViewById(R.id.textView_$fareAmount);
         fareTextView.setText(price);
@@ -247,11 +252,25 @@ public class RiderRequestActivity extends AppCompatActivity {
         if (request.getChosenDriver() != null) {
             driverUsernameTextView.setText(request.getChosenDriver().getUsername());
             driverUsernameTextView.setUser(request.getChosenDriver());
+        } else {
+            TextView driverTextView = (TextView) findViewById(R.id.textView_driver);
+            driverTextView.setText(R.string.View_Offering_Drivers);
+            driverTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(RiderRequestActivity.this, RiderViewOfferingDriversActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("request", new Gson().toJson(request));
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            });
+
         }
 
         TextView startAddressTextView = (TextView) findViewById(R.id.textView_start);
         String startAddress = request.getStart().getAddress();
-        if(startAddress != null) {
+        if (startAddress != null) {
             startAddressTextView.setText(startAddress);
         } else {
             String startPoint = request.getStart().getLatLong();
@@ -260,7 +279,7 @@ public class RiderRequestActivity extends AppCompatActivity {
 
         TextView endAddressTextView = (TextView) findViewById(R.id.textView_end);
         String endAddress = request.getEnd().getAddress();
-        if(endAddress != null) {
+        if (endAddress != null) {
             endAddressTextView.setText(request.getEnd().getAddress());
         } else {
             String endPoint = request.getEnd().getLatLong();
@@ -302,7 +321,7 @@ public class RiderRequestActivity extends AppCompatActivity {
     /**
      * Will initialize the view ids for all the views in the activity.
      */
-    public void cancelRequest(View v){
+    public void cancelRequest(View v) {
         AlertDialog.Builder adb = new AlertDialog.Builder(RiderRequestActivity.this);
         if ((request.getStatus() != Request.CANCELLED) && (request.getStatus() != Request.COMPLETE)
                 && (request.getStatus() != Request.PAID)) {
@@ -323,8 +342,7 @@ public class RiderRequestActivity extends AppCompatActivity {
 
                 }
             });
-        }
-        else {
+        } else {
             adb.setTitle("Error: ");
             adb.setMessage("Request cannot be cancelled.");
             adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {

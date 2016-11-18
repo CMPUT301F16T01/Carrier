@@ -5,8 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+    <!--<ImageView-->
     <org.osmdroid.views.MapView
-
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="200dp"
@@ -136,18 +136,6 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/textView_$fareAmount"
                     android:gravity="center"/>
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/layout_offeringdrivers">
-
-                    <ListView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:id="@+id/offeringDriversListView" />
-                </LinearLayout>
 
             </LinearLayout>
 
