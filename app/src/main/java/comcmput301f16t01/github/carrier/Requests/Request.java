@@ -182,4 +182,8 @@ public class Request {
         }
         return false;
     }
+
+    public void setOfferingDrivers(ArrayList<User> offeringDrivers) {
+        this.offeringDrivers = offeringDrivers;
+    }
 }
