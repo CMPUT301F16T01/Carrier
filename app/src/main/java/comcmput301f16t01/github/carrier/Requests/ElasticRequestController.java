@@ -236,7 +236,9 @@ public class ElasticRequestController {
                     SearchResult result = client.execute(search);
                     if (result.isSucceeded()) {
                         User offeringUser = result.getSourceAsObject(User.class);
-                        request.addOfferingDriver( offeringUser );
+                        try {
+                            request.addOfferingDriver(offeringUser);
+                        } catch (Exception e) { /* possibly do nothing */ }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

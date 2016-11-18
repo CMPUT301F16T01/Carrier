@@ -29,8 +29,10 @@ public class SearchResultsActivity extends AppCompatActivity {
 
         // It shouldn't matter what query we used, the singleton will be up to date with the query when we get here
         final RequestList requestList = rc.getResult();
+
         ArrayAdapter<Request> requestArrayAdapter = new ArrayAdapter<>( this, android.R.layout.simple_list_item_1, requestList );
         requestListView.setAdapter( requestArrayAdapter );
+
         requestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

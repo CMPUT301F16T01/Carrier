@@ -76,7 +76,7 @@ public class DriverViewRequestActivity extends AppCompatActivity {
             // They have already made an offer, so we can turn off "make offer" button
             Button makeOfferButton = (Button) findViewById( R.id.button_makeOffer );
             makeOfferButton.setEnabled( false ); // Make the button un-clickable
-            makeOfferButton.getBackground().setAlpha( 128 ); // Set transparency to 50%
+            makeOfferButton.setAlpha((float) 0.5); // Set transparency to 50%
         }
 
         setTitle("Request");
@@ -334,8 +334,9 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         } else {
             rc.addDriver(request, loggedInUser);
             Toast.makeText(this, "Made an offer.", Toast.LENGTH_SHORT).show();
-            view.setEnabled(false); // Make the button un-clickable after offering.
-            view.getBackground().setAlpha( 128 ); // The button becomes 50% transparent
+            Button button = (Button) findViewById( R.id.button_makeOffer);
+            button.setEnabled(false); // Make the button un-clickable after offering.
+            button.setAlpha((float) 0.5); // The button becomes 50% transparent
         }
     }
 }

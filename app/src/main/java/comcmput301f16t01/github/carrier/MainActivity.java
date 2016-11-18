@@ -29,6 +29,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationActivity;
@@ -122,9 +124,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         mViewPager.addOnPageChangeListener(onPageChangeListener);
-
-        // Keep no views in memory ;)
-        mViewPager.setOffscreenPageLimit(0);
 
         // We start on the rider tab, so we hide the driver fab
         FloatingActionButton driver_fab = (FloatingActionButton) findViewById(R.id.fab_driver);
@@ -353,12 +352,7 @@ public class MainActivity extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
             // Set up the fragments to contain their respective ListView
-            final ListView requestListView;
-            if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
-                requestListView = (ListView) rootView.findViewById( R.id.listView_requestListView );
-            } else {
-                requestListView = (ListView) rootView.findViewById( R.id.listView_offerListView );
-            }
+            final ListView requestListView = (ListView) rootView.findViewById(R.id.listView_requestListView);
             if( getArguments().getInt(ARG_SECTION_NUMBER) == 1 ) {
                 fillRiderRequests( requestListView );
             } else {
@@ -433,7 +427,6 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void update() {
                     requestArrayAdapter.notifyDataSetChanged();
-                    //mSectionsPagerAdapter.notifyDataSetChanged();
                 }
             });
 
