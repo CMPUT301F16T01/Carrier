@@ -58,8 +58,6 @@ public class RiderRequestActivity extends AppCompatActivity {
         int position = bundle.getInt("position");
         request = rc.getRiderInstance().get(position);
 
-        //request = new Gson().fromJson( bundle.getString("request"), Request.class );
-
         setTitle("Request");
 
         map = (MapView) findViewById(R.id.map);
