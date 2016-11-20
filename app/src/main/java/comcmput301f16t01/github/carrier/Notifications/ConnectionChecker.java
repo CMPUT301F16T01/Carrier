@@ -38,8 +38,16 @@ public class ConnectionChecker {
     //https://developer.android.com/reference/java/net/HttpURLConnection.html
     //https://developer.android.com/reference/android/os/AsyncTask.html
 
+    /**
+     * Async task that checks to see if the user can connect to elastic search.Returns true if you
+     * can, otherwise false.
+     */
     public static class isThereConnectionTask extends AsyncTask<Void, Void, Boolean> {
         @Override
+        /**
+         * Returns true if a connection to elastic search can be established, otherwise returns
+         * false.
+         */
         protected Boolean doInBackground(Void... params) {
             URL team1URL = null;
             try {

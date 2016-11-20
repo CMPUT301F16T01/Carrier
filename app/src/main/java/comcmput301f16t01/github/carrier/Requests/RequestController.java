@@ -4,12 +4,16 @@ import android.content.Context;
 import android.location.Location;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
@@ -232,6 +236,14 @@ public class RequestController {
     }
 
     /**
+     * For offline use. Sets the requests that, as a driver, the user has offered on.
+     * @param cachedRequestsOfferedOn The cached RequestList to load.
+     */
+    private void setOfferedRequests(RequestList cachedRequestsOfferedOn) {
+        RequestController.requestsWhereOffered = cachedRequestsOfferedOn;
+    }
+
+    /**
      * Clears out all the requested requests for a user
      */
     public void clearAllRiderRequests(User rider) {
@@ -280,6 +292,14 @@ public class RequestController {
         }
         requestsWhereRider.replaceList( foundRequests );
         return foundRequests;
+    }
+
+    /**
+     * For offline usage. Sets the RequestList requestsWhereRider to be the cached requests.
+     * @param cachedRequestsWhereRider The cached requests to load
+     */
+    private void setRequestsWhereRider(RequestList cachedRequestsWhereRider) {
+        RequestController.requestsWhereRider = cachedRequestsWhereRider;
     }
 
     public void performAsyncUpdate() {
@@ -359,6 +379,24 @@ public class RequestController {
     }
 
     /**
+     * For offline functionality. Loads the cached riderrequests.
+     * @param saveContext The context in which to load from.
+     */
+    public void loadRiderRequests(Context saveContext) {
+        FileInputStream fis = null;
+        try {
+            fis = saveContext.openFileInput(RIDER_FILENAME);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+            Gson gson = new Gson();
+            Type listType = new TypeToken<RequestList>() {}.getType();
+            this.setRequestsWhereRider((RequestList) gson.fromJson(in, listType));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
      * Caches the requests that the driver offered to fulfill.
      * @param saveContext The context in which to perform the save
      */
@@ -371,6 +409,23 @@ public class RequestController {
             gson.toJson(this.getOfferedRequests(UserController.getLoggedInUser()), out);
             out.flush();
             fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * For offline functionality. Loads the cached driver offered requests.
+     * @param saveContext The context in which to load from.
+     */
+    public void loadDriverOfferedRequests(Context saveContext) {
+        FileInputStream fis = null;
+        try {
+            fis = saveContext.openFileInput(DRIVER_FILENAME);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+            Gson gson = new Gson();
+            Type listType = new TypeToken<RequestList>() {}.getType();
+            this.setRequestsWhereRider((RequestList) gson.fromJson(in, listType));
         } catch (Exception e) {
             e.printStackTrace();
         }
