@@ -72,8 +72,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:id="@+id/editText_vehicleColor"
-        android:hint="e.g. red, blue, green"
-        android:inputType="number" />
+        android:hint="e.g. red, blue, green" />
 
     <TextView
         android:text="Other Notes:"
@@ -86,8 +85,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:id="@+id/editText_vehicleOther"
-        android:hint="e.g. Look for the family stickers on the back!"
-        android:inputType="number" />
+        android:hint="e.g. Look for the family stickers on the back!" />
 
 
     <Button
@@ -95,7 +93,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/button_createNewUser"
-        android:onClick="submitNewUser"
+        android:onClick="register"
         android:layout_marginTop="10dp"/>
 
 

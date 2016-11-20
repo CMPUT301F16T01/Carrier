@@ -222,7 +222,7 @@ public class UserController {
      * @param phoneNumber
      * @return
      */
-    public static String createNewUser(String username, String email, String phoneNumber) {
+    public static void createNewUser(String username, String email, String phoneNumber, String vehicleDescription) {
         // TODO testing offline behaviour
         User newUser = new User();
 
@@ -234,6 +234,7 @@ public class UserController {
         newUser.setEmail(email);
         newUser.setPhone(phoneNumber);
         newUser.setUsername(username);
+        newUser.setVehicleDescription(vehicleDescription);
 
         ElasticUserController.AddUserTask aut = new ElasticUserController.AddUserTask();
         aut.execute(newUser);
@@ -243,7 +244,6 @@ public class UserController {
         }
 
         loggedInUser = newUser;
-        return null;
     }
 
     /**
