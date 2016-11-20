@@ -304,8 +304,7 @@ public class ElasticRequestController {
         protected void onPostExecute(RequestList requests) {
             // Perform our update on the UI thread
             if (withAsync) {
-                RequestController rc = new RequestController();
-                rc.getRiderInstance().replaceList( requests );
+                RequestController.getRiderInstance().replaceList( requests );
                 notifyListener();
             }
             super.onPostExecute(requests);
@@ -534,8 +533,7 @@ public class ElasticRequestController {
         protected void onPostExecute(RequestList requests) {
             // Perform result update on UI thread
             if (withAsync) {
-                RequestController rc = new RequestController();
-                rc.getOffersInstance().replaceList( requests );
+                RequestController.getOffersInstance().replaceList( requests );
                 notifyListener();
             }
             super.onPostExecute(requests);

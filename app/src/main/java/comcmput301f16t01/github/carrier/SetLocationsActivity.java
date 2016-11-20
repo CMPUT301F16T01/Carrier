@@ -39,6 +39,9 @@ import comcmput301f16t01.github.carrier.Searching.SearchResultsActivity;
 
 import static com.google.android.gms.common.api.GoogleApiClient.*;
 
+/**
+ * SetLocationsActivity allow the user to put a marker on the map to specify
+ */
 public class SetLocationsActivity extends AppCompatActivity implements ConnectionCallbacks,
         OnConnectionFailedListener, MapEventsReceiver {
     // result code for when we return to an instance of this activity
@@ -303,8 +306,7 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
                 activity.finish();
             } else if (point.equals("search")) {
                 // if choosing search point, go to search results activity, passing bundle with search location
-                RequestController rc = new RequestController();
-                rc.searchByLocation(locationPoint);
+                RequestController.searchByLocation(locationPoint);
                 Intent intent = new Intent(activity, SearchResultsActivity.class);
                 // Move the filter from this intent to the SearchResultActivity intent. 
                 intent.putExtra( "filterBundle", getIntent().getBundleExtra("filterBundle") );

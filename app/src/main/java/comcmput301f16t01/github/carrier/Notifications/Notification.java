@@ -12,10 +12,19 @@ import io.searchbox.annotations.JestId;
  * Notification class for storing and retrieving notifications.
  */
 public class Notification implements Comparable<Notification> {
+    /** The username of the user to be notified */
     protected String username;
+
+    /** The JestId of the request this notification references */
     protected String requestID;
+
+    /** True if the notification is marked as read */
     protected boolean read;
+
+    /** True if the person to be notified is the rider of the request */
     protected boolean isRider;
+
+    /** The time the notification was created (for sorting purposes) */
     protected Date date;
 
     @JestId
@@ -26,12 +35,8 @@ public class Notification implements Comparable<Notification> {
         this.username = userToBeNotified.getUsername();
         this.date = new Date();
         this.read = false;
-        // TODO Confirm this is correct, maybe implement it a different way.
-        if (relatedRequest.getRider().getUsername().equals(userToBeNotified.getUsername())) {
-            isRider = true;
-        } else {
-            isRider = false;
-        }
+        // If the notified is the rider, we set that value to true in the notification
+        isRider = relatedRequest.getRider().getUsername().equals(userToBeNotified.getUsername());
     }
 
     public boolean isRead() {
@@ -62,6 +67,7 @@ public class Notification implements Comparable<Notification> {
         return elasticID;
     }
 
+    /** @return The string representation of a notification. */
     @Override
     public String toString() {
         String notifString = "";

@@ -63,14 +63,13 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         // unpacking the bundle to get the position of request
         Bundle bundle = getIntent().getExtras();
 
-        RequestController rc = new RequestController();
         int pos = bundle.getInt( "position" );
         if (pos == -1) {
             // signal that the request was searched and has not been related to the user yet
             request = new Gson().fromJson( bundle.getString( "request" ), Request.class );
         } else {
             // else we can grab it from the request controller.
-            request = rc.getOffersInstance().get(pos);
+            request = RequestController.getOffersInstance().get(pos);
 
             // They have already made an offer, so we can turn off "make offer" button
             Button makeOfferButton = (Button) findViewById( R.id.button_makeOffer );
@@ -306,7 +305,6 @@ public class DriverViewRequestActivity extends AppCompatActivity {
     }
 
     public void makeOffer(View view) {
-        RequestController rc = new RequestController();
         // Can not make an offer on a request that has a confirmed driver.
         // Can not make an offer on a request that you hae already made an offer on.
         // Can not make an offer on a cancelled request.
@@ -328,7 +326,7 @@ public class DriverViewRequestActivity extends AppCompatActivity {
             adb.setMessage("Unable to make an offer on the request. The request has been cancelled.");
             adb.show();
         } else {
-            rc.addDriver(request, loggedInUser);
+            RequestController.addDriver(request, loggedInUser);
             Toast.makeText(this, "Made an offer.", Toast.LENGTH_SHORT).show();
             Button button = (Button) findViewById( R.id.button_makeOffer);
             button.setEnabled(false); // Make the button un-clickable after offering.

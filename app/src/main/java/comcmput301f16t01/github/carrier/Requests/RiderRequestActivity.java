@@ -35,7 +35,8 @@ import comcmput301f16t01.github.carrier.R;
 import comcmput301f16t01.github.carrier.Users.UsernameTextView;
 
 /**
- * This will help us show the request from the perspective of a rider
+ * RiderRequestActivity displays request information from the rider's persepctive. It gives the rider
+ * the ability to see their request, cancel it, or accept a driver from it.
  */
 public class RiderRequestActivity extends AppCompatActivity {
     Activity activity = RiderRequestActivity.this;
@@ -46,8 +47,6 @@ public class RiderRequestActivity extends AppCompatActivity {
     IMapController mapController;
     private Request request;
 
-    RequestController rc = new RequestController();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +55,7 @@ public class RiderRequestActivity extends AppCompatActivity {
         // unpacking the bundle to get the position of request
         Bundle bundle = getIntent().getExtras();
         int position = bundle.getInt("position");
-        request = rc.getRiderInstance().get(position);
+        request = RequestController.getRiderInstance().get(position);
 
         setTitle("Request");
 
@@ -175,10 +174,12 @@ public class RiderRequestActivity extends AppCompatActivity {
         }
     }
 
+    /** Centers the map on the start of the route */
     public void centerStart(View view) {
         mapController.setCenter(startPoint);
     }
 
+    /** Centers the map on the end of the map */
     public void centerEnd(View view) {
         mapController.setCenter(endPoint);
     }
@@ -210,7 +211,10 @@ public class RiderRequestActivity extends AppCompatActivity {
         return new GeoPoint(retLoc);
     }
 
-    // TODO fill in
+    /**
+     * Marks a request as paid using the request controller (if allowed)
+     * @param view The "pay" button
+     */
     public void payForRequest(View view) {
         Toast.makeText(activity, "PAY FOR REQUEST", Toast.LENGTH_SHORT).show();
     }
@@ -220,9 +224,8 @@ public class RiderRequestActivity extends AppCompatActivity {
      */
     public void setViews() {
         // Set up the fare
-        FareCalculator fc = new FareCalculator();
         Currency localCurrency = Currency.getInstance( Locale.getDefault() );
-        String price = localCurrency.getSymbol() + fc.toString(request.getFare());
+        String price = localCurrency.getSymbol() + FareCalculator.toString(request.getFare());
         TextView fareTextView = (TextView) findViewById(R.id.textView_$fareAmount);
         fareTextView.setText(price);
 
@@ -302,8 +305,7 @@ public class RiderRequestActivity extends AppCompatActivity {
             adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    RequestController rc = new RequestController();
-                    rc.cancelRequest(request.getRider(), request);
+                    RequestController.cancelRequest( request );
                     finish();
                 }
             });

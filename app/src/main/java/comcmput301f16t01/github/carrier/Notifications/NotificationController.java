@@ -9,7 +9,7 @@ import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Users.User;
 
 /**
- * Controls a user's notifications for elastic search
+ * Controls a user's notifications for elastic search.
  */
 public class NotificationController {
     private static NotificationList notificationList;
@@ -72,7 +72,7 @@ public class NotificationController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return newNotification; // TODO find out why I did this, because it makes no sense.
+        return newNotification;
     }
 
     /**

@@ -67,8 +67,7 @@ public class SearchActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 EditText searchEditText = (EditText) dialogView.findViewById(R.id.editText_keywordSearch);
                 String query = searchEditText.getText().toString();
-                RequestController rc = new RequestController();
-                rc.searchByKeyword(query);
+                RequestController.searchByKeyword(query);
                 Intent intent = new Intent(activity, SearchResultsActivity.class);
                 try {
                     bundleFilters(intent);  // attempt to bundle the price filters

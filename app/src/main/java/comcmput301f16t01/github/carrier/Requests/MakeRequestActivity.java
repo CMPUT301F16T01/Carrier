@@ -274,8 +274,6 @@ public class MakeRequestActivity extends AppCompatActivity {
      *      Return to MainActivity
      */
     public void submitRequest(View view) {
-        RequestController rc = new RequestController();
-
         User user = UserController.getLoggedInUser();
 
         EditText descEditText = (EditText) findViewById(R.id.editText_description);
@@ -292,7 +290,7 @@ public class MakeRequestActivity extends AppCompatActivity {
 
         request.setDistance( distance );
 
-        String result = rc.addRequest(request);
+        String result = RequestController.addRequest(request);
 
         // Check that a new request was created
         if (result == null) {
