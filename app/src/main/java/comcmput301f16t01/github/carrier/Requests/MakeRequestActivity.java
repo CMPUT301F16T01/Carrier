@@ -290,6 +290,8 @@ public class MakeRequestActivity extends AppCompatActivity {
 
         request.setFare(fareEstimated);
 
+        request.setDistance( distance );
+
         String result = rc.addRequest(request);
 
         // Check that a new request was created

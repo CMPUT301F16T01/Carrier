@@ -44,6 +44,9 @@ public class Request {
     /** The price the requesting user is willing to pay for the request to be complete */
     private int fare;
 
+    /** The distance in kilometers */
+    private double distance;
+
     private Double[] location;
 
     /** For use with Elastic Search, is the unique ID given to it */
@@ -154,8 +157,10 @@ public class Request {
 
     @Override
     public String toString() {
-        String requestAsString = "Request From: " + rider.getUsername() + "\n";
-        requestAsString += "Description: " + description;
+        String requestAsString = "Request From: " + rider.getUsername() + "\n" +
+                "Description: " + description + "\n" +
+                "Price: " + getFare() + "\n" +
+                "Price per KM: " + (fare/100)/distance;
         return requestAsString;
     }
 
@@ -195,5 +200,13 @@ public class Request {
             }
         }
         return false;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
+    public double getDistance() {
+        return this.distance;
     }
 }

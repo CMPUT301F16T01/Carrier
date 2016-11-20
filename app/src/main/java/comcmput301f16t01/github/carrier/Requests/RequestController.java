@@ -1,6 +1,8 @@
 package comcmput301f16t01.github.carrier.Requests;
 
 import android.location.Location;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 
@@ -281,6 +283,41 @@ public class RequestController {
         ElasticRequestController.GetOfferedRequestsTask gort = new ElasticRequestController.GetOfferedRequestsTask();
         gort.withAsync = true;
         gort.execute( UserController.getLoggedInUser().getUsername());
+    }
+
+    /**
+     * Ensures that the request controller on has results for requests within the price range of
+     * minPrice to maxPrice.
+     * @param minPrice The minimum value you wish to prune by.
+     * @param maxPrice The maximum value you wish to prune by. (Passing null is equivalent to passing positive infinity)
+     */
+    public void pruneByPrice(@NonNull Float minPrice, @Nullable Float maxPrice) {
+        RequestList filteredRequests = new RequestList();
+        for ( Request request : searchResult ) {
+            if ( request.getFare() < minPrice * 100 ) { continue; }
+            if ( maxPrice != null && maxPrice * 100 < request.getFare() ) { continue; }
+            filteredRequests.add( request ); // add the request if it is in range
+        }
+        searchResult.replaceList( filteredRequests );
+    }
+
+    /**
+     * Ensures that the request controller only has results for requests within the price per kilometer range of
+     * minPricePerKM to maxPricePerKM.
+     * @param minPricePerKM The minimum value you wish to prune by.
+     * @param maxPricePerKM The maximum value you wish to prune by. (Passing null is equivalent to passing positive infinity)
+     */
+    public void pruneByPricePerKM( @NonNull Float minPricePerKM, @Nullable Float maxPricePerKM ) {
+        RequestList filteredRequests = new RequestList();
+        for ( Request request : searchResult ) {
+            double pricePerKM = request.getFare() / request.getDistance();
+            // ensure the price per kilometer is greater than the specified minimum
+            if ( pricePerKM < minPricePerKM * 100 ) { continue; }
+            // ensure the price per kilometer is less than the specified maximum.
+            if ( maxPricePerKM != null && maxPricePerKM * 100 < pricePerKM ) { continue; }
+            filteredRequests.add( request ); // add the request if it is in range
+        }
+        searchResult.replaceList( filteredRequests );
     }
 
     /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
