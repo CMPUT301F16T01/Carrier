@@ -1,7 +1,15 @@
 package comcmput301f16t01.github.carrier.Requests;
 
+import android.content.Context;
 import android.location.Location;
 
+import com.google.gson.Gson;
+
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
@@ -26,6 +34,12 @@ public class RequestController {
 
     /** Holds requests that have been searched for by the user. */
     private static RequestList searchResult;
+
+    /** The file name of the locally saved made rider requests .*/
+    private final String RIDER_FILENAME = "RiderRequests.sav";
+
+    /** The file name of the locally saved offered driver requests. */
+    private final String DRIVER_FILENAME = "DriverRequests.sav";
 
     /**
      * Prevents errors when a RequestController is initialized and methods that require requestList
@@ -322,5 +336,39 @@ public class RequestController {
     @Deprecated
     public ArrayList<Request> getOpenRequests() {
         throw new IllegalArgumentException( "This method is deprecated." );
+    }
+
+    /**
+     * Caches the requests that the rider has made.
+     * @param saveContext The context in which to perform the save
+     */
+    public void saveRiderRequests(Context saveContext) {
+        try {
+            FileOutputStream fos = saveContext.openFileOutput(this.RIDER_FILENAME, 0);
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
+
+            Gson gson = new Gson();
+            gson.toJson(this.fetchAllRequestsWhereRider(UserController.getLoggedInUser()), out);
+            out.flush();
+
+            fos.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveDriverRequests(Context saveContext) {
+        try {
+            FileOutputStream fos = saveContext.openFileOutput(this.DRIVER_FILENAME, 0);
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
+
+            Gson gson = new Gson();
+            gson.toJson(this.getOfferedRequests(UserController.getLoggedInUser()), out);
+            out.flush();
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
