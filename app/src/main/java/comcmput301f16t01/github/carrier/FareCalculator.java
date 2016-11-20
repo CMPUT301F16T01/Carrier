@@ -8,7 +8,7 @@ import java.util.Random;
 import static java.security.AccessController.getContext;
 
 /**
- * calculates an estimated fare between two locations.
+ * Calculates an estimated fare between two locations.
  */
 public class FareCalculator {
 
@@ -18,6 +18,12 @@ public class FareCalculator {
     static final double BOOKING_FEE = 1.65;
     static final int MIN_FARE = (int) 5.00 * 100;
 
+    /**
+     * Estimates a fare between two locations given the distance and duration for them.
+     * @param distance Distance measured in kilometers
+     * @param duration Duration measured in seconds
+     * @return Returns an integer estimate
+     */
     public static int getEstimate(double distance, double duration) {
 
         // Distance is in km

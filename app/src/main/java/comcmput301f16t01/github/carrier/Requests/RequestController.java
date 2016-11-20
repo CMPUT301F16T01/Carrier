@@ -358,7 +358,11 @@ public class RequestController {
         }
     }
 
-    public void saveDriverRequests(Context saveContext) {
+    /**
+     * Caches the requests that the driver offered to fulfill.
+     * @param saveContext The context in which to perform the save
+     */
+    public void saveDriverOfferedRequests(Context saveContext) {
         try {
             FileOutputStream fos = saveContext.openFileOutput(this.DRIVER_FILENAME, 0);
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));

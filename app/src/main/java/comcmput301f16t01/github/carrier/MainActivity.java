@@ -30,7 +30,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
@@ -137,6 +139,15 @@ public class MainActivity extends AppCompatActivity {
 
         // Perform an update using RequestController
         rc.performAsyncUpdate();
+
+        // Check whether or whether not we can connect to elastic search
+        ConnectionChecker.isThereConnectionTask itct = new ConnectionChecker.isThereConnectionTask();
+        itct.execute();
+        try {
+            Toast.makeText(this, Boolean.toString(itct.get()), Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
