@@ -79,7 +79,7 @@ public class NewVehicleActivity extends AppCompatActivity {
         // If all squares are empty then just leave the string empty
         if ( make.equals("") && model.equals("") && year.equals("")
         && color.equals("") && other.equals("") ) {
-            vehicleDescription = "";
+            vehicleDescription = "No description entered";
         }
         //else we need to piece the string together
         else {

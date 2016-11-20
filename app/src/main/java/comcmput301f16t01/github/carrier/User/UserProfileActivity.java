@@ -27,6 +27,7 @@ public class UserProfileActivity extends AppCompatActivity {
     // Saves the values of the old fields just in case the user cancels their edit.
     private String oldPhoneNumber;
     private String oldEmailAddress;
+    private String vehicleDescription;
     private User currentUser = UserController.getLoggedInUser();
 
     @Override
@@ -57,18 +58,21 @@ public class UserProfileActivity extends AppCompatActivity {
         } else {
             oldEmailAddress = user.getEmail();
             oldPhoneNumber = user.getPhone();
+            vehicleDescription = user.getVehicleDescription();
             username = user.getUsername();
         }
 
         // Get the TextViews for the information that is going to be shown.
-        EditText usernameEditText = (EditText) findViewById(R.id.TextView_name);
+        TextView usernameTextView = (TextView) findViewById(R.id.TextView_name);
         EditText emailAddressEditText = (EditText) findViewById(R.id.EditText_email);
         EditText phoneNumberEditText = (EditText) findViewById(R.id.EditText_phone);
+        TextView vehicleDescriptionTextView = (TextView) findViewById(R.id.textView_vehicleDescription);
 
         //Save old values in case the user changes their mind about editing.
-        usernameEditText.setText(username);
+        usernameTextView.setText(username);
         emailAddressEditText.setText(oldEmailAddress);
         phoneNumberEditText.setText(oldPhoneNumber);
+        vehicleDescriptionTextView.setText(vehicleDescription);
 
         // Removes the key listener, so that it can't hear keys.
         // Also stores it as their tag, so we can grab it later...
@@ -76,7 +80,7 @@ public class UserProfileActivity extends AppCompatActivity {
         phoneNumberEditText.setKeyListener(null);
         emailAddressEditText.setTag(emailAddressEditText.getKeyListener());
         emailAddressEditText.setKeyListener(null);
-        usernameEditText.setKeyListener(null);
+        usernameTextView.setKeyListener(null);
 
         /*If profile being viewed is not the logged in user's, the edit buttons are hidden and are
         unclickable.
