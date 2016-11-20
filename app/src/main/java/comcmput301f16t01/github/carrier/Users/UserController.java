@@ -6,6 +6,7 @@ import android.util.Patterns;
 
 /**
  * Singleton Pattern
+ *
  * Holds an instance of an user (the user of the app), allows for logging in users with elastic
  * search or memory.
  */
@@ -136,7 +137,7 @@ public class UserController {
     /**
      * Logs out the current user by setting them to null.
      */
-    public void logOutUser() {
+    public static void logOutUser() {
         loggedInUser = null;
     }
 
@@ -146,7 +147,11 @@ public class UserController {
      * @param username The username you would like to try logging in with.
      * @return True if the user was successfully logged in, else false.
      */
-    public boolean logInUser(String username) {
+    public static boolean logInUser(String username) {
+        if ( loggedInUser != null ) {
+            throw new IllegalStateException( "You may not log in a user when one is already logged in" );
+        }
+
         ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();
         fut.execute(username);
         User foundUser = null;
@@ -169,7 +174,7 @@ public class UserController {
      * @param username The username to search for
      * @return The specified User (by username)
      */
-    public User findUser(String username) {
+    public static User findUser(String username) {
         User foundUser = null;
 
         ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();

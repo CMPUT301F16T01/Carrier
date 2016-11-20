@@ -43,9 +43,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        UserController uc = new UserController();
-
-        if ( !uc.logInUser( username ) ) {
+        if ( !UserController.logInUser( username ) ) {
             EditText usernameEditText = (EditText) findViewById( R.id.EditText_username );
             usernameEditText.setText( username );
             AlertDialog.Builder adb = new AlertDialog.Builder( this );
@@ -65,8 +63,7 @@ public class LoginActivity extends AppCompatActivity {
         EditText usernameEditText = (EditText) findViewById(R.id.EditText_username);
         String username = usernameEditText.getText().toString().trim();
 
-        UserController uc = new UserController();
-        if (!uc.logInUser(username)) {
+        if (!UserController.logInUser(username)) {
             Toast.makeText(this, "Username not found", Toast.LENGTH_LONG).show();
         } else {
             // Save username to file

@@ -306,8 +306,7 @@ public class MainActivity extends AppCompatActivity {
                 activity.finish();
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
-                UserController uc = new UserController();
-                uc.logOutUser();
+                UserController.logOutUser();
             }
         });
         adb.setNegativeButton("Cancel", null);  // have cancel only close the dialog and nothing else

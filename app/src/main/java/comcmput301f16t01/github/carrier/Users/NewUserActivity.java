@@ -42,8 +42,7 @@ public class NewUserActivity extends AppCompatActivity {
         String username = usernameEditText.getText().toString();
 
         // Send new user to UserController
-        UserController uc = new UserController();
-        String result = uc.createNewUser(username,
+        String result = UserController.createNewUser(username,
                 emailEditText.getText().toString(),
                 phoneEditText.getText().toString());
 

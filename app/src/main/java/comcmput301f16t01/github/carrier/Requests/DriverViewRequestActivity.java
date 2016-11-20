@@ -237,12 +237,9 @@ public class DriverViewRequestActivity extends AppCompatActivity {
      * Given the request passed in by the user, set the views in the layout.
      */
     public void setViews() {
-        UserController uc = new UserController();
-
         // Set up the fare
-        FareCalculator fc = new FareCalculator();
         Currency localCurrency = Currency.getInstance( Locale.getDefault() );
-        String price = localCurrency.getSymbol() + fc.toString(request.getFare());
+        String price = localCurrency.getSymbol() + FareCalculator.toString(request.getFare());
         TextView fareTextView = (TextView) findViewById(R.id.textView_$fareAmount);
         fareTextView.setText(price);
 
@@ -253,8 +250,8 @@ public class DriverViewRequestActivity extends AppCompatActivity {
 
         // Set up the UsernameTextView of the driver
         UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
-        driverUsernameTextView.setText(uc.getLoggedInUser().getUsername());
-        driverUsernameTextView.setUser(uc.getLoggedInUser());
+        driverUsernameTextView.setText(UserController.getLoggedInUser().getUsername());
+        driverUsernameTextView.setUser(UserController.getLoggedInUser());
 
         TextView startAddressTextView = (TextView) findViewById(R.id.textView_start);
         String startAddress = request.getStart().getAddress();
