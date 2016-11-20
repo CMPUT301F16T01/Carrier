@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="comcmput301f16t01.github.carrier">
 
-    <!-- FOUR BELOW ARE USED FOR ELASTIC SEARCH -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -11,8 +10,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
-    <!-- USED TO TEST CONNECTIVITY -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
@@ -36,18 +33,19 @@
             android:label="@string/title_activity_main"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
-            android:label="Carrier" />
+        android:label="Carrier" />
         android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Users.NewUserActivity"
+        <activity
+            android:name=".Users.NewUserActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Requests.DriverViewRequestActivity"
+        <activity
+            android:name=".Requests.DriverViewRequestActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".UserProfileActivity"
             android:label="Carrier"
-            android:screenOrientation="portrait"> </activity>
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:screenOrientation="portrait"></activity>
+        android:theme="@style/AppTheme.NoActionBar" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -59,21 +57,32 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="0" />
+
         <activity
-            android:name=".Searching.SearchMapsActivity"
-            android:label="@string/title_activity_search_maps"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".Searching.SearchActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".HelpActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".Requests.RiderRequestActivity" android:screenOrientation="portrait"/>
+            android:name=".Searching.SearchActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".HelpActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Requests.RiderRequestActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Requests.MakeRequestActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".Notifications.NotificationActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".Searching.SearchResultsActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".SetLocationsActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".ViewLocationsActivity" android:screenOrientation="portrait"/>
+        <activity
+            android:name=".Notifications.NotificationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Searching.SearchResultsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SetLocationsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Requests.ViewLocationsActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

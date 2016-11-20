@@ -213,7 +213,7 @@ public class UserController {
         }
 
         if (!Patterns.PHONE.matcher(phoneNumber).matches()) {
-            return "That doesn't look liek a valid phone number!";
+            return "That doesn't look like a valid phone number!";
         }
 
         ElasticUserController.AddUserTask aut = new ElasticUserController.AddUserTask();

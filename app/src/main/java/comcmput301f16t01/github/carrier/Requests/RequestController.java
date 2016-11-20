@@ -188,12 +188,19 @@ public class RequestController {
         }
     }
 
-        /**
+    /**
      * Search requests by a location. This sets it so the singleton contains the information for
      * this query. Use getResults() to get the information.
      */
-    public void searchByLocation( /* location parameters? */ ) {
-        searchResult.replaceList( new RequestList() ); // TODO replace with functional
+    public void searchByLocation(Location location) {
+        // TODO check how these are sorted, we want to sort them by those closest to those furthest away
+        ElasticRequestController.SearchByLocationTask sblt = new ElasticRequestController.SearchByLocationTask();
+        sblt.execute(location);
+        try {
+            searchResult.replaceList(sblt.get());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
