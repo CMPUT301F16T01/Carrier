@@ -55,9 +55,7 @@ public class RequestController {
     }
 
     /** Get the results of a searchByKeyword or a getSearchByLocation query. */
-    public RequestList getResult() {
-        return searchResult;
-    }
+    public RequestList getResult() { return searchResult; }
 
     /** Adds a request to elastic search. */
     public String addRequest(Request request) {

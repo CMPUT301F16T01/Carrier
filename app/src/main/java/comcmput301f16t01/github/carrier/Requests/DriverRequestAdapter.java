@@ -22,10 +22,9 @@ import comcmput301f16t01.github.carrier.R;
 import comcmput301f16t01.github.carrier.Requests.Request;
 
 /**
- * From hreherch's implementation of LonelyTwitter
- * Takes an array of Requests and molds it into a ListView of requests
+ * Deprecated, TODO to be removed soon. Use the RequestAdapter class.
  */
-
+@Deprecated
 public class DriverRequestAdapter extends ArrayAdapter<Request> {
     private ArrayList<Request> requestList;
 
