@@ -6,6 +6,7 @@ import android.util.Patterns;
 import java.util.ArrayList;
 
 import comcmput301f16t01.github.carrier.LoginActivity;
+import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.UserList;
 
 /**
@@ -46,7 +47,6 @@ public class UserController {
      * Deprecated: use logInUser instead.
      * @see #logInUser(String)
      */
-    @Deprecated
     public void setLoggedInUser(User user) {
         loggedInUser = user;
     }
@@ -101,6 +101,7 @@ public class UserController {
      * @return
      */
     public boolean logInUser(String username) {
+
         ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();
         fut.execute(username);
         User foundUser = null;
@@ -114,6 +115,14 @@ public class UserController {
         }
         loggedInUser = foundUser;
         return true;
+    }
+
+    public boolean offlineLogInUser(String usernameToLogin, User cachedUser) {
+        if (usernameToLogin.equals(cachedUser.getUsername())) {
+            loggedInUser = cachedUser;
+            return true;
+        }
+        return false;
     }
 
     public void setEmail(User user, String email) {

@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Call to the static function ConnectionChecker.isConnected( context ) to check if you have
@@ -59,5 +60,17 @@ public class ConnectionChecker {
             }
             return false;
         }
+    }
+
+    public static Boolean isThereInternet() {
+        ConnectionChecker.isThereConnectionTask isThereConnectionTask = new ConnectionChecker.isThereConnectionTask();
+        isThereConnectionTask.execute();
+        Boolean isInternet = false;
+        try {
+            isInternet = isThereConnectionTask.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return isInternet;
     }
 }
