@@ -91,66 +91,7 @@ public class SearchActivity extends AppCompatActivity {
         // Based on: https://goo.gl/6AAnXP
         // Author: Android Dev Docs
         // Retrieved on: October 28, 2016
-        AlertDialog.Builder adb = new AlertDialog.Builder(activity);
-        final LayoutInflater inflater = activity.getLayoutInflater();
-        final View dialogView = inflater.inflate(R.layout.dialog_address_search, null);
-        adb.setTitle("Search by Address");
-        adb.setView(dialogView);
-        adb.setPositiveButton("Search", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                EditText searchEditText = (EditText) dialogView.findViewById(R.id.editText_addressSearch);
-                List<CarrierLocation> query = getLocation(searchEditText.getText().toString());
-                if(query != null) {
-                    Intent intent = new Intent(activity, SearchAddressChoiceActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("addressList", new Gson().toJson(query));
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(activity, "An error occurred when retrieving addresses", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        adb.setNegativeButton("Cancel", null);
-        adb.show();
-    }
-
-    /**
-     * Gets possible geo-locations from an address string submitted by the user.
-     * @param addressQuery address string inputted by the user
-     * @return List<CarrierLocation> list of possible geo-locations that match address
-     */
-    private List<CarrierLocation> getLocation(final String addressQuery) {
-        List<Address> addressResult = new ArrayList<>();
-        List<CarrierLocation> locations = new ArrayList<>();
-
-        ElasticRequestController.SearchByAddressTask sbat = new ElasticRequestController.SearchByAddressTask();
-        sbat.execute(addressQuery);
-        try {
-            addressResult = sbat.get();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        for (Address address : addressResult) {
-            CarrierLocation location = new CarrierLocation();
-            location.setLatitude(address.getLatitude());
-            location.setLongitude(address.getLongitude());
-            // Based on: https://goo.gl/iMJdJX
-            // Author: cristina
-            // Retrieved on: November 11th, 2016
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
-                if (i != 0) {
-                    sb.append("\n");
-                } else {
-                    location.setShortAddress(address.getAddressLine(i));
-                }
-                sb.append(address.getAddressLine(i));
-            }
-            location.setAddress(sb.toString());
-            locations.add(location);
-        }
-        return locations;
+        Intent intent = new Intent(activity, SearchAddressChoiceActivity.class);
+        startActivity(intent);
     }
 }

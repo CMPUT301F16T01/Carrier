@@ -18,7 +18,7 @@
             android:hint="@string/searchAddressHint"
             android:ems="10"
             android:id="@+id/editText_addressSearch"
-            android:layout_toStartOf="@id/imageButton_addressSearch"/>
+            android:layout_toStartOf="@+id/imageButton_addressSearch"/>
 
         <ImageButton
             android:layout_width="50dp"
@@ -27,7 +27,8 @@
             android:background="@null"
             android:id="@+id/imageButton_addressSearch"
             android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            android:onClick="searchAddress"/>
 
     </RelativeLayout>
 

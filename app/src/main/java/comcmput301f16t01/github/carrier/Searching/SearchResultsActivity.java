@@ -22,7 +22,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_results);
-        setTitle("Search Results");
+        setTitle("Search Results  s");
 
         ListView requestListView = (ListView) findViewById( R.id.listView_searchResults );
 
