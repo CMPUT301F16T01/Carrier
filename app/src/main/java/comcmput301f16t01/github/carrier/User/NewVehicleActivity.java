@@ -12,6 +12,8 @@ import comcmput301f16t01.github.carrier.MainActivity;
 import comcmput301f16t01.github.carrier.R;
 
 /**
+ * This is the class a user will use to input information about their vehicle
+ * Once they click register they will then be added as a new user
  * Created by meind on 2016-11-17.
  */
 
@@ -23,6 +25,12 @@ public class NewVehicleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_vehicle);
     }
 
+    /**
+     * We will get all the information for the edit text feilds.
+     * We will call a function to concatenate the vehicle description
+     * We will create a new user with all this information
+     * @param v This is the view for the function
+     */
     public void register(View v) {
         EditText makeEditText = (EditText) findViewById(R.id.editText_vehicleMake);
         EditText modelEditText = (EditText) findViewById(R.id.editText_vehicleModel);
@@ -30,22 +38,30 @@ public class NewVehicleActivity extends AppCompatActivity {
         EditText colorEditText = (EditText) findViewById(R.id.editText_vehicleColor);
         EditText otherEditText = (EditText) findViewById(R.id.editText_vehicleOther);
 
+        //This is the funtion that will make a pretty string out of all the info given
         String vehicleDescription = concatenateVehicleDescription(makeEditText.getText().toString(),
                 modelEditText.getText().toString(), yearEditText.getText().toString(),
                 colorEditText.getText().toString(), otherEditText.getText().toString());
 
+        //we will unpack for the bundle that was sent to us
+        //from the new user activity
         Bundle bundle = getIntent().getExtras();
         String username = bundle.getString("username");
         String phone = bundle.getString("phone");
         String email = bundle.getString("email");
 
+        //create a new user
+        //this is what adds to elastic search
         UserController uc = new UserController();
         uc.createNewUser(username, email, phone, vehicleDescription);
 
+        //go tot the main activity with this function
         submitNewUser(username);
     }
 
     /**
+     * This function is what brings the user to the requests page
+     * It toasts that they have logged in successfully
      * @param username The user we are trying to create
      */
     public void submitNewUser( String username) {

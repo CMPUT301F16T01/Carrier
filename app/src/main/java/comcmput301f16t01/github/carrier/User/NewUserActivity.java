@@ -12,7 +12,8 @@ import comcmput301f16t01.github.carrier.MainActivity;
 import comcmput301f16t01.github.carrier.R;
 
 /**
- * User can enter their information and a username to create a new account.
+ * User can enter their information and a username
+ * They will then go to the next screen to enter vehicle info
  */
 public class NewUserActivity extends AppCompatActivity {
 
