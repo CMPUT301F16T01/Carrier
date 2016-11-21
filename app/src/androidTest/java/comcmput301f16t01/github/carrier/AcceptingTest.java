@@ -1,9 +1,11 @@
 package comcmput301f16t01.github.carrier;
 
+import java.util.ArrayList;
+
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Notifications.ElasticNotificationController;
+import comcmput301f16t01.github.carrier.Notifications.Notification;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
-import comcmput301f16t01.github.carrier.Notifications.NotificationList;
 import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
@@ -199,7 +201,7 @@ public class AcceptingTest extends ApplicationTest {
         // Unnecessary clutter for request elastic search, and irrelevant to this test (?)
         RequestController.addRequest( newRequest );
 
-        NotificationList notificationList = nc.fetchNotifications( basicDriver );
+        ArrayList<Notification> notificationList = nc.fetchNotifications( basicDriver );
 
         assertTrue( "Driver should have no notifications yet", notificationList.size() == 0 );
 

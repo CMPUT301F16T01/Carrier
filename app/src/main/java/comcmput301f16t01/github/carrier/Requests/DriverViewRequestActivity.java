@@ -57,7 +57,7 @@ public class DriverViewRequestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_view_request);
-        //getting the request controller to get a list of requests
+
         loggedInUser = UserController.getLoggedInUser();
 
         // unpacking the bundle to get the position of request
@@ -125,16 +125,17 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         map.invalidate();
     }
 
-    // Based on: https://goo.gl/4TKn2y
-    // Retrieved on: November 10th, 2016
-
-    // Updated with: https://goo.gl/h2CKyn
-    // Author: yubaraj poudel
-    // Posted: August 6th, 2016
-    // Retrieved on: November 10th, 2016
 
     /**
      * Asynchronous task to get the route between the two points
+     *
+     * Based on: https://goo.gl/4TKn2y
+     * Retrieved on: November 10th, 2016
+     *
+     * Updated with: https://goo.gl/h2CKyn
+     * Author: yubaraj poudel
+     * Posted: August 6th, 2016
+     * Retrieved on: November 10th, 2016
      */
     public void getRoadAsync() {
         roadList = null;
@@ -155,7 +156,8 @@ public class DriverViewRequestActivity extends AppCompatActivity {
 
 
     /**
-     * Class to update the road on the map
+     * This AsyncTask updates the road on the map and maps a route between two points. This is
+     * so that it does not lock up the UI thread or try to make a network connection on it.
      */
     private class UpdateRoadTask extends AsyncTask<Object, Void, Road[]> {
 
@@ -197,10 +199,12 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         }
     }
 
+    /** Centers the map on the start of the route */
     public void centerStart(View view) {
         mapController.setCenter(startPoint);
     }
 
+    /** Centers the map on the end of the route */
     public void centerEnd(View view) {
         mapController.setCenter(endPoint);
     }
@@ -281,22 +285,22 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         ImageView statusImageView = (ImageView) findViewById(R.id.imageView_requestStatus);
         if (statusImageView != null) {
             switch (request.getStatus()) {
-                case (Request.OPEN):
+                case OPEN:
                     statusImageView.setImageResource(R.drawable.open);
                     break;
-                case (Request.OFFERED):
+                case OFFERED:
                     statusImageView.setImageResource(R.drawable.offered);
                     break;
-                case (Request.CONFIRMED):
+                case CONFIRMED:
                     statusImageView.setImageResource(R.drawable.confirmed);
                     break;
-                case (Request.COMPLETE):
+                case COMPLETE:
                     statusImageView.setImageResource(R.drawable.complete);
                     break;
-                case (Request.PAID):
+                case PAID:
                     statusImageView.setImageResource(R.drawable.paid);
                     break;
-                case (Request.CANCELLED):
+                case CANCELLED:
                     statusImageView.setImageResource(R.drawable.cancel);
                     break;
 
@@ -304,10 +308,13 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Attempts to make an offer for a request.
+     *
+     * @param view The button to make an offer.
+     */
     public void makeOffer(View view) {
-        // Can not make an offer on a request that has a confirmed driver.
-        // Can not make an offer on a request that you hae already made an offer on.
-        // Can not make an offer on a cancelled request.
+        // Prepare an alert dialogue in case of an error.
         AlertDialog.Builder adb = new AlertDialog.Builder(DriverViewRequestActivity.this);
         adb.setTitle("Error: ");
         adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -315,22 +322,18 @@ public class DriverViewRequestActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
             }
         });
-        // TODO this code needs to be in the controller, because it's used in multiple locations?
-        if (request.getConfirmedDriver() != null) {
-            adb.setMessage("Unable to make an offer on the request. There is already a confirmed driver.");
-            adb.show();
-        } else if (request.getOfferedDrivers().contains(loggedInUser)) {
-            adb.setMessage("Unable to make an offer on the request. You have already made an offer.");
-            adb.show();
-        } else if (request.getStatus() == Request.CANCELLED) {
-            adb.setMessage("Unable to make an offer on the request. The request has been cancelled.");
-            adb.show();
-        } else {
-            RequestController.addDriver(request, loggedInUser);
+
+        // We use the controller to attempt to add the driver
+        try {
+            RequestController.addDriver( request, loggedInUser );
             Toast.makeText(this, "Made an offer.", Toast.LENGTH_SHORT).show();
             Button button = (Button) findViewById( R.id.button_makeOffer);
             button.setEnabled(false); // Make the button un-clickable after offering.
             button.setAlpha((float) 0.5); // The button becomes 50% transparent
+        } catch (Exception e) {
+            // If there is an issue, set the message to the exception message and show it
+            adb.setMessage(e.getMessage());
+            adb.show();
         }
     }
 }

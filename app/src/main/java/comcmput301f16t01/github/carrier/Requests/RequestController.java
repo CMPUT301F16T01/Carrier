@@ -66,7 +66,7 @@ public class RequestController {
      */
     public static void cancelRequest( Request request ) {
         ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
-        request.setStatus(Request.CANCELLED);
+        request.setStatus(Request.Status.CANCELLED);
         urt.execute( request );
     }
 
@@ -79,11 +79,7 @@ public class RequestController {
      * @see Offer
      */
     public static void addDriver(Request request, User driver) {
-        try {
-            request.addOfferingDriver( driver );
-        } catch ( Exception e ) {
-            return; // If the driver is already offered we shouldn't do this action. TODO return message?
-        }
+        request.addOfferingDriver( driver );
 
         // create an offer object [[ potentially throws IllegalArgumentException if called wrong ]]
         Offer newOffer = new Offer(request, driver);
@@ -111,7 +107,7 @@ public class RequestController {
         // Modify and update the request, then execute the update task
         ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
         request.setChosenDriver( driver ); // TODO did they really offer?
-        request.setStatus( Request.CONFIRMED );
+        request.setStatus( Request.Status.CONFIRMED );
         requestsWhereOffered.notifyListeners();
         urt.execute( request );
 
@@ -125,7 +121,7 @@ public class RequestController {
      */
     public static void completeRequest(Request request) {
         ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
-        request.setStatus( Request.COMPLETE );
+        request.setStatus( Request.Status.COMPLETE );
         urt.execute( request );
         requestsWhereOffered.notifyListeners();
         requestsWhereRider.notifyListeners();
@@ -136,7 +132,7 @@ public class RequestController {
      */
     public static void payForRequest(Request request) {
         ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
-        request.setStatus( Request.PAID );
+        request.setStatus( Request.Status.PAID );
         urt.execute( request );
         requestsWhereOffered.notifyListeners();
         requestsWhereRider.notifyListeners();
@@ -212,7 +208,7 @@ public class RequestController {
      * @param statuses the statues you would like to see (filters non listed ones) (null means grab all)
      * @return A list of requests from the given criteria
      */
-    public static RequestList fetchRequestsWhereRider(User rider, Integer... statuses ) {
+    public static RequestList fetchRequestsWhereRider(User rider, Request.Status... statuses ) {
         // Open a fetch task for the user
         ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
 
@@ -220,7 +216,7 @@ public class RequestController {
         String[] vars = new String[1 + statuses.length];
         vars[0] = rider.getUsername();
         for (int i = 1; i <= statuses.length; i++ ) {
-            vars[i] = Integer.toString( statuses[i-1] );
+            vars[i] = statuses[i-1].toString();
         }
         frrt.execute( vars );
 

@@ -120,28 +120,28 @@ public class RequestTest extends ApplicationTest {
         String rOneString = "testFilteringRequests1";
         Request requestOne = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 rOneString );
-        requestOne.setStatus( Request.CANCELLED );
+        requestOne.setStatus( Request.Status.CANCELLED );
         RequestController.addRequest( requestOne );
 
         String rTwoString = "testFilteringRequests2";
         Request requestTwo = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 rTwoString );
-        requestTwo.setStatus( Request.COMPLETE );
+        requestTwo.setStatus( Request.Status.COMPLETE );
         RequestController.addRequest( requestTwo );
 
         // A request with another user, but the same status as requestOne
         String rThreeString = "testFilteringRequests3";
         Request requestThree = new Request( anotherUser, new CarrierLocation(), new CarrierLocation(),
                 rThreeString );
-        requestThree.setStatus( Request.CANCELLED );
+        requestThree.setStatus( Request.Status.CANCELLED );
         RequestController.addRequest( requestThree );
 
         // Test that we can fetch one request, even if there is another user with the same status
-        requestList = RequestController.fetchRequestsWhereRider( basicRider, Request.CANCELLED );
+        requestList = RequestController.fetchRequestsWhereRider( basicRider, Request.Status.CANCELLED );
         pass = 0;
         while( requestList.size() != 1 ) {
             chillabit();
-            requestList = RequestController.fetchRequestsWhereRider( basicRider, Request.CANCELLED );
+            requestList = RequestController.fetchRequestsWhereRider( basicRider, Request.Status.CANCELLED );
             pass++;
             if (pass > 5) { break; }
         }
@@ -150,7 +150,7 @@ public class RequestTest extends ApplicationTest {
         assertTrue( "[1] We should get only what we requested (same rider)",
                 requestList.get(0).getRider().getUsername().equals(basicRider.getUsername()));
         assertTrue( "[1] The request should have the same status.",
-                requestList.get(0).getStatus() == Request.CANCELLED );
+                requestList.get(0).getStatus() == Request.Status.CANCELLED );
         assertTrue( "[1] The request we got should have the same description.",
                 requestList.get(0).getDescription().equals(requestOne.getDescription()));
 
@@ -158,15 +158,15 @@ public class RequestTest extends ApplicationTest {
         String rFourString = "testFilteringRequests3";
         Request requestFour = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 rFourString );
-        requestFour.setStatus( Request.OPEN );
+        requestFour.setStatus( Request.Status.OPEN );
         RequestController.addRequest( requestFour );
 
         // Test that we can fetch two requests.
-        requestList = RequestController.fetchRequestsWhereRider( basicRider, Request.CANCELLED, Request.COMPLETE );
+        requestList = RequestController.fetchRequestsWhereRider( basicRider, Request.Status.CANCELLED, Request.Status.COMPLETE );
         pass = 0;
         while( requestList.size() != 2 ) {
             chillabit();
-            requestList = RequestController.fetchRequestsWhereRider( basicRider, Request.CANCELLED, Request.COMPLETE );
+            requestList = RequestController.fetchRequestsWhereRider( basicRider, Request.Status.CANCELLED, Request.Status.COMPLETE );
             pass++;
             if (pass > 5) { break; }
         }
@@ -175,9 +175,9 @@ public class RequestTest extends ApplicationTest {
         assertTrue( "[2] Their statuses should be completely different, since there are no duplicates",
                 requestList.get(0).getStatus() != requestList.get(1).getStatus());
         assertTrue( "[2] One of the requests should equal the one of the statuses we requested (complete)",
-                requestList.get(0).getStatus() == Request.COMPLETE || requestList.get(1).getStatus() == Request.COMPLETE );
+                requestList.get(0).getStatus() == Request.Status.COMPLETE || requestList.get(1).getStatus() == Request.Status.COMPLETE );
         assertTrue( "[2] One of the requests should equal the one of the statuses we requested (cancelled)",
-                requestList.get(0).getStatus() == Request.CANCELLED || requestList.get(1).getStatus() == Request.CANCELLED );
+                requestList.get(0).getStatus() == Request.Status.CANCELLED || requestList.get(1).getStatus() == Request.Status.CANCELLED );
     }
 
 
@@ -380,7 +380,7 @@ public class RequestTest extends ApplicationTest {
         }
         request = requestList.get(0);
         assertTrue( "The request should be OPEN, initially.",
-                request.getStatus() == Request.OPEN);
+                request.getStatus() == Request.Status.OPEN);
 
         request = requestList.get(0);
         // Add a driver to the request
@@ -399,7 +399,7 @@ public class RequestTest extends ApplicationTest {
         assertTrue( "There should be an offered driver.",
                 request.getOfferedDrivers().size() == 1);
         assertTrue( "The status should be OFFERED",
-                request.getStatus() == Request.OFFERED );
+                request.getStatus() == Request.Status.OFFERED );
 
         // Confirm the driver for a request.
         RequestController.confirmDriver( request, basicDriver );
@@ -416,14 +416,14 @@ public class RequestTest extends ApplicationTest {
         assertTrue( "There should be a confirmed driver and it should be the same user we passed in.",
                 request.getConfirmedDriver() != null && request.getConfirmedDriver().getUsername().equals(basicDriver.getUsername()));
         assertTrue( "The status should be ",
-                request.getStatus() == Request.CONFIRMED );
+                request.getStatus() == Request.Status.CONFIRMED );
 
         // Complete the request
         RequestController.completeRequest( request );
         requestList.clear();
         requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
         pass = 0;
-        while( requestList.get(0).getStatus() != Request.COMPLETE ) {
+        while( requestList.get(0).getStatus() != Request.Status.COMPLETE ) {
             chillabit();
             requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
             pass++;
@@ -431,14 +431,14 @@ public class RequestTest extends ApplicationTest {
         }
         request = requestList.get(0);
         assertTrue( "The request should be complete now.",
-                request.getStatus() == Request.COMPLETE );
+                request.getStatus() == Request.Status.COMPLETE );
 
         // Pay for the request
         RequestController.payForRequest( request );
         requestList.clear();
         requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
         pass = 0;
-        while( requestList.get(0).getStatus() != Request.PAID ) {
+        while( requestList.get(0).getStatus() != Request.Status.PAID ) {
             chillabit();
             requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
             pass++;
@@ -446,7 +446,7 @@ public class RequestTest extends ApplicationTest {
         }
         request = requestList.get(0);
         assertTrue( "The request should be paid for now.",
-                request.getStatus() == Request.PAID );
+                request.getStatus() == Request.Status.PAID );
     }
 
 

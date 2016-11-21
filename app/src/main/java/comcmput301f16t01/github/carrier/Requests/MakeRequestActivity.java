@@ -16,8 +16,6 @@ import android.widget.Toast;
 import android.os.Handler;
 import com.google.gson.Gson;
 
-//import comcmput301f16t01.github.carrier.Location;
-
 import java.util.Currency;
 import java.util.Locale;
 
@@ -29,13 +27,20 @@ import comcmput301f16t01.github.carrier.SetLocationsActivity;
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
-/*
- The code for incrementing/decrementing the fare while holding down
- the up and down arrows is based on: https://goo.gl/zKpYnX
- Author: Yar
- Retrieved on: November 5th, 2016
-  */
-
+/**
+ * MakeRequestActivity is where the user can request a trip. It begins by passing the user to select
+ * their start and end locations on map and then returns here to get further information about the
+ * fare and a description, finally allowing them to submit it to the RequestController.
+ *
+ * @see RequestController
+ * @see Request
+ * @see SetLocationsActivity
+ *
+ * The code for incrementing/decrementing the fare while holding down
+ * the up and down arrows is based on: https://goo.gl/zKpYnX
+ * Author: Yar
+ * Retrieved on: November 5th, 2016
+ */
 public class MakeRequestActivity extends AppCompatActivity {
 
     // result code for when we return to an instance of this activity

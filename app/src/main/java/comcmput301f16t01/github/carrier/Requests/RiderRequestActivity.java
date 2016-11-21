@@ -270,22 +270,22 @@ public class RiderRequestActivity extends AppCompatActivity {
         ImageView statusImageView = (ImageView) findViewById(R.id.imageView_requestStatus);
         if (statusImageView != null) {
             switch (request.getStatus()) {
-                case (Request.OPEN):
+                case OPEN:
                     statusImageView.setImageResource(R.drawable.open);
                     break;
-                case (Request.OFFERED):
+                case OFFERED:
                     statusImageView.setImageResource(R.drawable.offered);
                     break;
-                case (Request.CONFIRMED):
+                case CONFIRMED:
                     statusImageView.setImageResource(R.drawable.confirmed);
                     break;
-                case (Request.COMPLETE):
+                case COMPLETE:
                     statusImageView.setImageResource(R.drawable.complete);
                     break;
-                case (Request.PAID):
+                case PAID:
                     statusImageView.setImageResource(R.drawable.paid);
                     break;
-                case (Request.CANCELLED):
+                case CANCELLED:
                     statusImageView.setImageResource(R.drawable.cancel);
                     break;
 
@@ -298,8 +298,9 @@ public class RiderRequestActivity extends AppCompatActivity {
      */
     public void cancelRequest(View v){
         AlertDialog.Builder adb = new AlertDialog.Builder(RiderRequestActivity.this);
-        if ((request.getStatus() != Request.CANCELLED) && (request.getStatus() != Request.COMPLETE)
-                && (request.getStatus() != Request.PAID)) {
+        if ((request.getStatus() != Request.Status.CANCELLED)
+                && (request.getStatus() != Request.Status.COMPLETE)
+                && (request.getStatus() != Request.Status.PAID)) {
             adb.setMessage("Cancel request?");
             adb.setCancelable(true);
             adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {

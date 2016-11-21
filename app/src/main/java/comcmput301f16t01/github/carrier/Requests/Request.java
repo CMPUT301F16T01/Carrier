@@ -2,8 +2,6 @@ package comcmput301f16t01.github.carrier.Requests;
 
 import android.support.annotation.NonNull;
 
-import org.apache.http.annotation.NotThreadSafe;
-
 import java.util.ArrayList;
 
 import comcmput301f16t01.github.carrier.CarrierLocation;
@@ -14,15 +12,25 @@ import io.searchbox.annotations.JestId;
  * Represents a request for a ride.
  */
 public class Request {
-    public static final int OPEN = 1;            // A user has made the request but no drivers have accepted.
-    public static final int OFFERED = 2;         // One or more drivers have offered to fulfill the request.
-    public static final int CONFIRMED = 3;       // The user has chosen a driver and accepted one request.
-    public static final int COMPLETE = 4;        // The user has gotten to their destination (and payed?)
-    public static final int PAID = 7;
-    public static final int CANCELLED = 9;        // The rider has cancelled their request
+    /**
+     * OPEN:        A user has made the request but no drivers have accepted.
+     * OFFERED:     One or more drivers have offered to fulfill the request.
+     * CONFIRMED:   The user has chosen a driver and accepted one request.
+     * COMPLETE:    The user has gotten to their destination (and payed?)
+     * PAID:
+     * CANCELLED:   The rider has cancelled their request
+     */
+    public enum Status {
+        OPEN,
+        OFFERED,
+        CONFIRMED,
+        COMPLETE,
+        PAID,
+        CANCELLED
+    }
 
     /** The current status of a this request */
-    private int status = OPEN;
+    private Status status = Status.OPEN;
 
     /** The user who made the request. */
     private User rider;
@@ -81,7 +89,7 @@ public class Request {
         this.location[1] = start.getLatitude();
     }
 
-    public int getStatus() {
+    public Status getStatus() {
         return status;
     }
 
@@ -92,11 +100,11 @@ public class Request {
      *
      * @param newStatus the new status you would like to set the request to.
      */
-    public void setStatus(int newStatus) {
+    public void setStatus(Status newStatus) {
         // Does not allow the canceling of completed requests or paid requests
-        if ((this.status == COMPLETE) && (newStatus == CANCELLED))
+        if ((this.status == Status.COMPLETE) && (newStatus == Status.CANCELLED))
             throw new IllegalStateException( "You cannot change a request from COMPLETE to CANCELLED" );
-        if ((this.status == PAID) && (newStatus == CANCELLED)) {
+        if ((this.status == Status.PAID) && (newStatus == Status.CANCELLED)) {
             throw new IllegalStateException( "You cannot change a request from PAID to CANCELLED" );
         }
         this.status = newStatus;
@@ -170,18 +178,25 @@ public class Request {
      *
      * @param offeredDriver The driver that is making the offer.
      */
-    public void addOfferingDriver( @NonNull User offeredDriver) {
+    public void addOfferingDriver(@NonNull User offeredDriver) {
+        // If the status is not OPEN or OFFERED, we cannot add another driver.
+        if (status != Request.Status.OPEN && status != Request.Status.OFFERED) {
+            throw new IllegalArgumentException( "The request is not in the correct state to take more offers" );
+        }
+
+        // If there is a chosenDriver (but the status was wrong) we should throw an error.
         if( chosenDriver != null ) {
             throw new IllegalArgumentException( "This request already has a chosen driver." );
         }
 
+        // If the driver is already a part of the request we should throw an error.
         if( !hasOfferingDriver( offeredDriver )) {
             offeringDrivers.add(offeredDriver);
         } else {
             throw new IllegalArgumentException( "You are already offering to complete this request." );
         }
 
-        setStatus( Request.OFFERED ); // TODO, dangerous to do this because of edge cases?
+        setStatus( Request.Status.OFFERED );
     }
 
     /**
@@ -196,7 +211,7 @@ public class Request {
             throw new IllegalArgumentException( "There is already a chosen driver for this request." );
         }
         chosenDriver = confirmedDriver;
-        setStatus(Request.CONFIRMED); // TODO, dangerous to do this because of edge cases?
+        setStatus(Request.Status.CONFIRMED); // TODO, dangerous to do this because of edge cases?
     }
 
     /**

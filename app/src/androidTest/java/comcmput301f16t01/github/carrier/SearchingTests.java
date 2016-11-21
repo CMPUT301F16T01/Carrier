@@ -205,7 +205,7 @@ public class SearchingTests extends ApplicationTest {
          * Dealing with Async tasks means we need to wait for them to finish.
          */
         pass = 0;
-        while( requestOne.getStatus() != 3 ) {
+        while( requestOne.getStatus() != Request.Status.CONFIRMED ) {
             chillabit( 1000 );
             pass++;
             if (pass > 10) { break; }

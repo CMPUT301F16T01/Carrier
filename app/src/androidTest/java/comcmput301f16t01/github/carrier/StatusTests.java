@@ -25,7 +25,7 @@ public class StatusTests extends ApplicationTest {
 
         RequestController.addRequest(request);
         Assert.assertEquals("The status of the request should be OPEN",
-                Request.OPEN, request.getStatus());
+                Request.Status.OPEN, request.getStatus());
 
         ElasticRequestController.RemoveOffersTask rot = new ElasticRequestController.RemoveOffersTask();
         rot.setMode( rot.MODE_USERNAME );
@@ -48,7 +48,7 @@ public class StatusTests extends ApplicationTest {
         RequestController.addRequest(request);
         RequestController.addDriver(request, driver);
         Assert.assertEquals("The status of the request should be OFFERED",
-                Request.OFFERED, request.getStatus());
+                Request.Status.OFFERED, request.getStatus());
 
         ElasticRequestController.RemoveOffersTask rot = new ElasticRequestController.RemoveOffersTask();
         rot.setMode( rot.MODE_USERNAME );
@@ -69,7 +69,7 @@ public class StatusTests extends ApplicationTest {
         RequestController.addDriver(request, driver);
         RequestController.confirmDriver(request, driver);
         Assert.assertEquals("The status of the request should be CONFIRMED",
-                Request.CONFIRMED, request.getStatus());
+                Request.Status.CONFIRMED, request.getStatus());
 
         ElasticRequestController.RemoveOffersTask rot = new ElasticRequestController.RemoveOffersTask();
         rot.setMode( rot.MODE_USERNAME );
@@ -91,7 +91,7 @@ public class StatusTests extends ApplicationTest {
         RequestController.confirmDriver(request, driver);
         RequestController.completeRequest(request);
         Assert.assertEquals("The status of the request should be COMPLETE",
-                Request.COMPLETE, request.getStatus());
+                Request.Status.COMPLETE, request.getStatus());
 
         ElasticRequestController.RemoveOffersTask rot = new ElasticRequestController.RemoveOffersTask();
         rot.setMode( rot.MODE_USERNAME );
@@ -114,7 +114,7 @@ public class StatusTests extends ApplicationTest {
         RequestController.completeRequest(request);
         RequestController.payForRequest(request);
         Assert.assertEquals("The status of the request should be PAID",
-                Request.PAID, request.getStatus());
+                Request.Status.PAID, request.getStatus());
 
         ElasticRequestController.RemoveOffersTask rot = new ElasticRequestController.RemoveOffersTask();
         rot.setMode( rot.MODE_USERNAME );
@@ -139,7 +139,7 @@ public class StatusTests extends ApplicationTest {
         //rc.payForRequest(request);
         RequestController.cancelRequest(request);
         Assert.assertEquals("The status of the request should be CANCELLED",
-                Request.CANCELLED, request.getStatus());
+                Request.Status.CANCELLED, request.getStatus());
 
         ElasticRequestController.RemoveOffersTask rot = new ElasticRequestController.RemoveOffersTask();
         rot.setMode( rot.MODE_USERNAME );
