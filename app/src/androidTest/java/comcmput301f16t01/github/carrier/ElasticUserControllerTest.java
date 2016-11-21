@@ -15,7 +15,7 @@ public class ElasticUserControllerTest extends ApplicationTest {
         // The logged in user
         UserController.createNewUser("ElasticUserControllerTest", "test@test.com", "1234567890");
         Thread.sleep(1000);
-        UserController.logInUser("ElasticUserControllerTest");
+        //UserController.logInUser("ElasticUserControllerTest");
         // A user to remove later
         UserController.createNewUser("ElasticUserControllerTest2", "delete@test.com", "1234567890");
         Thread.sleep(1000);
@@ -23,30 +23,15 @@ public class ElasticUserControllerTest extends ApplicationTest {
 
     @Override
     protected void tearDown() {
+        UserController.logOutUser();
         UserController.deleteUser("ElasticUserControllerTest");
     }
 
-    /**
-     * Tests adding a user to elastic search
-     * @throws InterruptedException
-     * @throws ExecutionException
-     */
-    public void testAddUserTask() throws InterruptedException, ExecutionException {
-        User elasticUser = UserController.findUser("ElasticUserControllerTest");
-        Thread.sleep(1000);
-
-        // Ensure that the user was actually put into elastic search
-        assertEquals("User in elastic search and copy of user are not the same",
-                UserController.getLoggedInUser().getUsername(), elasticUser.getUsername());
-
-
-    }
 
     /**
      * Tests the uniqueness of a username.
      */
     public void testUniqueUsername() {
-
 //        Test for uniqueness, createNewUser returns the string "That username is already taken" if
 //        a string is not unique
         assertEquals("The username is not unique.", "That username is already taken!", UserController.createNewUser
