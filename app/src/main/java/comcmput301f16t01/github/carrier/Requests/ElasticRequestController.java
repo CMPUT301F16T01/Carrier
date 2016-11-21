@@ -54,19 +54,6 @@ public class ElasticRequestController {
         }
     } // AddRequestTask
 
-// TODO May need this to edit it later...
-//    { "from" : 0, "size" : 500,
-//      "query": {
-//        "bool": {
-//            "must": { "match": { "description": "ocean" }},
-//            "should": [
-//            { "match": { "status": 1 }},
-//            { "match": { "status": 2 }}
-//            ]
-//        }
-//    }
-//}
-
     /**
      * Searches by one keyword (this keyword could be a phrase too, though...
      */
@@ -113,37 +100,6 @@ public class ElasticRequestController {
             return foundRequests;
         }
     } // SearchByKeywordTask
-
-    /*
-     * Query:
-     * { "query" : {
-     *     "filtered" : {
-     *       "query" : {
-     *         "bool": {
-     *           "should": [
-     *             { "match": { "status": 1 }},
-     *             { "match": { "status": 2 }}
-     *           ]
-     *         }
-     *       },
-     *       "filter" : {
-     *         "geo_distance" : {
-     *           "distance" : "50km",
-     *           "location" : [-113, 52]
-     *         }
-     *       }
-     *     }
-     *   },
-     *   "sort": [ {
-     *     "_geo_distance": {
-     *       "location": [-113.4909, 53.5444],
-     *       "order": "asc",
-     *       "unit": "km",
-     *       "distance_type": "plane"
-     *     }
-     *   } ]
-     * }
-     */
 
     /**
      * Searches requests by a geo-location.
