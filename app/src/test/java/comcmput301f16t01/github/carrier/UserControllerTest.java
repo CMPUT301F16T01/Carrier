@@ -2,8 +2,8 @@ package comcmput301f16t01.github.carrier;
 
 import org.junit.Test;
 
-import comcmput301f16t01.github.carrier.User.User;
-import comcmput301f16t01.github.carrier.User.UserController;
+import comcmput301f16t01.github.carrier.Users.User;
+import comcmput301f16t01.github.carrier.Users.UserController;
 
 import static org.junit.Assert.*;
 

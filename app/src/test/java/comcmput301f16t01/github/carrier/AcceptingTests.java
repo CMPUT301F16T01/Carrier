@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
-import comcmput301f16t01.github.carrier.User.User;
+import comcmput301f16t01.github.carrier.Users.User;
 
 import static org.junit.Assert.*;
 /**

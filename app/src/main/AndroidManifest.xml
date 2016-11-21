@@ -22,7 +22,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".User.LoginActivity"
+            android:name=".Users.LoginActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -39,14 +39,14 @@
 
             android:label="Carrier" />
         android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".User.NewUserActivity"
+        <activity android:name=".Users.NewUserActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".User.NewVehicleActivity"
+        <activity android:name=".Users.NewVehicleActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".Requests.DriverViewRequestActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".User.UserProfileActivity"
+            android:name=".Users.UserProfileActivity"
             android:label="Carrier"
             android:screenOrientation="portrait"> </activity>
             android:theme="@style/AppTheme.NoActionBar" />

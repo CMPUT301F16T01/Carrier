@@ -1,6 +1,6 @@
 package comcmput301f16t01.github.carrier.Requests;
 
-import comcmput301f16t01.github.carrier.User.User;
+import comcmput301f16t01.github.carrier.Users.User;
 
 /**
  * Offer object, for storing offers to elastic search for a request from a driver.

@@ -12,8 +12,8 @@ import comcmput301f16t01.github.carrier.Notifications.NotificationList;
 import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
-import comcmput301f16t01.github.carrier.User.User;
-import comcmput301f16t01.github.carrier.User.UserController;
+import comcmput301f16t01.github.carrier.Users.User;
+import comcmput301f16t01.github.carrier.Users.UserController;
 
 // TODO could probably use a mock RequestController, since it always posts test requests to elastic search
 

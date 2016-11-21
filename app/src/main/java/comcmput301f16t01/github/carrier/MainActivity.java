@@ -35,11 +35,11 @@ import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestList;
 import comcmput301f16t01.github.carrier.Requests.RiderRequestActivity;
 import comcmput301f16t01.github.carrier.Searching.SearchActivity;
-import comcmput301f16t01.github.carrier.User.LoginActivity;
-import comcmput301f16t01.github.carrier.User.LoginMemory;
-import comcmput301f16t01.github.carrier.User.User;
-import comcmput301f16t01.github.carrier.User.UserController;
-import comcmput301f16t01.github.carrier.User.UserProfileActivity;
+import comcmput301f16t01.github.carrier.Users.LoginActivity;
+import comcmput301f16t01.github.carrier.Users.LoginMemory;
+import comcmput301f16t01.github.carrier.Users.User;
+import comcmput301f16t01.github.carrier.Users.UserController;
+import comcmput301f16t01.github.carrier.Users.UserProfileActivity;
 
 public class MainActivity extends AppCompatActivity {
 

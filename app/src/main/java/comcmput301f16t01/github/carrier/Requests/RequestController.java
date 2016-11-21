@@ -5,7 +5,7 @@ import android.location.Location;
 import java.util.ArrayList;
 import comcmput301f16t01.github.carrier.Listener;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
-import comcmput301f16t01.github.carrier.User.User;
+import comcmput301f16t01.github.carrier.Users.User;
 
 /**
  * Uses a singleton pattern to query and get results of requests.

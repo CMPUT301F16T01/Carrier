@@ -10,7 +10,7 @@ import com.searchly.jestdroid.JestDroidClient;
 import java.io.IOException;
 import java.util.List;
 
-import comcmput301f16t01.github.carrier.User.User;
+import comcmput301f16t01.github.carrier.Users.User;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.DeleteByQuery;
 import io.searchbox.core.DocumentResult;

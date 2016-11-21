@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 //import comcmput301f16t01.github.carrier.Location;
 import comcmput301f16t01.github.carrier.CarrierLocation;
-import comcmput301f16t01.github.carrier.User.User;
+import comcmput301f16t01.github.carrier.Users.User;
 import io.searchbox.annotations.JestId;
 
 /**

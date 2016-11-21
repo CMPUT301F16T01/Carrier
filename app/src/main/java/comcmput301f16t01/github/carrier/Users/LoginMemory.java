@@ -1,4 +1,4 @@
-package comcmput301f16t01.github.carrier.User;
+package comcmput301f16t01.github.carrier.Users;
 
 import android.content.Context;
 

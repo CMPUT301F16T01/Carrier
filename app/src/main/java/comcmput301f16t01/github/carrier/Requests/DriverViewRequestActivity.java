@@ -14,9 +14,9 @@ import android.widget.Toast;
 
 import comcmput301f16t01.github.carrier.FareCalculator;
 import comcmput301f16t01.github.carrier.R;
-import comcmput301f16t01.github.carrier.User.User;
-import comcmput301f16t01.github.carrier.User.UserController;
-import comcmput301f16t01.github.carrier.User.UsernameTextView;
+import comcmput301f16t01.github.carrier.Users.User;
+import comcmput301f16t01.github.carrier.Users.UserController;
+import comcmput301f16t01.github.carrier.Users.UsernameTextView;
 
 import com.google.gson.Gson;
 
