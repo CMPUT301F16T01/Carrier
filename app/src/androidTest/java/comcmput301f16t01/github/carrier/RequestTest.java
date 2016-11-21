@@ -448,4 +448,13 @@ public class RequestTest extends ApplicationTest {
         assertTrue( "The request should be paid for now.",
                 request.getStatus() == Request.PAID );
     }
+
+
+    /** TEST7 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     *
+     */
+    public void testStatusStateErrors() {
+
+    }
 }

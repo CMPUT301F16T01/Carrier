@@ -7,25 +7,23 @@ import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestList;
 import comcmput301f16t01.github.carrier.Users.User;
-import comcmput301f16t01.github.carrier.Users.UserController;
-
 
 public class SearchingTests extends ApplicationTest {
     // somewhere in Tokyo, Japan
-    static final double latitude1 = 35.6895;
-    static final double longitude1 = 139.6917;
+    private final double latitude1 = 35.6895;
+    private final double longitude1 = 139.6917;
 
     // somewhere in Seoul, South Korea
-    static final double latitude2 = 37.5665;
-    static final double longitude2 = 126.9780;
+    private final double latitude2 = 37.5665;
+    private final double longitude2 = 126.9780;
 
     // somewhere in Kawasaki, Japan
-    static final double latitude3 = 35.5308;
-    static final double longitude3 = 139.7030;
+    private final double latitude3 = 35.5308;
+    private final double longitude3 = 139.7030;
 
     // Imperial Palace, Tokyo, Japan
-    static final double latitude4 = 35.6852;
-    static final double longitude4 = 139.7528;
+    private final double latitude4 = 35.6852;
+    private final double longitude4 = 139.7528;
 
     private User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234" );
     private User driverOne = new User( "notifTestDriver", "notifyYou@email.com", "0118-99-112" );
@@ -71,20 +69,19 @@ public class SearchingTests extends ApplicationTest {
         startLocation3.setLatitude(latitude3);
         startLocation3.setLongitude(longitude3);
         Request request3 = new Request(loggedInUser, startLocation3, endLocation3, "");
+        
+        RequestController.addRequest(request3);
+        RequestController.addRequest(request2);
+        RequestController.addRequest(request1);
 
-        RequestController rc = new RequestController();
-        rc.addRequest(request3);
-        rc.addRequest(request2);
-        rc.addRequest(request1);
-
-        RequestList requests = rc.fetchAllRequestsWhereRider(loggedInUser);
+        RequestList requests = RequestController.fetchAllRequestsWhereRider(loggedInUser);
 
         /*
          * Dealing with Async tasks means we need to wait for them to finish.
          */
         int pass = 0;
         while (requests.size() < 3) {
-            requests = rc.fetchAllRequestsWhereRider(loggedInUser);
+            requests = RequestController.fetchAllRequestsWhereRider(loggedInUser);
             chillabit(1000);
             pass++;
             if (pass > 10) {
@@ -97,14 +94,14 @@ public class SearchingTests extends ApplicationTest {
         driverLocation.setLongitude(longitude4);
         // this method should return a list of requests, sorted based on proximity of start location
         // for now I'm assuming there are limits on how far away a request can be to be included in this list
-        rc.searchByLocation(driverLocation);
-        Assert.assertTrue("Search did not return 2 requests: " + rc.getResult().size(), rc.getResult().size() == 2);
+        RequestController.searchByLocation(driverLocation);
+        Assert.assertTrue("Search did not return 2 requests: " + RequestController.getResult().size(), RequestController.getResult().size() == 2);
         // check that the requests are ordered properly
-        Assert.assertEquals("Closest request lat incorrect", request1.getStart().getLatitude(), rc.getResult().get(0).getStart().getLatitude());
-        Assert.assertEquals("Closest request long incorrect", request1.getStart().getLongitude(), rc.getResult().get(0).getStart().getLongitude());
-        Assert.assertEquals("2nd closest request lat incorrect", request3.getStart().getLatitude(), rc.getResult().get(1).getStart().getLatitude());
-        Assert.assertEquals("2nd closest request long incorrect", request3.getStart().getLongitude(), rc.getResult().get(1).getStart().getLongitude());
-        Assert.assertFalse("Search returned location out of range", rc.getResult().contains(request2));
+        Assert.assertEquals("Closest request lat incorrect", request1.getStart().getLatitude(), RequestController.getResult().get(0).getStart().getLatitude());
+        Assert.assertEquals("Closest request long incorrect", request1.getStart().getLongitude(), RequestController.getResult().get(0).getStart().getLongitude());
+        Assert.assertEquals("2nd closest request lat incorrect", request3.getStart().getLatitude(), RequestController.getResult().get(1).getStart().getLatitude());
+        Assert.assertEquals("2nd closest request long incorrect", request3.getStart().getLongitude(), RequestController.getResult().get(1).getStart().getLongitude());
+        Assert.assertFalse("Search returned location out of range", RequestController.getResult().contains(request2));
     }
 
     public void testDriverSearchByLocationWithConfirmed() {
@@ -127,20 +124,19 @@ public class SearchingTests extends ApplicationTest {
                 "Test keywords: home");
         Request requestThree = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
                 "Test keywords: home, work");
+        
+        RequestController.addRequest(requestOne);
+        RequestController.addRequest(requestTwo);
+        RequestController.addRequest(requestThree);
 
-        RequestController rc = new RequestController();
-        rc.addRequest(requestOne);
-        rc.addRequest(requestTwo);
-        rc.addRequest(requestThree);
-
-        RequestList requests = rc.fetchAllRequestsWhereRider(loggedInUser);
+        RequestList requests = RequestController.fetchAllRequestsWhereRider(loggedInUser);
 
         /*
          * Dealing with Async tasks means we need to wait for them to finish.
          */
         int pass = 0;
         while( requests.size() < 3 ) {
-            requests = rc.fetchAllRequestsWhereRider( loggedInUser );
+            requests = RequestController.fetchAllRequestsWhereRider( loggedInUser );
             chillabit( 1000 );
             pass++;
             if (pass > 10) { break; }
@@ -151,15 +147,15 @@ public class SearchingTests extends ApplicationTest {
         String query2 = "downtown"; // should not be case-dependent
         String query3 = "walk";
 
-        rc.searchByKeyword(query1);
+        RequestController.searchByKeyword(query1);
         chillabit( 1000 );
-        Assert.assertTrue("Search did not return 2 requests: " + rc.getResult().size(), rc.getResult().size() == 2);
-        rc.searchByKeyword(query2);
+        Assert.assertTrue("Search did not return 2 requests: " + RequestController.getResult().size(), RequestController.getResult().size() == 2);
+        RequestController.searchByKeyword(query2);
         chillabit( 1000 );
-        Assert.assertTrue("Search did not return 1 request", rc.getResult().size() == 1);
-        rc.searchByKeyword(query3);
+        Assert.assertTrue("Search did not return 1 request", RequestController.getResult().size() == 1);
+        RequestController.searchByKeyword(query3);
         chillabit( 1000 );
-        Assert.assertTrue("Search returned requests", rc.getResult().size() == 0);
+        Assert.assertTrue("Search returned requests", RequestController.getResult().size() == 0);
     }
 
     // TODO confirmDriver method not complete, this test will not pass
@@ -170,20 +166,19 @@ public class SearchingTests extends ApplicationTest {
                 "Test keywords: home");
         Request requestThree = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
                 "Test keywords: home, work");
+        
+        RequestController.addRequest(requestOne);
+        RequestController.addRequest(requestTwo);
+        RequestController.addRequest(requestThree);
 
-        RequestController rc = new RequestController();
-        rc.addRequest(requestOne);
-        rc.addRequest(requestTwo);
-        rc.addRequest(requestThree);
-
-        RequestList requests = rc.fetchAllRequestsWhereRider(loggedInUser);
+        RequestList requests = RequestController.fetchAllRequestsWhereRider(loggedInUser);
 
         /*
          * Dealing with Async tasks means we need to wait for them to finish.
          */
         int pass = 0;
         while( requests.size() < 3 ) {
-            requests = rc.fetchAllRequestsWhereRider( loggedInUser );
+            requests = RequestController.fetchAllRequestsWhereRider( loggedInUser );
             chillabit( 1000 );
             pass++;
             if (pass > 10) { break; }
@@ -194,8 +189,8 @@ public class SearchingTests extends ApplicationTest {
         String query2 = "downtown"; // should not be case-dependent
         String query3 = "walk";
 
-        rc.addDriver(requestOne, driverOne);
-        rc.confirmDriver(requestOne, driverOne);
+        RequestController.addDriver(requestOne, driverOne);
+        RequestController.confirmDriver(requestOne, driverOne);
 
         /*
          * Dealing with Async tasks means we need to wait for them to finish.
@@ -208,17 +203,17 @@ public class SearchingTests extends ApplicationTest {
         }
 
         // requestOne should no longer be included in search results
-        rc.searchByKeyword(query1);
+        RequestController.searchByKeyword(query1);
         chillabit( 1000 );
-        Assert.assertTrue("Search did not return 2 requests", rc.getResult().size() == 2);
-        rc.searchByKeyword(query2);
+        Assert.assertTrue("Search did not return 2 requests", RequestController.getResult().size() == 2);
+        RequestController.searchByKeyword(query2);
         chillabit( 1000 );
-        Assert.assertTrue("Search returned requests: " + rc.getResult().size(), rc.getResult().size() == 0);
-        rc.searchByKeyword(query3);
+        Assert.assertTrue("Search returned requests: " + RequestController.getResult().size(), RequestController.getResult().size() == 0);
+        RequestController.searchByKeyword(query3);
         chillabit( 1000 );
-        Assert.assertTrue("Search did not return 1 request", rc.getResult().size() == 1);
+        Assert.assertTrue("Search did not return 1 request", RequestController.getResult().size() == 1);
 
-        rc.addDriver(requestThree, driverOne);
-        rc.confirmDriver(requestThree, driverOne);
+        RequestController.addDriver(requestThree, driverOne);
+        RequestController.confirmDriver(requestThree, driverOne);
     }
 }

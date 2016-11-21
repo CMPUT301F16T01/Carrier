@@ -31,14 +31,13 @@ import comcmput301f16t01.github.carrier.Users.UserController;
  * @see Notification
  */
 public class NotificationTest extends ApplicationTest {
-    private User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234" );
-    private User driverOne = new User( "notifTestDriver", "notifyYou@email.com", "0118-99-112" );
-    private User anotherUser = new User( "notifThirdUser", "notifyMe@gmail.com", "887112233" );
+    private final User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234" );
+    private final User driverOne = new User( "notifTestDriver", "notifyYou@email.com", "0118-99-112" );
+    private final User anotherUser = new User( "notifThirdUser", "notifyMe@gmail.com", "887112233" );
 
     // Set up a test user to receive notifications
     private void setUpUser() {
-        UserController uc = new UserController();
-        String result = uc.createNewUser( loggedInUser.getUsername(),
+        String result = UserController.createNewUser( loggedInUser.getUsername(),
                 loggedInUser.getEmail(),
                 loggedInUser.getPhone() );
 
@@ -46,9 +45,12 @@ public class NotificationTest extends ApplicationTest {
             System.out.print( "null line" );
         }
 
-        assertTrue( "Failed to log in for test.", uc.logInUser( loggedInUser.getUsername() ) );
+        assertTrue( "Failed to log in for test.", UserController.logInUser( loggedInUser.getUsername() ) );
     }
 
+    /**
+     * Cleans up after every test to make sure there are no requests/users/etc in elastic search...
+     */
     protected void tearDown() throws Exception {
         ElasticNotificationController.ClearAllTask cat = new ElasticNotificationController.ClearAllTask();
         cat.execute( loggedInUser.getUsername(), driverOne.getUsername(), anotherUser.getUsername() );
@@ -60,15 +62,17 @@ public class NotificationTest extends ApplicationTest {
         rot.setMode( rot.MODE_USERNAME );
         rot.execute(loggedInUser.getUsername(), driverOne.getUsername(), anotherUser.getUsername());
 
+        UserController.logOutUser();
+
         super.tearDown();
     }
 
     // abstracts reused code to prevent mistakes and aid in readability of tests
     // Makes the current thread sleep for the specified amount of time (in ms)
     // TODO convert to a full out AsyncWait method to generalize waiting for .size() == RequestAdapter tasks?
-    private void chillabit( long time ) {
+    private void chillabit() {
         try {
-            Thread.sleep( time );
+            Thread.sleep((long) 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -161,7 +165,7 @@ public class NotificationTest extends ApplicationTest {
         nc.addNotification( loggedInUser, requestTwo );
         nc.addNotification( loggedInUser, requestOne );
 
-        chillabit( 1000 );
+        chillabit();
 
         NotificationList notificationList = nc.fetchNotifications( loggedInUser );
 
@@ -177,7 +181,7 @@ public class NotificationTest extends ApplicationTest {
         int pass = 0;
         while( notificationList.size() != 0 ) {
             notificationList = nc.fetchNotifications( loggedInUser );
-            chillabit( 1000 );
+            chillabit();
             pass++;
             if (pass > 5) { break; }
         }
@@ -198,7 +202,6 @@ public class NotificationTest extends ApplicationTest {
         setUpUser();
 
         NotificationController nc = new NotificationController();
-        RequestController rc = new RequestController();
 
         nc.clearAllNotifications( loggedInUser );
 
@@ -206,13 +209,13 @@ public class NotificationTest extends ApplicationTest {
                 new CarrierLocation(), new CarrierLocation(), "testRiderGetNotified" );
 
         // Unnecessary clutter for request elastic search, and irrelevant to this test (?)
-        rc.addRequest( newRequest );
+        RequestController.addRequest( newRequest );
 
         NotificationList notificationList = nc.fetchNotifications( loggedInUser );
         assertTrue( "There should be no notifications for the user yet",
                 0 == notificationList.size() );
 
-        rc.addDriver( newRequest, driverOne ); // adding a driver should initiate a notification
+        RequestController.addDriver( newRequest, driverOne ); // adding a driver should initiate a notification
 
         /*
          * Because this task is Async, we need to wait for the other tasks to complete
@@ -221,7 +224,7 @@ public class NotificationTest extends ApplicationTest {
          */
         int pass = 0;
         while (notificationList.size() == 0) {
-            chillabit( 1000 );
+            chillabit();
             notificationList = nc.fetchNotifications( loggedInUser );
             pass++;
             if (pass > 5) { break; }
@@ -246,7 +249,6 @@ public class NotificationTest extends ApplicationTest {
         setUpUser();
 
         NotificationController nc = new NotificationController();
-        RequestController rc = new RequestController();
 
         nc.clearAllNotifications( driverOne );
 
@@ -254,24 +256,24 @@ public class NotificationTest extends ApplicationTest {
                 new CarrierLocation(), new CarrierLocation(), "testDriverGetNotified" );
 
         // Unnecessary clutter for request elastic search, and irrelevant to this test (?)
-        rc.addRequest( newRequest );
+        RequestController.addRequest( newRequest );
 
         NotificationList notificationList = nc.fetchNotifications( driverOne );
 
         assertTrue( "Driver should have no notifications yet", notificationList.size() == 0 );
 
         // driverOne offers to complete the request
-        rc.addDriver( newRequest, driverOne ); // creates a notification for loggedInUser
+        RequestController.addDriver( newRequest, driverOne ); // creates a notification for loggedInUser
 
         // driverOne is accepted as the driver
-        rc.confirmDriver( newRequest, driverOne ); // creates a notification for driverOne
+        RequestController.confirmDriver( newRequest, driverOne ); // creates a notification for driverOne
 
         notificationList = nc.fetchNotifications( driverOne );
 
         // wait for async tasks to finish loop.
         int pass = 0;
         while( notificationList.size() == 0 ) {
-            chillabit( 1000 );
+            chillabit();
             notificationList = nc.fetchNotifications( driverOne );
             pass++;
             if (pass > 5) { break; }
@@ -306,7 +308,7 @@ public class NotificationTest extends ApplicationTest {
         // wait for async tasks to finish (no requests should be present now)
         int pass = 0;
         while( notificationList.size() != 0 ) {
-            chillabit( 1000 );
+            chillabit();
             notificationList = nc.fetchNotifications( loggedInUser );
             pass++;
             if (pass > 5) { break; }
@@ -322,7 +324,7 @@ public class NotificationTest extends ApplicationTest {
         // wait for async tasks to finish (two requests should be present)
         pass = 0;
         while( notificationList.size() != 2 ) {
-            chillabit( 1000 );
+            chillabit();
             notificationList = nc.fetchNotifications( loggedInUser );
             pass++;
             if (pass > 10) { break; }
@@ -342,7 +344,7 @@ public class NotificationTest extends ApplicationTest {
             if ( notificationList.get(0).isRead() != notificationList.get(1).isRead() ) {
                 break;
             }
-            chillabit( 1000 );
+            chillabit();
             notificationList = nc.fetchNotifications( loggedInUser );
             pass++;
             if (pass > 5) { break; }
@@ -373,7 +375,7 @@ public class NotificationTest extends ApplicationTest {
         // wait for async tasks to finish (All requests should be cleared)
         int pass = 0;
         while( notificationList.size() != 0 ) {
-            chillabit( 1000 );
+            chillabit();
             notificationList = nc.fetchNotifications( anotherUser );
             pass++;
             if (pass > 5) { break; }
@@ -390,7 +392,7 @@ public class NotificationTest extends ApplicationTest {
         // wait for async tasks to finish (need 15 or more unique requests)
         pass = 0;
         while( notificationList.size() != 15 ) {
-            chillabit( 1000 );
+            chillabit();
             notificationList = nc.fetchNotifications( anotherUser );
             pass++;
             if (pass > 5) { break; }
@@ -407,7 +409,7 @@ public class NotificationTest extends ApplicationTest {
         // wait for async tasks to finish (All requests should be cleared)
         pass = 0;
         while( notificationList.size() != 0 ) {
-            chillabit( 1000 );
+            chillabit();
             notificationList = nc.fetchNotifications( anotherUser );
             pass++;
             if (pass > 5) { break; }

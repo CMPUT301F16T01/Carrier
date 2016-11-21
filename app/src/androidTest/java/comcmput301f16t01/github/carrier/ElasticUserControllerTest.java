@@ -3,29 +3,27 @@ package comcmput301f16t01.github.carrier;
 /**
  * Created by kiete on 11/13/2016.
  */
-
 import java.util.concurrent.ExecutionException;
 
 import comcmput301f16t01.github.carrier.Users.User;
-        import comcmput301f16t01.github.carrier.Users.UserController;
+import comcmput301f16t01.github.carrier.Users.UserController;
 
 public class ElasticUserControllerTest extends ApplicationTest {
-    UserController uc = new UserController();
 
     @Override
     protected void setUp() throws InterruptedException {
         // The logged in user
-        uc.createNewUser("ElasticUserControllerTest", "test@test.com", "1234567890");
+        UserController.createNewUser("ElasticUserControllerTest", "test@test.com", "1234567890");
         Thread.sleep(1000);
-        uc.logInUser("ElasticUserControllerTest");
+        UserController.logInUser("ElasticUserControllerTest");
         // A user to remove later
-        uc.createNewUser("ElasticUserControllerTest2", "delete@test.com", "1234567890");
+        UserController.createNewUser("ElasticUserControllerTest2", "delete@test.com", "1234567890");
         Thread.sleep(1000);
     }
 
     @Override
     protected void tearDown() {
-        uc.deleteUser("ElasticUserControllerTest");
+        UserController.deleteUser("ElasticUserControllerTest");
     }
 
     /**
@@ -34,7 +32,7 @@ public class ElasticUserControllerTest extends ApplicationTest {
      * @throws ExecutionException
      */
     public void testAddUserTask() throws InterruptedException, ExecutionException {
-        User elasticUser = uc.findUser("ElasticUserControllerTest");
+        User elasticUser = UserController.findUser("ElasticUserControllerTest");
         Thread.sleep(1000);
 
         // Ensure that the user was actually put into elastic search
@@ -62,7 +60,7 @@ public class ElasticUserControllerTest extends ApplicationTest {
     public void testEditUserTask() throws InterruptedException {
         String newEmail = "new@test.com";
         String newPhone = "000000000";
-        uc.editUser(newEmail, newPhone);
+        UserController.editUser(newEmail, newPhone);
         Thread.sleep(1000);
 
         // See if both fields were edited
@@ -75,8 +73,8 @@ public class ElasticUserControllerTest extends ApplicationTest {
      * @throws InterruptedException
      */
     public void testUserDeleteTask() throws InterruptedException {
-        uc.deleteUser("ElasticUserControllerTest2");
-        User deletedUser = uc.findUser("ElasticUserControllerTest2");
+        UserController.deleteUser("ElasticUserControllerTest2");
+        User deletedUser = UserController.findUser("ElasticUserControllerTest2");
         Thread.sleep(1000);
 
         // See if the deleted user was actually deleted
