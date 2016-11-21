@@ -16,6 +16,7 @@ import comcmput301f16t01.github.carrier.Users.User;
  *      4) Test getting requests where the driver has offered
  *      5) Test getting a request by its ID.
  *      6) Tests that the request statuses are properly up to date at each step of the request life-cycle
+ *      7) Tests that erroneous status states will never be created.
  *
  *      TODO various tests:
  *      X) Test to ensure separation from "offering drivers" and "rider" (when searching)
@@ -23,15 +24,15 @@ import comcmput301f16t01.github.carrier.Users.User;
  *      X) Subtle issues, like we can't add drivers when we have a confirmed one!
  */
 public class RequestTest extends ApplicationTest {
-    private User basicRider = new User( "reqTestUser", "giveMeRide@carrier.com", "41534153" );
-    private User anotherUser = new User( "reqTestUser2", "loveSia@hotmail.com", "514514514" );
-    private User basicDriver = new User( "offeringDriver", "wannaDriveYou@gmail.com", "1323123" );
+    private final User basicRider = new User( "reqTestUser", "giveMeRide@carrier.com", "41534153" );
+    private final User anotherUser = new User( "reqTestUser2", "loveSia@hotmail.com", "514514514" );
+    private final User basicDriver = new User( "offeringDriver", "wannaDriveYou@gmail.com", "1323123" );
 
     // abstracts reused code to prevent mistakes and aid in readability of tests
     // Makes the current thread sleep for the specified amount of time (in ms)
-    private void chillabit( long time ) {
+    private void chillabit() {
         try {
-            Thread.sleep( time );
+            Thread.sleep((long) 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -58,21 +59,20 @@ public class RequestTest extends ApplicationTest {
      * Tests that we can clear all of a user's requests (only for debugging purposes).
      */
     public void testClearingRequests() {
-        RequestController rc = new RequestController();
         RequestList requestList;
         int pass;
 
         // add and make a request for elastic search
         Request request = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 "testClearingRequests" );
-        rc.addRequest( request );
+        RequestController.addRequest( request );
 
         // fetch and make sure we have made at least one request for elastic search
-        requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
         pass = 0;
         while( requestList.size() == 0 ) {
-            chillabit( 1000 );
-            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            chillabit();
+            requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
             pass++;
             if (pass > 5) { break; }
         }
@@ -81,12 +81,12 @@ public class RequestTest extends ApplicationTest {
                 requestList.size() != 0);
 
         // clear all the requests and make sure we have done so.
-        rc.clearAllRiderRequests( basicRider );
-        requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        RequestController.clearAllRiderRequests( basicRider );
+        requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
         pass = 0;
         while( requestList.size() != 0 ) {
-            chillabit( 1000 );
-            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            chillabit();
+            requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
             pass++;
             if (pass > 5) { break; }
         }
@@ -99,18 +99,17 @@ public class RequestTest extends ApplicationTest {
      * Tests that we can grab requests of a certain status for a rider. 
      */
     public void testFilteringRequests() {
-        RequestController rc = new RequestController();
         RequestList requestList;
         int pass;
 
         // clear all the requests and make sure we have done so.
-        rc.clearAllRiderRequests( anotherUser );
-        rc.clearAllRiderRequests( basicRider );
-        requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        RequestController.clearAllRiderRequests( anotherUser );
+        RequestController.clearAllRiderRequests( basicRider );
+        requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
         pass = 0;
         while( requestList.size() != 0 ) {
-            chillabit( 1000 );
-            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            chillabit();
+            requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
             pass++;
             if (pass > 5) { break; }
         }
@@ -122,27 +121,27 @@ public class RequestTest extends ApplicationTest {
         Request requestOne = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 rOneString );
         requestOne.setStatus( Request.CANCELLED );
-        rc.addRequest( requestOne );
+        RequestController.addRequest( requestOne );
 
         String rTwoString = "testFilteringRequests2";
         Request requestTwo = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 rTwoString );
         requestTwo.setStatus( Request.COMPLETE );
-        rc.addRequest( requestTwo );
+        RequestController.addRequest( requestTwo );
 
         // A request with another user, but the same status as requestOne
         String rThreeString = "testFilteringRequests3";
         Request requestThree = new Request( anotherUser, new CarrierLocation(), new CarrierLocation(),
                 rThreeString );
         requestThree.setStatus( Request.CANCELLED );
-        rc.addRequest( requestThree );
+        RequestController.addRequest( requestThree );
 
         // Test that we can fetch one request, even if there is another user with the same status
-        requestList = rc.fetchRequestsWhereRider( basicRider, Request.CANCELLED );
+        requestList = RequestController.fetchRequestsWhereRider( basicRider, Request.CANCELLED );
         pass = 0;
         while( requestList.size() != 1 ) {
-            chillabit( 1000 );
-            requestList = rc.fetchRequestsWhereRider( basicRider, Request.CANCELLED );
+            chillabit();
+            requestList = RequestController.fetchRequestsWhereRider( basicRider, Request.CANCELLED );
             pass++;
             if (pass > 5) { break; }
         }
@@ -160,14 +159,14 @@ public class RequestTest extends ApplicationTest {
         Request requestFour = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 rFourString );
         requestFour.setStatus( Request.OPEN );
-        rc.addRequest( requestFour );
+        RequestController.addRequest( requestFour );
 
         // Test that we can fetch two requests.
-        requestList = rc.fetchRequestsWhereRider( basicRider, Request.CANCELLED, Request.COMPLETE );
+        requestList = RequestController.fetchRequestsWhereRider( basicRider, Request.CANCELLED, Request.COMPLETE );
         pass = 0;
         while( requestList.size() != 2 ) {
-            chillabit( 1000 );
-            requestList = rc.fetchRequestsWhereRider( basicRider, Request.CANCELLED, Request.COMPLETE );
+            chillabit();
+            requestList = RequestController.fetchRequestsWhereRider( basicRider, Request.CANCELLED, Request.COMPLETE );
             pass++;
             if (pass > 5) { break; }
         }
@@ -188,17 +187,16 @@ public class RequestTest extends ApplicationTest {
      *
      */
     public void testAddingDriverToRequest() {
-        RequestController rc = new RequestController();
         RequestList requestList;
         int pass;
 
         // clear all the requests and make sure we have done so.
-        rc.clearAllRiderRequests( basicRider );
-        requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        RequestController.clearAllRiderRequests( basicRider );
+        requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
         pass = 0;
         while( requestList.size() != 0 ) {
-            chillabit( 1000 );
-            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            chillabit();
+            requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
             pass++;
             if (pass > 5) { break; }
         }
@@ -208,12 +206,12 @@ public class RequestTest extends ApplicationTest {
         // Add a request and check that it is there
         Request request = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 "testAddingDriverToRequest" );
-        rc.addRequest( request );
-        requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        RequestController.addRequest( request );
+        requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
         pass = 0;
         while( requestList.size() != 1 ) {
-            chillabit( 1000 );
-            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            chillabit();
+            requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
             pass++;
             if (pass > 5) { break; }
         }
@@ -226,12 +224,12 @@ public class RequestTest extends ApplicationTest {
                 test.getOfferedDrivers() == null || test.getOfferedDrivers().size() == 0);
 
         // Add the driver then assert that we could fetch it from elastic search
-        rc.addDriver( test, basicDriver );
+        RequestController.addDriver( test, basicDriver );
         pass = 0;
-        requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
         while( requestList.get(0).getOfferedDrivers().size() == 0 ) {
-            chillabit( 1000 );
-            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            chillabit();
+            requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
             pass++;
             if (pass > 5) { break; }
         }
@@ -248,18 +246,17 @@ public class RequestTest extends ApplicationTest {
      * Tests that it does not return his own requests.
      */
     public void testGetRequestsWhereOffered() {
-        RequestController rc = new RequestController();
         RequestList requestList;
         int pass;
 
         // clear all the requests and make sure we have done so.
-        rc.clearAllRiderRequests( basicDriver );
-        rc.clearAllRiderRequests( basicRider );
-        requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        RequestController.clearAllRiderRequests( basicDriver );
+        RequestController.clearAllRiderRequests( basicRider );
+        requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
         pass = 0;
         while( requestList.size() != 0 ) {
-            chillabit( 1000 );
-            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            chillabit();
+            requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
             pass++;
             if (pass > 5) { break; }
         }
@@ -274,16 +271,16 @@ public class RequestTest extends ApplicationTest {
         Request requestThree = new Request( basicDriver, new CarrierLocation(), new CarrierLocation(),
                 "testGetRequestsWhereOffered (driver's request)");
 
-        rc.addRequest( requestOne );
-        rc.addRequest( requestTwo );
-        rc.addRequest( requestThree );
+        RequestController.addRequest( requestOne );
+        RequestController.addRequest( requestTwo );
+        RequestController.addRequest( requestThree );
 
         // Ensure that at least the basicDriver's request is present
-        requestList = rc.fetchRequestsWhereRider( basicDriver );
+        requestList = RequestController.fetchRequestsWhereRider( basicDriver );
         pass = 0;
         while( requestList.size() != 1 ) {
-            chillabit( 1000 );
-            requestList = rc.fetchRequestsWhereRider( basicDriver );
+            chillabit();
+            requestList = RequestController.fetchRequestsWhereRider( basicDriver );
             pass++;
             if (pass > 5) { break; }
         }
@@ -291,14 +288,14 @@ public class RequestTest extends ApplicationTest {
                 requestList.size() == 1);
 
         // add the driver to the previous two requests
-        rc.addDriver( requestOne, basicDriver );
-        rc.addDriver( requestTwo, basicDriver );
+        RequestController.addDriver( requestOne, basicDriver );
+        RequestController.addDriver( requestTwo, basicDriver );
 
-        requestList = rc.getOfferedRequests( basicDriver );
+        requestList = RequestController.getOfferedRequests( basicDriver );
         pass = 0;
         while( requestList.size() != 2 ) {
-            chillabit( 1000 );
-            requestList = rc.getOfferedRequests( basicDriver );
+            chillabit();
+            requestList = RequestController.getOfferedRequests( basicDriver );
             pass++;
             if (pass > 5) { break; }
         }
@@ -316,17 +313,16 @@ public class RequestTest extends ApplicationTest {
      * Tests that we can get a request by its ID.
      */
     public void testGettingRequestByID() {
-        RequestController rc = new RequestController();
         RequestList requestList;
         int pass;
 
         // clear all the requests and make sure we have done so.
-        rc.clearAllRiderRequests( basicRider );
-        requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        RequestController.clearAllRiderRequests( basicRider );
+        requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
         pass = 0;
         while( requestList.size() != 0 ) {
-            chillabit( 1000 );
-            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            chillabit();
+            requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
             pass++;
             if (pass > 5) { break; }
         }
@@ -335,11 +331,11 @@ public class RequestTest extends ApplicationTest {
         
         Request request = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 "testGetMeByID" );
-        rc.addRequest( request );
+        RequestController.addRequest( request );
 
         pass = 0;
         while( request.getId() == null ) {
-            chillabit( 1000 );
+            chillabit();
             pass++;
             if (pass > 5) { break; }
         }
@@ -366,20 +362,19 @@ public class RequestTest extends ApplicationTest {
      * Tests that the status changes as expected through each step of the request lifecycle.
      */
     public void testRequestStatus() {
-        RequestController rc = new RequestController();
         int pass;
 
         // Create and add a request
         Request request = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 "testRequestStatus" );
-        rc.addRequest( request );
+        RequestController.addRequest( request );
 
         // Get the request from the controller
-        RequestList requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        RequestList requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
         pass = 0;
         while( requestList.size() != 1 ) {
-            chillabit( 1000 );
-            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            chillabit();
+            requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
             pass++;
             if (pass > 5) { break; }
         }
@@ -389,14 +384,14 @@ public class RequestTest extends ApplicationTest {
 
         request = requestList.get(0);
         // Add a driver to the request
-        rc.addDriver( request, basicDriver );
+        RequestController.addDriver( request, basicDriver );
         // Get the request from the controller (wait until there is an offered driver)
         requestList.clear();
-        requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
         pass = 0;
         while( requestList.get(0).getOfferedDrivers().size() != 1 ) {
-            chillabit( 1000 );
-            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            chillabit();
+            requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
             pass++;
             if (pass > 5) { break; }
         }
@@ -407,13 +402,13 @@ public class RequestTest extends ApplicationTest {
                 request.getStatus() == Request.OFFERED );
 
         // Confirm the driver for a request.
-        rc.confirmDriver( request, basicDriver );
+        RequestController.confirmDriver( request, basicDriver );
         requestList.clear();
-        requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
         pass = 0;
         while( requestList.get(0).getConfirmedDriver() == null ) {
-            chillabit( 1000 );
-            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            chillabit();
+            requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
             pass++;
             if (pass > 5) { break; }
         }
@@ -424,13 +419,13 @@ public class RequestTest extends ApplicationTest {
                 request.getStatus() == Request.CONFIRMED );
 
         // Complete the request
-        rc.completeRequest( request );
+        RequestController.completeRequest( request );
         requestList.clear();
-        requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
         pass = 0;
         while( requestList.get(0).getStatus() != Request.COMPLETE ) {
-            chillabit( 1000 );
-            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            chillabit();
+            requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
             pass++;
             if (pass > 5) { break; }
         }
@@ -439,13 +434,13 @@ public class RequestTest extends ApplicationTest {
                 request.getStatus() == Request.COMPLETE );
 
         // Pay for the request
-        rc.payForRequest( request );
+        RequestController.payForRequest( request );
         requestList.clear();
-        requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
         pass = 0;
         while( requestList.get(0).getStatus() != Request.PAID ) {
-            chillabit( 1000 );
-            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            chillabit();
+            requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
             pass++;
             if (pass > 5) { break; }
         }

@@ -2,6 +2,8 @@ package comcmput301f16t01.github.carrier.Requests;
 
 import android.support.annotation.NonNull;
 
+import org.apache.http.annotation.NotThreadSafe;
+
 import java.util.ArrayList;
 
 import comcmput301f16t01.github.carrier.CarrierLocation;
@@ -61,18 +63,18 @@ public class Request {
         this.start = requestedStart;
         this.end = requestedEnd;
         this.description = description;
-        this.offeringDrivers = new ArrayList<User>();
+        this.offeringDrivers = new ArrayList<>();
         this.location = new Double[2];
         this.location[0] = requestedStart.getLongitude();
         this.location[1] = requestedStart.getLatitude();
     }
 
-    // Constructor without description TODO do we need this?
+    // Constructor without description (sets description to Null automatically)
     public Request(User rider, CarrierLocation start, CarrierLocation end) {
         this.rider = rider;
         this.start = start;
         this.end = end;
-        this.offeringDrivers = new ArrayList<User>();
+        this.offeringDrivers = new ArrayList<>();
         this.description = "";
         this.location = new Double[2];
         this.location[0] = start.getLongitude();
@@ -83,16 +85,21 @@ public class Request {
         return status;
     }
 
+    /**
+     * Attempts to set the status of the request.
+     *
+     * @throws IllegalStateException if the status could not move from a certain state to another.
+     *
+     * @param newStatus the new status you would like to set the request to.
+     */
     public void setStatus(int newStatus) {
         // Does not allow the canceling of completed requests or paid requests
         if ((this.status == COMPLETE) && (newStatus == CANCELLED))
-            return; // Do nothing
+            throw new IllegalStateException( "You cannot change a request from COMPLETE to CANCELLED" );
         if ((this.status == PAID) && (newStatus == CANCELLED)) {
-            return; // Do nothing
+            throw new IllegalStateException( "You cannot change a request from PAID to CANCELLED" );
         }
         this.status = newStatus;
-        // TODO make sure you do this right - Mandy (i.e. check that the status can change from one state to another)
-        // TODO make an actual test for this (Mandy)
     }
 
     public void setFare(int fare) {
@@ -105,14 +112,6 @@ public class Request {
 
     public User getChosenDriver() {
         return this.chosenDriver;
-    }
-
-    // possibly get rid of?
-    @Deprecated
-    public int getFareEstimate(Double distance, Double duration) {
-        //FareCalculator fareCalc = new FareCalculator();
-        //return fareCalc.getEstimate(distance, duration);
-        return 0;
     }
 
     public ArrayList<User> getOffers() {
@@ -155,20 +154,23 @@ public class Request {
         return elasticID;
     }
 
+    /** @return The string representation of a request, in plain text. */
     @Override
     public String toString() {
-        String requestAsString = "Request From: " + rider.getUsername() + "\n" +
+        return "Request From: " + rider.getUsername() + "\n" +
                 "Description: " + description + "\n" +
                 "Price: " + getFare() + "\n" +
                 "Price per KM: " + (fare/100)/distance;
-        return requestAsString;
     }
 
     /**
-     * Will addthe driver to the list of offering drivers.
+     * Will add the driver to the list of offering drivers.
+     *
+     * @throws IllegalArgumentException If the driver has already offered or you pass in null.
+     *
      * @param offeredDriver The driver that is making the offer.
      */
-    public void addOfferingDriver(User offeredDriver) {
+    public void addOfferingDriver( @NonNull User offeredDriver) {
         if( chosenDriver != null ) {
             throw new IllegalArgumentException( "This request already has a chosen driver." );
         }
@@ -182,7 +184,14 @@ public class Request {
         setStatus( Request.OFFERED ); // TODO, dangerous to do this because of edge cases?
     }
 
-    public void confirmDriver(User confirmedDriver) {
+    /**
+     * Confirms a driver to be the designated driver for a request.
+     *
+     * @throws IllegalArgumentException if the driver has not made an offer first or the driver is null.
+     *
+     * @param confirmedDriver the driver you wish to set as the confirmed driver.
+     */
+    public void confirmDriver( @NonNull User confirmedDriver) {
         if ( chosenDriver != null ) {
             throw new IllegalArgumentException( "There is already a chosen driver for this request." );
         }
@@ -192,6 +201,8 @@ public class Request {
 
     /**
      * Check if driver is already inside the list of offering drivers for this request.
+     *
+     * @return True if the passed driver has made an offer, otherwise false.
      */
     public boolean hasOfferingDriver( User driver ) {
         for ( User driverOffering : offeringDrivers ) {
