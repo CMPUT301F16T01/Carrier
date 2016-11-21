@@ -7,6 +7,7 @@ import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestList;
 import comcmput301f16t01.github.carrier.Users.User;
+import comcmput301f16t01.github.carrier.Users.UserController;
 
 public class SearchingTests extends ApplicationTest {
     // somewhere in Tokyo, Japan
@@ -36,6 +37,8 @@ public class SearchingTests extends ApplicationTest {
         ElasticRequestController.RemoveOffersTask rot = new ElasticRequestController.RemoveOffersTask();
         rot.setMode( rot.MODE_USERNAME );
         rot.execute(loggedInUser.getUsername(), driverOne.getUsername());
+
+        UserController.deleteUser( driverOne.getUsername() );
 
         super.tearDown();
     }
@@ -118,6 +121,12 @@ public class SearchingTests extends ApplicationTest {
      * Related: US 04.02.01
      */
     public void testDriverSearchByKeyword() {
+        // The logged in user must be someone other than who created the requests (otherwise they will
+        // not see offers)
+        UserController.createNewUser( driverOne.getUsername(),
+                driverOne.getEmail(),
+                driverOne.getPhone());
+
         Request requestOne = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
                 "Test keywords: downtown");
         Request requestTwo = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),

@@ -45,6 +45,8 @@ public class LocationTests extends ApplicationTest {
         rot.setMode( rot.MODE_USERNAME );
         rot.execute(loggedInUser.getUsername(), driverOne.getUsername());
 
+        UserController.logOutUser();
+
         super.tearDown();
     }
 
