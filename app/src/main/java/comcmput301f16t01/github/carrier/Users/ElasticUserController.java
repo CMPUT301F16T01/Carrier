@@ -1,4 +1,4 @@
-package comcmput301f16t01.github.carrier.User;
+package comcmput301f16t01.github.carrier.Users;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -9,8 +9,8 @@ import com.searchly.jestdroid.JestDroidClient;
 
 import java.io.IOException;
 
-import comcmput301f16t01.github.carrier.User.User;
-import comcmput301f16t01.github.carrier.User.UserController;
+import comcmput301f16t01.github.carrier.Users.User;
+import comcmput301f16t01.github.carrier.Users.UserController;
 import io.searchbox.core.DeleteByQuery;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
@@ -161,3 +161,5 @@ public class ElasticUserController {
         }
     }
 }
+
+

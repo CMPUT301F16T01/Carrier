@@ -207,6 +207,7 @@
             android:layout_height="wrap_content"
             android:text="Rider: " />
 
+
         <comcmput301f16t01.github.carrier.User.UsernameTextView
             android:text=""
             android:layout_width="wrap_content"

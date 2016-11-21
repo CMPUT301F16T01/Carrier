@@ -1,4 +1,4 @@
-package comcmput301f16t01.github.carrier.User;
+package comcmput301f16t01.github.carrier.Users;
 
 import io.searchbox.annotations.JestId;
 import android.os.Parcel;
@@ -7,7 +7,6 @@ import android.os.Parcelable;
 /**
  * Abstract base class for a user of Carrier.
  *
- * @see User
  * @see User
  */
 
@@ -31,13 +30,13 @@ public class User implements Parcelable{
      * @param inputUsername             The username
      * @param inputEmail                The e-mail
      * @param inputPhoneNumber          The phone number
-     * @param inputvehicleDescription   The vehicle information
+     * @param inputVehicleDescription   The vehicleDescription
      */
-    public User(String inputUsername, String inputEmail, String inputPhoneNumber, String inputvehicleDescription) {
+    public User(String inputUsername, String inputEmail, String inputPhoneNumber, String inputVehicleDescription) {
         this.username = inputUsername;
         this.email = inputEmail;
         this.phoneNumber = inputPhoneNumber;
-        this.vehicleDescription = inputvehicleDescription;
+        this.vehicleDescription = inputVehicleDescription;
     }
 
     public User() {

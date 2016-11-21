@@ -25,8 +25,9 @@ import comcmput301f16t01.github.carrier.FareCalculator;
 import comcmput301f16t01.github.carrier.MainActivity;
 import comcmput301f16t01.github.carrier.R;
 import comcmput301f16t01.github.carrier.SetLocationsActivity;
-import comcmput301f16t01.github.carrier.User.User;
-import comcmput301f16t01.github.carrier.User.UserController;
+import comcmput301f16t01.github.carrier.Users.User;
+import comcmput301f16t01.github.carrier.Users.UserController;
+
 import comcmput301f16t01.github.carrier.ViewLocationsActivity;
 
 /*
@@ -300,8 +301,6 @@ public class MakeRequestActivity extends AppCompatActivity {
         if (result == null) {
             Toast.makeText(activity, "Request submitted", Toast.LENGTH_SHORT).show();
             activity.finish();
-            Intent intent = new Intent(activity, MainActivity.class);
-            startActivity(intent);
         } else { // if not, display returned result message as a Toast
             Toast.makeText(activity, result, Toast.LENGTH_SHORT).show();
         }

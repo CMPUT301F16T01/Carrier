@@ -1,4 +1,4 @@
-package comcmput301f16t01.github.carrier.User;
+package comcmput301f16t01.github.carrier.Users;
 
 import android.util.Log;
 import android.util.Patterns;
@@ -6,6 +6,8 @@ import android.util.Patterns;
 import java.util.ArrayList;
 
 import comcmput301f16t01.github.carrier.UserList;
+import comcmput301f16t01.github.carrier.Users.ElasticUserController;
+import comcmput301f16t01.github.carrier.Users.User;
 
 /**
  * Singleton Pattern
@@ -145,7 +147,6 @@ public class UserController {
      * @throws NullPointerException Happens when the user enters a username with a username that
      *                              does not exist.
      * @author Kieter
-     * @see LoginActivity
      * @since Saturday October 15th, 2016
      */
     @Deprecated

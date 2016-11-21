@@ -7,7 +7,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import comcmput301f16t01.github.carrier.R;
-import comcmput301f16t01.github.carrier.User.UserController;
+import comcmput301f16t01.github.carrier.Users.UserController;
+
 
 
 public class NotificationActivity extends AppCompatActivity {

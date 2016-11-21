@@ -6,7 +6,8 @@ import java.util.Date;
 
 import comcmput301f16t01.github.carrier.Notifications.Notification;
 import comcmput301f16t01.github.carrier.Requests.Request;
-import comcmput301f16t01.github.carrier.User.User;
+import comcmput301f16t01.github.carrier.Users.User;
+
 
 /**
  * Mocks a notification. Allows to set the date of a notification instead of it being solely set by

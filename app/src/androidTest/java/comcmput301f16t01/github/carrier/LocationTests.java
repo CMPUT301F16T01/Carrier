@@ -5,8 +5,10 @@ import junit.framework.Assert;
 import comcmput301f16t01.github.carrier.Notifications.ElasticNotificationController;
 import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
 import comcmput301f16t01.github.carrier.Requests.Request;
-import comcmput301f16t01.github.carrier.User.User;
-import comcmput301f16t01.github.carrier.User.UserController;
+<<<<<<< HEAD
+=======
+import comcmput301f16t01.github.carrier.Users.User;
+>>>>>>> master
 
 public class LocationTests extends ApplicationTest {
     // University of Alberta, Edmonton

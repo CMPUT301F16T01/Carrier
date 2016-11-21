@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 //import comcmput301f16t01.github.carrier.Location;
 import comcmput301f16t01.github.carrier.CarrierLocation;
-import comcmput301f16t01.github.carrier.User.User;
+import comcmput301f16t01.github.carrier.Users.User;
 import io.searchbox.annotations.JestId;
 
 /**
@@ -108,7 +108,7 @@ public class Request {
     }
 
     public ArrayList<User> getOffers() {
-        return new ArrayList<User>();
+        return offeringDrivers;
     }
 
     public User getRider() {
@@ -159,15 +159,25 @@ public class Request {
      * @param offeredDriver The driver that is making the offer.
      */
     public void addOfferingDriver(User offeredDriver) {
-        offeringDrivers.add(offeredDriver);
-        if (status == Request.OPEN) {
-            this.setStatus(Request.OFFERED);
+        if( chosenDriver != null ) {
+            throw new IllegalArgumentException( "This request already has a chosen driver." );
         }
+
+        if( !hasOfferingDriver( offeredDriver )) {
+            offeringDrivers.add(offeredDriver);
+        } else {
+            throw new IllegalArgumentException( "You are already offering to complete this request." );
+        }
+
+        setStatus( Request.OFFERED ); // TODO, dangerous to do this because of edge cases?
     }
 
     public void confirmDriver(User confirmedDriver) {
+        if ( chosenDriver != null ) {
+            throw new IllegalArgumentException( "There is already a chosen driver for this request." );
+        }
         chosenDriver = confirmedDriver;
-        setStatus(Request.CONFIRMED);
+        setStatus(Request.CONFIRMED); // TODO, dangerous to do this because of edge cases?
     }
 
     /**

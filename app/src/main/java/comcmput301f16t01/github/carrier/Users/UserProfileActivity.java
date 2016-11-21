@@ -1,4 +1,4 @@
-package comcmput301f16t01.github.carrier.User;
+package comcmput301f16t01.github.carrier.Users;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,8 +12,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import comcmput301f16t01.github.carrier.R;
-import comcmput301f16t01.github.carrier.User.User;
-import comcmput301f16t01.github.carrier.User.UserController;
+import comcmput301f16t01.github.carrier.Users.User;
+
 
 // TODO A lot can be done to reduce code duplication. Notice how there are 4 functions that close,
 // and 2 that open. I feel like a lot of code generalization can be done here to reduce bugs
