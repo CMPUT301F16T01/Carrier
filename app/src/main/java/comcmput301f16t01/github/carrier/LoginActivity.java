@@ -13,6 +13,8 @@ import comcmput301f16t01.github.carrier.Users.UserController;
 
 /**
  * LoginActivity is where the user enters a username and password so they can access their account.
+ *
+ * @see LoginMemory
  */
 public class LoginActivity extends AppCompatActivity {
 

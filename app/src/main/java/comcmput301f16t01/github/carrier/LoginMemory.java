@@ -22,6 +22,10 @@ public class LoginMemory {
         saveContext = ctx;
     }
 
+    /**
+     * Saves a username to internal storage.
+     * @param username The username you would like to save to internal storage.
+     */
     public void saveUsername( String username ) {
         try {
             FileOutputStream fos = saveContext.openFileOutput(FILENAME, 0);
@@ -38,6 +42,10 @@ public class LoginMemory {
         }
     }
 
+    /**
+     * Loads a username from internal storage.
+     * @return the username it loaded, or null if it could not find a username.
+     */
     public String loadUsername() {
         String username;
         try {
