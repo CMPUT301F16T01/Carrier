@@ -1,5 +1,6 @@
 package comcmput301f16t01.github.carrier.Requests;
 
+import android.location.Address;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -8,7 +9,16 @@ import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
 
+import org.json.JSONObject;
+import org.osmdroid.bonuspack.location.GeocoderNominatim;
+import org.osmdroid.bonuspack.utils.HttpConnection;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import comcmput301f16t01.github.carrier.User;
@@ -136,7 +146,7 @@ public class ElasticRequestController {
      *   },
      *   "sort": [ {
      *     "_geo_distance": {
-     *       "location": [-113.4909, 53.5444],
+     *       "location": [-113, 52],
      *       "order": "asc",
      *       "unit": "km",
      *       "distance_type": "plane"
@@ -213,6 +223,27 @@ public class ElasticRequestController {
                 Log.i("Error", "Something went wrong when we tried to talk to elastic search");
             }
             return foundRequests;
+        }
+    }
+
+    // TODO http://stackoverflow.com/questions/1485708/how-do-i-do-a-http-get-in-java
+
+    /**
+     * Searches for a list of possible geo-location from an address string.
+     */
+    public static class SearchByAddressTask extends AsyncTask<String, Void, List<Address>> {
+
+        @Override
+        protected List<Address> doInBackground(String... addresses) {
+            List<Address> addressList = null;
+
+            GeocoderNominatim geoNom = new GeocoderNominatim("");
+            try {
+                addressList = geoNom.getFromLocationName(addresses[0], 50);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return addressList;
         }
     }
 

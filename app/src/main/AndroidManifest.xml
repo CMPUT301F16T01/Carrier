@@ -47,7 +47,7 @@
         <activity
             android:name=".UserProfileActivity"
             android:label="Carrier"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         android:theme="@style/AppTheme.NoActionBar" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -86,6 +86,7 @@
         <activity
             android:name=".Requests.ViewLocationsActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".Searching.SearchAddressChoiceActivity"></activity>
     </application>
 
 </manifest>
