@@ -30,14 +30,18 @@ import java.util.List;
 import comcmput301f16t01.github.carrier.CarrierLocation;
 import comcmput301f16t01.github.carrier.R;
 
-// Based on: https://goo.gl/4TKn2y
-// Retrieved on: November 10th, 2016
-
-// Updated with: https://goo.gl/h2CKyn
-// Author: yubaraj poudel
-// Posted: August 6th, 2016
-// Retrieved on: November 10th, 2016
-
+/**
+ * The ViewLocationsActivity allows the user to view on a map two start and end locations and
+ * the route between them. Giving the user a better idea of what route they will be taking.
+ *
+ * Based on: https://goo.gl/4TKn2y
+ * Retrieved on: November 10th, 2016
+ *
+ * Updated with: https://goo.gl/h2CKyn
+ * Author: yubaraj poudel
+ * Posted: August 6th, 2016
+ * Retrieved on: November 10th, 2016
+ */
 public class ViewLocationsActivity extends AppCompatActivity {
     final Activity activity = ViewLocationsActivity.this;
     private CarrierLocation start = null;

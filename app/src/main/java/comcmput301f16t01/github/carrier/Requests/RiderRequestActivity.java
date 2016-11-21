@@ -132,7 +132,7 @@ public class RiderRequestActivity extends AppCompatActivity {
     }
 
     /**
-     * Class to update the road on the map
+     * Class to update the road on the map, Async to prevent locking up UI thread.
      */
     private class UpdateRoadTask extends AsyncTask<Object, Void, Road[]> {
 
