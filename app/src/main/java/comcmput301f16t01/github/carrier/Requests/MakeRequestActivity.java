@@ -300,8 +300,6 @@ public class MakeRequestActivity extends AppCompatActivity {
         if (result == null) {
             Toast.makeText(activity, "Request submitted", Toast.LENGTH_SHORT).show();
             activity.finish();
-            Intent intent = new Intent(activity, MainActivity.class);
-            startActivity(intent);
         } else { // if not, display returned result message as a Toast
             Toast.makeText(activity, result, Toast.LENGTH_SHORT).show();
         }

@@ -9,6 +9,7 @@ import comcmput301f16t01.github.carrier.Users.User;
 
 import static org.junit.Assert.*;
 
+
 public class RequestControllerTest {
     @Test
     public void addRequestTest() {

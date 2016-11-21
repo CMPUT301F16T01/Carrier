@@ -12,8 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
@@ -57,10 +55,8 @@ public class RiderRequestActivity extends AppCompatActivity {
 
         // unpacking the bundle to get the position of request
         Bundle bundle = getIntent().getExtras();
-        //int position = bundle.getInt("position");
-        //request = rc.getResult().get(position);
-
-        request = new Gson().fromJson( bundle.getString("request"), Request.class );
+        int position = bundle.getInt("position");
+        request = rc.getRiderInstance().get(position);
 
         setTitle("Request");
 
