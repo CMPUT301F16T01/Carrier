@@ -38,16 +38,14 @@
             android:theme="@style/AppTheme.NoActionBar" />
         android:label="Carrier" />
         android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".NewUserActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".Requests.DriverViewRequestActivity"
-            android:screenOrientation="portrait" />
+        <activity android:name=".Users.NewUserActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Requests.DriverViewRequestActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".UserProfileActivity"
             android:label="Carrier"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         android:theme="@style/AppTheme.NoActionBar" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
