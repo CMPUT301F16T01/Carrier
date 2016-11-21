@@ -46,6 +46,7 @@ public class SearchAddressChoiceActivity extends AppCompatActivity {
         locationListView = (ListView) findViewById( R.id.listView_addressChoiceList );
 
         searchEditText = (EditText) findViewById(R.id.editText_addressSearch);
+        // TODO http://stackoverflow.com/questions/4451374/use-enter-key-on-softkeyboard-instead-of-clicking-button
         searchEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
