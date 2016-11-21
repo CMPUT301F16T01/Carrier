@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import comcmput301f16t01.github.carrier.Users.NewUserActivity;
+import comcmput301f16t01.github.carrier.Users.UserController;
+
 /**
  * LoginActivity is where the user enters a username and password so they can access their account.
  */

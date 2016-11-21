@@ -1,4 +1,4 @@
-package comcmput301f16t01.github.carrier;
+package comcmput301f16t01.github.carrier.Users;
 
 import io.searchbox.annotations.JestId;
 import android.os.Parcel;

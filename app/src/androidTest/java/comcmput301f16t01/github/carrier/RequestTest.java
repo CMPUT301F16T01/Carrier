@@ -1,18 +1,11 @@
 package comcmput301f16t01.github.carrier;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 import comcmput301f16t01.github.carrier.Notifications.ElasticNotificationController;
 import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
-import comcmput301f16t01.github.carrier.Requests.Offer;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestList;
-import io.searchbox.core.Delete;
-
-import android.location.Location;
+import comcmput301f16t01.github.carrier.Users.User;
 
 /**
  * Test suite for Elastic Requests.
