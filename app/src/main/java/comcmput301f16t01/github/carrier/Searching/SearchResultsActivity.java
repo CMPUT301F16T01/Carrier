@@ -30,13 +30,22 @@ public class SearchResultsActivity extends AppCompatActivity {
 
         // It shouldn't matter what query we used, the singleton will be up to date with the query when we get here
         final RequestList requestList = rc.getResult();
+
         ArrayAdapter<Request> requestArrayAdapter = new ArrayAdapter<>( this, android.R.layout.simple_list_item_1, requestList );
         requestListView.setAdapter( requestArrayAdapter );
+
+        // Create an onClickListener for the items to take them to a "make offer" page.
         requestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                /*
+                 * We don't have the requests stored locally in our singleton, so we need to let
+                 * the viewRequest activity know with a special code that it will use Gson to
+                 * deserialize a request.
+                 */
                 Intent intent = new Intent(SearchResultsActivity.this, DriverViewRequestActivity.class);
                 Bundle bundle = new Bundle();
+                bundle.putInt( "position", -1 );
                 bundle.putString("request", new Gson().toJson(requestList.get(position)));
                 intent.putExtras(bundle);
                 startActivity(intent);

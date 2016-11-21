@@ -9,19 +9,14 @@ import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
 
-import org.json.JSONObject;
 import org.osmdroid.bonuspack.location.GeocoderNominatim;
-import org.osmdroid.bonuspack.utils.HttpConnection;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
-import comcmput301f16t01.github.carrier.User;
+import comcmput301f16t01.github.carrier.Listener;
+import comcmput301f16t01.github.carrier.Users.User;
+import comcmput301f16t01.github.carrier.Users.UserController;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.DeleteByQuery;
 import io.searchbox.core.DocumentResult;
@@ -32,13 +27,30 @@ import io.searchbox.core.SearchResult;
 import io.searchbox.core.Update;
 
 /**
- * Handles elastic search tasks with requests
+ * Handles elastic search tasks with requests.
  */
 public class ElasticRequestController {
     private static JestDroidClient client;
 
     /**
+     * This listener listens to the two major fetch request tasks (offered requests, and requested
+     * requests). When either of the tasks are finished in async mode, it will notify this listener.
+     * @see FetchRiderRequestsTask
+     * @see GetOfferedRequestsTask
+     */
+    private static Listener listener = null;
+    public static void setListener( Listener newListener ) {
+        listener = newListener;
+    }
+    public static void notifyListener() {
+        if (listener != null) {
+            listener.update();
+        }
+    }
+
+    /**
      * Adds a request to Elastic Search.
+     * @see RequestController#addRequest(Request)
      */
     public static class AddRequestTask extends AsyncTask<Request, Void, Void> {
 
@@ -64,21 +76,9 @@ public class ElasticRequestController {
         }
     } // AddRequestTask
 
-// TODO May need this to edit it later...
-//    { "from" : 0, "size" : 500,
-//      "query": {
-//        "bool": {
-//            "must": { "match": { "description": "ocean" }},
-//            "should": [
-//            { "match": { "status": 1 }},
-//            { "match": { "status": 2 }}
-//            ]
-//        }
-//    }
-//}
-
     /**
-     * Searches by one keyword (this keyword could be a phrase too, though...
+     * Searches by a keyword/string based phrase.
+     * @see RequestController#searchByKeyword(String)
      */
     public static class SearchByKeywordTask extends AsyncTask<String, Void, RequestList> {
 
@@ -120,40 +120,16 @@ public class ElasticRequestController {
                 e.printStackTrace();
                 Log.i("Error", "Something went wrong when we tried to talk to elastic search");
             }
+
+            // Load all the offers from these requests
+            getOffers( foundRequests );
+
+            // Filter the requests so that we can't see
+            filterOutLoggedInUser( foundRequests );
+
             return foundRequests;
         }
     } // SearchByKeywordTask
-
-    /*
-     * Query:
-     * { "query" : {
-     *     "filtered" : {
-     *       "query" : {
-     *         "bool": {
-     *           "should": [
-     *             { "match": { "status": 1 }},
-     *             { "match": { "status": 2 }}
-     *           ]
-     *         }
-     *       },
-     *       "filter" : {
-     *         "geo_distance" : {
-     *           "distance" : "50km",
-     *           "location" : [-113, 52]
-     *         }
-     *       }
-     *     }
-     *   },
-     *   "sort": [ {
-     *     "_geo_distance": {
-     *       "location": [-113, 52],
-     *       "order": "asc",
-     *       "unit": "km",
-     *       "distance_type": "plane"
-     *     }
-     *   } ]
-     * }
-     */
 
     /**
      * Searches requests by a geo-location.
@@ -248,9 +224,12 @@ public class ElasticRequestController {
     }
 
     /**
-     * Get all of a rider's requests including a filter by status
+     * Get all of a rider's requests filtered by status
+     * @see RequestController#fetchRequestsWhereRider(User, Integer...)
      */
     public static class FetchRiderRequestsTask extends AsyncTask<String, Void, RequestList> {
+
+        public boolean withAsync = false;
 
         @Override
         protected RequestList doInBackground(String... params) {
@@ -302,67 +281,27 @@ public class ElasticRequestController {
                 Log.i("Error", "Something went wrong when we tried to talk to elastic search");
             }
 
-            // We need to get all the offers for each of the requests
+            // fill the requests with their respective offering drivers.
             getOffers( foundRequests );
 
             return foundRequests;
         }
 
         /**
-         * Sub-task: grab the offers for a request
+         * After the doInBackground task is complete, this is called on the UI thread so that we can
+         * access UI elements if listeners are in place to update any view that is updated when
+         * the affected list is updated.
          */
-        private void getOffers(RequestList foundRequests) {
-            for( Request request : foundRequests ) {
-                // TODO filter requests that will not have offering drivers?
-
-                String query =
-                        "{ \"from\":0, \"size\":1000,\n" +
-                        "    \"query\": { \"match\": { \"requestID\" : \"" + request.getId() + "\" } }\n" +
-                        "}";
-                Search search = new Search.Builder(query)
-                        .addIndex("cmput301f16t01")
-                        .addType("offer")
-                        .build();
-
-                try {
-                    SearchResult result = client.execute(search);
-                    if (result.isSucceeded()) {
-                        List<Offer> offers = result.getSourceAsObjectList(Offer.class);
-                        populate( request, offers );
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        @Override
+        protected void onPostExecute(RequestList requests) {
+            // Perform our update on the UI thread
+            if (withAsync) {
+                RequestController rc = new RequestController();
+                rc.getRiderInstance().replaceList( requests );
+                notifyListener();
             }
-        } //getOffers sub-task
-
-        /**
-         * Sub-task: grab the user info for each offer, add it to the offer array.
-         */
-        private void populate(Request request, List<Offer> offers) {
-            request.getOfferedDrivers().clear();
-            for( Offer offer : offers ) {
-                String query =
-                        "{ \"from\":0, \"size\":1,\n" +
-                        "    \"query\": { \"match\": { \"username\" : \"" + offer.getOfferingUser() + "\" } }\n" +
-                        "}";
-
-                Search search = new Search.Builder(query)
-                        .addIndex("cmput301f16t01")
-                        .addType("user")
-                        .build();
-
-                try {
-                    SearchResult result = client.execute(search);
-                    if (result.isSucceeded()) {
-                        User offeringUser = result.getSourceAsObject(User.class);
-                        request.addOfferingDriver( offeringUser );
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        } // populate sub-task
+            super.onPostExecute(requests);
+        }
     } // FetchRiderRequestsTask
 
     /**
@@ -510,71 +449,12 @@ public class ElasticRequestController {
 
 
     /**
-     * Remove offers from a specified request in elastic search.
-     * This is for when you choose a driver to fulfill a request (no longer need the offers in
-     * elastic search)
-     */
-    public static class GetOffersTask extends AsyncTask<String, Void, List<Offer>> {
-
-        /**
-         * Set the mode for the type of "search by" query you would like to do.
-         * Default mode is to search by request ID.
-         */
-        public int MODE_REQUEST_ID = 0;
-        public int MODE_USERNAME = 1;
-        private int mode = 1;
-        public void setMode(int mode) {
-            if( mode != MODE_REQUEST_ID && mode != MODE_USERNAME ) {
-                throw new IllegalArgumentException( "Invalid mode usage." );
-            }
-            this.mode = mode;
-        }
-
-        @Override
-        protected List<Offer> doInBackground(String... params) {
-            verifySettings();
-
-            for( String searchParam : params ) {
-                String query = "";
-
-                // Depending on the mode we execute a different query.
-                if (mode == MODE_REQUEST_ID) {
-                    query = "{\n" +
-                            "    \"query\": { \"match\": { \"requestID\" : \"" + searchParam + "\" } }\n" +
-                            "}";
-                } else {
-                    query = "{\n" +
-                            "    \"query\": { \"match\": { \"offeringUser\" : \"" + searchParam + "\" } }\n" +
-                            "}";
-                }
-
-                Search search = new Search.Builder(query)
-                        .addIndex("cmput301f16t01")
-                        .addType("offer")
-                        .build();
-
-                try {
-                    SearchResult result = client.execute(search);
-                    if (result.isSucceeded()) {
-                        // TODO Bad style, prevents multiple string params.
-                        return result.getSourceAsObjectList(Offer.class);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                    return null;
-            }
-
-            return null;
-        }
-    } // RemoveOffersTask
-
-
-    /**
      * Get requests where the driver has offered to complete them.
+     * @see RequestController#getOfferedRequests(User)
      */
     public static class GetOfferedRequestsTask extends AsyncTask<String, Void, RequestList> {
+
+        public boolean withAsync = false;
 
         @Override
         protected RequestList doInBackground(String... params) {
@@ -613,6 +493,7 @@ public class ElasticRequestController {
 
         /**
          * Get requests for the given offers
+         * TODO move this class to be a general sub-task of the ElasticRequestController class
          */
         private RequestList getRequests(List<Offer> offers) {
             RequestList requestList = new RequestList();
@@ -640,7 +521,19 @@ public class ElasticRequestController {
             }
             return requestList;
         }
+
+        @Override
+        protected void onPostExecute(RequestList requests) {
+            // Perform result update on UI thread
+            if (withAsync) {
+                RequestController rc = new RequestController();
+                rc.getOffersInstance().replaceList( requests );
+                notifyListener();
+            }
+            super.onPostExecute(requests);
+        }
     } // GetOfferedRequestsTask
+
 
     public static class UpdateRequestTask extends AsyncTask<Request, Void, Void> {
 
@@ -688,6 +581,89 @@ public class ElasticRequestController {
         }
     }
 
+    /**
+     * Sub-task: grab the offers for a request and then populate a request with them.
+     * @see #populate(Request, List)
+     */
+    private static void getOffers(RequestList foundRequests) {
+        for( Request request : foundRequests ) {
+            // TODO filter requests that will not have offering drivers?
+
+            String query =
+                    "{ \"from\":0, \"size\":1000,\n" +
+                            "    \"query\": { \"match\": { \"requestID\" : \"" + request.getId() + "\" } }\n" +
+                            "}";
+            Search search = new Search.Builder(query)
+                    .addIndex("cmput301f16t01")
+                    .addType("offer")
+                    .build();
+
+            try {
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()) {
+                    List<Offer> offers = result.getSourceAsObjectList(Offer.class);
+                    populate( request, offers );
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    } //getOffers sub-task
+
+    /**
+     * Sub-task: For each offer object, grab the user information associated with it and add it as
+     * an offer to the request.
+     */
+    private static void populate(Request request, List<Offer> offers) {
+        request.getOfferedDrivers().clear();
+        for( Offer offer : offers ) {
+            String query =
+                    "{ \"from\":0, \"size\":1,\n" +
+                            "    \"query\": { \"match\": { \"username\" : \"" + offer.getOfferingUser() + "\" } }\n" +
+                            "}";
+
+            Search search = new Search.Builder(query)
+                    .addIndex("cmput301f16t01")
+                    .addType("user")
+                    .build();
+
+            try {
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()) {
+                    User offeringUser = result.getSourceAsObject(User.class);
+                    try {
+                        request.addOfferingDriver(offeringUser);
+                    } catch (Exception e) { /* possibly do nothing */ }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    } // populate sub-task
+
+    /**
+     * If the logged in user is found as the offered driver or the requester, then
+     * the request is removed from the passed request array.
+     */
+    private static void filterOutLoggedInUser( RequestList foundRequests ) {
+        RequestList filteredRequests = new RequestList();
+        for( Request request : foundRequests ) {
+            String loggedInUsername = UserController.getLoggedInUser().getUsername();
+            String requesterUsername = request.getRider().getUsername();
+            if( loggedInUsername.equals(requesterUsername) ){
+                continue; // Skip this request and do not add it to the request list
+            }
+            if( request.hasOfferingDriver(UserController.getLoggedInUser()) ) {
+                continue; // Skip this request and do not add it to the request list
+            }
+            filteredRequests.add( request );
+        }
+        foundRequests.replaceList( filteredRequests );
+    }
+
+    /**
+     * Opens a connection to the elastic search server
+     */
     private static void verifySettings() {
         if (client == null) {
             DroidClientConfig.Builder builder =

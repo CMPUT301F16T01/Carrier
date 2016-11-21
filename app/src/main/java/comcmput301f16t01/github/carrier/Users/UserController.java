@@ -1,10 +1,12 @@
-package comcmput301f16t01.github.carrier;
+package comcmput301f16t01.github.carrier.Users;
 
 import android.util.Log;
 import android.util.Patterns;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
+
+import comcmput301f16t01.github.carrier.LoginActivity;
+import comcmput301f16t01.github.carrier.UserList;
 
 /**
  * Singleton Pattern
