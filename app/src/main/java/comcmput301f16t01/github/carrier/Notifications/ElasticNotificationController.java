@@ -59,10 +59,10 @@ public class ElasticNotificationController {
     }
 
     /** Returns notifications based on a username */
-    public static class FindNotificationTask extends AsyncTask<String, Void, NotificationList> {
+    public static class FindNotificationTask extends AsyncTask<String, Void, ArrayList<Notification>> {
 
         @Override
-        protected NotificationList doInBackground(String... search_parameters) {
+        protected ArrayList<Notification> doInBackground(String... search_parameters) {
             verifySettings();
             String search_string = "{\"from\" : 0, \"size\" : 500, \"query\": {\"match\": {\"username\": \"" + search_parameters[0] + "\"}}}";
 
@@ -71,7 +71,7 @@ public class ElasticNotificationController {
                     .addType("notification")
                     .build();
 
-            NotificationList foundNotifications = new NotificationList();
+            ArrayList<Notification> foundNotifications = new ArrayList<>();
 
             try {
                 SearchResult result = client.execute(search);

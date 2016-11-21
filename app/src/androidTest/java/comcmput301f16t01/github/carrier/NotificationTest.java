@@ -1,5 +1,6 @@
 package comcmput301f16t01.github.carrier;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 
@@ -8,14 +9,11 @@ import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Notifications.ElasticNotificationController;
 import comcmput301f16t01.github.carrier.Notifications.Notification;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
-import comcmput301f16t01.github.carrier.Notifications.NotificationList;
 import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
-
-// TODO could probably use a mock RequestController, since it always posts test requests to elastic search
 
 /**
  * Test Suite for Notifications.
@@ -100,7 +98,7 @@ public class NotificationTest extends ApplicationTest {
         b.setDate( a.getDate() );
         b.setRead( true );
 
-        NotificationList notificationList = new NotificationList();
+        ArrayList<Notification> notificationList = new ArrayList<>();
         notificationList.add(b);
         notificationList.add(a);
 
@@ -167,7 +165,7 @@ public class NotificationTest extends ApplicationTest {
 
         chillabit();
 
-        NotificationList notificationList = nc.fetchNotifications( loggedInUser );
+        ArrayList<Notification> notificationList = nc.fetchNotifications( loggedInUser );
 
         // Make sure this test is useful by ensuring there are notifications now
         assertTrue( "There should be at least one notification so far", notificationList.size() != 0 );
@@ -211,7 +209,7 @@ public class NotificationTest extends ApplicationTest {
         // Unnecessary clutter for request elastic search, and irrelevant to this test (?)
         RequestController.addRequest( newRequest );
 
-        NotificationList notificationList = nc.fetchNotifications( loggedInUser );
+        ArrayList<Notification> notificationList = nc.fetchNotifications( loggedInUser );
         assertTrue( "There should be no notifications for the user yet",
                 0 == notificationList.size() );
 
@@ -258,7 +256,7 @@ public class NotificationTest extends ApplicationTest {
         // Unnecessary clutter for request elastic search, and irrelevant to this test (?)
         RequestController.addRequest( newRequest );
 
-        NotificationList notificationList = nc.fetchNotifications( driverOne );
+        ArrayList<Notification> notificationList = nc.fetchNotifications( driverOne );
 
         assertTrue( "Driver should have no notifications yet", notificationList.size() == 0 );
 
@@ -303,7 +301,7 @@ public class NotificationTest extends ApplicationTest {
 
         nc.clearAllNotifications( loggedInUser );
 
-        NotificationList notificationList = nc.fetchNotifications( loggedInUser );
+        ArrayList<Notification> notificationList = nc.fetchNotifications( loggedInUser );
 
         // wait for async tasks to finish (no requests should be present now)
         int pass = 0;
@@ -370,7 +368,7 @@ public class NotificationTest extends ApplicationTest {
 
         nc.clearAllNotifications( anotherUser );
 
-        NotificationList notificationList = nc.fetchNotifications( anotherUser );
+        ArrayList<Notification> notificationList = nc.fetchNotifications( anotherUser );
 
         // wait for async tasks to finish (All requests should be cleared)
         int pass = 0;

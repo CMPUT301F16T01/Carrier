@@ -3,6 +3,7 @@ package comcmput301f16t01.github.carrier.Notifications;
 import android.support.annotation.NonNull;
 
 import java.util.Date;
+import java.util.List;
 
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Users.User;
@@ -82,6 +83,13 @@ public class Notification implements Comparable<Notification> {
         return notifString;
     }
 
+    /**
+     * Returns an integer based on the comparison between two notifications.
+     * We prioritize by notifications that are not read, then by their date (if their read status is
+     * equivalent).
+     *
+     * @see java.util.Collections#sort(List)
+     */
     @Override
     public int compareTo(@NonNull Notification o) {
         // 0 means 'this = o' || 1 means 'this > o' || -1 means 'this < o'
