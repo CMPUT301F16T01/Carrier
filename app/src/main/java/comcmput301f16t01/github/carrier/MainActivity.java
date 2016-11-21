@@ -30,8 +30,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.List;
-
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationActivity;
@@ -42,7 +40,11 @@ import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestList;
 import comcmput301f16t01.github.carrier.Requests.RiderRequestActivity;
 import comcmput301f16t01.github.carrier.Searching.SearchActivity;
+import comcmput301f16t01.github.carrier.Users.LoginActivity;
+import comcmput301f16t01.github.carrier.Users.LoginMemory;
+import comcmput301f16t01.github.carrier.Users.UserProfileActivity;
 import comcmput301f16t01.github.carrier.Users.UserController;
+
 
 /**
  * Central activity for a user. After logging in, this is the activity the user will be taken to

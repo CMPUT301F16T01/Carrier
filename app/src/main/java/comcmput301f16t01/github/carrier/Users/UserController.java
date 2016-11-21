@@ -5,8 +5,9 @@ import android.util.Patterns;
 
 import java.util.ArrayList;
 
-import comcmput301f16t01.github.carrier.LoginActivity;
 import comcmput301f16t01.github.carrier.UserList;
+import comcmput301f16t01.github.carrier.Users.ElasticUserController;
+import comcmput301f16t01.github.carrier.Users.User;
 
 /**
  * Singleton Pattern
@@ -146,7 +147,6 @@ public class UserController {
      * @throws NullPointerException Happens when the user enters a username with a username that
      *                              does not exist.
      * @author Kieter
-     * @see LoginActivity
      * @since Saturday October 15th, 2016
      */
     @Deprecated
@@ -174,15 +174,8 @@ public class UserController {
         // TODO this never had the option to clear UserList.
     }
 
-    /**
-     * Attempt to create a new user.
-     *
-     * @param username
-     * @param email
-     * @param phoneNumber
-     * @return
-     */
-    public static String createNewUser(String username, String email, String phoneNumber) {
+
+    public static String checkValidInputs(String username, String email, String phoneNumber) {
         // TODO testing offline behaviour
         User newUser = new User();
 
@@ -213,8 +206,36 @@ public class UserController {
         }
 
         if (!Patterns.PHONE.matcher(phoneNumber).matches()) {
-            return "That doesn't look liek a valid phone number!";
+            return "That doesn't look like a valid phone number!";
         }
+        return null;
+    }
+
+
+
+
+
+    /**
+     * Attempt to create a new user.
+     *
+     * @param username
+     * @param email
+     * @param phoneNumber
+     * @return
+     */
+    public static void createNewUser(String username, String email, String phoneNumber, String vehicleDescription) {
+        // TODO testing offline behaviour
+        User newUser = new User();
+
+        // Trim leading and trailing whitespace
+        email = email.trim();
+        phoneNumber = phoneNumber.trim();
+        username = username.trim();
+
+        newUser.setEmail(email);
+        newUser.setPhone(phoneNumber);
+        newUser.setUsername(username);
+        newUser.setVehicleDescription(vehicleDescription);
 
         ElasticUserController.AddUserTask aut = new ElasticUserController.AddUserTask();
         aut.execute(newUser);
@@ -224,7 +245,6 @@ public class UserController {
         }
 
         loggedInUser = newUser;
-        return null;
     }
 
     /**

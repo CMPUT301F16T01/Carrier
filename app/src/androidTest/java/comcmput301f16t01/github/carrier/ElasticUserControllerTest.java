@@ -6,8 +6,10 @@ package comcmput301f16t01.github.carrier;
 
 import java.util.concurrent.ExecutionException;
 
+<<<<<<< HEAD
+=======
 import comcmput301f16t01.github.carrier.Users.User;
-        import comcmput301f16t01.github.carrier.Users.UserController;
+>>>>>>> master
 
 public class ElasticUserControllerTest extends ApplicationTest {
     UserController uc = new UserController();

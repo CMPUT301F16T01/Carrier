@@ -6,6 +6,7 @@ import java.util.Date;
 
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Users.User;
+
 import io.searchbox.annotations.JestId;
 
 /**

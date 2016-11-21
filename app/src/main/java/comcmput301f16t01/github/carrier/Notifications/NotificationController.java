@@ -8,6 +8,7 @@ import java.util.Collections;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Users.User;
 
+
 /**
  * Controls a user's notifications for elastic search
  */

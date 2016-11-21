@@ -8,8 +8,10 @@ import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestList;
+<<<<<<< HEAD
+=======
 import comcmput301f16t01.github.carrier.Users.User;
-import comcmput301f16t01.github.carrier.Users.UserController;
+>>>>>>> master
 
 
 public class AcceptingTest extends ApplicationTest {

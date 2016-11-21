@@ -5,7 +5,12 @@ import org.junit.Test;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestList;
+<<<<<<< HEAD
+
+import static org.junit.Assert.*;
+=======
 import comcmput301f16t01.github.carrier.Users.User;
+>>>>>>> master
 
 public class RequestControllerTest {
     @Test

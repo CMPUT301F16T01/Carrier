@@ -162,7 +162,29 @@
             android:layout_alignTop="@+id/Button_cancelPhoneEdit"
             android:layout_toStartOf="@+id/Button_cancelPhoneEdit" />
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/car"
+            android:layout_below="@id/EditText_email"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="14dp"
+            android:id="@+id/imageView_car"
+            android:scaleX="2"
+            android:scaleY="2" />
+
+        <TextView
+            android:text="Kia, Rio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imageView_car"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:id="@+id/textView_vehicleDescription" />
+
 
     </RelativeLayout>
+
+
 
 </RelativeLayout>

@@ -4,7 +4,10 @@ import org.junit.Test;
 
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
+<<<<<<< HEAD
+=======
 import comcmput301f16t01.github.carrier.Users.User;
+>>>>>>> master
 
 import static org.junit.Assert.*;
 /**
