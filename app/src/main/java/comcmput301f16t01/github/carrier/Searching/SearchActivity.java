@@ -39,7 +39,7 @@ public class SearchActivity extends AppCompatActivity {
      * This will create the search by keyword dialog.
      * The keyword query entered by the user will be used in a
      * search on available requests.
-     * @param view
+     * @param view Search by keyword Button
      */
     public void searchByKeyword(View view) {
         // Based on: https://goo.gl/6AAnXP
@@ -70,7 +70,7 @@ public class SearchActivity extends AppCompatActivity {
      * This will open a maps activity to allow the user to
      * select a location to create a query for available requests.
      * The initial screen will center around to the current location.
-     * @param view
+     * @param view Search by location Button
      */
     public void searchByLocation(View view) {
         Intent intent = new Intent(activity, SetLocationsActivity.class);
@@ -85,13 +85,8 @@ public class SearchActivity extends AppCompatActivity {
      * This will open a dialog to search for an address. The selected address
      * will be shown on a map to confirm the location. This will create a
      * query for available requests.
-     * @param view
+     * @param view Search by address Button
      */
-    // TODO decide how to allow the user to enter the address
-    // they could just enter it into a text box but then parsing is difficult
-    // could have multiple text boxes for different parts of the address
-    // do we want to use a dialog (like keyword?)
-    // do we want to show them on a map to confirm?
     public void searchByAddress(View view) {
         // Based on: https://goo.gl/6AAnXP
         // Author: Android Dev Docs
