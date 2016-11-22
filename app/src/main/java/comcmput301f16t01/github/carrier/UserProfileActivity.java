@@ -10,6 +10,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.text.method.KeyListener;
 import android.util.Log;
 import android.view.View;
@@ -296,12 +297,14 @@ public class UserProfileActivity extends AppCompatActivity {
          */
         Log.i("activity","made to email");
 
-        Intent email = new Intent(android.content.Intent.ACTION_SENDTO);
+        /*Intent email = new Intent(android.content.Intent.ACTION_SENDTO);
         email.setType("plain/text");
         email.putExtra(Intent.EXTRA_EMAIL, new String[] { "meinders@ualberta.ca" });
         email.putExtra(Intent.EXTRA_SUBJECT, "hi");
         email.putExtra(Intent.EXTRA_TEXT, "this is the message");
-        startActivity(Intent.createChooser(email,"Choose an Email client :"));
+        startActivity(Intent.createChooser(email,"Choose an Email client :"));*/
+
+
     }
 
 }
