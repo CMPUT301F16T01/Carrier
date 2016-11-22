@@ -215,8 +215,8 @@ public class MainActivity extends AppCompatActivity {
                     // permission denied, boo!
                     AlertDialog.Builder adb = new AlertDialog.Builder(this);
                     adb.setTitle("Permissions Denied");
-                    adb.setMessage("You cannot view the map to select locations without " +
-                            "allowing the app to access your device's storage. You can change " +
+                    adb.setMessage("You cannot view the map or call to select locations without " +
+                            "allowing the app to access. You can change " +
                             "this permission from the app info.");
                     adb.setCancelable(true);
                     adb.setPositiveButton("OK", null);
@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
     // Author: Android Dev Docs
     // Retrieved on: November 9th, 2016
     /**
-     * Asks user to grant required permissions for the maps to work.
+     * Asks user to grant required permissions for the maps and calls to work.
      */
     private void checkPermissions() {
         // if statement from https://developer.android.com/training/permissions/requesting.html
@@ -241,7 +241,15 @@ public class MainActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
         }
+        if(ContextCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.CALL_PHONE},
+                    MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+        }
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

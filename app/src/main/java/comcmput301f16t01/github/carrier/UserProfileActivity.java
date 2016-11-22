@@ -35,6 +35,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private String oldPhoneNumber;
     private String oldEmailAddress;
     private User currentUser = UserController.getLoggedInUser();
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +44,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
         // Retrieve the user this intent was started with.
         Bundle bundle = getIntent().getExtras();
-        User user = bundle.getParcelable("user");
+        user = bundle.getParcelable("user");
 
         // Get an instance of the UserController
         UserController uc = new UserController();
@@ -266,12 +267,12 @@ public class UserProfileActivity extends AppCompatActivity {
      * @param v view used for this function
      */
     public void callPhone(View v) {
-
         /* Source: http://stackoverflow.com/questions/5403308/make-a-phone-call-click-on-a-button
         * Author: Shaista Naaz
         * Retrieved on: November 21st 2016 */
         Intent callIntent = new Intent(Intent.ACTION_CALL);
-        callIntent.setData(Uri.parse("tel:4035058336"));
+        String phoneClicked = "tel:" + user.getPhone();
+        callIntent.setData(Uri.parse(phoneClicked));
         Log.i("activity","made to function");
 
         //this if statement checks to make sure we have the correct permissions
@@ -294,6 +295,13 @@ public class UserProfileActivity extends AppCompatActivity {
          * Retrieved on: November 21st 2016
          */
         Log.i("activity","made to email");
+
+        Intent email = new Intent(android.content.Intent.ACTION_SENDTO);
+        email.setType("plain/text");
+        email.putExtra(Intent.EXTRA_EMAIL, new String[] { "meinders@ualberta.ca" });
+        email.putExtra(Intent.EXTRA_SUBJECT, "hi");
+        email.putExtra(Intent.EXTRA_TEXT, "this is the message");
+        startActivity(Intent.createChooser(email,"Choose an Email client :"));
     }
 
 }

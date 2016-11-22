@@ -47,6 +47,7 @@
             android:id="@+id/EditText_email"
             android:textColor="@android:color/white"
             android:textSize="24sp"
+            android:onClick="emailUser"
             android:layout_below="@+id/ImageView_emailIcon"
             android:layout_alignParentStart="true"
             android:focusable="false"
