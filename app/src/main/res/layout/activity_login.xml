@@ -24,7 +24,7 @@
         android:layout_toEndOf="@+id/CarrierTextView" />
 
     <TextView
-        android:text="Need a ride? ;)"
+        android:text="Need a ride? :)"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/TextView_welcomeMessage"

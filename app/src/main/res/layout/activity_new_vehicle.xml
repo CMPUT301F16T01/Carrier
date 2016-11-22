@@ -19,14 +19,12 @@
         android:id="@+id/textView_vehiclePropt"
         android:paddingBottom="15dp"/>
 
-
     <View
         android:id="@+id/topDivider"
         android:layout_below="@+id/textView_vehiclePropt"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="@color/colorPrimaryLighter" />
-
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -36,20 +34,17 @@
         android:isScrollContainer="true"
         android:layout_above="@+id/bottomDivider">
 
-
         <RelativeLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:scrollbars="vertical" >
 
-
             <TextView
                 android:text="Make:"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView_vehicleMake" />
-
 
             <EditText
                 android:layout_width="match_parent"
@@ -122,6 +117,7 @@
                 android:ems="10"
                 android:inputType="textCapSentences"
                 android:id="@+id/editText_vehicleOther"
+                android:maxLength="35"
                 android:hint="e.g. Look for the Alberta sticker!"
                 android:layout_below="@+id/textView_vehicleOther" />
 
@@ -129,6 +125,8 @@
                 android:text="Register"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@android:color/background_light"
+                android:background="@color/colorPrimary"
                 android:id="@+id/button_createNewUser"
                 android:layout_below="@id/editText_vehicleOther"
                 android:onClick="register"
@@ -143,8 +141,5 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="@color/colorPrimaryLighter" />
-
-
-
 
 </LinearLayout>

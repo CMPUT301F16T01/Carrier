@@ -24,7 +24,6 @@
             android:visibility="invisible"
             android:onClick="cancelEditPhoneNumber" />
 
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -66,7 +65,6 @@
             android:layout_alignBottom="@+id/ImageButton_emailEditIcon"
             android:layout_alignEnd="@+id/ImageButton_emailEditIcon"
             android:onClick="saveEditedEmailAddress" />
-
 
         <TextView
             android:text="Profile"
@@ -186,9 +184,6 @@
             android:textSize="24sp"
             android:id="@+id/textView_vehicleDescription" />
 
-
     </RelativeLayout>
-
-
 
 </RelativeLayout>

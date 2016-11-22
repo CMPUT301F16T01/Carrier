@@ -1,5 +1,6 @@
 package comcmput301f16t01.github.carrier.Users;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,10 +15,10 @@ import comcmput301f16t01.github.carrier.R;
 /**
  * This is the class a user will use to input information about their vehicle
  * Once they click register they will then be added as a new user
- * Created by meind on 2016-11-17.
  */
 
 public class NewVehicleActivity extends AppCompatActivity {
+    final Activity activity = NewVehicleActivity.this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,8 @@ public class NewVehicleActivity extends AppCompatActivity {
 
         //go tot the main activity with this function
         submitNewUser(username);
+
+        activity.finish();
     }
 
     /**
@@ -67,17 +70,16 @@ public class NewVehicleActivity extends AppCompatActivity {
      */
     public void submitNewUser( String username) {
         // Save username to file
-        LoginMemory lm = new LoginMemory( this );
+        LoginMemory lm = new LoginMemory( activity );
         lm.saveUsername( username );
 
         // Log in to CARier
         String welcome = "Welcome to CARrier, " + username + "!";
-        Intent intent = new Intent(this, MainActivity.class);
-        Toast.makeText(this, welcome, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(activity, MainActivity.class);
+        Toast.makeText(activity, welcome, Toast.LENGTH_SHORT).show();
         startActivity(intent);
-        this.finish();
+        activity.finish();
     }
-
 
     /**
      * This function will take these multiple strings and concatentate them into a nice string that is easy to store and display
@@ -100,16 +102,16 @@ public class NewVehicleActivity extends AppCompatActivity {
         }
         //else we need to piece the string together
         else {
+            if (!year.equals("")) {
+                vehicleDescription += year;
+                vehicleDescription += " ";
+            }
             if (!make.equals("")) {
                 vehicleDescription += make;
                 vehicleDescription += " ";
             }
             if (!model.equals("")) {
                 vehicleDescription += model;
-                vehicleDescription += " ";
-            }
-            if (!year.equals("")) {
-                vehicleDescription += year;
                 vehicleDescription += "\n";
             }
             if (!color.equals("")) {

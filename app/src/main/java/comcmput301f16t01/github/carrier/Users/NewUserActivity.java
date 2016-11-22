@@ -61,6 +61,7 @@ public class NewUserActivity extends AppCompatActivity {
             bundle.putString("email", email);
             intent.putExtras(bundle);
             startActivity(intent);
+            this.finish();
         } else { // if not, display returned result message as an AlertDialog
             AlertDialog.Builder adb = new AlertDialog.Builder(this);
             adb.setTitle("ERROR");
