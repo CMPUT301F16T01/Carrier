@@ -220,6 +220,7 @@ public class UserController {
      * @param username
      * @param email
      * @param phoneNumber
+     * @param vehicleDescription
      * @return
      */
     public static void createNewUser(String username, String email, String phoneNumber, String vehicleDescription) {

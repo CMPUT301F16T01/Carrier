@@ -15,7 +15,7 @@
         android:text="@string/vehiclePrompt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20dp"
+        android:textSize="20sp"
         android:id="@+id/textView_vehiclePropt"
         android:paddingBottom="15dp"/>
 
@@ -122,7 +122,7 @@
                 android:ems="10"
                 android:inputType="textCapSentences"
                 android:id="@+id/editText_vehicleOther"
-                android:hint="e.g. Look for the family stickers on the back!"
+                android:hint="e.g. Look for the Alberta sticker!"
                 android:layout_below="@+id/textView_vehicleOther" />
 
             <Button
@@ -133,10 +133,6 @@
                 android:layout_below="@id/editText_vehicleOther"
                 android:onClick="register"
                 android:layout_marginTop="10dp"/>
-
-
-
-
         </RelativeLayout>
 
     </ScrollView>

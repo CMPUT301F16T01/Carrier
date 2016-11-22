@@ -31,20 +31,21 @@ public class SearchingTests extends ApplicationTest {
     static final double latitude4 = 53.5444;
     static final double longitude4 = -113.4909;
 
-    private User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234" );
-    private User driverOne = new User( "notifTestDriver", "notifyYou@email.com", "0118-99-112" );
+    private User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234", "Kia, Rio" );
+    private User driverOne = new User( "notifTestDriver", "notifyYou@email.com", "0118-99-112", "Kia, Rio"  );
 
     // Set up a test user to receive notifications
     private void setUpUser() {
         UserController uc = new UserController();
-        String result = uc.createNewUser( loggedInUser.getUsername(),
-                loggedInUser.getEmail(),
-                loggedInUser.getPhone() );
+        String result = uc.checkValidInputs(loggedInUser.getUsername(),
+                loggedInUser.getEmail(), loggedInUser.getPhone());
 
         if (result == null) {
             System.out.print( "null line" );
+        } else {
+            uc.createNewUser(loggedInUser.getUsername(),
+                    loggedInUser.getEmail(), loggedInUser.getPhone(), loggedInUser.getVehicleDescription());
         }
-
         assertTrue( "Failed to log in for test.", uc.logInUser( loggedInUser.getUsername() ) );
     }
 

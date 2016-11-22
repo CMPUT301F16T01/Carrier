@@ -3,6 +3,7 @@ package comcmput301f16t01.github.carrier.Users;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ public class NewVehicleActivity extends AppCompatActivity {
      * @param v This is the view for the function
      */
     public void register(View v) {
+        Log.i("activity","made it first");
         EditText makeEditText = (EditText) findViewById(R.id.editText_vehicleMake);
         EditText modelEditText = (EditText) findViewById(R.id.editText_vehicleModel);
         EditText yearEditText = (EditText) findViewById(R.id.editText_vehicleYear);
@@ -100,19 +102,17 @@ public class NewVehicleActivity extends AppCompatActivity {
         else {
             if (!make.equals("")) {
                 vehicleDescription += make;
-                vehicleDescription += ", ";
             }
             if (!model.equals("")) {
                 vehicleDescription += model;
-                vehicleDescription += ", ";
             }
             if (!year.equals("")) {
                 vehicleDescription += year;
-                vehicleDescription += ", ";
+                vehicleDescription += "\n ";
             }
             if (!color.equals("")) {
                 vehicleDescription += color;
-                vehicleDescription += ", ";
+                vehicleDescription += "\n ";
             }
             if (!other.equals("")) {
                 vehicleDescription += other;
