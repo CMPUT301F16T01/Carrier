@@ -102,17 +102,19 @@ public class NewVehicleActivity extends AppCompatActivity {
         else {
             if (!make.equals("")) {
                 vehicleDescription += make;
+                vehicleDescription += " ";
             }
             if (!model.equals("")) {
                 vehicleDescription += model;
+                vehicleDescription += " ";
             }
             if (!year.equals("")) {
                 vehicleDescription += year;
-                vehicleDescription += "\n ";
+                vehicleDescription += "\n";
             }
             if (!color.equals("")) {
                 vehicleDescription += color;
-                vehicleDescription += "\n ";
+                vehicleDescription += "\n";
             }
             if (!other.equals("")) {
                 vehicleDescription += other;

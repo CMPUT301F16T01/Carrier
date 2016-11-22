@@ -178,7 +178,7 @@
             android:scaleY="2" />
 
         <TextView
-            android:text="Kia, Rio"
+            android:text="Kia Rio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/imageView_car"
