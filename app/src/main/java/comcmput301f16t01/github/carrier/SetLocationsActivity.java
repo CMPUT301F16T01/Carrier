@@ -33,6 +33,10 @@ import org.osmdroid.views.overlay.Marker;
 
 import java.util.List;
 
+import comcmput301f16t01.github.carrier.Requests.RequestController;
+import comcmput301f16t01.github.carrier.Requests.ViewLocationsActivity;
+import comcmput301f16t01.github.carrier.Searching.SearchResultsActivity;
+
 import static com.google.android.gms.common.api.GoogleApiClient.*;
 
 public class SetLocationsActivity extends AppCompatActivity implements ConnectionCallbacks,
@@ -55,11 +59,15 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_set_locations);
+        setContentView(R.layout.activity_map);
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        point = bundle.getString("point");
-        type = bundle.getString("type");
+        if(intent.hasExtra("point")){
+            point = bundle.getString("point");
+        }
+        if(intent.hasExtra("type")) {
+            type = bundle.getString("type");
+        }
         setTitle("Choose " + point + " point");
 
         Button button = (Button) findViewById(R.id.button_confirmLocation);
@@ -115,7 +123,6 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
             setLocationMarker(map, geoPoint);
             mapController.setCenter(geoPoint);
         }
-
     }
 
     // Based on: https://goo.gl/Kpueci
@@ -214,7 +221,7 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         locationPoint.setAddress(getAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
         locationPoint.setShortAddress(getShortAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
         setLocationMarker(map, geoPoint);
-        return false;
+        return true;
     }
 
     @Override
@@ -234,7 +241,7 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         locationPoint.setAddress(getAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
         locationPoint.setShortAddress(getShortAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
         setLocationMarker(map, geoPoint);
-        return false;
+        return true;
     }
 
     // from: https://goo.gl/IxFxpG
@@ -294,6 +301,13 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
                 backIntent.putExtras(lastBundle);
                 setResult(RESULT_OK, backIntent);
                 activity.finish();
+            } else if (point.equals("search")) {
+                // if choosing search point, go to search results activity, passing bundle with search location
+                RequestController rc = new RequestController();
+                rc.searchByLocation(locationPoint);
+                Intent intent = new Intent(activity, SearchResultsActivity.class);
+                activity.finish();
+                startActivity(intent);
             }
         } else {
             Toast.makeText(activity, "You must first choose a location", Toast.LENGTH_SHORT).show();
@@ -368,6 +382,11 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
                     MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         } else {
             lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+            if(lastLocation == null) {
+                lastLocation = new Location("");
+                lastLocation.setLatitude(0);
+                lastLocation.setLongitude(0);
+            }
             latitude = lastLocation.getLatitude();
             longitude = lastLocation.getLongitude();
 
