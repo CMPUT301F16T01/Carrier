@@ -1,5 +1,6 @@
 package comcmput301f16t01.github.carrier.Requests;
 
+import android.location.Address;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -7,6 +8,8 @@ import android.util.Log;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
+
+import org.osmdroid.bonuspack.location.GeocoderNominatim;
 
 import java.io.IOException;
 import java.util.List;
@@ -129,7 +132,6 @@ public class ElasticRequestController {
     } // SearchByKeywordTask
 
     /**
-<<<<<<< HEAD
      * Searches requests by a geo-location.
      */
     public static class SearchByLocationTask extends AsyncTask<Location, Void, RequestList>{
@@ -200,12 +202,30 @@ public class ElasticRequestController {
         }
     }
 
+    // TODO http://stackoverflow.com/questions/1485708/how-do-i-do-a-http-get-in-java
+
     /**
-     * Get all of a rider's requests including a filter by status
-=======
+     * Searches for a list of possible geo-location from an address string.
+     */
+    public static class SearchByAddressTask extends AsyncTask<String, Void, List<Address>> {
+
+        @Override
+        protected List<Address> doInBackground(String... addresses) {
+            List<Address> addressList = null;
+
+            GeocoderNominatim geoNom = new GeocoderNominatim("");
+            try {
+                addressList = geoNom.getFromLocationName(addresses[0], 50);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return addressList;
+        }
+    }
+
+    /**
      * Get all of a rider's requests filtered by status
      * @see RequestController#fetchRequestsWhereRider(User, Integer...)
->>>>>>> 92fda80c294f949b664f49d206e3dedeea1f17a7
      */
     public static class FetchRiderRequestsTask extends AsyncTask<String, Void, RequestList> {
 
