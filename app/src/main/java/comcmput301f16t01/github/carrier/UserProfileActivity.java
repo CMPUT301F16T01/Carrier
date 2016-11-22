@@ -1,15 +1,23 @@
 package comcmput301f16t01.github.carrier;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.KeyListener;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
@@ -60,7 +68,7 @@ public class UserProfileActivity extends AppCompatActivity {
         }
 
         // Get the TextViews for the information that is going to be shown.
-        EditText usernameEditText = (EditText) findViewById(R.id.TextView_name);
+        TextView usernameEditText = (TextView) findViewById(R.id.TextView_name);
         EditText emailAddressEditText = (EditText) findViewById(R.id.EditText_email);
         EditText phoneNumberEditText = (EditText) findViewById(R.id.EditText_phone);
 
@@ -250,4 +258,42 @@ public class UserProfileActivity extends AppCompatActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
     }
+
+
+    /**
+     * This is the function that calls the number presented
+     *
+     * @param v view used for this function
+     */
+    public void callPhone(View v) {
+
+        /* Source: http://stackoverflow.com/questions/5403308/make-a-phone-call-click-on-a-button
+        * Author: Shaista Naaz
+        * Retrieved on: November 21st 2016 */
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse("tel:4035058336"));
+        Log.i("activity","made to function");
+
+        //this if statement checks to make sure we have the correct permissions
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+            startActivity(callIntent);
+        } else {
+            Toast.makeText(this, "You do not have the correct permissions to make a phone call.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    /**
+     * This is the function that will email the email pressed
+     * @param v the view the function is in
+     */
+    public void emailUser(View v) {
+        /**
+         * Source: http://stackoverflow.com/questions/21720640/sending-email-from-android-app-when-click-on-button
+         * Author: localhost
+         * Retrieved on: November 21st 2016
+         */
+        Log.i("activity","made to email");
+    }
+
 }
