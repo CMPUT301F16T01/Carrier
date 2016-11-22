@@ -30,7 +30,7 @@
     <string name="description_hint">Describe the ride you seek</string>
     <string name="submit_button_text">Submit</string>
     <!-- dialog_keyword_search.xml -->
-    <string name="searchHint">Enter a keyword</string>
+    <string name="searchKeywordHint">Enter a keyword</string>
 
     <!--for RiderRequestActivity-->
     <string name="DriverHere">Driver: </string>
@@ -42,4 +42,6 @@
     <string name="Cancel">CANCEL</string>
 
     <string name="vehiclePrompt"><b>If you have a vehicle please enter description here, otherwise click register.</b></string>
+    <string name="searchAddressHint">Enter an address</string>
+
 </resources>

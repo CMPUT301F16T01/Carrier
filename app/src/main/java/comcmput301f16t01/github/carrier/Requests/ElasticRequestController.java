@@ -1,11 +1,15 @@
 package comcmput301f16t01.github.carrier.Requests;
 
+import android.location.Address;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
+
+import org.osmdroid.bonuspack.location.GeocoderNominatim;
 
 import java.io.IOException;
 import java.util.List;
@@ -73,7 +77,6 @@ public class ElasticRequestController {
         }
     } // AddRequestTask
 
-
     /**
      * Searches by a keyword/string based phrase.
      * @see RequestController#searchByKeyword(String)
@@ -128,6 +131,98 @@ public class ElasticRequestController {
             return foundRequests;
         }
     } // SearchByKeywordTask
+
+    /**
+     * Searches requests by a geo-location.
+     */
+    public static class SearchByLocationTask extends AsyncTask<Location, Void, RequestList>{
+
+        /**
+         * Distance represents how far our search query will reach.
+         */
+        private static final int DISTANCE = 50;
+
+        @Override
+        protected RequestList doInBackground(Location... search_parameters) {
+            verifySettings();
+
+            String query =
+                "{ \"from\" : 0, \"size\" : 500,\n" +
+                "  \"query\" : {\n" +
+                "    \"filtered\" : {\n" +
+                "      \"query\" : {\n" +
+                "        \"bool\": { " +
+                "          \"should\": [\n" +
+                "            { \"match\": { \"status\": 1 }},\n" +
+                "            { \"match\": { \"status\": 2 }}\n" +
+                "          ],\n" +
+                "          \"minimum_should_match\": \"1\"\n" +
+                "        }\n" +
+                "      },\n" +
+                "      \"filter\" : {\n" +
+                "        \"geo_distance\" : {\n" +
+                "          \"distance\" : \"" + DISTANCE + "km\",\n" +
+                "          \"location\" : [" + search_parameters[0].getLongitude() + ", "
+                                             + search_parameters[0].getLatitude() + "]\n" +
+                "        }\n" +
+                "      }\n" +
+                "    }\n" +
+                "  },\n" +
+                "  \"sort\": [ {\n" +
+                "    \"_geo_distance\": {\n" +
+                "      \"location\" : [" + search_parameters[0].getLongitude() + ", "
+                                         + search_parameters[0].getLatitude() + "],\n" +
+                "      \"order\": \"asc\",\n" +
+                "      \"unit\": \"km\",\n" +
+                "      \"distance_type\": \"plane\"\n" +
+                "    }\n" +
+                "  } ]\n" +
+                "}";
+
+            Search search = new Search.Builder(query)
+                    .addIndex("cmput301f16t01")
+                    .addType("request")
+                    .build();
+
+            RequestList foundRequests = new RequestList();
+
+            try {
+                SearchResult result = client.execute(search);
+                Log.i("Result", result.toString());
+                if (result.isSucceeded()) {
+                    List<Request> notificationList = result.getSourceAsObjectList(Request.class);
+                    foundRequests.addAll( notificationList );
+                } else {
+                    throw new IllegalArgumentException();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.i("Error", "Something went wrong when we tried to talk to elastic search");
+            }
+            return foundRequests;
+        }
+    }
+
+    // TODO http://stackoverflow.com/questions/1485708/how-do-i-do-a-http-get-in-java
+
+    /**
+     * Searches for a list of possible geo-location from an address string.
+     */
+    public static class SearchByAddressTask extends AsyncTask<String, Void, List<Address>> {
+
+        @Override
+        protected List<Address> doInBackground(String... addresses) {
+            List<Address> addressList = null;
+
+            GeocoderNominatim geoNom = new GeocoderNominatim("");
+            try {
+                addressList = geoNom.getFromLocationName(addresses[0], 50);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return addressList;
+        }
+    }
 
     /**
      * Get all of a rider's requests filtered by status
