@@ -15,11 +15,11 @@ public class ElasticUserControllerTest extends ApplicationTest {
     @Override
     protected void setUp() throws InterruptedException {
         // The logged in user
-        uc.createNewUser("ElasticUserControllerTest", "test@test.com", "1234567890");
+        uc.createNewUser("ElasticUserControllerTest", "test@test.com", "1234567890", "Kia, Rio" );
         Thread.sleep(1000);
         uc.logInUser("ElasticUserControllerTest");
         // A user to remove later
-        uc.createNewUser("ElasticUserControllerTest2", "delete@test.com", "1234567890");
+        uc.createNewUser("ElasticUserControllerTest2", "delete@test.com", "1234567890", "Kia, Rio" );
         Thread.sleep(1000);
     }
 
@@ -51,8 +51,8 @@ public class ElasticUserControllerTest extends ApplicationTest {
 
 //        Test for uniqueness, createNewUser returns the string "That username is already taken" if
 //        a string is not unique
-        assertEquals("The username is not unique.", "That username is already taken!", UserController.createNewUser
-                ("ElasticUserControllerTest", "j@j.com", "1234567"));
+        assertEquals("The username is not unique.", "That username is already taken!",
+                UserController.checkValidInputs("ElasticUserControllerTest", "j@j.com", "1234567"));
     }
 
     /**

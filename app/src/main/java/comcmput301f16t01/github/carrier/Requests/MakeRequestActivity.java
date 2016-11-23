@@ -16,7 +16,6 @@ import android.widget.Toast;
 import android.os.Handler;
 import com.google.gson.Gson;
 
-//import comcmput301f16t01.github.carrier.Location;
 import java.util.Currency;
 import java.util.Locale;
 
@@ -27,7 +26,6 @@ import comcmput301f16t01.github.carrier.R;
 import comcmput301f16t01.github.carrier.SetLocationsActivity;
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
-import comcmput301f16t01.github.carrier.ViewLocationsActivity;
 
 /*
  The code for incrementing/decrementing the fare while holding down

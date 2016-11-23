@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/activity_new_user"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:layout_alignParentBottom="true"
+    tools:context="comcmput301f16t01.github.carrier.Users.NewUserActivity">
+
+    <TextView
+        android:text="@string/vehiclePrompt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:id="@+id/textView_vehiclePropt"
+        android:paddingBottom="15dp"/>
+
+    <View
+        android:id="@+id/topDivider"
+        android:layout_below="@+id/textView_vehiclePropt"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorPrimaryLighter" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/topDivider"
+        android:isScrollContainer="true"
+        android:layout_above="@+id/bottomDivider">
+
+        <RelativeLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical" >
+
+            <TextView
+                android:text="Make:"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView_vehicleMake" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="e.g. Kia, Ford, Chevy"
+                android:ems="10"
+                android:inputType="textCapSentences"
+                android:id="@+id/editText_vehicleMake"
+                android:layout_below="@id/textView_vehicleMake"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:text="Model:"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/editText_vehicleMake"
+                android:id="@+id/textView_vehicleModel" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textCapSentences"
+                android:layout_below="@id/textView_vehicleModel"
+                android:id="@+id/editText_vehicleModel"
+                android:hint="e.g. Rio, Fiesta, Charger"/>
+
+            <TextView
+                android:text="Color:"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/editText_vehicleModel"
+                android:id="@+id/textView_vehicleColor" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textCapSentences"
+                android:layout_below="@id/textView_vehicleColor"
+                android:id="@+id/editText_vehicleColor"
+                android:hint="e.g. red, blue, green" />
+
+            <TextView
+                android:text="Year:"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/editText_vehicleColor"
+                android:id="@+id/textView_vehicleYear" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:layout_below="@id/textView_vehicleYear"
+                android:id="@+id/editText_vehicleYear"
+                android:hint="e.g. 2003, 2008, 2013"
+                android:inputType="number" />
+
+            <TextView
+                android:text="Other Notes:"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/editText_vehicleYear"
+                android:id="@+id/textView_vehicleOther" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textCapSentences"
+                android:id="@+id/editText_vehicleOther"
+                android:hint="e.g. Look for the Alberta sticker!"
+                android:layout_below="@+id/textView_vehicleOther" />
+
+            <Button
+                android:text="Register"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/background_light"
+                android:background="@color/colorPrimary"
+                android:id="@+id/button_createNewUser"
+                android:layout_below="@id/editText_vehicleOther"
+                android:onClick="register"
+                android:layout_marginTop="10dp"/>
+        </RelativeLayout>
+
+    </ScrollView>
+
+    <View
+        android:id="@+id/bottomDivider"
+        android:layout_below="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorPrimaryLighter" />
+
+</LinearLayout>

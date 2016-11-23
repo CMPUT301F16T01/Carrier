@@ -1,4 +1,4 @@
-package comcmput301f16t01.github.carrier;
+package comcmput301f16t01.github.carrier.Users;
 
 import android.Manifest;
 import android.content.Context;
@@ -21,8 +21,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import comcmput301f16t01.github.carrier.Users.User;
-import comcmput301f16t01.github.carrier.Users.UserController;
+import comcmput301f16t01.github.carrier.R;
 
 // TODO A lot can be done to reduce code duplication. Notice how there are 4 functions that close,
 // and 2 that open. I feel like a lot of code generalization can be done here to reduce bugs
@@ -36,6 +35,7 @@ public class UserProfileActivity extends AppCompatActivity {
     // Saves the values of the old fields just in case the user cancels their edit.
     private String oldPhoneNumber;
     private String oldEmailAddress;
+    private String vehicleDescription;
     private User currentUser = UserController.getLoggedInUser();
     private User user;
 
@@ -73,18 +73,23 @@ public class UserProfileActivity extends AppCompatActivity {
         } else {
             oldEmailAddress = user.getEmail();
             oldPhoneNumber = user.getPhone();
+            vehicleDescription = user.getVehicleDescription();
             username = user.getUsername();
         }
 
         // Get the TextViews for the information that is going to be shown.
-        TextView usernameEditText = (TextView) findViewById(R.id.TextView_name);
+        TextView usernameTextView = (TextView) findViewById(R.id.TextView_name);
         EditText emailAddressEditText = (EditText) findViewById(R.id.EditText_email);
         EditText phoneNumberEditText = (EditText) findViewById(R.id.EditText_phone);
+        TextView vehicleDescriptionTextView = (TextView) findViewById(R.id.textView_vehicleDescription);
 
         //Save old values in case the user changes their mind about editing.
-        usernameEditText.setText(username);
+        usernameTextView.setText(username);
         emailAddressEditText.setText(oldEmailAddress);
         phoneNumberEditText.setText(oldPhoneNumber);
+        vehicleDescriptionTextView.setText(vehicleDescription);
+
+        vehicleDescriptionTextView.setSelected(true);
 
         //check permissions
         checkPermissionsCall();
@@ -95,7 +100,7 @@ public class UserProfileActivity extends AppCompatActivity {
         phoneNumberEditText.setKeyListener(null);
         emailAddressEditText.setTag(emailAddressEditText.getKeyListener());
         emailAddressEditText.setKeyListener(null);
-        usernameEditText.setKeyListener(null);
+        usernameTextView.setKeyListener(null);
 
         /*If profile being viewed is not the logged in user's, the edit buttons are hidden and are
         unclickable.

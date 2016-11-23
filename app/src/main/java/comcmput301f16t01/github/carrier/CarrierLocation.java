@@ -2,6 +2,8 @@ package comcmput301f16t01.github.carrier;
 
 import android.location.Location;
 
+import org.osmdroid.util.GeoPoint;
+
 /**
  * Represents a geo-location on the globe.
  * Includes an address string.
@@ -44,5 +46,14 @@ public class CarrierLocation extends Location {
     public String getLatLong() {
         return "(" + String.valueOf(getLatitude()) + ", " +
                 String.valueOf(getLongitude()) + ")";
+    }
+
+    @Override
+    public String toString() {
+        if(address != null) {
+            return getAddress();
+        } else {
+            return getLatLong();
+        }
     }
 }
