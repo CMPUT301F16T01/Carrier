@@ -240,13 +240,12 @@ public class MakeRequestActivity extends AppCompatActivity {
         if(start == null || end == null) {
             Toast.makeText(activity, "You must first select a start and end location", Toast.LENGTH_SHORT).show();
         } else {
-            FareCalculator fc = new FareCalculator();
-            int fareEstimate = fc.getEstimate(distance, duration);
+            int fareEstimate = FareCalculator.getEstimate(distance, duration);
             Currency localCurrency = Currency.getInstance( Locale.getDefault() );
             TextView currencyTextView = (TextView) findViewById(R.id.textView_currencySign);
             TextView fareTextView = (TextView) findViewById(R.id.textView_fareEstimate);
             currencyTextView.setText(localCurrency.getSymbol());
-            fareTextView.setText(fc.toString(fareEstimate));
+            fareTextView.setText(FareCalculator.toString(fareEstimate));
 
             fareEstimated = fareEstimate;
         }
@@ -257,11 +256,10 @@ public class MakeRequestActivity extends AppCompatActivity {
      * @param view Up arrow button
      */
     public void incrementFare(View view) {
-        FareCalculator fc = new FareCalculator();
         if(fareEstimated != -1) {
             fareEstimated++;
             TextView fareTextView = (TextView) findViewById(R.id.textView_fareEstimate);
-            fareTextView.setText(fc.toString(fareEstimated));
+            fareTextView.setText(FareCalculator.toString(fareEstimated));
         }
     }
 
@@ -270,11 +268,10 @@ public class MakeRequestActivity extends AppCompatActivity {
      * @param view Down arrow button
      */
     public void decrementFare(View view) {
-        FareCalculator fc = new FareCalculator();
         if(fareEstimated > 0) {
             fareEstimated--;
             TextView fareTextView = (TextView) findViewById(R.id.textView_fareEstimate);
-            fareTextView.setText(fc.toString(fareEstimated));
+            fareTextView.setText(FareCalculator.toString(fareEstimated));
         }
     }
 
@@ -286,9 +283,8 @@ public class MakeRequestActivity extends AppCompatActivity {
      */
     public void submitRequest(View view) {
         RequestController rc = new RequestController();
-        UserController uc = new UserController();
 
-        User user = uc.getLoggedInUser();
+        User user = UserController.getLoggedInUser();
 
         EditText descEditText = (EditText) findViewById(R.id.editText_description);
         String description = descEditText.getText().toString();
@@ -301,6 +297,8 @@ public class MakeRequestActivity extends AppCompatActivity {
         }
 
         request.setFare(fareEstimated);
+
+        request.setDistance( distance );
 
         String result = rc.addRequest(request);
 

@@ -16,7 +16,6 @@ import java.util.List;
 
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Listener;
-import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.DeleteByQuery;

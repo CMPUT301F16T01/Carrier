@@ -313,6 +313,8 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
                 RequestController rc = new RequestController();
                 rc.searchByLocation(locationPoint);
                 Intent intent = new Intent(activity, SearchResultsActivity.class);
+                // Move the filter from this intent to the SearchResultActivity intent. 
+                intent.putExtra( "filterBundle", getIntent().getBundleExtra("filterBundle") );
                 activity.finish();
                 startActivity(intent);
             }
