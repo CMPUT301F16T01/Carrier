@@ -140,6 +140,7 @@
                 app:srcCompat="@mipmap/ic_edit"
                 android:id="@+id/ImageButton_phoneEditIcon"
                 android:scaleType="fitStart"
+                android:layout_marginBottom="20dp"
                 android:background="@android:color/transparent"
                 android:onClick="editPhoneNumber"
                 android:layout_alignTop="@+id/Button_cancelPhoneEdit"
