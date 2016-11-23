@@ -306,6 +306,26 @@ public class DriverViewRequestActivity extends AppCompatActivity {
 
             }
         }
+        // If status is complete we change the make an offer button to display that they have received payment
+        if (request.getStatus() == Request.COMPLETE && request.getConfirmedDriver().equals(loggedInUser)) {
+            Button payment_button = (Button) findViewById(R.id.button_makeOffer);
+            payment_button.setText(R.string.payment_received);
+            payment_button.setEnabled( true ); // Make the button clickable
+            payment_button.setAlpha((float) 0);
+            payment_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    receivedPayment(v);
+                }
+            });
+        }
+    }
+
+    private void receivedPayment(View v) {
+        Toast.makeText(this, "Request is now complete.", Toast.LENGTH_SHORT).show();
+        request.setStatus(Request.PAID);
+        ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
+        urt.execute(request);
     }
 
     public void makeOffer(View view) {
