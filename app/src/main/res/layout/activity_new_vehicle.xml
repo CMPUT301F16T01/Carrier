@@ -29,7 +29,7 @@
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/topDivider"
         android:isScrollContainer="true"
         android:layout_above="@+id/bottomDivider">
@@ -117,7 +117,6 @@
                 android:ems="10"
                 android:inputType="textCapSentences"
                 android:id="@+id/editText_vehicleOther"
-                android:maxLength="35"
                 android:hint="e.g. Look for the Alberta sticker!"
                 android:layout_below="@+id/textView_vehicleOther" />
 

@@ -38,7 +38,7 @@ public class NewUserActivity extends AppCompatActivity {
      * @param v the view needed for the function
      */
 
-    public void nextVehicle(View v) {
+    public void toVehicleRegistration(View v) {
         EditText usernameEditText = (EditText) findViewById(R.id.editText_newUsername);
         EditText phoneEditText = (EditText) findViewById(R.id.editText_newPhoneNum);
         EditText emailEditText = (EditText) findViewById(R.id.editText_newEmail);

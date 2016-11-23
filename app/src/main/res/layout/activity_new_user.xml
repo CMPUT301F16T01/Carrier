@@ -62,7 +62,7 @@
         android:textColor="@android:color/background_light"
         android:background="@color/colorPrimary"
         android:id="@+id/button_nextVehicle"
-        android:onClick="nextVehicle"
+        android:onClick="toVehicleRegistration"
         android:layout_marginTop="10dp"/>
 
 </LinearLayout>

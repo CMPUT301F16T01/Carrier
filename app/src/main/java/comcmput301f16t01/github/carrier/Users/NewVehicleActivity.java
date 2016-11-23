@@ -38,12 +38,12 @@ public class NewVehicleActivity extends AppCompatActivity {
         EditText modelEditText = (EditText) findViewById(R.id.editText_vehicleModel);
         EditText yearEditText = (EditText) findViewById(R.id.editText_vehicleYear);
         EditText colorEditText = (EditText) findViewById(R.id.editText_vehicleColor);
-        EditText otherEditText = (EditText) findViewById(R.id.editText_vehicleOther);
+        EditText otherNotesEditText = (EditText) findViewById(R.id.editText_vehicleOther);
 
         //This is the funtion that will make a pretty string out of all the info given
         String vehicleDescription = concatenateVehicleDescription(makeEditText.getText().toString(),
                 modelEditText.getText().toString(), yearEditText.getText().toString(),
-                colorEditText.getText().toString(), otherEditText.getText().toString());
+                colorEditText.getText().toString(), otherNotesEditText.getText().toString());
 
         //we will unpack for the bundle that was sent to us
         //from the new user activity
@@ -88,16 +88,16 @@ public class NewVehicleActivity extends AppCompatActivity {
      * @param model     The model of the user's vehicle
      * @param year      The year of the user's vehicle
      * @param color     The color of the user's vehicle
-     * @param other     The notes the user added to their vehicle
+     * @param otherNotes     The notes the user added to their vehicle
      * @return A string with all the info that is easy to display and read
      */
     private String concatenateVehicleDescription(String make, String model, String year,
-                                                 String color, String other) {
+                                                 String color, String otherNotes) {
         String vehicleDescription = "";
 
         // If all squares are empty then just leave the string empty
         if ( make.equals("") && model.equals("") && year.equals("")
-        && color.equals("") && other.equals("") ) {
+        && color.equals("") && otherNotes.equals("") ) {
             vehicleDescription = "No description entered";
         }
         //else we need to piece the string together
@@ -118,8 +118,8 @@ public class NewVehicleActivity extends AppCompatActivity {
                 vehicleDescription += color;
                 vehicleDescription += "\n";
             }
-            if (!other.equals("")) {
-                vehicleDescription += other;
+            if (!otherNotes.equals("")) {
+                vehicleDescription += otherNotes;
             }
         }
         return vehicleDescription;

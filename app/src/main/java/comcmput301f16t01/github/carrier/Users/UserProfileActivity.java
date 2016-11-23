@@ -72,6 +72,8 @@ public class UserProfileActivity extends AppCompatActivity {
         phoneNumberEditText.setText(oldPhoneNumber);
         vehicleDescriptionTextView.setText(vehicleDescription);
 
+        vehicleDescriptionTextView.setSelected(true);
+
         // Removes the key listener, so that it can't hear keys.
         // Also stores it as their tag, so we can grab it later...
         phoneNumberEditText.setTag(phoneNumberEditText.getKeyListener());
