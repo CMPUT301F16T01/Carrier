@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:hint="e.g. xXxX_mandi_XxXx"
+        android:hint="Joe"
         android:ems="10"
         android:id="@+id/editText_newUsername" />
 
@@ -37,7 +37,7 @@
         android:inputType="textEmailAddress"
         android:ems="10"
         android:id="@+id/editText_newEmail"
-        android:hint="e.g. ILikeBubbleTea@ualberta.ca"/>
+        android:hint="e.g. Joe@ualberta.ca"/>
 
     <TextView
         android:text="Phone Number:"
@@ -50,14 +50,19 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:id="@+id/editText_newPhoneNum"
-        android:hint="e.g. 0118-999-881-999-119-725... 3"
+        android:hint="e.g. 780-555-1234"
         android:inputType="number" />
 
+
+
     <Button
-        android:text="Do the make me"
+        android:text="Next"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/button_createNewUser"
-        android:onClick="submitNewUser"/>
+        android:textColor="@android:color/background_light"
+        android:background="@color/colorPrimary"
+        android:id="@+id/button_nextVehicle"
+        android:onClick="toVehicleRegistration"
+        android:layout_marginTop="10dp"/>
 
 </LinearLayout>
