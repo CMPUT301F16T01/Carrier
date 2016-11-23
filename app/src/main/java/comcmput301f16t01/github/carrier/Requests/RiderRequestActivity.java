@@ -245,8 +245,11 @@ public class RiderRequestActivity extends AppCompatActivity {
         return new GeoPoint(retLoc);
     }
 
-    // TODO fill in
-    public void payForRequest(View view) {
+    /**
+     * Will confirm the completion of a request.
+     * @param view The current view.
+     */
+    public void completeRequest(View view) {
         Toast.makeText(activity, "PAY FOR REQUEST", Toast.LENGTH_SHORT).show();
     }
 

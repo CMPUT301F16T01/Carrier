@@ -323,6 +323,10 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Will update the current request in elastic search to be paid for.
+     * @param v The view
+     */
     private void receivedPayment(View v) {
         Toast.makeText(this, "Request is now complete.", Toast.LENGTH_SHORT).show();
         request.setStatus(Request.PAID);
