@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
                     AlertDialog.Builder adb = new AlertDialog.Builder(this);
                     adb.setTitle("Permissions Denied");
                     adb.setMessage("You cannot view the map to select locations without " +
-                            "allowing the app to access. You can change " +
+                            "allowing the app to access your device's storage. You can change " +
                             "this permission from the app info.");
                     adb.setCancelable(true);
                     adb.setPositiveButton("OK", null);

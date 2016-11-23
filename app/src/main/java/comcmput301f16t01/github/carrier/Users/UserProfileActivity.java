@@ -286,11 +286,12 @@ public class UserProfileActivity extends AppCompatActivity {
     /**
      * This is the function that calls the number presented
      *
-     * @param v view used for this function
+     * @param v view clicked when we press on the call number button
      */
     public void callPhone(View v) {
         /* Source: http://stackoverflow.com/questions/5403308/make-a-phone-call-click-on-a-button
         * Author: Shaista Naaz
+        * TODO fix this like all the other code re use things
         * Retrieved on: November 21st 2016 */
         if (!editingPhone) {
             Intent callIntent = new Intent(Intent.ACTION_CALL);
@@ -310,12 +311,13 @@ public class UserProfileActivity extends AppCompatActivity {
 
     /**
      * This is the function that will email the email pressed
-     * @param v the view the function is in
+     * @param v view clicked when we press on the email button
      */
     public void emailUser(View v) {
         /**
          * Source: http://stackoverflow.com/questions/21720640/sending-email-from-android-app-when-click-on-button
          * Author: localhost
+         * * TODO fix this like all the other code re use things
          * Retrieved on: November 21st 2016
          */
         if (!editingEmail) {

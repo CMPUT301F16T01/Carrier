@@ -13,7 +13,7 @@
         android:textSize="36sp"
         android:textColor="@android:color/background_light"
         android:layout_marginBottom="52dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="32dp"
         android:layout_centerHorizontal="true" />
 
 
@@ -54,6 +54,7 @@
                 android:layout_below="@id/ImageView_usernameIcon"
                 android:layout_alignParentStart="true"
                 android:focusable="false"
+                android:layout_marginBottom="20dp"
                 android:clickable="false"
                 android:background="@null"/>
 
@@ -61,6 +62,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@mipmap/ic_email2"
+                android:onClick="emailUser"
                 android:id="@+id/ImageView_emailIcon"
                 android:layout_below="@+id/ImageButton_phoneEditIcon"
                 android:layout_alignParentStart="true" />
@@ -78,6 +80,7 @@
                 android:layout_below="@+id/ImageView_emailIcon"
                 android:layout_alignParentStart="true"
                 android:focusable="false"
+                android:layout_marginBottom="20dp"
                 android:clickable="false"
                 android:layout_toStartOf="@+id/ImageButton_emailEditIcon"
                 android:background="@null" />
@@ -86,6 +89,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@mipmap/ic_phone"
+                android:onClick="callPhone"
                 android:id="@+id/ImageView_phoneIcon"
                 android:layout_below="@+id/TextView_name"
                 android:layout_alignParentStart="true" />
@@ -100,6 +104,7 @@
                 android:textColor="@android:color/white"
                 android:text="1234567"
                 android:onClick="callPhone"
+                android:layout_marginBottom="20dp"
                 android:focusable="false"
                 android:clickable="false"
                 android:background="@null"

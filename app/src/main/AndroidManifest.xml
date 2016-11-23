@@ -11,14 +11,13 @@
     <!-- USED FOR LOCATION -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <!-- USED TO CALL-->
+    <!-- USED TO MAKE PHONE CALLS -->
     <uses-permission android:name="android.permission.CALL_PHONE"></uses-permission>
 
     <!-- USED TO TEST CONNECTIVITY -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:allowBackup="true"
