@@ -321,6 +321,12 @@ public class DriverViewRequestActivity extends AppCompatActivity {
                 }
             });
         }
+        if (request.getStatus() == Request.PAID ) {
+            Button payment_button = (Button) findViewById(R.id.button_makeOffer);
+            payment_button.setText(R.string.payment_received);
+            payment_button.setEnabled( false ); // Make the button clickable
+            payment_button.setAlpha((float) 0.5);
+        }
     }
 
     /**
@@ -329,9 +335,8 @@ public class DriverViewRequestActivity extends AppCompatActivity {
      */
     private void receivedPayment(View v) {
         Toast.makeText(this, "Request is now complete.", Toast.LENGTH_SHORT).show();
-        request.setStatus(Request.PAID);
-        ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
-        urt.execute(request);
+        RequestController rc = new RequestController();
+        rc.payForRequest(request);
     }
 
     /**

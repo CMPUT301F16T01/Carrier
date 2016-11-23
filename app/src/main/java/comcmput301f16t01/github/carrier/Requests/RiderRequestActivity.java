@@ -250,7 +250,16 @@ public class RiderRequestActivity extends AppCompatActivity {
      * @param view The current view.
      */
     public void completeRequest(View view) {
-        Toast.makeText(activity, "PAY FOR REQUEST", Toast.LENGTH_SHORT).show();
+        if (request.getStatus() == Request.CONFIRMED) {
+            Toast.makeText(activity, "PAY FOR REQUEST", Toast.LENGTH_SHORT).show();
+            RequestController rc = new RequestController();
+            rc.completeRequest(request);
+        }
+        else {
+            AlertDialog.Builder adb = new AlertDialog.Builder(RiderRequestActivity.this);
+            adb.setTitle("Error:");
+            adb.setMessage("Can not complete request");
+        }
     }
 
     /**
