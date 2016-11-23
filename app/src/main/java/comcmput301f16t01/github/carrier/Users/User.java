@@ -16,6 +16,7 @@ public class User implements Parcelable{
     private String username;
     private String email;
     private String phoneNumber;
+    private String vehicleDescription;
 
     /**
      * For use with Elastic Search, is the unique ID given to it
@@ -28,14 +29,16 @@ public class User implements Parcelable{
     /**
      * Constructor, requires username, email, and phone number.
      *
-     * @param inputUsername    The username
-     * @param inputEmail       The e-mail
-     * @param inputPhoneNumber The phone number
+     * @param inputUsername             The username
+     * @param inputEmail                The e-mail
+     * @param inputPhoneNumber          The phone number
+     * @param inputvehicleDescription   The vehicle information
      */
-    public User(@NonNull String inputUsername, @NonNull String inputEmail, @NonNull String inputPhoneNumber) {
+    public User(@NonNull String inputUsername, @NonNull String inputEmail, @NonNull String inputPhoneNumber, @NonNull String inputvehicleDescription) {
         this.username = inputUsername;
         this.email = inputEmail;
         this.phoneNumber = inputPhoneNumber;
+        this.vehicleDescription = inputvehicleDescription;
     }
 
     public User() {
@@ -51,6 +54,7 @@ public class User implements Parcelable{
         username = in.readString();
         email = in.readString();
         phoneNumber = in.readString();
+        vehicleDescription = in.readString();
         elasticID = in.readString();
     }
 
@@ -79,6 +83,14 @@ public class User implements Parcelable{
 
     public void setPhone(String phone) {
         this.phoneNumber = phone;
+    }
+
+    public void setVehicleDescription(String vehicleDescription) {
+        this.vehicleDescription = vehicleDescription;
+    }
+
+    public String getVehicleDescription() {
+        return vehicleDescription;
     }
 
     public String getPhone() {
@@ -125,6 +137,7 @@ public class User implements Parcelable{
         dest.writeString(username);
         dest.writeString(email);
         dest.writeString(phoneNumber);
+        dest.writeString(vehicleDescription);
         dest.writeString(elasticID);
     }
 }

@@ -44,6 +44,11 @@ import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestList;
 import comcmput301f16t01.github.carrier.Requests.RiderRequestActivity;
 import comcmput301f16t01.github.carrier.Searching.SearchActivity;
+import comcmput301f16t01.github.carrier.Users.LoginActivity;
+import comcmput301f16t01.github.carrier.Users.LoginMemory;
+import comcmput301f16t01.github.carrier.Users.User;
+import comcmput301f16t01.github.carrier.Users.UserController;
+import comcmput301f16t01.github.carrier.Users.UserProfileActivity;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
 /**
@@ -69,8 +74,6 @@ public class MainActivity extends AppCompatActivity {
     // TODO please comment this. Why is it here?
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
 
-    // Views contain controllers
-    //RequestController rc = new RequestController();
 
 
     @Override
@@ -200,7 +203,6 @@ public class MainActivity extends AppCompatActivity {
                 rider_fab.hide();
                 driver_fab.show();
                 break;
-
         }
     }
 

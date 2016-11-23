@@ -1,9 +1,7 @@
-package comcmput301f16t01.github.carrier;
+package comcmput301f16t01.github.carrier.Requests;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -29,7 +27,8 @@ import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
 import java.util.ArrayList;
 import java.util.List;
 
-import comcmput301f16t01.github.carrier.Requests.MakeRequestActivity;
+import comcmput301f16t01.github.carrier.CarrierLocation;
+import comcmput301f16t01.github.carrier.R;
 
 // Based on: https://goo.gl/4TKn2y
 // Retrieved on: November 10th, 2016
