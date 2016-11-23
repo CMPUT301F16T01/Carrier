@@ -6,7 +6,7 @@
     android:clickable="false"
     android:focusable="false">
 
-    <comcmput301f16t01.github.carrier.UsernameTextView
+    <comcmput301f16t01.github.carrier.Users.UsernameTextView
         android:text=""
         android:layout_row="0"
         android:layout_column="1"

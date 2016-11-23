@@ -26,6 +26,7 @@ import comcmput301f16t01.github.carrier.Users.UsernameTextView;
 
 public class OfferingDriversArrayAdapter extends ArrayAdapter<User> {
     private ArrayList<User> offeringDriversList;
+    private Activity activity = null;
     /**
      * Request is needed to provide a way to confirm the driver.
      */
@@ -34,6 +35,7 @@ public class OfferingDriversArrayAdapter extends ArrayAdapter<User> {
     public OfferingDriversArrayAdapter(Context context, int textViewResourceId, ArrayList<User> userArrayList) {
         super(context, textViewResourceId, userArrayList);
         this.offeringDriversList = userArrayList;
+        this.activity = (Activity) context;
     }
 
     /**
@@ -69,7 +71,7 @@ public class OfferingDriversArrayAdapter extends ArrayAdapter<User> {
                             RequestController rc = new RequestController();
                             rc.confirmDriver(request, offeringDriver);
                             Toast.makeText(view.getContext(), "Confirmed Driver", Toast.LENGTH_SHORT).show();
-                            ((Activity) view.getContext()).finish(); // Finish the activity.
+                            activity.finish(); // Finish the activity.
                         }
                     });
                     adb.setNegativeButton("No", new DialogInterface.OnClickListener() {

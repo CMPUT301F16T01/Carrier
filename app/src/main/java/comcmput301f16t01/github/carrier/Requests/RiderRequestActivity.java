@@ -95,7 +95,7 @@ public class RiderRequestActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        try {
+        /*try {
             ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
             frrt.execute(UserController.getLoggedInUser().getUsername());
             try {
@@ -115,7 +115,7 @@ public class RiderRequestActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        setViews();
+        setViews();*/
     }
     /**
      * Given the request passed in by the user, set the map according to the start and end locations
