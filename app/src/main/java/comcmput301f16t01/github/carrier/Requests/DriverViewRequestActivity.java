@@ -310,6 +310,10 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Used to make an offer on a request as a driver.
+     * @param view The current view.
+     */
     public void makeOffer(View view) {
         RequestController rc = new RequestController();
         // Can not make an offer on a request that has a confirmed driver.
