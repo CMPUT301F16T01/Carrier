@@ -35,9 +35,9 @@ public class ConnectionChecker {
                 activeNetwork.isConnectedOrConnecting();
     }
 
-    //http://stackoverflow.com/questions/15496278/httpurlconnection-is-throwing-exception
-    //https://developer.android.com/reference/java/net/HttpURLConnection.html
-    //https://developer.android.com/reference/android/os/AsyncTask.html
+    //TODO: http://stackoverflow.com/questions/15496278/httpurlconnection-is-throwing-exception
+    //TODO: https://developer.android.com/reference/java/net/HttpURLConnection.html
+    //TODO: https://developer.android.com/reference/android/os/AsyncTask.html
 
     /**
      * Async task that checks to see if the user can connect to elastic search.Returns true if you
