@@ -104,7 +104,7 @@ public class RiderRequestActivity extends AppCompatActivity {
                 for( Request foundRequest: foundRequests) {
                     if(foundRequest.getId().equals(request.getId())) {
                         request = foundRequest;
-                        Toast.makeText(this, "Updated request", Toast.LENGTH_SHORT).show();
+                        // Toast.makeText(this, "Updated request", Toast.LENGTH_SHORT).show();
                     }
                 }
             } catch (Exception e) {
@@ -282,8 +282,6 @@ public class RiderRequestActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Bundle bundle = getIntent().getExtras();
-
-                    int position = bundle.getInt("position");
                     Intent intent = new Intent(RiderRequestActivity.this, RiderViewOfferingDriversActivity.class);
                     intent.putExtras(bundle);
                     startActivity(intent);

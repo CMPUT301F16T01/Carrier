@@ -31,7 +31,7 @@ public class OfferingDriversArrayAdapter extends ArrayAdapter<User> {
      * Request is needed to provide a way to confirm the driver.
      */
     private Request request = null;
-
+    // TODO: Give attribution to http://stackoverflow.com/questions/9891360/getting-activity-from-context-in-android for closing the activity from context.
     public OfferingDriversArrayAdapter(Context context, int textViewResourceId, ArrayList<User> userArrayList) {
         super(context, textViewResourceId, userArrayList);
         this.offeringDriversList = userArrayList;
