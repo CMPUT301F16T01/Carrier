@@ -3,6 +3,7 @@ package comcmput301f16t01.github.carrier.Requests;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -291,7 +292,7 @@ public class RequestController {
      * @param minPrice The minimum value you wish to prune by.
      * @param maxPrice The maximum value you wish to prune by. (Passing null is equivalent to passing positive infinity)
      */
-    public void pruneByPrice(@NonNull Float minPrice, @Nullable Float maxPrice) {
+    public void pruneByPrice(@NonNull Double minPrice, @Nullable Double maxPrice) {
         RequestList filteredRequests = new RequestList();
         for ( Request request : searchResult ) {
             if ( request.getFare() < minPrice * 100 ) { continue; }
@@ -307,14 +308,14 @@ public class RequestController {
      * @param minPricePerKM The minimum value you wish to prune by.
      * @param maxPricePerKM The maximum value you wish to prune by. (Passing null is equivalent to passing positive infinity)
      */
-    public void pruneByPricePerKM( @NonNull Float minPricePerKM, @Nullable Float maxPricePerKM ) {
+    public void pruneByPricePerKM(@NonNull Double minPricePerKM, @Nullable Double maxPricePerKM ) {
         RequestList filteredRequests = new RequestList();
         for ( Request request : searchResult ) {
-            double pricePerKM = request.getFare() / request.getDistance();
+            double pricePerKM = (request.getFare()/100) / request.getDistance();
             // ensure the price per kilometer is greater than the specified minimum
-            if ( pricePerKM < minPricePerKM * 100 ) { continue; }
+            if ( pricePerKM < minPricePerKM ) { continue; }
             // ensure the price per kilometer is less than the specified maximum.
-            if ( maxPricePerKM != null && maxPricePerKM * 100 < pricePerKM ) { continue; }
+            if ( maxPricePerKM != null && maxPricePerKM < pricePerKM ) { continue; }
             filteredRequests.add( request ); // add the request if it is in range
         }
         searchResult.replaceList( filteredRequests );

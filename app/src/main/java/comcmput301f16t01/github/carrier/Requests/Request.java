@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 
 import comcmput301f16t01.github.carrier.CarrierLocation;
+import comcmput301f16t01.github.carrier.FareCalculator;
 import comcmput301f16t01.github.carrier.Users.User;
 import io.searchbox.annotations.JestId;
 
@@ -159,8 +160,9 @@ public class Request {
     public String toString() {
         String requestAsString = "Request From: " + rider.getUsername() + "\n" +
                 "Description: " + description + "\n" +
-                "Price: " + getFare() + "\n" +
-                "Price per KM: " + (fare/100)/distance;
+                "Price: " + FareCalculator.toString( fare ) + "\n" +
+                "Distance: " + distance + "km\n" +
+                "Price per KM: " + FareCalculator.toString((int) (fare/distance));
         return requestAsString;
     }
 

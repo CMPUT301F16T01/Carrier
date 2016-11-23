@@ -121,13 +121,13 @@ public class SearchActivity extends AppCompatActivity {
         if ( filterByPrice ) {
             EditText minEditText = (EditText) findViewById( R.id.editText_minPrice);
             EditText maxEditText = (EditText) findViewById( R.id.editText_maxPrice);
-            Float minPrice;
-            Float maxPrice;
+            Double minPrice;
+            Double maxPrice;
 
             try {
                 // Try to convert the input to a float, if we fail return an error message
-                minPrice = Float.valueOf(minEditText.getText().toString());
-                bundle.putFloat( "minPrice", minPrice );
+                minPrice = Double.valueOf(minEditText.getText().toString());
+                bundle.putDouble( "minPrice", minPrice );
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("You must put a valid value for the minimum price you are searching for." );
             }
@@ -138,8 +138,8 @@ public class SearchActivity extends AppCompatActivity {
             } else {
                 // Else we check if we can parse the value and put it in our bundle.
                 try {
-                    maxPrice = Float.valueOf(maxEditText.getText().toString());
-                    bundle.putFloat( "maxPrice", maxPrice );
+                    maxPrice = Double.valueOf(maxEditText.getText().toString());
+                    bundle.putDouble( "maxPrice", maxPrice );
                     if ( minPrice > maxPrice ) {
                         throw new IllegalArgumentException( "You may not set the minimum price higher than the maximum price.");
                     }
@@ -154,13 +154,13 @@ public class SearchActivity extends AppCompatActivity {
         if ( filterByPricePerKM ) {
             EditText minEditText = (EditText) findViewById( R.id.editText_minPricePerKM);
             EditText maxEditText = (EditText) findViewById( R.id.editText_maxPricePerKM);
-            Float minPrice;
-            Float maxPrice;
+            Double minPrice;
+            Double maxPrice;
 
             // Try to convert the input to a float, if we fail return an error message
             try {
-                minPrice = Float.valueOf(minEditText.getText().toString());
-                bundle.putFloat( "minPricePerKM", minPrice );
+                minPrice = Double.valueOf(minEditText.getText().toString());
+                bundle.putDouble( "minPricePerKM", minPrice );
             } catch (NumberFormatException e) {
                 String message = "You must put a valid value for the minimum price per " +
                         "kilometer you are searching for.";
@@ -173,8 +173,8 @@ public class SearchActivity extends AppCompatActivity {
             } else {
                 // Else we check if we can parse the value and put it in our bundle.
                 try {
-                    maxPrice = Float.valueOf(maxEditText.getText().toString());
-                    bundle.putFloat( "maxPricePerKM", maxPrice );
+                    maxPrice = Double.valueOf(maxEditText.getText().toString());
+                    bundle.putDouble( "maxPricePerKM", maxPrice );
                     if ( minPrice > maxPrice ) {
                         throw new IllegalArgumentException( "You may not set the minimum price per kilometer higher than the maximum price.");
                     }

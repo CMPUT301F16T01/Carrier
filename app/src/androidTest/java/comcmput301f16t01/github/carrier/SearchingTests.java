@@ -6,6 +6,7 @@ import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestList;
+import comcmput301f16t01.github.carrier.Users.ElasticUserController;
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
@@ -39,6 +40,8 @@ public class SearchingTests extends ApplicationTest {
         rot.setMode( rot.MODE_USERNAME );
         rot.execute(loggedInUser.getUsername(), driverOne.getUsername());
 
+        ElasticUserController.DeleteUserTask dut = new ElasticUserController.DeleteUserTask();
+        dut.execute( driverOne.getUsername() );
         super.tearDown();
     }
 
@@ -220,5 +223,82 @@ public class SearchingTests extends ApplicationTest {
 
         rc.addDriver(requestThree, driverOne);
         rc.confirmDriver(requestThree, driverOne);
+    }
+
+    /** Test 4
+     * Test that we can filter by price.
+     */
+    public void testPriceFiltering() {
+        RequestController rc = new RequestController();
+        int pass;
+
+        rc.clearAllRiderRequests( loggedInUser );
+        UserController.createNewUser(driverOne.getUsername(),
+                driverOne.getEmail(),
+                driverOne.getPhone());
+        UserController uc = new UserController();
+        uc.logInUser( driverOne.getUsername() );
+
+        // We put some requests in the elastic searches
+        Request requestOne = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
+                "@45jkLmNO02032aassssssssssssssssssssssssss");
+        requestOne.setFare( 1000 );
+        requestOne.setDistance( 2 );
+        Request requestTwo = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
+                "@45jkLmNO02032aassssssssssssssssssssssssss");
+        requestTwo.setFare( 998 );
+        requestTwo.setDistance( 2 );
+        Request requestThree = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
+                "@45jkLmNO02032aassssssssssssssssssssssssss");
+        requestThree.setFare( 1002 );
+        requestThree.setDistance( 2 );
+        rc.addRequest( requestOne );
+        rc.addRequest( requestTwo );
+        rc.addRequest( requestThree );
+
+        // Check that they've been added
+        RequestList requestList = rc.fetchAllRequestsWhereRider( loggedInUser );
+        pass = 0;
+        while ( requestList.size() != 3 ) {
+            requestList = rc.fetchRequestsWhereRider( loggedInUser );
+            chillabit( 1000 );
+            pass++;
+            if ( pass > 3 ) { break; }
+        }
+        assertTrue( "We should see the three requests we made got " + requestList.size(), requestList.size() == 3 );
+
+        // Ensure the search return all the requests we've added.
+        requestList.clear();
+        requestList = rc.getResult();
+        pass = 0;
+        while( requestList.size() != 3 && pass < 5 ) {
+            rc.searchByKeyword( "@45jkLmNO02032aassssssssssssssssssssssssss" );
+            requestList = rc.getResult();
+            chillabit( 1000 );
+            pass++;
+        }
+        assertTrue( "The search should return three requests got " + requestList.size(), requestList.size() == 3 );
+
+        // Ensure we can prune by price
+        rc.pruneByPrice( 9.99, 10.01 );
+        assertTrue( "There should be only one request after the filter",
+                rc.getResult().size() == 1 );
+
+        // Ensure the search return all the requests we've added.
+        requestList.clear();
+        rc.searchByKeyword( "@45jkLmNO02032aassssssssssssssssssssssssss" );
+        requestList = rc.getResult();
+        pass = 0;
+        while( requestList.size() != 3 && pass < 5 ) {
+            requestList = rc.getResult();
+            chillabit( 1000 );
+            pass++;
+        }
+        assertTrue( "The search should return three requests", requestList.size() == 3 );
+
+        // Ensure we can prune by price per "KM"
+        rc.pruneByPricePerKM( 9.99/2 , 10.01/2 );
+        assertTrue( "There should be only one request after the filter",
+                rc.getResult().size() == 1 );
     }
 }
