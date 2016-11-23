@@ -2,6 +2,7 @@ package comcmput301f16t01.github.carrier.Requests;
 
 import android.content.Context;
 import android.location.Location;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -16,6 +17,7 @@ import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
+import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
@@ -45,6 +47,9 @@ public class RequestController {
     /** The file name of the locally saved offered driver requests. */
     private final String DRIVER_FILENAME = "DriverRequests.sav";
 
+    /** The context with which to save */
+    private Context saveContext;
+
     /**
      * Prevents errors when a RequestController is initialized and methods that require requestList
      * to not be null (i.e. getResult() )
@@ -60,6 +65,14 @@ public class RequestController {
         if (searchResult == null) {
             searchResult = new RequestList();
         }
+    }
+
+    public RequestList getRequestsWhereRider() {
+        return requestsWhereRider;
+    }
+
+    public void setContext(Context contextToSet) {
+        this.saveContext = contextToSet;
     }
 
     /** Returns an instance of all requests where the user has offered to drive */
@@ -87,6 +100,7 @@ public class RequestController {
             ElasticRequestController.AddRequestTask art = new ElasticRequestController.AddRequestTask();
             art.execute(request);
             requestsWhereRider.add( request ); // Add new request to requestList (will notify riderList views)
+            saveRiderRequests();
         }
         return null;
     }
@@ -110,6 +124,7 @@ public class RequestController {
     @Deprecated
     public void cancelRequest(User rider, Request request) {
         throw new IllegalArgumentException( "This method is deprecated." );
+
     }
 
     /**
@@ -119,6 +134,7 @@ public class RequestController {
         ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
         request.setStatus(Request.CANCELLED);
         urt.execute( request );
+        saveRiderRequests();
     }
 
     /**
@@ -180,6 +196,7 @@ public class RequestController {
         urt.execute( request );
         requestsWhereOffered.notifyListeners();
         requestsWhereRider.notifyListeners();
+        saveRiderRequests();
     }
 
     /**
@@ -191,6 +208,7 @@ public class RequestController {
         urt.execute( request );
         requestsWhereOffered.notifyListeners();
         requestsWhereRider.notifyListeners();
+        saveRiderRequests();
     }
 
     /**
@@ -236,14 +254,6 @@ public class RequestController {
     }
 
     /**
-     * For offline use. Sets the requests that, as a driver, the user has offered on.
-     * @param cachedRequestsOfferedOn The cached RequestList to load.
-     */
-    private void setOfferedRequests(RequestList cachedRequestsOfferedOn) {
-        RequestController.requestsWhereOffered = cachedRequestsOfferedOn;
-    }
-
-    /**
      * Clears out all the requested requests for a user
      */
     public void clearAllRiderRequests(User rider) {
@@ -278,6 +288,7 @@ public class RequestController {
             e.printStackTrace();
         }
         requestsWhereRider.replaceList( foundRequests );
+        saveRiderRequests();
         return foundRequests;
     }
 
@@ -291,15 +302,8 @@ public class RequestController {
             e.printStackTrace();
         }
         requestsWhereRider.replaceList( foundRequests );
+        saveRiderRequests();
         return foundRequests;
-    }
-
-    /**
-     * For offline usage. Sets the RequestList requestsWhereRider to be the cached requests.
-     * @param cachedRequestsWhereRider The cached requests to load
-     */
-    private void setRequestsWhereRider(RequestList cachedRequestsWhereRider) {
-        RequestController.requestsWhereRider = cachedRequestsWhereRider;
     }
 
     public void performAsyncUpdate() {
@@ -360,9 +364,8 @@ public class RequestController {
 
     /**
      * Caches the requests that the rider has made.
-     * @param saveContext The context in which to perform the save
      */
-    public void saveRiderRequests(Context saveContext) {
+    public void saveRiderRequests() {
         try {
             FileOutputStream fos = saveContext.openFileOutput(this.RIDER_FILENAME, 0);
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
@@ -380,16 +383,22 @@ public class RequestController {
 
     /**
      * For offline functionality. Loads the cached riderrequests.
-     * @param saveContext The context in which to load from.
      */
-    public void loadRiderRequests(Context saveContext) {
+    public void loadRiderRequests() {
         FileInputStream fis = null;
         try {
             fis = saveContext.openFileInput(RIDER_FILENAME);
             BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+            StringBuilder sb = new StringBuilder();
+            String line = in.readLine();
+            while (line != null) {
+                sb.append(line);
+                line = in.readLine();
+            }
             Gson gson = new Gson();
             Type listType = new TypeToken<RequestList>() {}.getType();
-            this.setRequestsWhereRider((RequestList) gson.fromJson(in, listType));
+            requestsWhereRider.replaceList((RequestList) gson.fromJson(in, listType));
+            Toast.makeText(saveContext, sb.toString(), Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -398,9 +407,8 @@ public class RequestController {
 
     /**
      * Caches the requests that the driver offered to fulfill.
-     * @param saveContext The context in which to perform the save
      */
-    public void saveDriverOfferedRequests(Context saveContext) {
+    public void saveDriverOfferedRequests() {
         try {
             FileOutputStream fos = saveContext.openFileOutput(this.DRIVER_FILENAME, 0);
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
@@ -416,16 +424,15 @@ public class RequestController {
 
     /**
      * For offline functionality. Loads the cached driver offered requests.
-     * @param saveContext The context in which to load from.
      */
-    public void loadDriverOfferedRequests(Context saveContext) {
+    public void loadDriverOfferedRequests() {
         FileInputStream fis = null;
         try {
             fis = saveContext.openFileInput(DRIVER_FILENAME);
             BufferedReader in = new BufferedReader(new InputStreamReader(fis));
             Gson gson = new Gson();
             Type listType = new TypeToken<RequestList>() {}.getType();
-            this.setRequestsWhereRider((RequestList) gson.fromJson(in, listType));
+            requestsWhereOffered.replaceList((RequestList) gson.fromJson(in, listType));
         } catch (Exception e) {
             e.printStackTrace();
         }

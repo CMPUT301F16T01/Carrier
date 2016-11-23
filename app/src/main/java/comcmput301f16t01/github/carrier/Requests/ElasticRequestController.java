@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.List;
 
 import comcmput301f16t01.github.carrier.Listener;
+import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Users.User;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.DeleteByQuery;
@@ -538,13 +539,17 @@ public class ElasticRequestController {
 
         @Override
         protected void onPostExecute(RequestList requests) {
-            // Perform result update on UI thread
-            if (withAsync) {
-                RequestController rc = new RequestController();
-                rc.getOffersInstance().replaceList( requests );
-                notifyListener();
+            // Perform result update on UI thread if there is internet
+            //TODO: ask bennett about this
+            if (ConnectionChecker.isThereInternet()) {
+                if (withAsync) {
+                    RequestController rc = new RequestController();
+                    rc.getOffersInstance().replaceList( requests );
+                    notifyListener();
+                }
+                super.onPostExecute(requests);
+
             }
-            super.onPostExecute(requests);
         }
     } // GetOfferedRequestsTask
 

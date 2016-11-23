@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
@@ -60,7 +62,7 @@ public class UserProfileActivity extends AppCompatActivity {
         }
 
         // Get the TextViews for the information that is going to be shown.
-        EditText usernameEditText = (EditText) findViewById(R.id.TextView_name);
+        TextView usernameEditText = (TextView) findViewById(R.id.TextView_name);
         EditText emailAddressEditText = (EditText) findViewById(R.id.EditText_email);
         EditText phoneNumberEditText = (EditText) findViewById(R.id.EditText_phone);
 

@@ -296,8 +296,6 @@ public class MakeRequestActivity extends AppCompatActivity {
 
         String result = rc.addRequest(request);
 
-        // Cache requests after the creation of one
-        rc.saveRiderRequests(this);
         // Check that a new request was created
         if (result == null) {
             Toast.makeText(activity, "Request submitted", Toast.LENGTH_SHORT).show();

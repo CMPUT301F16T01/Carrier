@@ -334,8 +334,6 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         } else {
             rc.addDriver(request, loggedInUser);
             Toast.makeText(this, "Made an offer.", Toast.LENGTH_SHORT).show();
-            // Cache the driver offered requests when they make an offer
-            rc.saveDriverOfferedRequests(this);
             Button button = (Button) findViewById( R.id.button_makeOffer);
             button.setEnabled(false); // Make the button un-clickable after offering.
             button.setAlpha((float) 0.5); // The button becomes 50% transparent

@@ -118,7 +118,7 @@ public class UserController {
     }
 
     public boolean offlineLogInUser(String usernameToLogin, User cachedUser) {
-        if (usernameToLogin.equals(cachedUser.getUsername())) {
+        if (usernameToLogin.toLowerCase().equals(cachedUser.getUsername().toLowerCase())) {
             loggedInUser = cachedUser;
             return true;
         }

@@ -62,11 +62,13 @@ public class LoginActivity extends AppCompatActivity {
                 adb.setPositiveButton( "OK", null );
             } else {
                 enterApp( username );
+                Toast.makeText(this, "Logged in online", Toast.LENGTH_LONG).show();
             }
         } else {
             User cachedUser = lm.loadUser();
-            uc.setLoggedInUser(cachedUser);
+            uc.offlineLogInUser(cachedUser.getUsername(), cachedUser);
             enterApp(cachedUser.getUsername());
+            Toast.makeText(this, "Logged in offline", Toast.LENGTH_LONG).show();
         }
 
     }
@@ -79,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
         String username = usernameEditText.getText().toString().trim();
             UserController uc = new UserController();
             LoginMemory lm = new LoginMemory( this );
-            // If there is internet no connection, attempt to log in with elastic search
+            // If there is internet connection, attempt to log in with elastic search
         if (ConnectionChecker.isThereInternet()) {
             if (!uc.logInUser(username)) {
                 Toast.makeText(this, "Username not found", Toast.LENGTH_LONG).show();
@@ -105,8 +107,8 @@ public class LoginActivity extends AppCompatActivity {
      * Standard welcome when entering the application.
      */
     private void enterApp( String username ) {
-        String welcome = "Welcome back, " + username + "!";
-        Toast.makeText(this, welcome, Toast.LENGTH_LONG).show();
+//        String welcome = "Welcome back, " + username + "!";
+//        Toast.makeText(this, welcome, Toast.LENGTH_LONG).show();
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
         this.finish();

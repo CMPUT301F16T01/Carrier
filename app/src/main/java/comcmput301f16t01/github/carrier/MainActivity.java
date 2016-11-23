@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle("Carrier");
-
+        rc.setContext(this);
         checkPermissions();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -137,8 +137,10 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton driver_fab = (FloatingActionButton) findViewById(R.id.fab_driver);
         driver_fab.hide();
 
-        // Perform an update using RequestController
-        rc.performAsyncUpdate();
+        // Perform an update using RequestController if there is internet
+        if (ConnectionChecker.isThereInternet()) {
+            rc.performAsyncUpdate();
+        }
     }
 
     @Override
