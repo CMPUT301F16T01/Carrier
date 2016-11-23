@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -37,6 +38,9 @@ public class UserProfileActivity extends AppCompatActivity {
     private String oldEmailAddress;
     private User currentUser = UserController.getLoggedInUser();
     private User user;
+
+    //used for calling permissions
+    private static final int MY_PERMISSIONS_CALL = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +82,9 @@ public class UserProfileActivity extends AppCompatActivity {
         usernameEditText.setText(username);
         emailAddressEditText.setText(oldEmailAddress);
         phoneNumberEditText.setText(oldPhoneNumber);
+
+        //check permissions
+        checkPermissionsCall();
 
         // Removes the key listener, so that it can't hear keys.
         // Also stores it as their tag, so we can grab it later...
@@ -297,14 +304,48 @@ public class UserProfileActivity extends AppCompatActivity {
          */
         Log.i("activity","made to email");
 
-        /*Intent email = new Intent(android.content.Intent.ACTION_SENDTO);
+        Intent email = new Intent(android.content.Intent.ACTION_SENDTO);
         email.setType("plain/text");
         email.putExtra(Intent.EXTRA_EMAIL, new String[] { "meinders@ualberta.ca" });
         email.putExtra(Intent.EXTRA_SUBJECT, "hi");
         email.putExtra(Intent.EXTRA_TEXT, "this is the message");
-        startActivity(Intent.createChooser(email,"Choose an Email client :"));*/
+        startActivity(Intent.createChooser(email,"Choose an Email client :"));
 
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_CALL: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    break; // permission was granted, yay!
+                } else {
+                    // permission denied, boo!
+                    AlertDialog.Builder adb = new AlertDialog.Builder(this);
+                    adb.setTitle("Permissions Denied");
+                    adb.setMessage("You will not be allowed to call in this app.");
+                    adb.setCancelable(true);
+                    adb.setPositiveButton("OK", null);
+                    adb.show();
+                }
+                break;
+            }
+        }
+    }
+
+    /**
+     * Asks user to grant required permissions for the maps to work.
+     */
+    private void checkPermissionsCall() {
+        if(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CALL_PHONE},
+                    MY_PERMISSIONS_CALL);
+        }
+    }
 }

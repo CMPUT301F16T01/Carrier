@@ -30,8 +30,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.List;
-
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationActivity;
@@ -74,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setTitle("Carrier");
 
-        checkPermissions();
+        checkPermissionsMaps();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -215,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
                     // permission denied, boo!
                     AlertDialog.Builder adb = new AlertDialog.Builder(this);
                     adb.setTitle("Permissions Denied");
-                    adb.setMessage("You cannot view the map or call to select locations without " +
+                    adb.setMessage("You cannot view the map to select locations without " +
                             "allowing the app to access. You can change " +
                             "this permission from the app info.");
                     adb.setCancelable(true);
@@ -231,9 +229,9 @@ public class MainActivity extends AppCompatActivity {
     // Author: Android Dev Docs
     // Retrieved on: November 9th, 2016
     /**
-     * Asks user to grant required permissions for the maps and calls to work.
+     * Asks user to grant required permissions for the maps to work.
      */
-    private void checkPermissions() {
+    private void checkPermissionsMaps() {
         // if statement from https://developer.android.com/training/permissions/requesting.html
         if(ContextCompat.checkSelfPermission(MainActivity.this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -241,15 +239,7 @@ public class MainActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
         }
-        if(ContextCompat.checkSelfPermission(MainActivity.this,
-                Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.CALL_PHONE},
-                    MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-        }
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
