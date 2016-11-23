@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <org.osmdroid.views.MapView
+    <!--<org.osmdroid.views.MapView-->
+    <ImageView
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="200dp"
