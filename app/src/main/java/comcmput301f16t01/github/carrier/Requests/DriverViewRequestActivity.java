@@ -253,8 +253,10 @@ public class DriverViewRequestActivity extends AppCompatActivity {
 
         // Set up the UsernameTextView of the driver
         UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
-        driverUsernameTextView.setText(uc.getLoggedInUser().getUsername());
-        driverUsernameTextView.setUser(uc.getLoggedInUser());
+        if (request.getConfirmedDriver() != null) {
+            driverUsernameTextView.setText(request.getConfirmedDriver().getUsername());
+            driverUsernameTextView.setUser(request.getConfirmedDriver());
+        }
 
         TextView startAddressTextView = (TextView) findViewById(R.id.textView_start);
         String startAddress = request.getStart().getAddress();

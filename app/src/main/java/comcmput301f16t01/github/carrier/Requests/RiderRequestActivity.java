@@ -1,6 +1,7 @@
 package comcmput301f16t01.github.carrier.Requests;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.content.DialogInterface;
@@ -8,7 +9,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +34,12 @@ import java.util.List;
 import java.util.Locale;
 
 import comcmput301f16t01.github.carrier.FareCalculator;
+import comcmput301f16t01.github.carrier.OfferingDriversArrayAdapter;
 import comcmput301f16t01.github.carrier.R;
+import comcmput301f16t01.github.carrier.Requests.Request;
+import comcmput301f16t01.github.carrier.Requests.RequestController;
+import comcmput301f16t01.github.carrier.RiderViewOfferingDriversActivity;
+import comcmput301f16t01.github.carrier.Users.UserController;
 import comcmput301f16t01.github.carrier.Users.UsernameTextView;
 
 /**
@@ -55,6 +63,7 @@ public class RiderRequestActivity extends AppCompatActivity {
 
         // unpacking the bundle to get the position of request
         Bundle bundle = getIntent().getExtras();
+
         int position = bundle.getInt("position");
         request = rc.getRiderInstance().get(position);
 
@@ -83,6 +92,31 @@ public class RiderRequestActivity extends AppCompatActivity {
         getRoadAsync();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
+            frrt.execute(UserController.getLoggedInUser().getUsername());
+            try {
+                ArrayList<Request> foundRequests;
+                foundRequests = frrt.get();
+                for( Request foundRequest: foundRequests) {
+                    if(foundRequest.getId().equals(request.getId())) {
+                        request = foundRequest;
+                        Toast.makeText(this, "Updated request", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Thread.sleep(1000);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        setViews();
+    }
     /**
      * Given the request passed in by the user, set the map according to the start and end locations
      */
@@ -160,7 +194,7 @@ public class RiderRequestActivity extends AppCompatActivity {
             }
             List<Overlay> mapOverlays = map.getOverlays();
             for (Road road : roads) {
-                if(road.mLength < minLength || minLength == 0) {
+                if (road.mLength < minLength || minLength == 0) {
                     minLength = road.mLength;
                     bestRoad = road;
                 }
@@ -185,6 +219,7 @@ public class RiderRequestActivity extends AppCompatActivity {
 
     /**
      * Get the center point of the route to center the screen on
+     *
      * @return GeoPoint
      */
     public GeoPoint getCenter() {
@@ -195,16 +230,16 @@ public class RiderRequestActivity extends AppCompatActivity {
 
         Location retLoc = new Location("");
 
-        if(startLat > endLat) {
-            retLoc.setLatitude(endLat + ((startLat - endLat)/2));
+        if (startLat > endLat) {
+            retLoc.setLatitude(endLat + ((startLat - endLat) / 2));
         } else {
-            retLoc.setLatitude(startLat + ((endLat - startLat)/2));
+            retLoc.setLatitude(startLat + ((endLat - startLat) / 2));
         }
 
-        if(startLong > endLong) {
-            retLoc.setLongitude(endLong + ((startLong - endLong)/2));
+        if (startLong > endLong) {
+            retLoc.setLongitude(endLong + ((startLong - endLong) / 2));
         } else {
-            retLoc.setLongitude(startLong + ((endLong - startLong)/2));
+            retLoc.setLongitude(startLong + ((endLong - startLong) / 2));
         }
 
         return new GeoPoint(retLoc);
@@ -221,7 +256,7 @@ public class RiderRequestActivity extends AppCompatActivity {
     public void setViews() {
         // Set up the fare
         FareCalculator fc = new FareCalculator();
-        Currency localCurrency = Currency.getInstance( Locale.getDefault() );
+        Currency localCurrency = Currency.getInstance(Locale.getDefault());
         String price = localCurrency.getSymbol() + fc.toString(request.getFare());
         TextView fareTextView = (TextView) findViewById(R.id.textView_$fareAmount);
         fareTextView.setText(price);
@@ -235,14 +270,31 @@ public class RiderRequestActivity extends AppCompatActivity {
         // TODO why does it say "sarah" even though there is no confirmedDriver?
         // Set up the UsernameTextView of the driver
         UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
+        // If no driver has been selected we need to display the list of drivers who have made an offer.
         if (request.getChosenDriver() != null) {
             driverUsernameTextView.setText(request.getChosenDriver().getUsername());
             driverUsernameTextView.setUser(request.getChosenDriver());
+        } else if (request.getOfferedDrivers().size() > 0) {
+            // If there is an offered driver
+            TextView driverTextView = (TextView) findViewById(R.id.textView_driver);
+            driverTextView.setText(R.string.View_Offering_Drivers);
+            driverTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bundle bundle = getIntent().getExtras();
+
+                    int position = bundle.getInt("position");
+                    Intent intent = new Intent(RiderRequestActivity.this, RiderViewOfferingDriversActivity.class);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            });
+
         }
 
         TextView startAddressTextView = (TextView) findViewById(R.id.textView_start);
         String startAddress = request.getStart().getAddress();
-        if(startAddress != null) {
+        if (startAddress != null) {
             startAddressTextView.setText(startAddress);
         } else {
             String startPoint = request.getStart().getLatLong();
@@ -251,7 +303,7 @@ public class RiderRequestActivity extends AppCompatActivity {
 
         TextView endAddressTextView = (TextView) findViewById(R.id.textView_end);
         String endAddress = request.getEnd().getAddress();
-        if(endAddress != null) {
+        if (endAddress != null) {
             endAddressTextView.setText(request.getEnd().getAddress());
         } else {
             String endPoint = request.getEnd().getLatLong();
@@ -293,7 +345,7 @@ public class RiderRequestActivity extends AppCompatActivity {
     /**
      * Will initialize the view ids for all the views in the activity.
      */
-    public void cancelRequest(View v){
+    public void cancelRequest(View v) {
         AlertDialog.Builder adb = new AlertDialog.Builder(RiderRequestActivity.this);
         if ((request.getStatus() != Request.CANCELLED) && (request.getStatus() != Request.COMPLETE)
                 && (request.getStatus() != Request.PAID)) {
@@ -314,8 +366,7 @@ public class RiderRequestActivity extends AppCompatActivity {
 
                 }
             });
-        }
-        else {
+        } else {
             adb.setTitle("Error: ");
             adb.setMessage("Request cannot be cancelled.");
             adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
