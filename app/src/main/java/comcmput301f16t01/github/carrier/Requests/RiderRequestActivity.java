@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.content.DialogInterface;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -88,7 +89,9 @@ public class RiderRequestActivity extends AppCompatActivity {
      */
     private void setMarkers() {
         Marker startMarker = new Marker(map);
+        startMarker.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_start_marker, null));
         Marker endMarker = new Marker(map);
+        endMarker.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_end_marker, null));
 
         startMarker.setPosition(startPoint);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
