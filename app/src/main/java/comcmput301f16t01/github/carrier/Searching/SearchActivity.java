@@ -240,6 +240,7 @@ public class SearchActivity extends AppCompatActivity {
         // Author: Android Dev Docs
         // Retrieved on: October 28, 2016
         Intent intent = new Intent(activity, SearchAddressChoiceActivity.class);
+        bundleFilters( intent );
         startActivity(intent);
     }
 }
