@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -95,7 +96,7 @@ public class RiderRequestActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        /*try {
+        try {
             ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
             frrt.execute(UserController.getLoggedInUser().getUsername());
             try {
@@ -115,7 +116,7 @@ public class RiderRequestActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        setViews();*/
+        setViews();
     }
     /**
      * Given the request passed in by the user, set the map according to the start and end locations
@@ -351,6 +352,12 @@ public class RiderRequestActivity extends AppCompatActivity {
                     break;
 
             }
+        }
+        // Make the button grey if it is completed or paid.
+        if (request.getStatus() == Request.COMPLETE || request.getStatus() == Request.PAID) {
+            Button completeButton = (Button) findViewById(R.id.button_confirm_completion);
+            completeButton.setAlpha(0.5f);
+            completeButton.setEnabled(false);
         }
     }
 

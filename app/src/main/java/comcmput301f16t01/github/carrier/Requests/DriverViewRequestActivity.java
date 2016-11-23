@@ -106,6 +106,13 @@ public class DriverViewRequestActivity extends AppCompatActivity {
     }
 
     /**
+     * Called when the activity is resumed.
+     */
+    public void onResume() {
+        super.onResume();
+        setViews();
+    }
+    /**
      * Given the request passed in by the user, set the map according to the start and end locations
      */
     private void setMarkers() {
@@ -309,11 +316,11 @@ public class DriverViewRequestActivity extends AppCompatActivity {
             }
         }
         // If status is complete we change the make an offer button to display that they have received payment
-        if (request.getStatus() == Request.COMPLETE && request.getConfirmedDriver().equals(loggedInUser)) {
+        if (request.getStatus() == Request.COMPLETE && request.getConfirmedDriver().getUsername().equals(loggedInUser.getUsername())) {
             Button payment_button = (Button) findViewById(R.id.button_makeOffer);
             payment_button.setText(R.string.payment_received);
             payment_button.setEnabled( true ); // Make the button clickable
-            payment_button.setAlpha((float) 0);
+            payment_button.setAlpha((float) 1);
             payment_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
