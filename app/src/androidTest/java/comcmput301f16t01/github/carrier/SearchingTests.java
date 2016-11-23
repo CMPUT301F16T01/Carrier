@@ -12,7 +12,42 @@ import comcmput301f16t01.github.carrier.Users.UserController;
 
 
 public class SearchingTests extends ApplicationTest {
-    // somewhere in Tokyo, Japan
+
+    // University of Alberta, Edmonton
+    static final double latitude1 = 53.5232;
+    static final double longitude1 = -113.5263;
+
+    // somewhere in London, Ontario
+    static final double latitude2 = 42.9870;
+    static final double longitude2 = -81.2432;
+
+    // somewhere in St. Albert, Alberta
+    static final double latitude3 = 53.6305;
+    static final double longitude3 = -113.6256;
+
+    // somewhere in Edmonton, Alberta
+    static final double latitude4 = 53.5444;
+    static final double longitude4 = -113.4909;
+
+    private User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234", "Kia, Rio" );
+    private User driverOne = new User( "notifTestDriver", "notifyYou@email.com", "0118-99-112", "Kia, Rio"  );
+
+    // Set up a test user to receive notifications
+    private void setUpUser() {
+        UserController uc = new UserController();
+        String result = uc.checkValidInputs(loggedInUser.getUsername(),
+                loggedInUser.getEmail(), loggedInUser.getPhone());
+
+        if (result == null) {
+            System.out.print( "null line" );
+        } else {
+            uc.createNewUser(loggedInUser.getUsername(),
+                    loggedInUser.getEmail(), loggedInUser.getPhone(), loggedInUser.getVehicleDescription());
+        }
+        assertTrue( "Failed to log in for test.", uc.logInUser( loggedInUser.getUsername() ) );
+    }
+
+    /*// somewhere in Tokyo, Japan
     static final double latitude1 = 35.6895;
     static final double longitude1 = 139.6917;
 
@@ -26,12 +61,11 @@ public class SearchingTests extends ApplicationTest {
 
     // Imperial Palace, Tokyo, Japan
     static final double latitude4 = 35.6852;
-    static final double longitude4 = 139.7528;
+    static final double longitude4 = 139.7528;*/
 
-    private User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234" );
-    private User driverOne = new User( "notifTestDriver", "notifyYou@email.com", "0118-99-112" );
-
-    // This tear down method may not be working entirely as expected...test further
+    /**
+     * Clears requests created by searchTestUser and clears request offers made by searchTestDriver
+     */
     protected void tearDown() throws Exception {
         ElasticRequestController.ClearRiderRequestsTask crt = new ElasticRequestController.ClearRiderRequestsTask();
         crt.execute( loggedInUser.getUsername(), driverOne.getUsername());
@@ -56,6 +90,13 @@ public class SearchingTests extends ApplicationTest {
         }
     }
 
+    /**
+     * Tests the SearchByLocation functionality in the RequestController. Tests that the correct
+     * number of requests are returned and that they are returned in the correct order (i.e.
+     * starting with those closest to the driver searching).
+     *
+     * Addresses Use Cases Searching #1 and #5.
+     */
     public void testDriverSearchByLocation() {
         CarrierLocation startLocation1 = new CarrierLocation();
         CarrierLocation endLocation1 = new CarrierLocation();
@@ -116,20 +157,22 @@ public class SearchingTests extends ApplicationTest {
     }
 
     /**
-     * TEST1
-     *
      * Tests that requests with specific keywords in the description can be queried.
      *
-     * As a driver, I want to browse and search for open requests by keyword.
-     * Related: US 04.02.01
+     * Addressing Use Case Searching #2.
      */
     public void testDriverSearchByKeyword() {
+        String keyword1 = "dkfjlasb";
+        String keyword2 = "ksjdahfk";
+        String keyword3 = "sjdjakfk";
+        String keyword4 = "dhsbskak";
+
         Request requestOne = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
-                "Test keywords: downtown");
+                "Test keywords: " + keyword1);
         Request requestTwo = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
-                "Test keywords: home");
+                "Test keywords: " + keyword2);
         Request requestThree = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
-                "Test keywords: home, work");
+                "Test keywords: " + keyword2 + ", " + keyword3);
 
         RequestController rc = new RequestController();
         rc.addRequest(requestOne);
@@ -149,30 +192,30 @@ public class SearchingTests extends ApplicationTest {
             if (pass > 10) { break; }
         }
 
-        // this method should return a list of requests based on keywords in the request description
-        String query1 = "home";
-        String query2 = "downtown"; // should not be case-dependent
-        String query3 = "walk";
-
-        rc.searchByKeyword(query1);
+        rc.searchByKeyword(keyword2);
         chillabit( 1000 );
         Assert.assertTrue("Search did not return 2 requests: " + rc.getResult().size(), rc.getResult().size() == 2);
-        rc.searchByKeyword(query2);
+        rc.searchByKeyword(keyword1);
         chillabit( 1000 );
         Assert.assertTrue("Search did not return 1 request", rc.getResult().size() == 1);
-        rc.searchByKeyword(query3);
+        rc.searchByKeyword(keyword4);
         chillabit( 1000 );
         Assert.assertTrue("Search returned requests", rc.getResult().size() == 0);
     }
 
     // TODO confirmDriver method not complete, this test will not pass
     public void testDriverSearchByKeywordWithConfirmed() {
+        String keyword1 = "dkfjlasb";
+        String keyword2 = "ksjdahfk";
+        String keyword3 = "sjdjakfk";
+        String keyword4 = "dhsbskak";
+
         Request requestOne = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
-                "Test keywords: downtown");
+                "Test keywords: " + keyword1);
         Request requestTwo = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
-                "Test keywords: home");
+                "Test keywords: " + keyword2);
         Request requestThree = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
-                "Test keywords: home, work");
+                "Test keywords: " + keyword2 + ", " + keyword3);
 
         RequestController rc = new RequestController();
         rc.addRequest(requestOne);
@@ -191,11 +234,6 @@ public class SearchingTests extends ApplicationTest {
             pass++;
             if (pass > 10) { break; }
         }
-
-        // this method should return a list of requests based on keywords in the request description
-        String query1 = "home";
-        String query2 = "downtown"; // should not be case-dependent
-        String query3 = "walk";
 
         rc.addDriver(requestOne, driverOne);
         rc.confirmDriver(requestOne, driverOne);
@@ -211,15 +249,15 @@ public class SearchingTests extends ApplicationTest {
         }
 
         // requestOne should no longer be included in search results
-        rc.searchByKeyword(query1);
+        rc.searchByKeyword(keyword2);
         chillabit( 1000 );
-        Assert.assertTrue("Search did not return 2 requests", rc.getResult().size() == 2);
-        rc.searchByKeyword(query2);
-        chillabit( 1000 );
-        Assert.assertTrue("Search returned requests: " + rc.getResult().size(), rc.getResult().size() == 0);
-        rc.searchByKeyword(query3);
+        Assert.assertTrue("Search did not return 2 requests: " + rc.getResult().size(), rc.getResult().size() == 2);
+        rc.searchByKeyword(keyword1);
         chillabit( 1000 );
         Assert.assertTrue("Search did not return 1 request", rc.getResult().size() == 1);
+        rc.searchByKeyword(keyword4);
+        chillabit( 1000 );
+        Assert.assertTrue("Search returned requests", rc.getResult().size() == 0);
 
         rc.addDriver(requestThree, driverOne);
         rc.confirmDriver(requestThree, driverOne);

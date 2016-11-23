@@ -196,7 +196,6 @@ public class RequestController {
      * this query. Use getResults() to get the information.
      */
     public void searchByLocation(Location location) {
-        // TODO check how these are sorted, we want to sort them by those closest to those furthest away
         ElasticRequestController.SearchByLocationTask sblt = new ElasticRequestController.SearchByLocationTask();
         sblt.execute(location);
         try {
