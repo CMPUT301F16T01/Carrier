@@ -40,5 +40,8 @@
     <string name="end_address">End:</string>
     <string name="description">Description:</string>
     <string name="Cancel">CANCEL</string>
+
+    <string name="vehiclePrompt"><b>If you have a vehicle please enter description here, otherwise click register.</b></string>
     <string name="searchAddressHint">Enter an address</string>
+
 </resources>

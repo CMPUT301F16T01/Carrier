@@ -11,7 +11,42 @@ import comcmput301f16t01.github.carrier.Users.UserController;
 
 
 public class SearchingTests extends ApplicationTest {
-    // somewhere in Tokyo, Japan
+
+    // University of Alberta, Edmonton
+    static final double latitude1 = 53.5232;
+    static final double longitude1 = -113.5263;
+
+    // somewhere in London, Ontario
+    static final double latitude2 = 42.9870;
+    static final double longitude2 = -81.2432;
+
+    // somewhere in St. Albert, Alberta
+    static final double latitude3 = 53.6305;
+    static final double longitude3 = -113.6256;
+
+    // somewhere in Edmonton, Alberta
+    static final double latitude4 = 53.5444;
+    static final double longitude4 = -113.4909;
+
+    private User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234", "Kia, Rio" );
+    private User driverOne = new User( "notifTestDriver", "notifyYou@email.com", "0118-99-112", "Kia, Rio"  );
+
+    // Set up a test user to receive notifications
+    private void setUpUser() {
+        UserController uc = new UserController();
+        String result = uc.checkValidInputs(loggedInUser.getUsername(),
+                loggedInUser.getEmail(), loggedInUser.getPhone());
+
+        if (result == null) {
+            System.out.print( "null line" );
+        } else {
+            uc.createNewUser(loggedInUser.getUsername(),
+                    loggedInUser.getEmail(), loggedInUser.getPhone(), loggedInUser.getVehicleDescription());
+        }
+        assertTrue( "Failed to log in for test.", uc.logInUser( loggedInUser.getUsername() ) );
+    }
+
+    /*// somewhere in Tokyo, Japan
     static final double latitude1 = 35.6895;
     static final double longitude1 = 139.6917;
 
@@ -25,10 +60,7 @@ public class SearchingTests extends ApplicationTest {
 
     // Imperial Palace, Tokyo, Japan
     static final double latitude4 = 35.6852;
-    static final double longitude4 = 139.7528;
-
-    private User loggedInUser = new User( "searchTestUser", "notify@email.com", "888-999-1234" );
-    private User driverOne = new User( "searchTestDriver", "notifyYou@email.com", "0118-99-112" );
+    static final double longitude4 = 139.7528;*/
 
     /**
      * Clears requests created by searchTestUser and clears request offers made by searchTestDriver

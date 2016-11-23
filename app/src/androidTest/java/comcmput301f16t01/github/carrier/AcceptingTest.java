@@ -17,10 +17,10 @@ public class AcceptingTest extends ApplicationTest {
     // Makes the current thread sleep for the specified amount of time (in ms)
     // TODO convert to a full out AsyncWait method to generalize waiting for .size() == RequestAdapter tasks?
     // From NotificationTest
-    private User basicRider = new User( "reqTestUser", "giveMeRide@carrier.com", "41534153" );
-    private User anotherUser = new User( "reqTestUser2", "loveSia@hotmail.com", "514514514" );
-    private User basicDriver = new User( "offeringDriver", "wannaDriveYou@gmail.com", "1323123" );
-    private User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234" );
+    private User basicRider = new User( "reqTestUser", "giveMeRide@carrier.com", "41534153", "Kia, Rio"  );
+    private User anotherUser = new User( "reqTestUser2", "loveSia@hotmail.com", "514514514", "Kia, Rio"  );
+    private User basicDriver = new User( "offeringDriver", "wannaDriveYou@gmail.com", "1323123", "Kia, Rio"  );
+    private User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234", "Kia, Rio"  );
 
 
     // abstracts reused code to prevent mistakes and aid in readability of tests
@@ -239,12 +239,14 @@ public class AcceptingTest extends ApplicationTest {
     }
     private void setUpUser() {
         UserController uc = new UserController();
-        String result = uc.createNewUser( loggedInUser.getUsername(),
-                loggedInUser.getEmail(),
-                loggedInUser.getPhone() );
+        String result = uc.checkValidInputs(loggedInUser.getUsername(),
+                loggedInUser.getEmail(), loggedInUser.getPhone());
 
         if (result == null) {
             System.out.print( "null line" );
+        } else {
+            uc.createNewUser(loggedInUser.getUsername(),
+                    loggedInUser.getEmail(), loggedInUser.getPhone(), loggedInUser.getVehicleDescription());
         }
 
         assertTrue( "Failed to log in for test.", uc.logInUser( loggedInUser.getUsername() ) );

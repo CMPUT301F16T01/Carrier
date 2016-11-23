@@ -14,6 +14,7 @@ import org.osmdroid.bonuspack.location.GeocoderNominatim;
 import java.io.IOException;
 import java.util.List;
 
+import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Listener;
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
