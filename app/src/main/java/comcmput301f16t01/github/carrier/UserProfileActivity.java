@@ -39,6 +39,9 @@ public class UserProfileActivity extends AppCompatActivity {
     private User currentUser = UserController.getLoggedInUser();
     private User user;
 
+    private Boolean editingPhone = false;
+    private Boolean editingEmail = false;
+
     //used for calling permissions
     private static final int MY_PERMISSIONS_CALL = 0;
 
@@ -113,6 +116,7 @@ public class UserProfileActivity extends AppCompatActivity {
      * @param v v is a View, allows usage of on click in xml
      */
     public void editPhoneNumber(View v) {
+        editingPhone = true;
         ImageButton cancelButton = (ImageButton) findViewById(R.id.Button_cancelPhoneEdit);
         ImageButton saveButton = (ImageButton) findViewById(R.id.EditButton_savePhoneEdit);
         ImageButton editButton = (ImageButton) findViewById(R.id.ImageButton_phoneEditIcon);
@@ -160,6 +164,7 @@ public class UserProfileActivity extends AppCompatActivity {
         this.oldPhoneNumber = phoneNumber;
         // The edit button is weirdly dissapearing? This fixes it.
         editButton.setVisibility(View.VISIBLE);
+        editingPhone = false;
     }
 
     /**
@@ -184,6 +189,7 @@ public class UserProfileActivity extends AppCompatActivity {
         phoneNumberText.setKeyListener(null);
 
         hideKeyboard(phoneNumberText);
+        editingPhone = false;
     }
 
     /**
@@ -192,6 +198,7 @@ public class UserProfileActivity extends AppCompatActivity {
      * @param v v is a View, allows usage of on click in xml
      */
     public void editEmailAddress(View v) {
+        editingEmail = true;
         ImageButton cancelButton = (ImageButton) findViewById(R.id.ImageButton_cancelEmailEdit);
         ImageButton saveButton = (ImageButton) findViewById(R.id.EditButton_saveEmail);
         ImageButton editButton = (ImageButton) findViewById(R.id.ImageButton_emailEditIcon);
@@ -215,6 +222,7 @@ public class UserProfileActivity extends AppCompatActivity {
      * @param v v is a View, allows usage of on click in xml
      */
     public void saveEditedEmailAddress(View v) {
+        editingEmail = false;
         ImageButton cancelButton = (ImageButton) findViewById(R.id.ImageButton_cancelEmailEdit);
         ImageButton saveButton = (ImageButton) findViewById(R.id.EditButton_saveEmail);
         ImageButton editButton = (ImageButton) findViewById(R.id.ImageButton_emailEditIcon);
@@ -244,6 +252,7 @@ public class UserProfileActivity extends AppCompatActivity {
      * @param v v is a View, allows usage of on click in xml
      */
     public void cancelEditEmailAddress(View v) {
+        editingEmail = false;
         ImageButton cancelButton = (ImageButton) findViewById(R.id.ImageButton_cancelEmailEdit);
         ImageButton saveButton = (ImageButton) findViewById(R.id.EditButton_saveEmail);
         ImageButton editButton = (ImageButton) findViewById(R.id.ImageButton_emailEditIcon);
@@ -278,16 +287,18 @@ public class UserProfileActivity extends AppCompatActivity {
         /* Source: http://stackoverflow.com/questions/5403308/make-a-phone-call-click-on-a-button
         * Author: Shaista Naaz
         * Retrieved on: November 21st 2016 */
-        Intent callIntent = new Intent(Intent.ACTION_CALL);
-        String phoneClicked = "tel:" + user.getPhone();
-        callIntent.setData(Uri.parse(phoneClicked));
-        Log.i("activity","made to function");
+        if (!editingPhone) {
+            Intent callIntent = new Intent(Intent.ACTION_CALL);
+            String phoneClicked = "tel:" + user.getPhone();
+            callIntent.setData(Uri.parse(phoneClicked));
+            Log.i("activity", "made to function");
 
-        //this if statement checks to make sure we have the correct permissions
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
-            startActivity(callIntent);
-        } else {
-            Toast.makeText(this, "You do not have the correct permissions to make a phone call.", Toast.LENGTH_SHORT).show();
+            //this if statement checks to make sure we have the correct permissions
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+                startActivity(callIntent);
+            } else {
+                Toast.makeText(this, "You do not have the correct permissions to make a phone call.", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -302,16 +313,14 @@ public class UserProfileActivity extends AppCompatActivity {
          * Author: localhost
          * Retrieved on: November 21st 2016
          */
-        Log.i("activity","made to email");
-
-        Intent email = new Intent(android.content.Intent.ACTION_SENDTO);
-        email.setType("plain/text");
-        email.putExtra(Intent.EXTRA_EMAIL, new String[] { "meinders@ualberta.ca" });
-        email.putExtra(Intent.EXTRA_SUBJECT, "hi");
-        email.putExtra(Intent.EXTRA_TEXT, "this is the message");
-        startActivity(Intent.createChooser(email,"Choose an Email client :"));
-
-
+        if (!editingEmail) {
+            Intent email = new Intent(android.content.Intent.ACTION_SEND);
+            email.setType("plain/text");
+            email.putExtra(Intent.EXTRA_EMAIL, new String[]{user.getEmail()});
+            email.putExtra(Intent.EXTRA_SUBJECT, "");
+            email.putExtra(Intent.EXTRA_TEXT, "");
+            startActivity(Intent.createChooser(email, "Choose an Email client :"));
+        }
     }
 
     @Override
