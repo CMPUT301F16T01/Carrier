@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     // Views contain controllers
     //RequestController rc = new RequestController();
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,6 +141,13 @@ public class MainActivity extends AppCompatActivity {
         // Perform an update using RequestController if there is internet
         if (ConnectionChecker.isThereInternet()) {
             rc.performAsyncUpdate();
+        }
+        else {
+            Toast.makeText(this, "Offline", Toast.LENGTH_SHORT).show();
+            rc.fetchAllRequestsWhereRider(UserController.getLoggedInUser());
+            rc.getOfferedRequests(UserController.getLoggedInUser());
+            //rc.saveRiderRequests();
+            Toast.makeText(this, "Size of requestsWhereRider: " + Integer.toString(rc.getRiderInstance().size()), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -549,5 +557,5 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
-    
+
 }

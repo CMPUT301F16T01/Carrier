@@ -2,6 +2,8 @@ package comcmput301f16t01.github.carrier.Requests;
 
 import android.content.Context;
 import android.location.Location;
+import android.os.Environment;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -48,7 +50,7 @@ public class RequestController {
     private final String DRIVER_FILENAME = "DriverRequests.sav";
 
     /** The context with which to save */
-    private Context saveContext;
+    private static Context saveContext;
 
     /**
      * Prevents errors when a RequestController is initialized and methods that require requestList
@@ -65,10 +67,6 @@ public class RequestController {
         if (searchResult == null) {
             searchResult = new RequestList();
         }
-    }
-
-    public RequestList getRequestsWhereRider() {
-        return requestsWhereRider;
     }
 
     public void setContext(Context contextToSet) {
@@ -97,8 +95,10 @@ public class RequestController {
         } else if (request.getFare() == -1) {
             return "You must first estimate the fare";
         } else {
-            ElasticRequestController.AddRequestTask art = new ElasticRequestController.AddRequestTask();
-            art.execute(request);
+            if (ConnectionChecker.isThereInternet()) {
+                ElasticRequestController.AddRequestTask art = new ElasticRequestController.AddRequestTask();
+                art.execute(request);
+            }
             requestsWhereRider.add( request ); // Add new request to requestList (will notify riderList views)
             saveRiderRequests();
         }
@@ -134,7 +134,6 @@ public class RequestController {
         ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
         request.setStatus(Request.CANCELLED);
         urt.execute( request );
-        saveRiderRequests();
     }
 
     /**
@@ -151,21 +150,22 @@ public class RequestController {
         } catch ( Exception e ) {
             return; // If the driver is already offered we shouldn't do this action.
         }
+        if (ConnectionChecker.isThereInternet()) {
+            // create an offer object [[ potentially throws IllegalArgumentException if called wrong ]]
+            Offer newOffer = new Offer(request, driver);
 
-        // create an offer object [[ potentially throws IllegalArgumentException if called wrong ]]
-        Offer newOffer = new Offer(request, driver);
-
-        // Add offer to elastic search
-        ElasticRequestController.AddOfferTask aot = new ElasticRequestController.AddOfferTask();
-        aot.execute( newOffer );
+            // Add offer to elastic search
+            ElasticRequestController.AddOfferTask aot = new ElasticRequestController.AddOfferTask();
+            aot.execute( newOffer );
+        }
         // TODO add addOffer task to queue if offline
 
         // Add a notification
         NotificationController nc = new NotificationController();
         nc.addNotification( request.getRider(), request );
         // TODO add addNotification to queue if offline
-
         requestsWhereOffered.add( request ); // Notifies offerList views
+        saveDriverOfferedRequests();
     }
 
     /**
@@ -176,11 +176,14 @@ public class RequestController {
      */
     public void confirmDriver(Request request, User driver) {
         // Modify and update the request, then execute the update task
-        ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
         request.setChosenDriver( driver );
         request.setStatus( Request.CONFIRMED );
         requestsWhereOffered.notifyListeners();
-        urt.execute( request );
+
+        if (ConnectionChecker.isThereInternet()) {
+            ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
+            urt.execute( request );
+        }
 
         // Send out a notification
         NotificationController nc = new NotificationController();
@@ -191,24 +194,28 @@ public class RequestController {
      * Completes a request
      */
     public void completeRequest(Request request) {
-        ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
-        request.setStatus( Request.COMPLETE );
-        urt.execute( request );
+        if (ConnectionChecker.isThereInternet()) {
+            ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
+            request.setStatus( Request.COMPLETE );
+            urt.execute( request );
+        }
         requestsWhereOffered.notifyListeners();
         requestsWhereRider.notifyListeners();
-        saveRiderRequests();
+        saveDriverOfferedRequests();
     }
 
     /**
      * Sets a request as paid for
      */
     public void payForRequest(Request request) {
-        ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
-        request.setStatus( Request.PAID );
-        urt.execute( request );
+        if (ConnectionChecker.isThereInternet()) {
+            ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
+            request.setStatus( Request.PAID );
+            urt.execute( request );
+        }
         requestsWhereOffered.notifyListeners();
         requestsWhereRider.notifyListeners();
-        saveRiderRequests();
+        saveDriverOfferedRequests();
     }
 
     /**
@@ -243,6 +250,10 @@ public class RequestController {
      */
     // TODO rename this method? i.e. getRequestsWhereDriverOffered, or something
     public RequestList getOfferedRequests(User driver) {
+        if (!ConnectionChecker.isThereInternet()) {
+            loadDriverOfferedRequests();
+            return requestsWhereOffered;
+        }
         ElasticRequestController.GetOfferedRequestsTask gort = new ElasticRequestController.GetOfferedRequestsTask();
         gort.execute( driver.getUsername() );
         try {
@@ -250,6 +261,7 @@ public class RequestController {
         } catch (Exception e) {
             throw new IllegalArgumentException( "There was an error executing the AsyncTask." );
         }
+        saveDriverOfferedRequests();
         return requestsWhereOffered;
     }
 
@@ -269,6 +281,12 @@ public class RequestController {
      * @return A list of requests from the given criteria
      */
     public RequestList fetchRequestsWhereRider(User rider, Integer... statuses ) {
+
+        // If the user is offline, load from file rather than from elastic search
+        if (!ConnectionChecker.isThereInternet()) {
+            loadRiderRequests();
+            return requestsWhereRider;
+        }
         // Open a fetch task for the user
         ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
 
@@ -293,6 +311,11 @@ public class RequestController {
     }
 
     public RequestList fetchAllRequestsWhereRider( User rider ) {
+        // If we're offline, load the cached rider requests
+        if (!ConnectionChecker.isThereInternet()) {
+            loadRiderRequests();
+            return requestsWhereRider;
+        }
         ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
         frrt.execute( rider.getUsername() );
         RequestList foundRequests = new RequestList();
@@ -314,6 +337,7 @@ public class RequestController {
         ElasticRequestController.GetOfferedRequestsTask gort = new ElasticRequestController.GetOfferedRequestsTask();
         gort.withAsync = true;
         gort.execute( UserController.getLoggedInUser().getUsername());
+
     }
 
     /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -371,9 +395,9 @@ public class RequestController {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
 
             Gson gson = new Gson();
-            gson.toJson(this.fetchAllRequestsWhereRider(UserController.getLoggedInUser()), out);
+            gson.toJson(requestsWhereRider, out);
             out.flush();
-
+            Log.i("Saving", "saveRiderRequests saved " + requestsWhereRider.size());
             fos.close();
 
         } catch (Exception e) {
@@ -389,16 +413,18 @@ public class RequestController {
         try {
             fis = saveContext.openFileInput(RIDER_FILENAME);
             BufferedReader in = new BufferedReader(new InputStreamReader(fis));
-            StringBuilder sb = new StringBuilder();
-            String line = in.readLine();
-            while (line != null) {
-                sb.append(line);
-                line = in.readLine();
-            }
+            // For debugging
+//            StringBuilder sb = new StringBuilder();
+//            String line = in.readLine();
+//            while (line != null) {
+//                sb.append(line);
+//                line = in.readLine();
+//            }
+            //
             Gson gson = new Gson();
             Type listType = new TypeToken<RequestList>() {}.getType();
             requestsWhereRider.replaceList((RequestList) gson.fromJson(in, listType));
-            Toast.makeText(saveContext, sb.toString(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(saveContext, sb.toString(), Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -414,8 +440,9 @@ public class RequestController {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
 
             Gson gson = new Gson();
-            gson.toJson(this.getOfferedRequests(UserController.getLoggedInUser()), out);
+            gson.toJson(requestsWhereOffered, out);
             out.flush();
+            Log.i("Saving", "saveDriverOfferedRequests saved " + requestsWhereOffered.size());
             fos.close();
         } catch (Exception e) {
             e.printStackTrace();
