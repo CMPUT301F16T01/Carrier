@@ -25,6 +25,12 @@ import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.SetLocationsActivity;
 
+
+/**
+ * See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#searchactivity">SearchActivity</a>
+ * Author: Android Dev Docs
+ * Retrieved on: October 28th, 2016
+ */
 public class SearchActivity extends AppCompatActivity {
     final Activity activity = SearchActivity.this;
 
@@ -42,9 +48,6 @@ public class SearchActivity extends AppCompatActivity {
      * @param view Search by keyword Button
      */
     public void searchByKeyword(View view) {
-        // Based on: https://goo.gl/6AAnXP
-        // Author: Android Dev Docs
-        // Retrieved on: October 28, 2016
         AlertDialog.Builder adb = new AlertDialog.Builder(activity);
         final LayoutInflater inflater = activity.getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.dialog_keyword_search, null);
@@ -88,9 +91,6 @@ public class SearchActivity extends AppCompatActivity {
      * @param view Search by address Button
      */
     public void searchByAddress(View view) {
-        // Based on: https://goo.gl/6AAnXP
-        // Author: Android Dev Docs
-        // Retrieved on: October 28, 2016
         Intent intent = new Intent(activity, SearchAddressChoiceActivity.class);
         startActivity(intent);
     }

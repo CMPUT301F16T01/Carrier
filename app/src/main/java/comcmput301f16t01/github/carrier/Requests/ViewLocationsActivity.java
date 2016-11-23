@@ -30,14 +30,20 @@ import java.util.List;
 import comcmput301f16t01.github.carrier.CarrierLocation;
 import comcmput301f16t01.github.carrier.R;
 
-// Based on: https://goo.gl/4TKn2y
-// Retrieved on: November 10th, 2016
-
-// Updated with: https://goo.gl/h2CKyn
-// Author: yubaraj poudel
-// Posted: August 6th, 2016
-// Retrieved on: November 10th, 2016
-
+/**
+ * Displays a map view with the route between the start and end points of a request visible.
+ *
+ * See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#driverviewrequestactivity">DriverViewRequestActivity</a>
+ *
+ * Based on: <a href="https://github.com/MKergall/osmbonuspack/wiki/Tutorial_0">Tutorial_0</a>
+ * Author: MKergall
+ * Retrieved on: November 10th, 2016
+ *
+ * Updated with: <a href="http://stackoverflow.com/questions/38539637/osmbonuspack-roadmanager-networkonmainthreadexception">OSMBonuspack RoadManager NetworkOnMainThreadException</a>
+ * Author: <a href="http://stackoverflow.com/users/4670837/yubaraj-poudel">yubaraj poudel</a>
+ * Posted: August 6th, 2016
+ * Retrieved on: November 10th, 2016
+ */
 public class ViewLocationsActivity extends AppCompatActivity {
     final Activity activity = ViewLocationsActivity.this;
     private CarrierLocation start = null;
