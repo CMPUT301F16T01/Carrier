@@ -133,11 +133,12 @@ public class ElasticRequestController {
 
     /**
      * Searches requests by a geo-location.
+     * @see RequestController#searchByLocation(Location)
      */
     public static class SearchByLocationTask extends AsyncTask<Location, Void, RequestList>{
 
         /**
-         * Distance represents how far our search query will reach.
+         * Distance represents how far our search query will reach. The unit is kilometres.
          */
         private static final int DISTANCE = 50;
 
@@ -202,10 +203,10 @@ public class ElasticRequestController {
         }
     }
 
-    // TODO http://stackoverflow.com/questions/1485708/how-do-i-do-a-http-get-in-java
-
     /**
-     * Searches for a list of possible geo-location from an address string.
+     * Searches for a list of possible geo-location from an address string. The resulting geo-location
+     * will be used in a searchByLocation query.
+     * @see RequestController#searchByLocation(Location)
      */
     public static class SearchByAddressTask extends AsyncTask<String, Void, List<Address>> {
 
@@ -215,6 +216,7 @@ public class ElasticRequestController {
 
             GeocoderNominatim geoNom = new GeocoderNominatim("");
             try {
+                // we are only getting a maximum of 50 matching addresses
                 addressList = geoNom.getFromLocationName(addresses[0], 50);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -328,7 +330,6 @@ public class ElasticRequestController {
                     throw new IllegalArgumentException();
                 }
             }
-
             return null;
         }
     }
@@ -362,7 +363,7 @@ public class ElasticRequestController {
     }
 
     /**
-     * Adds offers to elastic search
+     * Adds offers to elastic search.
      */
     public static class AddOfferTask extends AsyncTask<Offer, Void, Void> {
 
@@ -662,7 +663,7 @@ public class ElasticRequestController {
     }
 
     /**
-     * Opens a connection to the elastic search server
+     * Opens a connection to the elastic search server.
      */
     private static void verifySettings() {
         if (client == null) {
