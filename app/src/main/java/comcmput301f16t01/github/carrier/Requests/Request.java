@@ -94,6 +94,7 @@ public class Request {
 
     public void setChosenDriver(User driver) {
         this.chosenDriver = driver;
+        setStatus(Request.CONFIRMED);
     }
 
     public User getChosenDriver() {

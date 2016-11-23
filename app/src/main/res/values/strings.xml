@@ -40,5 +40,5 @@
     <string name="end_address">End:</string>
     <string name="description">Description:</string>
     <string name="Cancel">CANCEL</string>
-    <string name="View_Offering_Drivers">View offering Drivers</string>
+    <string name="View_Offering_Drivers"><b>View Offering Drivers</b></string>
 </resources>

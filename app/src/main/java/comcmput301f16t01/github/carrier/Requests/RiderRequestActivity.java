@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -95,6 +96,31 @@ public class RiderRequestActivity extends AppCompatActivity {
         getRoadAsync();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
+            frrt.execute(UserController.getLoggedInUser().getUsername());
+            try {
+                ArrayList<Request> foundRequests;
+                foundRequests = frrt.get();
+                for( Request foundRequest: foundRequests) {
+                    if(foundRequest.getId().equals(request.getId())) {
+                        request = foundRequest;
+                        Toast.makeText(this, "Updated request", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Thread.sleep(1000);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        setViews();
+    }
     /**
      * Given the request passed in by the user, set the map according to the start and end locations
      */
@@ -252,7 +278,8 @@ public class RiderRequestActivity extends AppCompatActivity {
         if (request.getChosenDriver() != null) {
             driverUsernameTextView.setText(request.getChosenDriver().getUsername());
             driverUsernameTextView.setUser(request.getChosenDriver());
-        } else {
+        } else if (request.getOfferedDrivers().size() > 0) {
+            // If there is an offered driver
             TextView driverTextView = (TextView) findViewById(R.id.textView_driver);
             driverTextView.setText(R.string.View_Offering_Drivers);
             driverTextView.setOnClickListener(new View.OnClickListener() {
