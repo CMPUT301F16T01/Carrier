@@ -135,7 +135,7 @@ public class SearchActivity extends AppCompatActivity {
             Double maxPrice;
 
             try {
-                // Try to convert the input to a float, if we fail return an error message
+                // Try to convert the input to a double, if we fail return an error message
                 minPrice = Double.valueOf(minEditText.getText().toString());
                 bundle.putDouble( "minPrice", minPrice );
             } catch (NumberFormatException e) {
@@ -144,7 +144,7 @@ public class SearchActivity extends AppCompatActivity {
 
             // Check if the value is blank (user chose to leave this value out)
             if (maxEditText.getText().toString().equals("")) {
-                bundle.putFloat( "maxPrice", -1 ); // We use negative one to say "we will not be checking by maxPrice"
+                bundle.putDouble( "maxPrice", -1 ); // We use negative one to say "we will not be checking by maxPrice"
             } else {
                 // Else we check if we can parse the value and put it in our bundle.
                 try {
@@ -167,7 +167,7 @@ public class SearchActivity extends AppCompatActivity {
             Double minPrice;
             Double maxPrice;
 
-            // Try to convert the input to a float, if we fail return an error message
+            // Try to convert the input to a double, if we fail return an error message
             try {
                 minPrice = Double.valueOf(minEditText.getText().toString());
                 bundle.putDouble( "minPricePerKM", minPrice );
@@ -179,7 +179,7 @@ public class SearchActivity extends AppCompatActivity {
 
             // Check if the value is blank (user chose to leave this value out)
             if (maxEditText.getText().toString().equals("")) {
-                bundle.putFloat( "maxPricePerKM", -1 ); // We use negative one to say "we will not be checking by maxPrice"
+                bundle.putDouble( "maxPricePerKM", -1 ); // We use negative one to say "we will not be checking by maxPrice"
             } else {
                 // Else we check if we can parse the value and put it in our bundle.
                 try {

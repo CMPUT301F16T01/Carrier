@@ -294,8 +294,17 @@ public class RequestController {
     public void pruneByPrice(@NonNull Double minPrice, @Nullable Double maxPrice) {
         RequestList filteredRequests = new RequestList();
         for ( Request request : searchResult ) {
+
+            Log.i( "price:", "" + request.getFare() );
+            Log.i( "minPrice:", "" + minPrice );
+            Log.i( "maxPrice:", "" + maxPrice );
+
+            // If the fare is less than the minimum price specified, skip it
             if ( request.getFare() < minPrice * 100 ) { continue; }
+            // If the maxPrice is not null, and the fare is greater than the max price, skip it.
             if ( maxPrice != null && maxPrice * 100 < request.getFare() ) { continue; }
+
+            Log.i( " *** added fare", "" + request.getFare() );
             filteredRequests.add( request ); // add the request if it is in range
         }
         searchResult.replaceList( filteredRequests );
@@ -310,12 +319,19 @@ public class RequestController {
     public void pruneByPricePerKM(@NonNull Double minPricePerKM, @Nullable Double maxPricePerKM ) {
         RequestList filteredRequests = new RequestList();
         for ( Request request : searchResult ) {
-            double pricePerKM = (request.getFare()/100) / request.getDistance();
+            double pricePerKM = (request.getFare() / request.getDistance()) / 100;
+
+            Log.i( "pricePerKM:", "" + pricePerKM );
+            Log.i( "minPricePerKM:", "" + minPricePerKM );
+            Log.i( "maxPricePerKM:", "" + maxPricePerKM );
+
             // ensure the price per kilometer is greater than the specified minimum
             if ( pricePerKM < minPricePerKM ) { continue; }
             // ensure the price per kilometer is less than the specified maximum.
             if ( maxPricePerKM != null && maxPricePerKM < pricePerKM ) { continue; }
             filteredRequests.add( request ); // add the request if it is in range
+
+            Log.i( " *** added per KM", "" + pricePerKM );
         }
         searchResult.replaceList( filteredRequests );
     }

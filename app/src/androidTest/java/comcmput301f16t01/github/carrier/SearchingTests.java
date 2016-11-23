@@ -273,7 +273,8 @@ public class SearchingTests extends ApplicationTest {
         rc.clearAllRiderRequests( loggedInUser );
         UserController.createNewUser(driverOne.getUsername(),
                 driverOne.getEmail(),
-                driverOne.getPhone());
+                driverOne.getPhone(),
+                "");
         UserController uc = new UserController();
         uc.logInUser( driverOne.getUsername() );
 
@@ -319,7 +320,7 @@ public class SearchingTests extends ApplicationTest {
 
         // Ensure we can prune by price
         rc.pruneByPrice( 9.99, 10.01 );
-        assertTrue( "There should be only one request after the filter",
+        assertTrue( "There should be only one request after the price filter... got " + requestList.size(),
                 rc.getResult().size() == 1 );
 
         // Ensure the search return all the requests we've added.
@@ -336,7 +337,41 @@ public class SearchingTests extends ApplicationTest {
 
         // Ensure we can prune by price per "KM"
         rc.pruneByPricePerKM( 9.99/2 , 10.01/2 );
-        assertTrue( "There should be only one request after the filter",
+        assertTrue( "There should be only one request after the perKM filter... got " + requestList.size(),
                 rc.getResult().size() == 1 );
+
+        // Ensure the search return all the requests we've added.
+        requestList.clear();
+        rc.searchByKeyword( "@45jkLmNO02032aassssssssssssssssssssssssss" );
+        requestList = rc.getResult();
+        pass = 0;
+        while( requestList.size() != 3 && pass < 5 ) {
+            requestList = rc.getResult();
+            chillabit( 1000 );
+            pass++;
+        }
+        assertTrue( "The search should return three requests", requestList.size() == 3 );
+
+        // Ensure we can prune by price per "KM" with the nullable attribute
+        rc.pruneByPricePerKM( 9.99/2 , null );
+        assertTrue( "There should be only two request after the perKM filter... got " + requestList.size(),
+                rc.getResult().size() == 2 );
+
+        // Ensure the search return all the requests we've added.
+        requestList.clear();
+        rc.searchByKeyword( "@45jkLmNO02032aassssssssssssssssssssssssss" );
+        requestList = rc.getResult();
+        pass = 0;
+        while( requestList.size() != 3 && pass < 5 ) {
+            requestList = rc.getResult();
+            chillabit( 1000 );
+            pass++;
+        }
+        assertTrue( "The search should return three requests", requestList.size() == 3 );
+
+        // Ensure we can prune by price with the nullable
+        rc.pruneByPrice( 9.99, null );
+        assertTrue( "There should be only two request after the price filter... got " + requestList.size(),
+                rc.getResult().size() == 2 );
     }
 }
