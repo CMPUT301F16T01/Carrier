@@ -12,8 +12,8 @@ import comcmput301f16t01.github.carrier.Notifications.NotificationList;
 import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
-
-import android.location.Location;
+import comcmput301f16t01.github.carrier.Users.User;
+import comcmput301f16t01.github.carrier.Users.UserController;
 
 // TODO could probably use a mock RequestController, since it always posts test requests to elastic search
 
@@ -31,19 +31,21 @@ import android.location.Location;
  * @see Notification
  */
 public class NotificationTest extends ApplicationTest {
-    private User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234" );
-    private User driverOne = new User( "notifTestDriver", "notifyYou@email.com", "0118-99-112" );
-    private User anotherUser = new User( "notifThirdUser", "notifyMe@gmail.com", "887112233" );
+    private User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234", "Kia, Rio"  );
+    private User driverOne = new User( "notifTestDriver", "notifyYou@email.com", "0118-99-112", "Kia, Rio"  );
+    private User anotherUser = new User( "notifThirdUser", "notifyMe@gmail.com", "887112233", "Kia, Rio"  );
 
     // Set up a test user to receive notifications
     private void setUpUser() {
         UserController uc = new UserController();
-        String result = uc.createNewUser( loggedInUser.getUsername(),
-                loggedInUser.getEmail(),
-                loggedInUser.getPhone() );
+        String result = uc.checkValidInputs(loggedInUser.getUsername(),
+                loggedInUser.getEmail(), loggedInUser.getPhone());
 
         if (result == null) {
             System.out.print( "null line" );
+        } else {
+            uc.createNewUser(loggedInUser.getUsername(),
+                    loggedInUser.getEmail(), loggedInUser.getPhone(), loggedInUser.getVehicleDescription());
         }
 
         assertTrue( "Failed to log in for test.", uc.logInUser( loggedInUser.getUsername() ) );

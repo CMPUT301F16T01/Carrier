@@ -1,13 +1,11 @@
 package comcmput301f16t01.github.carrier.Requests;
 
-import android.location.Location;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 
-//import comcmput301f16t01.github.carrier.Location;
 import comcmput301f16t01.github.carrier.CarrierLocation;
-import comcmput301f16t01.github.carrier.User;
+import comcmput301f16t01.github.carrier.Users.User;
 import io.searchbox.annotations.JestId;
 
 /**
@@ -46,10 +44,11 @@ public class Request {
     /** The price the requesting user is willing to pay for the request to be complete */
     private int fare;
 
+    private Double[] location;
+
     /** For use with Elastic Search, is the unique ID given to it */
     @JestId
     private String elasticID = null;
-
 
     //TODO maybe add the Location strings to description by default? Just in case keywords are CarrierLocations.
     // Constructor with description
@@ -60,6 +59,9 @@ public class Request {
         this.end = requestedEnd;
         this.description = description;
         this.offeringDrivers = new ArrayList<User>();
+        this.location = new Double[2];
+        this.location[0] = requestedStart.getLongitude();
+        this.location[1] = requestedStart.getLatitude();
     }
 
     // Constructor without description TODO do we need this?
@@ -69,7 +71,9 @@ public class Request {
         this.end = end;
         this.offeringDrivers = new ArrayList<User>();
         this.description = "";
-
+        this.location = new Double[2];
+        this.location[0] = start.getLongitude();
+        this.location[1] = start.getLatitude();
     }
 
     public int getStatus() {
@@ -110,7 +114,7 @@ public class Request {
     }
 
     public ArrayList<User> getOffers() {
-        return new ArrayList<User>();
+        return offeringDrivers;
     }
 
     public User getRider() {
@@ -161,15 +165,25 @@ public class Request {
      * @param offeredDriver The driver that is making the offer.
      */
     public void addOfferingDriver(User offeredDriver) {
-        offeringDrivers.add(offeredDriver);
-        if (status == Request.OPEN) {
-            this.setStatus(Request.OFFERED);
+        if( chosenDriver != null ) {
+            throw new IllegalArgumentException( "This request already has a chosen driver." );
         }
+
+        if( !hasOfferingDriver( offeredDriver )) {
+            offeringDrivers.add(offeredDriver);
+        } else {
+            throw new IllegalArgumentException( "You are already offering to complete this request." );
+        }
+
+        setStatus( Request.OFFERED ); // TODO, dangerous to do this because of edge cases?
     }
 
     public void confirmDriver(User confirmedDriver) {
+        if ( chosenDriver != null ) {
+            throw new IllegalArgumentException( "There is already a chosen driver for this request." );
+        }
         chosenDriver = confirmedDriver;
-        setStatus(Request.CONFIRMED);
+        setStatus(Request.CONFIRMED); // TODO, dangerous to do this because of edge cases?
     }
 
     /**

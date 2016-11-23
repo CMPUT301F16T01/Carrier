@@ -15,8 +15,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
@@ -41,9 +39,8 @@ import comcmput301f16t01.github.carrier.R;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.RiderViewOfferingDriversActivity;
-import comcmput301f16t01.github.carrier.User;
-import comcmput301f16t01.github.carrier.UserController;
-import comcmput301f16t01.github.carrier.UsernameTextView;
+import comcmput301f16t01.github.carrier.Users.UserController;
+import comcmput301f16t01.github.carrier.Users.UsernameTextView;
 
 /**
  * This will help us show the request from the perspective of a rider
@@ -66,10 +63,9 @@ public class RiderRequestActivity extends AppCompatActivity {
 
         // unpacking the bundle to get the position of request
         Bundle bundle = getIntent().getExtras();
-        //int position = bundle.getInt("position");
-        //request = rc.getResult().get(position);
 
-        request = new Gson().fromJson(bundle.getString("request"), Request.class);
+        int position = bundle.getInt("position");
+        request = rc.getRiderInstance().get(position);
 
         setTitle("Request");
 
@@ -285,9 +281,10 @@ public class RiderRequestActivity extends AppCompatActivity {
             driverTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Bundle bundle = getIntent().getExtras();
+
+                    int position = bundle.getInt("position");
                     Intent intent = new Intent(RiderRequestActivity.this, RiderViewOfferingDriversActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("request", new Gson().toJson(request));
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }

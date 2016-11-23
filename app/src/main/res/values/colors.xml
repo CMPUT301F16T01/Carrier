@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#424242</color>
     <color name="colorPrimaryDark">#212121</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#ff4081</color>
 
     <color name="white">#FFFFFF</color>
 
@@ -11,5 +11,6 @@
     <color name="colorPrimaryLight">#5d5d5d</color>
     <color name="usernameClick">#BDBDBD</color>
     <color name="colorPrimaryLighter">#e5e5e5</color>
+    <color name="separatorColor">#e5e5e5</color>
 
 </resources>

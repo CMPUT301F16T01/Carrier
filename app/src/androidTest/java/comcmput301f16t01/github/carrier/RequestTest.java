@@ -1,18 +1,11 @@
 package comcmput301f16t01.github.carrier;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 import comcmput301f16t01.github.carrier.Notifications.ElasticNotificationController;
 import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
-import comcmput301f16t01.github.carrier.Requests.Offer;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestList;
-import io.searchbox.core.Delete;
-
-import android.location.Location;
+import comcmput301f16t01.github.carrier.Users.User;
 
 /**
  * Test suite for Elastic Requests.
@@ -30,9 +23,9 @@ import android.location.Location;
  *      X) Subtle issues, like we can't add drivers when we have a confirmed one!
  */
 public class RequestTest extends ApplicationTest {
-    private User basicRider = new User( "reqTestUser", "giveMeRide@carrier.com", "41534153" );
-    private User anotherUser = new User( "reqTestUser2", "loveSia@hotmail.com", "514514514" );
-    private User basicDriver = new User( "offeringDriver", "wannaDriveYou@gmail.com", "1323123" );
+    private User basicRider = new User( "reqTestUser", "giveMeRide@carrier.com", "41534153", "Kia, Rio"  );
+    private User anotherUser = new User( "reqTestUser2", "loveSia@hotmail.com", "514514514", "Kia, Rio"  );
+    private User basicDriver = new User( "offeringDriver", "wannaDriveYou@gmail.com", "1323123", "Kia, Rio"  );
 
     // abstracts reused code to prevent mistakes and aid in readability of tests
     // Makes the current thread sleep for the specified amount of time (in ms)

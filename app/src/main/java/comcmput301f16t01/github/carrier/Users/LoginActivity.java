@@ -1,4 +1,4 @@
-package comcmput301f16t01.github.carrier;
+package comcmput301f16t01.github.carrier.Users;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import comcmput301f16t01.github.carrier.MainActivity;
+import comcmput301f16t01.github.carrier.R;
 
 /**
  * LoginActivity is where the user enters a username and password so they can access their account.

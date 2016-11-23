@@ -16,7 +16,6 @@ import android.widget.Toast;
 import android.os.Handler;
 import com.google.gson.Gson;
 
-//import comcmput301f16t01.github.carrier.Location;
 import java.util.Currency;
 import java.util.Locale;
 
@@ -25,9 +24,8 @@ import comcmput301f16t01.github.carrier.FareCalculator;
 import comcmput301f16t01.github.carrier.MainActivity;
 import comcmput301f16t01.github.carrier.R;
 import comcmput301f16t01.github.carrier.SetLocationsActivity;
-import comcmput301f16t01.github.carrier.User;
-import comcmput301f16t01.github.carrier.UserController;
-import comcmput301f16t01.github.carrier.ViewLocationsActivity;
+import comcmput301f16t01.github.carrier.Users.User;
+import comcmput301f16t01.github.carrier.Users.UserController;
 
 /*
  The code for incrementing/decrementing the fare while holding down
@@ -300,8 +298,6 @@ public class MakeRequestActivity extends AppCompatActivity {
         if (result == null) {
             Toast.makeText(activity, "Request submitted", Toast.LENGTH_SHORT).show();
             activity.finish();
-            Intent intent = new Intent(activity, MainActivity.class);
-            startActivity(intent);
         } else { // if not, display returned result message as a Toast
             Toast.makeText(activity, result, Toast.LENGTH_SHORT).show();
         }

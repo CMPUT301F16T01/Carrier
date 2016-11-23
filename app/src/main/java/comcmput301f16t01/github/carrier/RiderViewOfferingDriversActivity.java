@@ -17,18 +17,19 @@ import java.util.ArrayList;
 
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
+import comcmput301f16t01.github.carrier.Users.User;
 
 public class RiderViewOfferingDriversActivity extends AppCompatActivity {
     private Request request;
+    private RequestController rc = new RequestController();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rider_view_offering_drivers);
         Bundle bundle = getIntent().getExtras();
-        //int position = bundle.getInt("position");
-        //request = rc.getResult().get(position);
 
-        request = new Gson().fromJson( bundle.getString("request"), Request.class );
+        int position = bundle.getInt("position");
+        request = rc.getRiderInstance().get(position);
         final ArrayList<User> offeringDrivers = request.getOfferedDrivers();
         OfferingDriversArrayAdapter offeringDriversArrayAdapter = new OfferingDriversArrayAdapter(this, R.layout.offeringdriverslist_item, offeringDrivers);
         offeringDriversArrayAdapter.setRequest(request);
