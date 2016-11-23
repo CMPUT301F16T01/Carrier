@@ -22,11 +22,13 @@ public class SearchResultsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_results);
-        setTitle("Search Results  s");
+        setTitle( "Search Results" );
 
         ListView requestListView = (ListView) findViewById( R.id.listView_searchResults );
 
         RequestController rc = new RequestController();
+
+        unpackBundle( this.getIntent().getBundleExtra("filterBundle"));
 
         // It shouldn't matter what query we used, the singleton will be up to date with the query when we get here
         final RequestList requestList = rc.getResult();
@@ -40,7 +42,7 @@ public class SearchResultsActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 /*
                  * We don't have the requests stored locally in our singleton, so we need to let
-                 * the viewRequest activity know with a special code that it will use Gson to
+                 * the viewRequest activity know with a special code (position = -1) that it will use Gson to
                  * deserialize a request.
                  */
                 Intent intent = new Intent(SearchResultsActivity.this, DriverViewRequestActivity.class);
@@ -51,5 +53,31 @@ public class SearchResultsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    /**
+     * Unpacks the bundle that contains the filters for the request, then asks the request controller
+     * to prune by those values if it has been requested.
+     * @param filterBundle the bundle containing all the values to filter by.
+     */
+    private void unpackBundle(Bundle filterBundle) {
+        RequestController rc = new RequestController();
+        Boolean filterByPrice = filterBundle.getBoolean("filterByPrice");
+        Boolean filterByPricePerKM = filterBundle.getBoolean("filterByPricePerKM");
+
+        // Check if we are filtering by price
+        if (filterByPrice) {
+            Double minPrice = filterBundle.getDouble("minPrice");
+            Double maxPrice = filterBundle.getDouble("maxPrice");
+            if (maxPrice == -1) { maxPrice = null; }
+            rc.pruneByPrice( minPrice, maxPrice );
+        }
+        // Check if we are filtering by price per KM
+        if (filterByPricePerKM) {
+            Double minPricePerKM = filterBundle.getDouble("minPricePerKM");
+            Double maxPricePerKM = filterBundle.getDouble("maxPricePerKM");
+            if (maxPricePerKM == -1) { maxPricePerKM = null; }
+            rc.pruneByPricePerKM( minPricePerKM, maxPricePerKM );
+        }
     }
 }
