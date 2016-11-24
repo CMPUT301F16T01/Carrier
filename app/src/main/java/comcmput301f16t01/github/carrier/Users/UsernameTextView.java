@@ -9,7 +9,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import comcmput301f16t01.github.carrier.R;
 
@@ -47,7 +46,6 @@ public class UsernameTextView extends TextView {
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     UsernameTextView.this.setBackgroundColor(Color.TRANSPARENT);
                     toProfile(user);
-                    Toast.makeText(getContext(), username, Toast.LENGTH_SHORT).show();
                 }
                 return true;
             }
