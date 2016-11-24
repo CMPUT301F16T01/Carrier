@@ -112,6 +112,7 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         super.onResume();
         setViews();
     }
+
     /**
      * Given the request passed in by the user, set the map according to the start and end locations
      */
