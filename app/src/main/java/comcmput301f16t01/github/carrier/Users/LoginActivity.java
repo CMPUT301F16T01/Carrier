@@ -25,8 +25,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        //TODO: if online, quicklogin, else, offlinelogin
-
         tryQuickLogin();
 
         // TODO grab their username based on their ID?
@@ -34,7 +32,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * Attempts to log in a user from memory.
+     * If there is internet connection, attempts to login a user through
+     * elastic search, otherwise attempts to login a cached user from
+     * file. This login enters the app right away if the user has
+     * logged in once before already.
      * @see LoginMemory
      */
     private void tryQuickLogin() {
@@ -51,6 +52,9 @@ public class LoginActivity extends AppCompatActivity {
 
         UserController uc = new UserController();
 
+        /* If there is internet connection, attempt to login the user from
+        elastic search
+         */
         if (ConnectionChecker.isThereInternet()) {
             if ( !uc.logInUser( username ) ) {
                 EditText usernameEditText = (EditText) findViewById( R.id.EditText_username );
@@ -64,6 +68,10 @@ public class LoginActivity extends AppCompatActivity {
                 enterApp( username );
                 Toast.makeText(this, "Logged in online", Toast.LENGTH_LONG).show();
             }
+
+            /*
+            If the user is offline, login the user from file.
+             */
         } else {
             User cachedUser = lm.loadUser();
             uc.offlineLogInUser(cachedUser.getUsername(), cachedUser);
@@ -92,7 +100,9 @@ public class LoginActivity extends AppCompatActivity {
                 enterApp( username );
             }
         }
-        // Otherwise attempt login by loading the cached logged in user
+        /* Otherwise attempt login by loading the cached user and
+        comparing usernames
+         */
         else {
             User cachedUser = lm.loadUser();
             if (!uc.offlineLogInUser(username, cachedUser)) {
@@ -107,8 +117,6 @@ public class LoginActivity extends AppCompatActivity {
      * Standard welcome when entering the application.
      */
     private void enterApp( String username ) {
-//        String welcome = "Welcome back, " + username + "!";
-//        Toast.makeText(this, welcome, Toast.LENGTH_LONG).show();
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
         this.finish();

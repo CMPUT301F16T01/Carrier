@@ -115,7 +115,14 @@ public class UserController {
         return true;
     }
 
+    /**
+     * Allows the user to log in while offline. Only the last logged in user has the ability to log in.
+     * @param usernameToLogin The username attempt to log in
+     * @param cachedUser The cached user to compare to
+     * @return True on successful login, otherwise false
+     */
     public boolean offlineLogInUser(String usernameToLogin, User cachedUser) {
+        // Case insensitive comparison of usernames, like elastic search
         if (usernameToLogin.toLowerCase().equals(cachedUser.getUsername().toLowerCase())) {
             loggedInUser = cachedUser;
             return true;

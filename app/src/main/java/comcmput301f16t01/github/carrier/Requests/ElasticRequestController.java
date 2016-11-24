@@ -300,6 +300,7 @@ public class ElasticRequestController {
             if (withAsync) {
                 RequestController rc = new RequestController();
                 rc.getRiderInstance().replaceList( requests );
+                // Save any updated rider requests
                 rc.saveRiderRequests();
                 notifyListener();
             }
@@ -533,6 +534,7 @@ public class ElasticRequestController {
                 if (withAsync) {
                     RequestController rc = new RequestController();
                     rc.getOffersInstance().replaceList( requests );
+                    // Save any updated driver requests
                     rc.saveDriverOfferedRequests();
                     notifyListener();
                 }

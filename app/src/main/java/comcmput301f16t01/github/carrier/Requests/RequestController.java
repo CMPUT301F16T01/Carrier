@@ -69,6 +69,10 @@ public class RequestController {
         }
     }
 
+    /**
+     * In order to save to file, we require a context. This function sets the context.
+     * @param contextToSet The context in which to save.
+     */
     public void setContext(Context contextToSet) {
         this.saveContext = contextToSet;
     }
@@ -93,11 +97,14 @@ public class RequestController {
         } else if (request.getFare() == -1) {
             return "You must first estimate the fare";
         } else {
+            // If there is internet we update ElasticSearch with the new request.
             if (ConnectionChecker.isThereInternet()) {
                 ElasticRequestController.AddRequestTask art = new ElasticRequestController.AddRequestTask();
                 art.execute(request);
             }
+            // Regardless of whether or not there is internet, we add the request to the local requestWhereRider RequestList
             requestsWhereRider.add( request ); // Add new request to requestList (will notify riderList views)
+            // Save requestsWhereRider to file
             saveRiderRequests();
         }
         return null;
@@ -148,6 +155,7 @@ public class RequestController {
         } catch ( Exception e ) {
             return; // If the driver is already offered we shouldn't do this action.
         }
+        // If there is internet update the request on elastic search with the new accepting driver.
         if (ConnectionChecker.isThereInternet()) {
             // create an offer object [[ potentially throws IllegalArgumentException if called wrong ]]
             Offer newOffer = new Offer(request, driver);
@@ -158,6 +166,7 @@ public class RequestController {
         }
         // TODO add addOffer task to queue if offline
 
+        // Regardless of whether or not there is internet, create a notification and add the offer to the local requestsWhereOffered RequestList
         // Add a notification
         NotificationController nc = new NotificationController();
         nc.addNotification( request.getRider(), request );
@@ -178,42 +187,51 @@ public class RequestController {
         request.setStatus( Request.CONFIRMED );
         requestsWhereOffered.notifyListeners();
 
+        // If there is internet, update the request on ElasticSearch with confirmed driver.
         if (ConnectionChecker.isThereInternet()) {
             ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
             urt.execute( request );
         }
 
+        // Regardless of whether or not there is internet, create a notification and save the modified requestsWhereOffered
         // Send out a notification
         NotificationController nc = new NotificationController();
         nc.addNotification( driver, request );
+        saveDriverOfferedRequests();
     }
 
     /**
      * Completes a request
      */
     public void completeRequest(Request request) {
+        // If there is internet update elastic search with the completed request
         if (ConnectionChecker.isThereInternet()) {
             ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
             request.setStatus( Request.COMPLETE );
             urt.execute( request );
         }
+        // Regardles so of whether or not there is internet update the UI statuses and save the request lists.
         requestsWhereOffered.notifyListeners();
         requestsWhereRider.notifyListeners();
         saveDriverOfferedRequests();
+        saveRiderRequests();
     }
 
     /**
      * Sets a request as paid for
      */
     public void payForRequest(Request request) {
+        // If there is internet update elastic search with the paid request
         if (ConnectionChecker.isThereInternet()) {
             ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
             request.setStatus( Request.PAID );
             urt.execute( request );
         }
+        // Regardless of whether or not there is internet update the UI with the new status and save the request lists
         requestsWhereOffered.notifyListeners();
         requestsWhereRider.notifyListeners();
         saveDriverOfferedRequests();
+        saveRiderRequests();
     }
 
     /**
@@ -254,10 +272,12 @@ public class RequestController {
      */
     // TODO rename this method? i.e. getRequestsWhereDriverOffered, or something
     public RequestList getOfferedRequests(User driver) {
+        // If there is no internet connection, load the cached driver requests into the requestsWhereOffered
         if (!ConnectionChecker.isThereInternet()) {
             loadDriverOfferedRequests();
             return requestsWhereOffered;
         }
+        // If there is connection, fetch requests from elastic search to load into requestsWhereOffered
         ElasticRequestController.GetOfferedRequestsTask gort = new ElasticRequestController.GetOfferedRequestsTask();
         gort.execute( driver.getUsername() );
         try {
@@ -265,12 +285,13 @@ public class RequestController {
         } catch (Exception e) {
             throw new IllegalArgumentException( "There was an error executing the AsyncTask." );
         }
+        // Save the driver offered reqeuests once they're loaded
         saveDriverOfferedRequests();
         return requestsWhereOffered;
     }
 
     /**
-     * Clears out all the requested requests for a user
+     * Used for testing. Clears out all the requested requests for a user
      */
     public void clearAllRiderRequests(User rider) {
         ElasticRequestController.ClearRiderRequestsTask crrt = new ElasticRequestController.ClearRiderRequestsTask();
@@ -285,8 +306,7 @@ public class RequestController {
      * @return A list of requests from the given criteria
      */
     public RequestList fetchRequestsWhereRider(User rider, Integer... statuses ) {
-
-        // If the user is offline, load from file rather than from elastic search
+        // If the user is offline, load from rider requests from file rather than from elastic search
         if (!ConnectionChecker.isThereInternet()) {
             loadRiderRequests();
             return requestsWhereRider;
@@ -310,12 +330,13 @@ public class RequestController {
             e.printStackTrace();
         }
         requestsWhereRider.replaceList( foundRequests );
+        // Save loaded riderRequests.
         saveRiderRequests();
         return foundRequests;
     }
 
     public RequestList fetchAllRequestsWhereRider( User rider ) {
-        // If we're offline, load the cached rider requests
+        // If we're offline, load the cached rider requests rather than form elastic search
         if (!ConnectionChecker.isThereInternet()) {
             loadRiderRequests();
             return requestsWhereRider;
@@ -329,6 +350,7 @@ public class RequestController {
             e.printStackTrace();
         }
         requestsWhereRider.replaceList( foundRequests );
+        // Save rider requests after load
         saveRiderRequests();
         return foundRequests;
     }
@@ -342,6 +364,83 @@ public class RequestController {
         gort.withAsync = true;
         gort.execute( UserController.getLoggedInUser().getUsername());
 
+    }
+
+    /**
+     * Caches the requests that the rider has made.
+     */
+    public void saveRiderRequests() {
+        try {
+            FileOutputStream fos = saveContext.openFileOutput(this.RIDER_FILENAME, 0);
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
+
+            Gson gson = new Gson();
+            gson.toJson(requestsWhereRider, out);
+            out.flush();
+
+            fos.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+    }
+
+    /**
+     * For offline functionality. Loads the cached riderrequests.
+     */
+    public void loadRiderRequests() {
+        FileInputStream fis = null;
+        try {
+            fis = saveContext.openFileInput(RIDER_FILENAME);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+            Gson gson = new Gson();
+            Type listType = new TypeToken<RequestList>() {}.getType();
+
+            // Load the rider requests into the controller
+            requestsWhereRider.replaceList((RequestList) gson.fromJson(in, listType));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+    }
+
+
+    /**
+     * Caches the requests that the driver offered to fulfill.
+     */
+    public void saveDriverOfferedRequests() {
+        try {
+            FileOutputStream fos = saveContext.openFileOutput(this.DRIVER_FILENAME, 0);
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
+
+            Gson gson = new Gson();
+            gson.toJson(requestsWhereOffered, out);
+            out.flush();
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+    }
+
+    /**
+     * For offline functionality. Loads the cached driver offered requests.
+     */
+    public void loadDriverOfferedRequests() {
+        FileInputStream fis = null;
+        try {
+            fis = saveContext.openFileInput(DRIVER_FILENAME);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+            Gson gson = new Gson();
+            Type listType = new TypeToken<RequestList>() {}.getType();
+            // Load the driver requests into the controller
+            requestsWhereOffered.replaceList((RequestList) gson.fromJson(in, listType));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
     }
 
     /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -390,82 +489,4 @@ public class RequestController {
         throw new IllegalArgumentException( "This method is deprecated." );
     }
 
-    /**
-     * Caches the requests that the rider has made.
-     */
-    public void saveRiderRequests() {
-        try {
-            FileOutputStream fos = saveContext.openFileOutput(this.RIDER_FILENAME, 0);
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
-
-            Gson gson = new Gson();
-            gson.toJson(requestsWhereRider, out);
-            out.flush();
-            Log.i("Saving", "saveRiderRequests saved " + requestsWhereRider.size());
-            fos.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * For offline functionality. Loads the cached riderrequests.
-     */
-    public void loadRiderRequests() {
-        FileInputStream fis = null;
-        try {
-            fis = saveContext.openFileInput(RIDER_FILENAME);
-            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
-            // For debugging
-//            StringBuilder sb = new StringBuilder();
-//            String line = in.readLine();
-//            while (line != null) {
-//                sb.append(line);
-//                line = in.readLine();
-//            }
-            //
-            Gson gson = new Gson();
-            Type listType = new TypeToken<RequestList>() {}.getType();
-            requestsWhereRider.replaceList((RequestList) gson.fromJson(in, listType));
-            //Toast.makeText(saveContext, sb.toString(), Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    /**
-     * Caches the requests that the driver offered to fulfill.
-     */
-    public void saveDriverOfferedRequests() {
-        try {
-            FileOutputStream fos = saveContext.openFileOutput(this.DRIVER_FILENAME, 0);
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
-
-            Gson gson = new Gson();
-            gson.toJson(requestsWhereOffered, out);
-            out.flush();
-            Log.i("Saving", "saveDriverOfferedRequests saved " + requestsWhereOffered.size());
-            fos.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * For offline functionality. Loads the cached driver offered requests.
-     */
-    public void loadDriverOfferedRequests() {
-        FileInputStream fis = null;
-        try {
-            fis = saveContext.openFileInput(DRIVER_FILENAME);
-            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
-            Gson gson = new Gson();
-            Type listType = new TypeToken<RequestList>() {}.getType();
-            requestsWhereOffered.replaceList((RequestList) gson.fromJson(in, listType));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

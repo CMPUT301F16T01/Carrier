@@ -23,14 +23,21 @@ import comcmput301f16t01.github.carrier.Users.UserController;
  * on the phone.
  */
 public class LoginMemory {
+    /** The context to save in **/
     Context saveContext;
+    /** The filename for logging in usernames while online **/
     final String FILENAME = "LoginMemory.sav";
+    /** The filename for loggin in while offline **/
     final String USER_FILENAME = "User.sav";
 
     public LoginMemory( Context ctx ) {
         saveContext = ctx;
     }
 
+    /**
+     * Saves the last logged in username for quick login while online
+     * @param username The username to save
+     */
     public void saveUsername( String username ) {
         try {
             FileOutputStream fos = saveContext.openFileOutput(FILENAME, 0);
@@ -47,6 +54,10 @@ public class LoginMemory {
         }
     }
 
+    /**
+     * Saves the last logged in user for quick login while offline
+     * @param userToCache The user to save
+     */
     public void saveUser(User userToCache) {
         try {
             FileOutputStream fos = saveContext.openFileOutput(USER_FILENAME, 0);
@@ -61,9 +72,14 @@ public class LoginMemory {
             fos.close();
         } catch (Exception e) {
             e.printStackTrace();
+            throw new RuntimeException();
         }
     }
 
+    /**
+     * Loads the file containing the last logged in username for quick login online
+     * @return The username of the last logged in user
+     */
     public String loadUsername() {
         String username;
         try {
@@ -81,6 +97,10 @@ public class LoginMemory {
         return username;
     }
 
+    /**
+     * Loads the file containing the last logged in user for quick login while offline
+     * @return The last logged in user
+     */
     public User loadUser() {
         FileInputStream fis = null;
         User lastLoggedInUser = null;
@@ -91,7 +111,7 @@ public class LoginMemory {
             Type type = new TypeToken<User>() {}.getType();
             lastLoggedInUser = gson.fromJson(in, type);
         } catch (Exception e) {
-            e.printStackTrace();
+            return null;
         }
         return lastLoggedInUser;
     }

@@ -20,7 +20,6 @@ import java.util.concurrent.ExecutionException;
  * an available network connection. Note that this does not test if they actually have an internet
  * connection, just that they have access to some network (which may not have internet connection).
  */
-
 public class ConnectionChecker {
 
     // Based on: https://goo.gl/oximGj
@@ -65,7 +64,7 @@ public class ConnectionChecker {
     }
 
     /**
-     * Facade pattern for isThereConnectionTask doInBackground(...)
+     * Facade pattern for isThereConnectionTask doInBackground(...) because it's ugly.
      * @return True if there is internet, False otherwise
      */
     public static Boolean isThereInternet() {

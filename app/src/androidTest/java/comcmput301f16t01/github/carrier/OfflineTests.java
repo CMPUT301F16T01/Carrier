@@ -45,11 +45,15 @@ public class OfflineTests extends ApplicationTest {
     }
 
     public void testSavingOfflineRequests() {
-        // With the WiFi on 
+        // With the WiFi on, create the new user and add a request. These get put up on elastic search.
         this.wifiManager.setWifiEnabled(true);
         UserController.createNewUser(OfflineTestUser.getUsername(), OfflineTestUser.getEmail(), OfflineTestUser.getPhone(), OfflineTestUser.getVehicleDescription());
         rc.addRequest(OfflineRequest);
+
+        // Clear the list of requests, and go offline.
         rc.getRiderInstance().clear();
+        this.wifiManager.setWifiEnabled(false);
+        // When online fetchAllRequestsWhereRider asks elastic search, while offline it just loads file.
         rc.fetchAllRequestsWhereRider(OfflineTestUser);
 
     }

@@ -81,7 +81,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle("Carrier");
+
+        // Request controller requires a context to save in
         rc.setContext(this);
+
         checkPermissions();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -145,12 +148,12 @@ public class MainActivity extends AppCompatActivity {
         if (ConnectionChecker.isThereInternet()) {
             rc.performAsyncUpdate();
         }
+        // Otherwise inform the user that they are offline
         else {
-            Toast.makeText(this, "Offline", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "You are offline", Toast.LENGTH_SHORT).show();
+            // Load the cached rider and driver requests for the logged in user
             rc.fetchAllRequestsWhereRider(UserController.getLoggedInUser());
             rc.getOfferedRequests(UserController.getLoggedInUser());
-            //rc.saveRiderRequests();
-            Toast.makeText(this, "Size of requestsWhereRider: " + Integer.toString(rc.getRiderInstance().size()), Toast.LENGTH_SHORT).show();
         }
     }
 
