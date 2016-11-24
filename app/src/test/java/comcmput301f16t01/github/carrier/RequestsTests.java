@@ -112,7 +112,7 @@ public class RequestsTests {
         rc.addRequest(request1);
         rc.addRequest(request2);
 
-        rc.cancelRequest(riderOne, request2);
+        rc.cancelRequest(request2);
 
         assertEquals("The request should be init to open",
                 Request.OPEN, request1.getStatus());

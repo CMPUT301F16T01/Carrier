@@ -34,10 +34,10 @@ public class RequestControllerTest {
         rc.addRequest(paidRequest);
         rc.addRequest(completedRequest);
         // Cancel the different reqeusts
-        rc.cancelRequest(user, openRequest);
-        rc.cancelRequest(user, paidRequest);
-        rc.cancelRequest(user,cancelledRequest);
-        rc.cancelRequest(user, completedRequest);
+        rc.cancelRequest(openRequest);
+        rc.cancelRequest(paidRequest);
+        rc.cancelRequest(cancelledRequest);
+        rc.cancelRequest(completedRequest);
         // Check that the expected behavior happened.
         assertTrue("openRequest not cancelled", openRequest.getStatus() == Request.CANCELLED);
         assertTrue("paidRequest changed when it shouldn't have.", paidRequest.getStatus() == Request.PAID);
