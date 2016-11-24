@@ -43,7 +43,7 @@ public class FareCalculator {
      * @param intFare
      * @return
      */
-    public String toString(int intFare) {
+    public static String toString(int intFare) {
         double fare = ((double) intFare)/100;
         String str = String.format("%d",(long)fare) + ".";
         String dec = String.format("0%.0f",(fare%1)*100);
