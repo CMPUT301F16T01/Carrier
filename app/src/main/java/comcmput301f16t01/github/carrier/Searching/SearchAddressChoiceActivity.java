@@ -76,8 +76,7 @@ public class SearchAddressChoiceActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent intent = new Intent(activity, SearchResultsActivity.class);
-                    RequestController rc = new RequestController();
-                    rc.searchByLocation(locations.get(position));
+                    RequestController.searchByLocation(locations.get(position));
                     intent.putExtra( "filterBundle", getIntent().getBundleExtra("filterBundle"));
                     startActivity(intent);
                 }

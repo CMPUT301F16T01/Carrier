@@ -26,8 +26,6 @@ public class LocationTests extends ApplicationTest {
                 loggedInUser.getEmail(),
                 loggedInUser.getPhone(),
                 loggedInUser.getVehicleDescription() );
-
-        Assert.assertTrue( "Failed to log in for test.", UserController.logInUser( loggedInUser.getUsername() ) );
     }
 
     // This tear down method may not be working entirely as expected...test further

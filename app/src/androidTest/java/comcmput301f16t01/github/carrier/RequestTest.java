@@ -76,7 +76,6 @@ public class RequestTest extends ApplicationTest {
             pass++;
             if (pass > 5) { break; }
         }
-
         assertTrue( "There should be at least one fetched request for this test.",
                 requestList.size() != 0);
 

@@ -44,8 +44,6 @@ public class NotificationTest extends ApplicationTest {
             UserController.createNewUser(loggedInUser.getUsername(),
                     loggedInUser.getEmail(), loggedInUser.getPhone(), loggedInUser.getVehicleDescription());
         }
-
-        assertTrue( "Failed to log in for test.", UserController.logInUser( loggedInUser.getUsername() ) );
     }
 
     /**

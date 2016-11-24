@@ -31,20 +31,6 @@ public class SearchingTests extends ApplicationTest {
     private User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234", "Kia, Rio" );
     private User driverOne = new User( "notifTestDriver", "notifyYou@email.com", "0118-99-112", "Kia, Rio"  );
 
-    // Set up a test user to receive notifications
-    private void setUpUser() {
-        String result = UserController.checkValidInputs(loggedInUser.getUsername(),
-                loggedInUser.getEmail(), loggedInUser.getPhone());
-
-        if (result == null) {
-            System.out.print( "null line" );
-        } else {
-            UserController.createNewUser(loggedInUser.getUsername(),
-                    loggedInUser.getEmail(), loggedInUser.getPhone(), loggedInUser.getVehicleDescription());
-        }
-        assertTrue( "Failed to log in for test.", UserController.logInUser( loggedInUser.getUsername() ) );
-    }
-
     /**
      * Clears requests created by searchTestUser and clears request offers made by searchTestDriver
      */
@@ -58,6 +44,9 @@ public class SearchingTests extends ApplicationTest {
 
         ElasticUserController.DeleteUserTask dut = new ElasticUserController.DeleteUserTask();
         dut.execute( driverOne.getUsername() );
+
+        UserController.logOutUser();
+
         super.tearDown();
     }
 
@@ -80,6 +69,11 @@ public class SearchingTests extends ApplicationTest {
      * Addresses Use Cases Searching #1 and #5.
      */
     public void testDriverSearchByLocation() {
+        UserController.createNewUser( driverOne.getUsername(),
+                driverOne.getEmail(),
+                driverOne.getPhone(),
+                driverOne.getVehicleDescription() );
+
         CarrierLocation startLocation1 = new CarrierLocation();
         CarrierLocation endLocation1 = new CarrierLocation();
         startLocation1.setLatitude(latitude1);
@@ -102,28 +96,26 @@ public class SearchingTests extends ApplicationTest {
         RequestController.addRequest(request2);
         RequestController.addRequest(request1);
 
+        // Lets confirm that all the requests we've added are in elastic search.
         RequestList requests = RequestController.fetchAllRequestsWhereRider(loggedInUser);
-
-        /*
-         * Dealing with Async tasks means we need to wait for them to finish.
-         */
         int pass = 0;
-        while (requests.size() < 3) {
+        while (requests.size() != 3) {
             requests = RequestController.fetchAllRequestsWhereRider(loggedInUser);
             chillabit(1000);
             pass++;
-            if (pass > 10) {
-                break;
-            }
+            if (pass > 5) { fail("It took too long to check if the requests were properly added"); }
         }
 
         CarrierLocation driverLocation = new CarrierLocation();
         driverLocation.setLatitude(latitude4);
         driverLocation.setLongitude(longitude4);
+
         // this method should return a list of requests, sorted based on proximity of start location
         // for now I'm assuming there are limits on how far away a request can be to be included in this list
         RequestController.searchByLocation(driverLocation);
-        Assert.assertTrue("Search did not return 2 requests: " + RequestController.getResult().size(), RequestController.getResult().size() == 2);
+        Assert.assertTrue("Search did not return 2 requests: " + RequestController.getResult().size(),
+                RequestController.getResult().size() == 2);
+
         // check that the requests are ordered properly
         Assert.assertEquals("Closest request lat incorrect", request1.getStart().getLatitude(), RequestController.getResult().get(0).getStart().getLatitude());
         Assert.assertEquals("Closest request long incorrect", request1.getStart().getLongitude(), RequestController.getResult().get(0).getStart().getLongitude());
@@ -148,6 +140,11 @@ public class SearchingTests extends ApplicationTest {
         String keyword2 = "ksjdahfk";
         String keyword3 = "sjdjakfk";
         String keyword4 = "dhsbskak";
+
+        UserController.createNewUser( driverOne.getUsername(),
+                driverOne.getEmail(),
+                driverOne.getPhone(),
+                driverOne.getVehicleDescription() );
 
         // Add requests with the gibberish keywords
         Request requestOne = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
@@ -191,6 +188,11 @@ public class SearchingTests extends ApplicationTest {
         String keyword3 = "sjdjakfk";
         String keyword4 = "dhsbskak";
 
+        UserController.createNewUser( driverOne.getUsername(),
+                driverOne.getEmail(),
+                driverOne.getPhone(),
+                driverOne.getVehicleDescription() );
+
         Request requestOne = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
                 "Test keywords: " + keyword1);
         Request requestTwo = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
@@ -202,45 +204,84 @@ public class SearchingTests extends ApplicationTest {
         RequestController.addRequest( requestTwo );
         RequestController.addRequest( requestThree );
 
+        // Confirm that we added three requests
         RequestList requests = RequestController.fetchAllRequestsWhereRider(loggedInUser);
-
-        /*
-         * Dealing with Async tasks means we need to wait for them to finish.
-         */
         int pass = 0;
-        while( requests.size() < 3 ) {
+        while( requests.size() != 3 ) {
             requests = RequestController.fetchAllRequestsWhereRider( loggedInUser );
             chillabit( 1000 );
             pass++;
             if (pass > 10) { break; }
         }
-        
-        RequestController.addDriver(requestOne, driverOne);
-        RequestController.confirmDriver(requestOne, driverOne);
+        assertTrue( "There should only be three requests fetched",
+                requests.size() == 3);
 
-        /*
-         * Dealing with Async tasks means we need to wait for them to finish.
-         */
         pass = 0;
-        while( requestOne.getStatus() != Request.Status.CONFIRMED ) {
-            chillabit( 1000 );
+        for (Request request : requests ) {
             pass++;
-            if (pass > 10) { break; }
+            if (request.getDescription().equals(requestOne.getDescription())) {
+                RequestController.addDriver( request, driverOne );
+                break;
+            }
+            if (pass == 3) { fail( "We should have added a driver"); }
         }
 
-        // requestOne should no longer be included in search results
+        // Need to wait until we can add a confirmed driver
+        requests = RequestController.fetchAllRequestsWhereRider(loggedInUser);
+        pass = 0;
+        Boolean status = true;
+        while(status) {
+            for (Request request : requests) {
+                if (request.getOfferedDrivers().size() != 0) {
+                    RequestController.confirmDriver( request, request.getOfferedDrivers().get(0));
+                    status = false;
+                } // break out if we found a request with a chosen driver.
+            }
+            chillabit(1000);
+            pass++;
+            if (pass > 5) { fail( "Took too long to add chosen driver..." ); }
+            requests = RequestController.fetchAllRequestsWhereRider(loggedInUser);
+        }
+
+        // Ensure that we've fetched requests where the driver has been chosen
+        requests.clear();
+        requests = RequestController.fetchAllRequestsWhereRider(loggedInUser);
+        pass = 0;
+        while(status) {
+            for (Request request : requests) {
+                if (request.getChosenDriver() != null) {
+                    break;
+                } // break out if we found a request with a chosen driver.
+            }
+            chillabit(1000);
+            pass++;
+            if (pass > 5) { fail( "Took too long to find chosen driver..." ); }
+            requests = RequestController.fetchAllRequestsWhereRider(loggedInUser);
+        }
+
+        // search by keyword2 (requestTwo, requestThree)
         RequestController.searchByKeyword(keyword2);
         chillabit( 1000 );
-        Assert.assertTrue("Search did not return 2 requests: " + RequestController.getResult().size(), RequestController.getResult().size() == 2);
+        Assert.assertTrue("Search did not return 2 requests... got: " + RequestController.getResult().size(),
+                RequestController.getResult().size() == 2);
+
+        // search by keyword1 (requestOne)
+        // Because this is from the driver perspective, requestOne is filtered out because the
+        // request has been marked as "CONFIRMED". Therefore no requests should return.
         RequestController.searchByKeyword(keyword1);
         chillabit( 1000 );
-        Assert.assertTrue("Search did not return 1 request", RequestController.getResult().size() == 1);
+        Assert.assertTrue("Search did not return 0 request... got: " + RequestController.getResult().size(),
+                RequestController.getResult().size() == 0);
+
+        // No requests use this keyword, and thus nothing should be returned
         RequestController.searchByKeyword(keyword4);
         chillabit( 1000 );
-        Assert.assertTrue("Search returned requests", RequestController.getResult().size() == 0);
+        Assert.assertTrue("Search returned requests... got: " + RequestController.getResult().size(),
+                RequestController.getResult().size() == 0);
 
         RequestController.addDriver(requestThree, driverOne);
         RequestController.confirmDriver(requestThree, driverOne);
+        // TODO more with this? It was left like this.
     }
 
     /** Test 4
@@ -254,7 +295,6 @@ public class SearchingTests extends ApplicationTest {
                 driverOne.getEmail(),
                 driverOne.getPhone(),
                 "");
-        UserController.logInUser( driverOne.getUsername() );
 
         // We put some requests in the elastic searches
         Request requestOne = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),

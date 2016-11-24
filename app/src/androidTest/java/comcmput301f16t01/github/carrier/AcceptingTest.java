@@ -242,7 +242,5 @@ public class AcceptingTest extends ApplicationTest {
                 loggedInUser.getEmail(),
                 loggedInUser.getPhone(),
                 loggedInUser.getVehicleDescription() );
-
-        assertTrue( "Failed to log in for test.", UserController.logInUser( loggedInUser.getUsername() ) );
     }
 }
