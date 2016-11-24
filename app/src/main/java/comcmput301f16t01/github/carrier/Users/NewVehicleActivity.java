@@ -54,8 +54,7 @@ public class NewVehicleActivity extends AppCompatActivity {
 
         //create a new user
         //this is what adds to elastic search
-        UserController uc = new UserController();
-        uc.createNewUser(username, email, phone, vehicleDescription);
+        UserController.createNewUser(username, email, phone, vehicleDescription);
 
         //go tot the main activity with this function
         submitNewUser(username);

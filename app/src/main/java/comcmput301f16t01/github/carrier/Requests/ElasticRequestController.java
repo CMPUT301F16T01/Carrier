@@ -93,8 +93,8 @@ public class ElasticRequestController {
                     "    \"bool\": {\n" +
                     "      \"must\": { \"match\": { \"description\": \"" + search_parameters[0] + "\" }},\n" +
                     "      \"should\": [\n" +
-                    "              { \"match\": { \"status\": 1 }},\n" +
-                    "              { \"match\": { \"status\": 2 }}\n" +
+                    "              { \"match\": { \"status\": \"" + Request.Status.OPEN + "\" }},\n" +
+                    "              { \"match\": { \"status\": \"" + Request.Status.OFFERED + "\" }}\n" +
                     "      ],\n" +
                     "      \"minimum_should_match\": \"1\"\n" +
                     "    }\n" +
@@ -153,8 +153,8 @@ public class ElasticRequestController {
                 "      \"query\" : {\n" +
                 "        \"bool\": { " +
                 "          \"should\": [\n" +
-                "            { \"match\": { \"status\": 1 }},\n" +
-                "            { \"match\": { \"status\": 2 }}\n" +
+                "            { \"match\": { \"status\": \"" + Request.Status.OPEN + "\" }},\n" +
+                "            { \"match\": { \"status\": \"" + Request.Status.OFFERED + "\" }}\n" +
                 "          ],\n" +
                 "          \"minimum_should_match\": \"1\"\n" +
                 "        }\n" +
@@ -227,7 +227,7 @@ public class ElasticRequestController {
 
     /**
      * Get all of a rider's requests filtered by status
-     * @see RequestController#fetchRequestsWhereRider(User, Integer...)
+     * @see RequestController#fetchRequestsWhereRider(User, Request.Status...)
      */
     public static class FetchRiderRequestsTask extends AsyncTask<String, Void, RequestList> {
 
@@ -250,11 +250,11 @@ public class ElasticRequestController {
                 int last = 0;
                 for (int i = 1; i < params.length-1; i++) {
                     // complete n-1 filters with a comma
-                    query += "{ \"match\": { \"status\": " + params[i] + " }},";
+                    query += "{ \"match\": { \"status\": \"" + params[i] + "\" }},";
                     last = i;
                 }
                 // Do the final parameter without a comma and close it.
-                query += "{ \"match\": { \"status\": " + params[params.length-1]  + " }}\n],\n";
+                query += "{ \"match\": { \"status\": \"" + params[params.length-1]  + "\" }}\n],\n";
                 query += "\"minimum_should_match\": \"1\"\n";
             }
 
@@ -298,8 +298,7 @@ public class ElasticRequestController {
         protected void onPostExecute(RequestList requests) {
             // Perform our update on the UI thread
             if (withAsync) {
-                RequestController rc = new RequestController();
-                rc.getRiderInstance().replaceList( requests );
+                RequestController.getRiderInstance().replaceList( requests );
                 notifyListener();
             }
             super.onPostExecute(requests);
@@ -527,8 +526,7 @@ public class ElasticRequestController {
         protected void onPostExecute(RequestList requests) {
             // Perform result update on UI thread
             if (withAsync) {
-                RequestController rc = new RequestController();
-                rc.getOffersInstance().replaceList( requests );
+                RequestController.getOffersInstance().replaceList( requests );
                 notifyListener();
             }
             super.onPostExecute(requests);
@@ -547,7 +545,7 @@ public class ElasticRequestController {
                 String query =
                         "{\n" +
                         "    \"doc\": {\n" +
-                        "        \"status\": " + request.getStatus();
+                        "        \"status\": \"" + request.getStatus() + "\"";
 
                 // If there is a chosenDriver, update that as well.
                 // TODO if the status is changing to complete or paid or cancelled we might not need this.

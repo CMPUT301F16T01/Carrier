@@ -16,6 +16,9 @@ import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestList;
 
+/**
+ * SearchResultsActivity handles displaying and linking to new requests for a driver to choose from.
+ */
 public class SearchResultsActivity extends AppCompatActivity {
 
     @Override
@@ -26,12 +29,10 @@ public class SearchResultsActivity extends AppCompatActivity {
 
         ListView requestListView = (ListView) findViewById( R.id.listView_searchResults );
 
-        RequestController rc = new RequestController();
-
         unpackBundle( this.getIntent().getBundleExtra("filterBundle"));
 
         // It shouldn't matter what query we used, the singleton will be up to date with the query when we get here
-        final RequestList requestList = rc.getResult();
+        final RequestList requestList = RequestController.getResult();
 
         ArrayAdapter<Request> requestArrayAdapter = new ArrayAdapter<>( this, android.R.layout.simple_list_item_1, requestList );
         requestListView.setAdapter( requestArrayAdapter );
@@ -42,7 +43,7 @@ public class SearchResultsActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 /*
                  * We don't have the requests stored locally in our singleton, so we need to let
-                 * the viewRequest activity know with a special code (position = -1) that it will use Gson to
+                 * the viewRequest activity know with a special code (position = -1) that it will use gson to
                  * deserialize a request.
                  */
                 Intent intent = new Intent(SearchResultsActivity.this, DriverViewRequestActivity.class);
@@ -61,7 +62,6 @@ public class SearchResultsActivity extends AppCompatActivity {
      * @param filterBundle the bundle containing all the values to filter by.
      */
     private void unpackBundle(Bundle filterBundle) {
-        RequestController rc = new RequestController();
         Boolean filterByPrice = filterBundle.getBoolean("filterByPrice");
         Boolean filterByPricePerKM = filterBundle.getBoolean("filterByPricePerKM");
 
@@ -70,14 +70,14 @@ public class SearchResultsActivity extends AppCompatActivity {
             Double minPrice = filterBundle.getDouble("minPrice");
             Double maxPrice = filterBundle.getDouble("maxPrice");
             if (maxPrice == -1) { maxPrice = null; }
-            rc.pruneByPrice( minPrice, maxPrice );
+            RequestController.pruneByPrice( minPrice, maxPrice );
         }
         // Check if we are filtering by price per KM
         if (filterByPricePerKM) {
             Double minPricePerKM = filterBundle.getDouble("minPricePerKM");
             Double maxPricePerKM = filterBundle.getDouble("maxPricePerKM");
             if (maxPricePerKM == -1) { maxPricePerKM = null; }
-            rc.pruneByPricePerKM( minPricePerKM, maxPricePerKM );
+            RequestController.pruneByPricePerKM( minPricePerKM, maxPricePerKM );
         }
     }
 }
