@@ -21,7 +21,7 @@ import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UsernameTextView;
 
 /**
- * Created by michael on 17/11/16.
+ * Takes an array of offering drivers and puts them into an array list..
  */
 
 public class OfferingDriversArrayAdapter extends ArrayAdapter<User> {
@@ -39,8 +39,9 @@ public class OfferingDriversArrayAdapter extends ArrayAdapter<User> {
     }
 
     /**
-     * Sets up individual items in the ListView, by position in the ArrayList
-     *
+     * Sets up individual items in the ListView given a list of offering drivers for the request, by their position in the ArrayList.
+     * Handles setting up the various views inside of the list view including the usernameTextViews
+     * and adds the confirm driver button.
      * @see ArrayAdapter
      */
     @NonNull
@@ -63,7 +64,7 @@ public class OfferingDriversArrayAdapter extends ArrayAdapter<User> {
                 @Override
                 public void onClick(final View view) {
                     AlertDialog.Builder adb = new AlertDialog.Builder(view.getContext());
-                    adb.setMessage("Confirm Driver?");
+                    adb.setMessage("Confirm " + offeringDriver.getUsername() +" as the driver?");
                     adb.setCancelable(true);
                     adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
