@@ -325,7 +325,7 @@ public class DriverViewRequestActivity extends AppCompatActivity {
             payment_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    receivedPayment(v);
+                    receivedPayment();
                 }
             });
         }
@@ -339,9 +339,8 @@ public class DriverViewRequestActivity extends AppCompatActivity {
 
     /**
      * Will update the current request in elastic search to be paid for.
-     * @param v The view
      */
-    private void receivedPayment(View v) {
+    private void receivedPayment() {
         Toast.makeText(this, "Request is now complete.", Toast.LENGTH_SHORT).show();
         RequestController rc = new RequestController();
         rc.payForRequest(request);
@@ -355,7 +354,7 @@ public class DriverViewRequestActivity extends AppCompatActivity {
 
     /**
      * Used to make an offer on a request as a driver.
-     * @param view The current view.
+     * @param view The make offer view that was clicked
      */
     public void makeOffer(View view) {
         RequestController rc = new RequestController();
