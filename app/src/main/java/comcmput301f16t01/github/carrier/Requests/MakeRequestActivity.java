@@ -27,20 +27,29 @@ import comcmput301f16t01.github.carrier.SetLocationsActivity;
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
-/*
- The code for incrementing/decrementing the fare while holding down
- the up and down arrows is based on: https://goo.gl/zKpYnX
- Author: Yar
- Retrieved on: November 5th, 2016
-  */
-
+/**
+ * Activity for making a request. User can set the start and end locations,
+ * the fare and an optional description before submitting it.
+ *
+ * See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#makerequestactivity">MakeRequestActivity</a>
+ *
+ * Incrementing/decrementing arrows code based on: <a href="http://stackoverflow.com/questions/7938516/continuously-increase-integer-value-as-the-button-is-pressed">Continuously increase integer value as the button is pressed</a>
+ * Author: <a href="http://stackoverflow.com/users/525319/yar">Yar</a>
+ * Posted on: October 29th, 2011
+ * Retrieved on: November 5th, 2016
+ *
+ * Based on: <a href="http://stackoverflow.com/questions/14292398/how-to-pass-data-from-2nd-activity-to-1st-activity-when-pressed-back-android">How to pass data from 2nd activity to 1st activity when pressed back? - android</a>
+ * Author: <a href="http://stackoverflow.com/users/1202025/%CF%81%D1%8F%CF%83%D1%95%CF%81%D1%94%D1%8F-k">ρяσѕρєя K</a>
+ * Posted on: January 12th, 2013
+ * Retrieved on: November 7th, 2016
+ */
 public class MakeRequestActivity extends AppCompatActivity {
 
     // result code for when we return to an instance of this activity
     private static final int PASS_ACTIVITY_BACK = 1;
     final Activity activity = MakeRequestActivity.this;
     /**
-     * Determines how fast the arrows increment/decrement the estimated fare
+     * Determines how fast the arrows increment/decrement the estimated fare.
      */
     final int REPEATED_DELAY = 25;
 
@@ -94,16 +103,15 @@ public class MakeRequestActivity extends AppCompatActivity {
         }
     }
 
-    // from: https://goo.gl/IxFxpG
-    // author: ρяσѕρєя K
-    // retrieved on: November 7th, 2016
-    // This is called when we startActivityForResult from here and get a result back when that activity finishes.
-    // This allows us to do any "clean up actions" when we get back here
+    /**
+     * This is called when we startActivityForResult from here and get a result back when that activity finishes.
+     * This allows us to do any "clean up actions" when we get back here. In this case, our "clean up" actions are
+     * getting the start and end points, and the distance and duration from the intent.
+     */
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if(requestCode == PASS_ACTIVITY_BACK) {
             if(resultCode == RESULT_OK) {
-                // from LonelyTwitter
                 start = new Gson().fromJson(intent.getStringExtra("startLocation"), CarrierLocation.class);
                 end = new Gson().fromJson(intent.getStringExtra("endLocation"), CarrierLocation.class);
                 distance = intent.getDoubleExtra("distance", 0);
@@ -163,7 +171,6 @@ public class MakeRequestActivity extends AppCompatActivity {
 
     /**
      * Choose the start and end locations for the trip on a map
-     *
      * @param view The calling view of this function
      */
     public void chooseLocations(View view) {
@@ -227,18 +234,18 @@ public class MakeRequestActivity extends AppCompatActivity {
     /**
      * Use the FareCalculator to estimate the fare between the user-selected start and end locations.
      * The start and end locations must have both been selected before the fare can be estimated.
+     * @param view Estimate Fare button
      */
     public void estimateFare(View view) {
         if(start == null || end == null) {
             Toast.makeText(activity, "You must first select a start and end location", Toast.LENGTH_SHORT).show();
         } else {
-            FareCalculator fc = new FareCalculator();
-            int fareEstimate = fc.getEstimate(distance, duration);
+            int fareEstimate = FareCalculator.getEstimate(distance, duration);
             Currency localCurrency = Currency.getInstance( Locale.getDefault() );
             TextView currencyTextView = (TextView) findViewById(R.id.textView_currencySign);
             TextView fareTextView = (TextView) findViewById(R.id.textView_fareEstimate);
             currencyTextView.setText(localCurrency.getSymbol());
-            fareTextView.setText(fc.toString(fareEstimate));
+            fareTextView.setText(FareCalculator.toString(fareEstimate));
 
             fareEstimated = fareEstimate;
         }
@@ -246,39 +253,38 @@ public class MakeRequestActivity extends AppCompatActivity {
 
     /**
      * Increase fare by 1 when up arrow is pressed.
+     * @param view Up arrow button
      */
     public void incrementFare(View view) {
-        FareCalculator fc = new FareCalculator();
         if(fareEstimated != -1) {
             fareEstimated++;
             TextView fareTextView = (TextView) findViewById(R.id.textView_fareEstimate);
-            fareTextView.setText(fc.toString(fareEstimated));
+            fareTextView.setText(FareCalculator.toString(fareEstimated));
         }
     }
 
     /**
      * Decrease fare by 1 when down arrow is pressed.
+     * @param view Down arrow button
      */
     public void decrementFare(View view) {
-        FareCalculator fc = new FareCalculator();
         if(fareEstimated > 0) {
             fareEstimated--;
             TextView fareTextView = (TextView) findViewById(R.id.textView_fareEstimate);
-            fareTextView.setText(fc.toString(fareEstimated));
+            fareTextView.setText(FareCalculator.toString(fareEstimated));
         }
     }
 
     /**
      * When the submit button is pressed
      *      Create a Request and add it to the request controller
-     *      Save the request (elastic search...through request controller?)
      *      Return to MainActivity
+     * @param view Submit button
      */
     public void submitRequest(View view) {
         RequestController rc = new RequestController();
-        UserController uc = new UserController();
 
-        User user = uc.getLoggedInUser();
+        User user = UserController.getLoggedInUser();
 
         EditText descEditText = (EditText) findViewById(R.id.editText_description);
         String description = descEditText.getText().toString();
@@ -291,6 +297,8 @@ public class MakeRequestActivity extends AppCompatActivity {
         }
 
         request.setFare(fareEstimated);
+
+        request.setDistance( distance );
 
         String result = rc.addRequest(request);
 

@@ -5,13 +5,15 @@ import android.util.Patterns;
 
 import java.util.ArrayList;
 
+import comcmput301f16t01.github.carrier.Requests.Request;
+import comcmput301f16t01.github.carrier.Requests.RequestList;
 import comcmput301f16t01.github.carrier.UserList;
 
 /**
  * Singleton Pattern
- * * modifies/returns a RequestList model
- * * @see Request
- * * @see RequestList
+ * modifies/returns a RequestList model
+ * @see Request
+ * @see RequestList
  */
 public class UserController {
     private static UserList userList = null;
