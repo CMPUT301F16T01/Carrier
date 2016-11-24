@@ -40,8 +40,19 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * This will help us show the request from the perspective of a driver
- * Will have the position in the request controller bundled to determine what request to display.
+ * This will help us show the request from the perspective of a driver. Will have
+ * the position in the request controller bundled to determine what request to display.
+ *
+ * See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#driverviewrequestactivity">DriverViewRequestActivity</a>
+ *
+ * Based on: <a href="https://github.com/MKergall/osmbonuspack/wiki/Tutorial_0">Tutorial_0</a>
+ * Author: MKergall
+ * Retrieved on: November 10th, 2016
+ *
+ * Updated with: <a href="http://stackoverflow.com/questions/38539637/osmbonuspack-roadmanager-networkonmainthreadexception">OSMBonuspack RoadManager NetworkOnMainThreadException</a>
+ * Author: <a href="http://stackoverflow.com/users/4670837/yubaraj-poudel">yubaraj poudel</a>
+ * Posted: August 6th, 2016
+ * Retrieved on: November 10th, 2016
  */
 public class DriverViewRequestActivity extends AppCompatActivity {
     Activity activity = DriverViewRequestActivity.this;
@@ -57,6 +68,8 @@ public class DriverViewRequestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_view_request);
+        setTitle("Request");
+
         //getting the request controller to get a list of requests
         loggedInUser = UserController.getLoggedInUser();
 
@@ -77,8 +90,6 @@ public class DriverViewRequestActivity extends AppCompatActivity {
             makeOfferButton.setEnabled( false ); // Make the button un-clickable
             makeOfferButton.setAlpha((float) 0.5); // Set transparency to 50%
         }
-
-        setTitle("Request");
 
         map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
@@ -106,7 +117,7 @@ public class DriverViewRequestActivity extends AppCompatActivity {
     }
 
     /**
-     * Given the request passed in by the user, set the map according to the start and end locations
+     * Given the request the user is viewing, set the map according to the start and end locations of the trip.
      */
     private void setMarkers() {
         Marker startMarker = new Marker(map);
@@ -126,16 +137,8 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         map.invalidate();
     }
 
-    // Based on: https://goo.gl/4TKn2y
-    // Retrieved on: November 10th, 2016
-
-    // Updated with: https://goo.gl/h2CKyn
-    // Author: yubaraj poudel
-    // Posted: August 6th, 2016
-    // Retrieved on: November 10th, 2016
-
     /**
-     * Asynchronous task to get the route between the two points
+     * Asynchronous task to get the route between the two points.
      */
     public void getRoadAsync() {
         roadList = null;
@@ -156,7 +159,7 @@ public class DriverViewRequestActivity extends AppCompatActivity {
 
 
     /**
-     * Class to update the road on the map
+     * Class to update the road on the map.
      */
     private class UpdateRoadTask extends AsyncTask<Object, Void, Road[]> {
 
@@ -198,17 +201,28 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Center the map on the Start point of the trip.
+     *
+     * @param view the TextView that shows the Start address
+     */
     public void centerStart(View view) {
         mapController.setCenter(startPoint);
     }
 
+    /**
+     * Center the map on the End point of the trip.
+     *
+     * @param view the TextView that shows the End address
+     */
     public void centerEnd(View view) {
         mapController.setCenter(endPoint);
     }
 
     /**
-     * Get the center point of the route to center the screen on
-     * @return GeoPoint
+     * Get the center point of the route to center the screen on.
+     *
+     * @return GeoPoint that specifies center between start and end points
      */
     public GeoPoint getCenter() {
         double startLat = startPoint.getLatitude();
@@ -234,7 +248,7 @@ public class DriverViewRequestActivity extends AppCompatActivity {
     }
 
     /**
-     * Given the request passed in by the user, set the views in the layout.
+     * Given the request the user is viewing, set the views in the layout.
      */
     public void setViews() {
         UserController uc = new UserController();
@@ -257,24 +271,10 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         driverUsernameTextView.setUser(uc.getLoggedInUser());
 
         TextView startAddressTextView = (TextView) findViewById(R.id.textView_start);
-        String startAddress = request.getStart().getAddress();
-        if (startAddress != null) {
-            startAddressTextView.setText(startAddress);
-        } else {
-            String startPoint = "(" + String.valueOf(request.getStart().getLatitude()) + ", " +
-                    String.valueOf(request.getStart().getLongitude()) + ")";
-            startAddressTextView.setText(startPoint);
-        }
+        startAddressTextView.setText(request.getStart().toString());
 
         TextView endAddressTextView = (TextView) findViewById(R.id.textView_end);
-        String endAddress = request.getEnd().getAddress();
-        if (endAddress != null) {
-            endAddressTextView.setText(request.getEnd().getAddress());
-        } else {
-            String endPoint = "(" + String.valueOf(request.getEnd().getLatitude()) + ", " +
-                    String.valueOf(request.getEnd().getLongitude()) + ")";
-            endAddressTextView.setText(endPoint);
-        }
+        endAddressTextView.setText(request.getEnd().toString());
 
         TextView descriptionTextView = (TextView) findViewById(R.id.textView_description);
         descriptionTextView.setText(request.getDescription());
@@ -310,9 +310,9 @@ public class DriverViewRequestActivity extends AppCompatActivity {
 
     public void makeOffer(View view) {
         RequestController rc = new RequestController();
-        // Can not make an offer on a request that has a confirmed driver.
-        // Can not make an offer on a request that you hae already made an offer on.
-        // Can not make an offer on a cancelled request.
+        // Cannot make an offer on a request that has a confirmed driver.
+        // Cannot make an offer on a request that you have already made an offer on.
+        // Cannot make an offer on a cancelled request.
         AlertDialog.Builder adb = new AlertDialog.Builder(DriverViewRequestActivity.this);
         adb.setTitle("Error: ");
         adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {

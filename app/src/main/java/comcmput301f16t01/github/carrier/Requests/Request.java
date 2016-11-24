@@ -54,7 +54,6 @@ public class Request {
     @JestId
     private String elasticID = null;
 
-    //TODO maybe add the Location strings to description by default? Just in case keywords are CarrierLocations.
     // Constructor with description
     public Request(@NonNull User requestingRider, @NonNull CarrierLocation requestedStart,
                    @NonNull CarrierLocation requestedEnd, String description) {
@@ -68,7 +67,8 @@ public class Request {
         this.location[1] = requestedStart.getLatitude();
     }
 
-    // Constructor without description TODO do we need this?
+    // Constructor without description TODO delete?
+    @Deprecated
     public Request(User rider, CarrierLocation start, CarrierLocation end) {
         this.rider = rider;
         this.start = start;
@@ -167,7 +167,7 @@ public class Request {
     }
 
     /**
-     * Will addthe driver to the list of offering drivers.
+     * Will add the driver to the list of offering drivers.
      * @param offeredDriver The driver that is making the offer.
      */
     public void addOfferingDriver(User offeredDriver) {
