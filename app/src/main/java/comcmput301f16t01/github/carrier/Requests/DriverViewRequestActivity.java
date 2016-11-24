@@ -345,6 +345,12 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         Toast.makeText(this, "Request is now complete.", Toast.LENGTH_SHORT).show();
         RequestController rc = new RequestController();
         rc.payForRequest(request);
+        ImageView statusImageView = (ImageView) findViewById(R.id.imageView_requestStatus);
+        statusImageView.setImageResource(R.drawable.paid);
+        Button payment_button = (Button) findViewById(R.id.button_makeOffer);
+        payment_button.setText(R.string.payment_received);
+        payment_button.setEnabled( false ); // Make the button clickable
+        payment_button.setAlpha((float) 0.5);
     }
 
     /**

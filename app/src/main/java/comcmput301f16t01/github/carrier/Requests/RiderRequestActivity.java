@@ -235,6 +235,9 @@ public class RiderRequestActivity extends AppCompatActivity {
             Toast.makeText(activity, "PAY FOR REQUEST", Toast.LENGTH_SHORT).show();
             RequestController rc = new RequestController();
             rc.completeRequest(request);
+            ImageView statusImageView = (ImageView) findViewById(R.id.imageView_requestStatus);
+            statusImageView.setImageResource(R.drawable.complete);
+
         }
         else {
             AlertDialog.Builder adb = new AlertDialog.Builder(RiderRequestActivity.this);
