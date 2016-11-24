@@ -16,19 +16,20 @@
         android:layout_marginTop="32dp"
         android:layout_centerHorizontal="true" />
 
-
     <View
         android:id="@+id/topDivider"
         android:layout_below="@+id/TextView_profile"
         android:layout_width="match_parent"
         android:layout_height="2dp" />
 
+
     <ScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:scrollbars="vertical"
         android:id="@+id/scrollProfile"
-        android:layout_below="@id/topDivider">
+        android:layout_below="@+id/TextView_profile"
+        android:layout_alignParentStart="true">
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -40,29 +41,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@mipmap/ic_face"
+                android:alpha="0.8"
                 android:id="@+id/ImageView_usernameIcon"
                 android:layout_alignParentStart="true" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Name"
-                android:ems="10"
-                android:id="@+id/TextView_name"
-                android:textColor="@android:color/white"
-                android:textSize="24sp"
-                android:layout_below="@id/ImageView_usernameIcon"
-                android:layout_alignParentStart="true"
-                android:focusable="false"
-                android:layout_marginBottom="20dp"
-                android:clickable="false"
-                android:background="@null"/>
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@mipmap/ic_email2"
                 android:onClick="emailUser"
+                android:alpha="0.8"
                 android:id="@+id/ImageView_emailIcon"
                 android:layout_below="@+id/ImageButton_phoneEditIcon"
                 android:layout_alignParentStart="true" />
@@ -90,6 +78,7 @@
                 android:layout_height="wrap_content"
                 app:srcCompat="@mipmap/ic_phone"
                 android:onClick="callPhone"
+                android:alpha="0.8"
                 android:id="@+id/ImageView_phoneIcon"
                 android:layout_below="@+id/TextView_name"
                 android:layout_alignParentStart="true" />
@@ -112,23 +101,12 @@
                 android:layout_alignParentStart="true"
                 android:layout_toStartOf="@+id/EditButton_savePhoneEdit" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/car"
-                android:layout_below="@id/EditText_email"
-                android:layout_alignParentStart="true"
-                android:tint="@color/white"
-                android:layout_marginStart="14dp"
-                android:id="@+id/imageView_car"
-                android:scaleX="2"
-                android:scaleY="2" />
-
             <TextView
                 android:text="Kia Rio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/imageView_car"
+                android:layout_marginTop="8dp"
                 android:textColor="@color/white"
                 android:textSize="24sp"
                 android:id="@+id/textView_vehicleDescription" />
@@ -200,6 +178,33 @@
                 android:layout_alignBottom="@+id/ImageButton_emailEditIcon"
                 android:layout_alignEnd="@+id/ImageButton_emailEditIcon"
                 android:onClick="saveEditedEmailAddress" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:layout_marginBottom="20dp"
+                android:ems="10"
+                android:id="@+id/TextView_name"
+                android:textColor="@android:color/white"
+                android:textSize="24sp"
+                android:focusable="false"
+                android:clickable="false"
+                android:background="@null"
+                android:layout_below="@+id/ImageView_usernameIcon"
+                android:layout_alignParentStart="true" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/car"
+                android:onClick="callPhone"
+                android:id="@+id/imageView_car"
+                android:scaleX="1.5"
+                android:scaleY="1.5"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/EditText_email"
+                android:layout_alignEnd="@+id/ImageView_emailIcon" />
         </RelativeLayout>
     </ScrollView>
 
@@ -208,6 +213,5 @@
         android:layout_below="@+id/scrollProfile"
         android:layout_width="match_parent"
         android:layout_height="2dp" />
-
 
 </RelativeLayout>
