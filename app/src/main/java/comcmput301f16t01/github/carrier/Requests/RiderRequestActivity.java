@@ -307,7 +307,7 @@ public class RiderRequestActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     RequestController rc = new RequestController();
-                    rc.cancelRequest(request.getRider(), request);
+                    rc.cancelRequest(request);
                     finish();
                 }
             });

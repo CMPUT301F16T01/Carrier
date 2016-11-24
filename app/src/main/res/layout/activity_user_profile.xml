@@ -102,6 +102,15 @@
                 android:layout_toStartOf="@+id/EditButton_savePhoneEdit" />
 
 
+            <TextView
+                android:text="Kia Rio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/imageView_car"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:id="@+id/textView_vehicleDescription" />
 
             <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - -  EDIT / SAVE / TRASH -->
             <ImageButton
