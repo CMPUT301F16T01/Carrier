@@ -1,6 +1,9 @@
 package comcmput301f16t01.github.carrier.Requests;
 
 import android.location.Location;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -140,6 +143,9 @@ public class RequestController {
      */
     public void confirmDriver(Request request, User driver) {
         // Modify and update the request, then execute the update task
+        if (!requestsWhereRider.contains(request)){
+            throw new RuntimeException();
+        }
         ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
         request.setChosenDriver( driver );
         request.setStatus( Request.CONFIRMED );
@@ -196,7 +202,7 @@ public class RequestController {
         ElasticRequestController.SearchByLocationTask sblt = new ElasticRequestController.SearchByLocationTask();
         sblt.execute(location);
         try {
-            searchResult.replaceList( sblt.get() );
+            searchResult.replaceList(sblt.get());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -280,6 +286,57 @@ public class RequestController {
         ElasticRequestController.GetOfferedRequestsTask gort = new ElasticRequestController.GetOfferedRequestsTask();
         gort.withAsync = true;
         gort.execute( UserController.getLoggedInUser().getUsername());
+    }
+
+    /**
+     * Ensures that the request controller on has results for requests within the price range of
+     * minPrice to maxPrice.
+     * @param minPrice The minimum value you wish to prune by.
+     * @param maxPrice The maximum value you wish to prune by. (Passing null is equivalent to passing positive infinity)
+     */
+    public void pruneByPrice(@NonNull Double minPrice, @Nullable Double maxPrice) {
+        RequestList filteredRequests = new RequestList();
+        for ( Request request : searchResult ) {
+
+            Log.i( "price:", "" + request.getFare() );
+            Log.i( "minPrice:", "" + minPrice );
+            Log.i( "maxPrice:", "" + maxPrice );
+
+            // If the fare is less than the minimum price specified, skip it
+            if ( request.getFare() < minPrice * 100 ) { continue; }
+            // If the maxPrice is not null, and the fare is greater than the max price, skip it.
+            if ( maxPrice != null && maxPrice * 100 < request.getFare() ) { continue; }
+
+            Log.i( " *** added fare", "" + request.getFare() );
+            filteredRequests.add( request ); // add the request if it is in range
+        }
+        searchResult.replaceList( filteredRequests );
+    }
+
+    /**
+     * Ensures that the request controller only has results for requests within the price per kilometer range of
+     * minPricePerKM to maxPricePerKM.
+     * @param minPricePerKM The minimum value you wish to prune by.
+     * @param maxPricePerKM The maximum value you wish to prune by. (Passing null is equivalent to passing positive infinity)
+     */
+    public void pruneByPricePerKM(@NonNull Double minPricePerKM, @Nullable Double maxPricePerKM ) {
+        RequestList filteredRequests = new RequestList();
+        for ( Request request : searchResult ) {
+            double pricePerKM = (request.getFare() / request.getDistance()) / 100;
+
+            Log.i( "pricePerKM:", "" + pricePerKM );
+            Log.i( "minPricePerKM:", "" + minPricePerKM );
+            Log.i( "maxPricePerKM:", "" + maxPricePerKM );
+
+            // ensure the price per kilometer is greater than the specified minimum
+            if ( pricePerKM < minPricePerKM ) { continue; }
+            // ensure the price per kilometer is less than the specified maximum.
+            if ( maxPricePerKM != null && maxPricePerKM < pricePerKM ) { continue; }
+            filteredRequests.add( request ); // add the request if it is in range
+
+            Log.i( " *** added per KM", "" + pricePerKM );
+        }
+        searchResult.replaceList( filteredRequests );
     }
 
     /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

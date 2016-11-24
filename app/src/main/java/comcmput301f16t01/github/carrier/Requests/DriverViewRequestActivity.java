@@ -379,6 +379,8 @@ public class DriverViewRequestActivity extends AppCompatActivity {
             Button button = (Button) findViewById( R.id.button_makeOffer);
             button.setEnabled(false); // Make the button un-clickable after offering.
             button.setAlpha((float) 0.5); // The button becomes 50% transparent
+            ImageView statusImageView = (ImageView) findViewById(R.id.imageView_requestStatus);
+            statusImageView.setImageResource(R.drawable.offered);
         }
     }
 }

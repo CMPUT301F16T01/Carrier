@@ -96,26 +96,6 @@ public class RiderRequestActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        try {
-            ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
-            frrt.execute(UserController.getLoggedInUser().getUsername());
-            try {
-                ArrayList<Request> foundRequests;
-                foundRequests = frrt.get();
-                for( Request foundRequest: foundRequests) {
-                    if(foundRequest.getId().equals(request.getId())) {
-                        request = foundRequest;
-                        Toast.makeText(this, "Updated request", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            Thread.sleep(1000);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         setViews();
     }
     /**
@@ -284,19 +264,20 @@ public class RiderRequestActivity extends AppCompatActivity {
         // Set up the UsernameTextView of the driver
         UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
         // If no driver has been selected we need to display the list of drivers who have made an offer.
+        TextView driverTextView = (TextView) findViewById(R.id.textView_driver);
+        driverTextView.setText("");
         if (request.getChosenDriver() != null) {
             driverUsernameTextView.setText(request.getChosenDriver().getUsername());
             driverUsernameTextView.setUser(request.getChosenDriver());
-        } else if (request.getOfferedDrivers().size() > 0) {
+        } else if (request.getOfferedDrivers().size() > 0 && (request.getStatus() != Request.CONFIRMED || request.getStatus() != Request.PAID)) {
             // If there is an offered driver
-            TextView driverTextView = (TextView) findViewById(R.id.textView_driver);
+            Toast.makeText(RiderRequestActivity.this, "Here", Toast.LENGTH_SHORT).show();
+            driverTextView = (TextView) findViewById(R.id.textView_driver);
             driverTextView.setText(R.string.View_Offering_Drivers);
             driverTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Bundle bundle = getIntent().getExtras();
-
-                    int position = bundle.getInt("position");
                     Intent intent = new Intent(RiderRequestActivity.this, RiderViewOfferingDriversActivity.class);
                     intent.putExtras(bundle);
                     startActivity(intent);

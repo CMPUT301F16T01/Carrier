@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 
 import comcmput301f16t01.github.carrier.CarrierLocation;
+import comcmput301f16t01.github.carrier.FareCalculator;
 import comcmput301f16t01.github.carrier.Users.User;
 import io.searchbox.annotations.JestId;
 
@@ -43,6 +44,9 @@ public class Request {
 
     /** The price the requesting user is willing to pay for the request to be complete */
     private int fare;
+
+    /** The distance in kilometers */
+    private double distance;
 
     private Double[] location;
 
@@ -155,8 +159,11 @@ public class Request {
 
     @Override
     public String toString() {
-        String requestAsString = "Request From: " + rider.getUsername() + "\n";
-        requestAsString += "Description: " + description;
+        String requestAsString = "Request From: " + rider.getUsername() + "\n" +
+                "Description: " + description + "\n" +
+                "Price: " + FareCalculator.toString( fare ) + "\n" +
+                "Distance: " + distance + "km\n" +
+                "Price per KM: " + FareCalculator.toString((int) (fare/distance));
         return requestAsString;
     }
 
@@ -196,5 +203,13 @@ public class Request {
             }
         }
         return false;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
+    public double getDistance() {
+        return this.distance;
     }
 }
