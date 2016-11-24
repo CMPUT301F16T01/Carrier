@@ -382,7 +382,6 @@ public class RequestController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException();
         }
     }
 
@@ -402,7 +401,6 @@ public class RequestController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException();
         }
     }
 
@@ -421,7 +419,7 @@ public class RequestController {
             fos.close();
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException();
+//            throw new RuntimeException();
         }
     }
 
@@ -439,7 +437,6 @@ public class RequestController {
             requestsWhereOffered.replaceList((RequestList) gson.fromJson(in, listType));
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException();
         }
     }
 

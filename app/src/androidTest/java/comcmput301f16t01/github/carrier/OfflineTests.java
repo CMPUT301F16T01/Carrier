@@ -1,13 +1,8 @@
 package comcmput301f16t01.github.carrier;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
-import android.provider.Settings;
 import android.util.Log;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Requests.Request;
@@ -20,54 +15,113 @@ import comcmput301f16t01.github.carrier.Users.UserController;
  * Created by kiete on 11/23/2016.
  */
 
+/**
+ * Tests offline functionality
+ */
 public class OfflineTests extends ApplicationTest {
-    private WifiManager wifiManager = (WifiManager) getContext().getSystemService(Context.WIFI_SERVICE);
     private RequestController rc = new RequestController();
     private UserController uc = new UserController();
-    private User OfflineTestUser = new User("OfflineTestUser", "offline@offline.com", "00000000", "offline car");
-    private Request OfflineRequest = new Request(OfflineTestUser, new CarrierLocation(), new CarrierLocation());
+    private User offlineTestUser = new User("offlineTestUser", "offline@offline.com", "00000000", "offline car");
+    private User offlineTestUser2 = new User("offlineTestUser2", "offline2@offline.com", "00000001", "offline car2");
+    private Request offlineTestRequest = new Request(offlineTestUser, new CarrierLocation(), new CarrierLocation());
 
     @Override
     protected void setUp() throws InterruptedException {
-        this.wifiManager.setWifiEnabled(false);
-    }
+        // With the WiFi on, create the new user and add a request. These get put up on elastic search.
+        WifiManager wifiManager = (WifiManager) getContext().getSystemService(Context.WIFI_SERVICE);
+        wifiManager.setWifiEnabled(true);
+        Thread.sleep(1000);
+        //TODO: ask why this doesn't work, the tests can pass without them however
+//        if (uc.findUser(offlineTestUser.getUsername()) == null) {
 
-    @Override
-    protected void tearDown() {
-        this.wifiManager.setWifiEnabled(true);
-    }
-
-    public void testOnlineChecker() throws InterruptedException {
-        boolean online = ConnectionChecker.isThereInternet();
-        Log.i("wifi", ConnectionChecker.isThereInternet().toString());
+//            uc.createNewUser(offlineTestUser.getUsername(), offlineTestUser.getEmail(), offlineTestUser.getPhone(), offlineTestUser.getVehicleDescription());
 //        Thread.sleep(1000);
+////        }
+////        if (uc.findUser(offlineTestUser2.getUsername()) == null) {
+//            uc.createNewUser(offlineTestUser2.getUsername(), offlineTestUser2.getEmail(), offlineTestUser2.getPhone(), offlineTestUser2.getVehicleDescription());
+//        Thread.sleep(1000);
+//        }
+        uc.offlineLogInUser(offlineTestUser.getUsername(), offlineTestUser);
+        Thread.sleep(1000);
+        rc.addRequest(offlineTestRequest);
+        Thread.sleep(1000);
+        rc.addDriver(offlineTestRequest, offlineTestUser2);
+        Thread.sleep(1000);
+
+    }
+
+    /**
+     * Tests to see if the offline checker works
+     * @throws InterruptedException
+     */
+    public void testOnlineChecker() throws InterruptedException {
+        Thread.sleep(500);
+        // I really don't know why but for some reason having wifiManager as an attribute throws a RuntimeException so it's at the top of every function instead :P.
+        WifiManager wifiManager = (WifiManager) getContext().getSystemService(Context.WIFI_SERVICE);
+        // Go offline
+        wifiManager.setWifiEnabled(false);
+        Thread.sleep(500);
+        boolean online = ConnectionChecker.isThereInternet();
         assertFalse("Still online", online);
     }
 
-    public void testSavingOfflineRequests() {
-        // With the WiFi on, create the new user and add a request. These get put up on elastic search.
-        this.wifiManager.setWifiEnabled(true);
-        UserController.createNewUser(OfflineTestUser.getUsername(), OfflineTestUser.getEmail(), OfflineTestUser.getPhone(), OfflineTestUser.getVehicleDescription());
-        rc.addRequest(OfflineRequest);
+    /**
+     * Tests to see if saving/loading driver requests while offline works and is consistent with online
+     * @throws InterruptedException
+     */
+    public void testSavingLoadingOfflineDriverRequests() throws InterruptedException {
+        WifiManager wifiManager = (WifiManager) getContext().getSystemService(Context.WIFI_SERVICE);
 
-        // Clear the list of requests, and go offline.
-        rc.getRiderInstance().clear();
-        this.wifiManager.setWifiEnabled(false);
-        // When online fetchAllRequestsWhereRider asks elastic search, while offline it just loads file.
-        rc.fetchAllRequestsWhereRider(OfflineTestUser);
+        // Go offline and load the rider requests from file
+        wifiManager.setWifiEnabled(false);
+        Thread.sleep(500);
+        // While offline fetchAllRequestsWhereRider just loads file and store a copy
+        RequestList offlineDriverOfferedList = rc.getOfferedRequests(offlineTestUser2);
+        Thread.sleep(500);
         // Store the offline version of the request
-        Request offlineVersion = rc.getRiderInstance().get(0);
+        Request offlineVersion = offlineDriverOfferedList.get(0);
 
         // Repeat the same as above but go online instead.
-        rc.getRiderInstance().clear();
-        this.wifiManager.setWifiEnabled(true);
-        rc.fetchAllRequestsWhereRider(OfflineTestUser);
-        Request onlineVersion = rc.getRiderInstance().get(0);
+        wifiManager.setWifiEnabled(true);
+        Thread.sleep(500);
+        // Store a copy of the online requestList
+        RequestList onlineDriverOfferedList = rc.getOfferedRequests(offlineTestUser2);
+        Thread.sleep(500);
+        Request onlineVersion = onlineDriverOfferedList.get(0);
 
+        // Test to see if the online and offline copies of offlineTestRequest are the same (elastic search and file are consistent)
         assertEquals("The online and offline requests are different", onlineVersion.getId(), offlineVersion.getId());
-
     }
 
+    /**
+     * Tests to see if saving/loading driver requests while offline works and is consistent with online
+     * @throws InterruptedException
+     */
+    public void testSavingLoadingOfflineRiderRequests() throws InterruptedException {
+        WifiManager wifiManager = (WifiManager) getContext().getSystemService(Context.WIFI_SERVICE);
+        // With the WiFi on, create the new user and add a request. These get put up on elastic search.
+        wifiManager.setWifiEnabled(true);
+
+        // Go offline and load the rider requests from file
+        wifiManager.setWifiEnabled(false);
+        Thread.sleep(500);
+        // While offline fetchAllRequestsWhereRider just loads file and store a copy
+        RequestList offlineRequestList = rc.fetchAllRequestsWhereRider(UserController.getLoggedInUser());
+        Thread.sleep(500);
+        // Store the offline version of the request
+        Request offlineVersion = offlineRequestList.get(0);
+
+        // Repeat the same as above but go online instead.
+        wifiManager.setWifiEnabled(true);
+        Thread.sleep(500);
+        // Store a copy of the online requestList
+        RequestList onlineRequestList = rc.fetchAllRequestsWhereRider(UserController.getLoggedInUser());
+        Thread.sleep(500);
+        Request onlineVersion = onlineRequestList.get(0);
+
+        // Test to see if the online and offline copies of offlineTestRequest are the same (elastic search and file are consistent)
+        assertEquals("The online and offline requests are different", onlineVersion.getId(), offlineVersion.getId());
+    }
 
 
 }
