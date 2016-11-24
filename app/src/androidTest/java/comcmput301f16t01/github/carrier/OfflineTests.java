@@ -55,6 +55,16 @@ public class OfflineTests extends ApplicationTest {
         this.wifiManager.setWifiEnabled(false);
         // When online fetchAllRequestsWhereRider asks elastic search, while offline it just loads file.
         rc.fetchAllRequestsWhereRider(OfflineTestUser);
+        // Store the offline version of the request
+        Request offlineVersion = rc.getRiderInstance().get(0);
+
+        // Repeat the same as above but go online instead.
+        rc.getRiderInstance().clear();
+        this.wifiManager.setWifiEnabled(true);
+        rc.fetchAllRequestsWhereRider(OfflineTestUser);
+        Request onlineVersion = rc.getRiderInstance().get(0);
+
+        assertEquals("The online and offline requests are different", onlineVersion.getId(), offlineVersion.getId());
 
     }
 
