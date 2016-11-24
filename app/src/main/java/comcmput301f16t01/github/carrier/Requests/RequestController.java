@@ -140,6 +140,9 @@ public class RequestController {
      */
     public void confirmDriver(Request request, User driver) {
         // Modify and update the request, then execute the update task
+        if (!requestsWhereRider.contains(request)){
+            throw new RuntimeException();
+        }
         ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
         request.setChosenDriver( driver );
         request.setStatus( Request.CONFIRMED );
