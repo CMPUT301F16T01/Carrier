@@ -3,49 +3,52 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+
+    <!-- XML for search buttons -->
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:weightSum="1"
-        android:gravity="center" >
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:weightSum="1"
+    android:gravity="center" >
 
         <Button
-            android:text="Search by keyword"
-            android:textAllCaps="false"
-            android:textAlignment="textStart"
-            android:textSize="20sp"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:id="@+id/button_keywordSearch"
-            android:layout_weight="1"
-            android:drawableStart="@drawable/ic_search"
-            android:drawablePadding="5dp"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:onClick="searchByKeyword" />
+        android:text="Search by keyword"
+        android:textAllCaps="false"
+        android:textAlignment="textStart"
+        android:textSize="20sp"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/button_keywordSearch"
+        android:layout_weight="1"
+        android:drawableStart="@drawable/ic_search"
+        android:drawablePadding="5dp"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:onClick="searchByKeyword" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="1" >
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="1" >
 
         <Button
-            android:text="Search by location"
-            android:textAllCaps="false"
-            android:textAlignment="textStart"
-            android:textSize="20sp"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:id="@+id/button_locationSearch"
-            android:layout_weight="1"
-            android:drawableStart="@drawable/ic_location_on"
-            android:drawablePadding="5dp"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:onClick="searchByLocation" />
+        android:text="Search by location"
+        android:textAllCaps="false"
+        android:textAlignment="textStart"
+        android:textSize="20sp"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/button_locationSearch"
+        android:layout_weight="1"
+        android:drawableStart="@drawable/ic_location_on"
+        android:drawablePadding="5dp"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:onClick="searchByLocation" />
 
     </LinearLayout>
 
@@ -69,6 +72,100 @@
             style="@style/Widget.AppCompat.Button.Borderless"
             android:onClick="searchByAddress" />
 
+    </LinearLayout>
+
+    <!-- Separator -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@color/separatorColor"/>
+
+    <!-- XML for "price filtering" -->
+    <CheckBox
+    android:text="Filter by Price"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/checkBox_enablePriceFilter"
+    android:onClick="setPriceFilterVisibility"/>
+
+    <LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/linearLayout_MinMaxPrice">
+
+        <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Min: "/>
+
+        <!-- Price filter input (for minimum price -->
+        <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="4"
+        android:id="@+id/editText_minPrice"
+        android:layout_weight="1" />
+
+        <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Max: " />
+
+        <!-- Price filter input for maximum price-->
+        <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="4"
+        android:id="@+id/editText_maxPrice"
+        android:layout_weight="1"
+        android:hint="(optional)"/>
+    </LinearLayout>
+
+    <!-- XML for "price per KM filtering" -->
+    <CheckBox
+        android:text="Filter by Price per Kilometer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/checkBox_enablePricePerKMFilter"
+        android:onClick="setPricePerKMFilterVisibility"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout_PricePerKM">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Min: "/>
+
+        <!-- Price filter input (for minimum price -->
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:ems="4"
+            android:id="@+id/editText_minPricePerKM"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Max: " />
+
+        <!-- Price filter input for maximum price-->
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:ems="4"
+            android:id="@+id/editText_maxPricePerKM"
+            android:layout_weight="1"
+            android:hint="(optional)"/>
     </LinearLayout>
 
 </LinearLayout>

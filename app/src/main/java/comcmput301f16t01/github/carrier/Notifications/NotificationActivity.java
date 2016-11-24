@@ -9,7 +9,10 @@ import android.widget.ListView;
 import comcmput301f16t01.github.carrier.R;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
-
+/**
+ * Activity for viewing notifications. The user can view them, mark them as read,
+ * and clear all the notifications.
+ */
 public class NotificationActivity extends AppCompatActivity {
     ArrayAdapter<Notification> notificationArrayAdapter;
 

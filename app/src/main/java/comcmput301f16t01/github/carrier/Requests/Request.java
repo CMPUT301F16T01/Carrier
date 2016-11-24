@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 
 import comcmput301f16t01.github.carrier.CarrierLocation;
+import comcmput301f16t01.github.carrier.FareCalculator;
 import comcmput301f16t01.github.carrier.Users.User;
 import io.searchbox.annotations.JestId;
 
@@ -44,13 +45,15 @@ public class Request {
     /** The price the requesting user is willing to pay for the request to be complete */
     private int fare;
 
+    /** The distance in kilometers */
+    private double distance;
+
     private Double[] location;
 
     /** For use with Elastic Search, is the unique ID given to it */
     @JestId
     private String elasticID = null;
 
-    //TODO maybe add the Location strings to description by default? Just in case keywords are CarrierLocations.
     // Constructor with description
     public Request(@NonNull User requestingRider, @NonNull CarrierLocation requestedStart,
                    @NonNull CarrierLocation requestedEnd, String description) {
@@ -64,7 +67,8 @@ public class Request {
         this.location[1] = requestedStart.getLatitude();
     }
 
-    // Constructor without description TODO do we need this?
+    // Constructor without description TODO delete?
+    @Deprecated
     public Request(User rider, CarrierLocation start, CarrierLocation end) {
         this.rider = rider;
         this.start = start;
@@ -154,13 +158,16 @@ public class Request {
 
     @Override
     public String toString() {
-        String requestAsString = "Request From: " + rider.getUsername() + "\n";
-        requestAsString += "Description: " + description;
+        String requestAsString = "Request From: " + rider.getUsername() + "\n" +
+                "Description: " + description + "\n" +
+                "Price: " + FareCalculator.toString( fare ) + "\n" +
+                "Distance: " + distance + "km\n" +
+                "Price per KM: " + FareCalculator.toString((int) (fare/distance));
         return requestAsString;
     }
 
     /**
-     * Will addthe driver to the list of offering drivers.
+     * Will add the driver to the list of offering drivers.
      * @param offeredDriver The driver that is making the offer.
      */
     public void addOfferingDriver(User offeredDriver) {
@@ -195,5 +202,13 @@ public class Request {
             }
         }
         return false;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
+    public double getDistance() {
+        return this.distance;
     }
 }
