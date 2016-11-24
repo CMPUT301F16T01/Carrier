@@ -350,6 +350,8 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         payment_button.setText(R.string.payment_received);
         payment_button.setEnabled( false ); // Make the button clickable
         payment_button.setAlpha((float) 0.5);
+        rc.getOffersInstance().notifyListeners();
+        rc.getRiderInstance().notifyListeners();
     }
 
     /**
@@ -386,6 +388,7 @@ public class DriverViewRequestActivity extends AppCompatActivity {
             button.setAlpha((float) 0.5); // The button becomes 50% transparent
             ImageView statusImageView = (ImageView) findViewById(R.id.imageView_requestStatus);
             statusImageView.setImageResource(R.drawable.offered);
+            rc.getOffersInstance().notifyListeners();
         }
     }
 }

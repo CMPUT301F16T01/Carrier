@@ -232,21 +232,21 @@ public class RiderRequestActivity extends AppCompatActivity {
 
     /**
      * Will confirm the completion of a request.
-     * @param view The current view.
+     * @param view The view for the button that was clicked.
      */
     public void completeRequest(View view) {
         if (request.getStatus() == Request.CONFIRMED) {
-            Toast.makeText(activity, "PAY FOR REQUEST", Toast.LENGTH_SHORT).show();
             RequestController rc = new RequestController();
             rc.completeRequest(request);
             ImageView statusImageView = (ImageView) findViewById(R.id.imageView_requestStatus);
             statusImageView.setImageResource(R.drawable.complete);
-
-        }
-        else {
-            AlertDialog.Builder adb = new AlertDialog.Builder(RiderRequestActivity.this);
-            adb.setTitle("Error:");
-            adb.setMessage("Can not complete request");
+            Button cancelButton = (Button) findViewById(R.id.button_delete);
+            cancelButton.setAlpha(0.5f);
+            cancelButton.setEnabled(false);
+            view.setEnabled(false);
+            view.setAlpha(0.5f);
+            rc.getOffersInstance().notifyListeners();
+            rc.getRiderInstance().notifyListeners();
         }
     }
 
@@ -272,13 +272,12 @@ public class RiderRequestActivity extends AppCompatActivity {
         UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
         // If no driver has been selected we need to display the list of drivers who have made an offer.
         TextView driverTextView = (TextView) findViewById(R.id.textView_driver);
-        driverTextView.setText("");
+        driverTextView.setText(R.string.DriverHere);
         if (request.getChosenDriver() != null) {
             driverUsernameTextView.setText(request.getChosenDriver().getUsername());
             driverUsernameTextView.setUser(request.getChosenDriver());
         } else if (request.getOfferedDrivers().size() > 0 && (request.getStatus() != Request.CONFIRMED || request.getStatus() != Request.PAID)) {
             // If there is an offered driver
-            Toast.makeText(RiderRequestActivity.this, "Here", Toast.LENGTH_SHORT).show();
             driverTextView = (TextView) findViewById(R.id.textView_driver);
             driverTextView.setText(R.string.View_Offering_Drivers);
             driverTextView.setOnClickListener(new View.OnClickListener() {
@@ -342,17 +341,28 @@ public class RiderRequestActivity extends AppCompatActivity {
             }
         }
         // Make the button grey if it is completed or paid.
-        if (request.getStatus() == Request.COMPLETE || request.getStatus() == Request.PAID) {
+        if (request.getStatus() != Request.CONFIRMED) {
             Button completeButton = (Button) findViewById(R.id.button_confirm_completion);
             completeButton.setAlpha(0.5f);
             completeButton.setEnabled(false);
+        }
+        else {
+            Button completeButton = (Button) findViewById(R.id.button_confirm_completion);
+            completeButton.setAlpha(1f);
+            completeButton.setEnabled(true);
+        }
+        if (request.getStatus() == Request.COMPLETE || request.getStatus() == Request.PAID){
+            Button cancelButton = (Button) findViewById(R.id.button_delete);
+            cancelButton.setEnabled(false);
+            cancelButton.setAlpha(0.5f);
         }
     }
 
     /**
      * Will initialize the view ids for all the views in the activity.
+     * @param v the Cancel Request button.
      */
-    public void cancelRequest(View v) {
+    public void cancelRequest(final View v) {
         AlertDialog.Builder adb = new AlertDialog.Builder(RiderRequestActivity.this);
         if ((request.getStatus() != Request.CANCELLED) && (request.getStatus() != Request.COMPLETE)
                 && (request.getStatus() != Request.PAID)) {
@@ -363,6 +373,10 @@ public class RiderRequestActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     RequestController rc = new RequestController();
                     rc.cancelRequest(request);
+                    v.setAlpha(0.5f);
+                    v.setEnabled(false);
+                    rc.getOffersInstance().notifyListeners();
+                    rc.getRiderInstance().notifyListeners();
                     finish();
                 }
             });

@@ -72,6 +72,8 @@ public class OfferingDriversArrayAdapter extends ArrayAdapter<User> {
                             RequestController rc = new RequestController();
                             rc.confirmDriver(request, offeringDriver);
                             Toast.makeText(view.getContext(), "Confirmed Driver", Toast.LENGTH_SHORT).show();
+                            rc.getRiderInstance().notifyListeners();
+                            rc.getOffersInstance().notifyListeners();
                             activity.finish(); // Finish the activity.
                         }
                     });
