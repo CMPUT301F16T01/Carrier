@@ -13,16 +13,16 @@ import comcmput301f16t01.github.carrier.Requests.RequestList;
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
-
+// TODO javadoc?
 public class AcceptingTest extends ApplicationTest {
     // abstracts reused code to prevent mistakes and aid in readability of tests
     // Makes the current thread sleep for the specified amount of time (in ms)
     // TODO convert to a full out AsyncWait method to generalize waiting for .size() == RequestAdapter tasks?
     // From NotificationTest
-    private User basicRider = new User( "reqTestUser", "giveMeRide@carrier.com", "41534153" );
-    private User anotherUser = new User( "reqTestUser2", "loveSia@hotmail.com", "514514514" );
-    private User basicDriver = new User( "offeringDriver", "wannaDriveYou@gmail.com", "1323123" );
-    private User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234" );
+    private User basicRider = new User( "reqTestUser", "giveMeRide@carrier.com", "41534153", "Kia, Rio"  );
+    private User anotherUser = new User( "reqTestUser2", "loveSia@hotmail.com", "514514514", "Kia, Rio"  );
+    private User basicDriver = new User( "offeringDriver", "wannaDriveYou@gmail.com", "1323123", "Kia, Rio"  );
+    private User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234", "Kia, Rio"  );
 
 
     // abstracts reused code to prevent mistakes and aid in readability of tests
@@ -236,14 +236,12 @@ public class AcceptingTest extends ApplicationTest {
     public void testConfirmation() {
 
     }
-    private void setUpUser() {
-        String result = UserController.createNewUser( loggedInUser.getUsername(),
-                loggedInUser.getEmail(),
-                loggedInUser.getPhone() );
 
-        if (result == null) {
-            System.out.print( "null line" );
-        }
+    private void setUpUser() {
+        UserController.createNewUser( loggedInUser.getUsername(),
+                loggedInUser.getEmail(),
+                loggedInUser.getPhone(),
+                loggedInUser.getVehicleDescription() );
 
         assertTrue( "Failed to log in for test.", UserController.logInUser( loggedInUser.getUsername() ) );
     }

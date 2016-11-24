@@ -13,12 +13,11 @@ public class ElasticUserControllerTest extends ApplicationTest {
     @Override
     protected void setUp() throws InterruptedException {
         // The logged in user
-        UserController.createNewUser("ElasticUserControllerTest", "test@test.com", "1234567890");
+        UserController.createNewUser("ElasticUserControllerTest", "test@test.com", "1234567890", "Kia, Rio" );
         Thread.sleep(1000);
         //UserController.logInUser("ElasticUserControllerTest");
         // A user to remove later
-        UserController.createNewUser("ElasticUserControllerTest2", "delete@test.com", "1234567890");
-        Thread.sleep(1000);
+        UserController.createNewUser("ElasticUserControllerTest2", "delete@test.com", "1234567890", "Kia, Rio" );
     }
 
     @Override
@@ -34,8 +33,8 @@ public class ElasticUserControllerTest extends ApplicationTest {
     public void testUniqueUsername() {
 //        Test for uniqueness, createNewUser returns the string "That username is already taken" if
 //        a string is not unique
-        assertEquals("The username is not unique.", "That username is already taken!", UserController.createNewUser
-                ("ElasticUserControllerTest", "j@j.com", "1234567"));
+        assertEquals("The username is not unique.", "That username is already taken!",
+                UserController.checkValidInputs("ElasticUserControllerTest", "j@j.com", "1234567"));
     }
 
     /**
@@ -65,7 +64,4 @@ public class ElasticUserControllerTest extends ApplicationTest {
         // See if the deleted user was actually deleted
         assertEquals("The deleted user still exists", null, deletedUser);
     }
-
-
-
 }

@@ -37,7 +37,7 @@ public class UserController {
      * @param phoneNumber The phone number the new user will have.
      * @return A string containing an error message if unsuccessful, otherwise null.
      */
-    public static String createNewUser(@NonNull String username, @NonNull String email, @NonNull String phoneNumber) {
+    public static String checkValidInputs(@NonNull String username, @NonNull String email, @NonNull String phoneNumber) {
         User newUser = new User();
 
         // Trim leading and trailing whitespace
@@ -66,6 +66,36 @@ public class UserController {
         if (!validatePhone(phoneNumber)) {
             return "That doesn't look like a valid phone number!";
         }
+        return null;
+    }
+
+
+
+
+
+    /**
+     * Attempt to create a new user.
+     *
+     * @param username
+     * @param email
+     * @param phoneNumber
+     * @param vehicleDescription
+     * @return
+     */
+    public static void createNewUser(String username, String email, String phoneNumber, String vehicleDescription) {
+        // TODO check errors on the vehicle description???
+        // TODO testing offline behaviour
+        User newUser = new User();
+
+        // Trim leading and trailing whitespace
+        email = email.trim();
+        phoneNumber = phoneNumber.trim();
+        username = username.trim();
+
+        newUser.setEmail(email);
+        newUser.setPhone(phoneNumber);
+        newUser.setUsername(username);
+        newUser.setVehicleDescription(vehicleDescription);
 
         ElasticUserController.AddUserTask aut = new ElasticUserController.AddUserTask();
         aut.execute(newUser);
@@ -76,7 +106,6 @@ public class UserController {
         }
 
         loggedInUser = newUser; // set the logged in user to be the one we created.
-        return null;
     }
 
     /**

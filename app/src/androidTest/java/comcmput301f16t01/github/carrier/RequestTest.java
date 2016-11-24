@@ -24,9 +24,9 @@ import comcmput301f16t01.github.carrier.Users.User;
  *      X) Subtle issues, like we can't add drivers when we have a confirmed one!
  */
 public class RequestTest extends ApplicationTest {
-    private final User basicRider = new User( "reqTestUser", "giveMeRide@carrier.com", "41534153" );
-    private final User anotherUser = new User( "reqTestUser2", "loveSia@hotmail.com", "514514514" );
-    private final User basicDriver = new User( "offeringDriver", "wannaDriveYou@gmail.com", "1323123" );
+    private final User basicRider = new User( "reqTestUser", "giveMeRide@carrier.com", "41534153", "Kia, Rio"  );
+    private final User anotherUser = new User( "reqTestUser2", "loveSia@hotmail.com", "514514514", "Kia, Rio"  );
+    private final User basicDriver = new User( "offeringDriver", "wannaDriveYou@gmail.com", "1323123", "Kia, Rio"  );
 
     // abstracts reused code to prevent mistakes and aid in readability of tests
     // Makes the current thread sleep for the specified amount of time (in ms)

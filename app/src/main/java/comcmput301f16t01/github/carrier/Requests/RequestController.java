@@ -3,8 +3,10 @@ package comcmput301f16t01.github.carrier.Requests;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
+import comcmput301f16t01.github.carrier.Users.ElasticUserController;
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
@@ -40,8 +42,8 @@ public class RequestController {
 
     /**
      *  Get the results of a searchByKeyword or a getSearchByLocation query.
-     *  @see #pruneByPrice(Float, Float)
-     *  @see #pruneByPricePerKM(Float, Float)
+     *  @see #pruneByPrice(Double, Double)
+     *  @see #pruneByPricePerKM(Double, Double)
      */
     public static RequestList getResult() {
         return searchResult;
@@ -158,7 +160,6 @@ public class RequestController {
      * this query. Use getResults() to get the information.
      */
     public static void searchByLocation(Location location) {
-        // TODO check how these are sorted, we want to sort them by those closest to those furthest away
         ElasticRequestController.SearchByLocationTask sblt = new ElasticRequestController.SearchByLocationTask();
         sblt.execute(location);
         try {
@@ -277,11 +278,20 @@ public class RequestController {
      * @param minPrice The minimum value you wish to prune by.
      * @param maxPrice The maximum value you wish to prune by. (Passing null is equivalent to passing positive infinity)
      */
-    public static void pruneByPrice(@NonNull Float minPrice, @Nullable Float maxPrice) {
+    public static void pruneByPrice(@NonNull Double minPrice, @Nullable Double maxPrice) {
         RequestList filteredRequests = new RequestList();
         for ( Request request : searchResult ) {
+
+            Log.i( "price:", "" + request.getFare() );
+            Log.i( "minPrice:", "" + minPrice );
+            Log.i( "maxPrice:", "" + maxPrice );
+
+            // If the fare is less than the minimum price specified, skip it
             if ( request.getFare() < minPrice * 100 ) { continue; }
+            // If the maxPrice is not null, and the fare is greater than the max price, skip it.
             if ( maxPrice != null && maxPrice * 100 < request.getFare() ) { continue; }
+
+            Log.i( " *** added fare", "" + request.getFare() );
             filteredRequests.add( request ); // add the request if it is in range
         }
         searchResult.replaceList( filteredRequests );
@@ -293,15 +303,22 @@ public class RequestController {
      * @param minPricePerKM The minimum value you wish to prune by.
      * @param maxPricePerKM The maximum value you wish to prune by. (Passing null is equivalent to passing positive infinity)
      */
-    public static void pruneByPricePerKM( @NonNull Float minPricePerKM, @Nullable Float maxPricePerKM ) {
+    public static void pruneByPricePerKM( @NonNull Double minPricePerKM, @Nullable Double maxPricePerKM ) {
         RequestList filteredRequests = new RequestList();
         for ( Request request : searchResult ) {
-            double pricePerKM = request.getFare() / request.getDistance();
+            double pricePerKM = (request.getFare() / request.getDistance()) / 100;
+
+            Log.i( "pricePerKM:", "" + pricePerKM );
+            Log.i( "minPricePerKM:", "" + minPricePerKM );
+            Log.i( "maxPricePerKM:", "" + maxPricePerKM );
+
             // ensure the price per kilometer is greater than the specified minimum
-            if ( pricePerKM < minPricePerKM * 100 ) { continue; }
+            if ( pricePerKM < minPricePerKM ) { continue; }
             // ensure the price per kilometer is less than the specified maximum.
-            if ( maxPricePerKM != null && maxPricePerKM * 100 < pricePerKM ) { continue; }
+            if ( maxPricePerKM != null && maxPricePerKM < pricePerKM ) { continue; }
             filteredRequests.add( request ); // add the request if it is in range
+
+            Log.i( " *** added per KM", "" + pricePerKM );
         }
         searchResult.replaceList( filteredRequests );
     }

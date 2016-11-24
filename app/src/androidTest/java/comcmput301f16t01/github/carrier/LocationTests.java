@@ -17,18 +17,15 @@ public class LocationTests extends ApplicationTest {
     private final double latitude2 = 42.9870;
     private final double longitude2 = 81.2432;
 
-    private final User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234" );
-    private final User driverOne = new User( "notifTestDriver", "notifyYou@email.com", "0118-99-112" );
+    private final User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234", "your mom" );
+    private final User driverOne = new User( "notifTestDriver", "notifyYou@email.com", "0118-99-112", "my mom" );
 
     // Set up a test user to receive notifications
     private void setUpUser() {
-        String result = UserController.createNewUser( loggedInUser.getUsername(),
+        UserController.createNewUser( loggedInUser.getUsername(),
                 loggedInUser.getEmail(),
-                loggedInUser.getPhone() );
-
-        if (result == null) {
-            System.out.print( "null line" );
-        }
+                loggedInUser.getPhone(),
+                loggedInUser.getVehicleDescription() );
 
         Assert.assertTrue( "Failed to log in for test.", UserController.logInUser( loggedInUser.getUsername() ) );
     }

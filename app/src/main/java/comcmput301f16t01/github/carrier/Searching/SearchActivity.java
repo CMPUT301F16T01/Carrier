@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,7 +21,14 @@ import org.apache.http.annotation.NotThreadSafe;
 
 import java.util.IllegalFormatException;
 
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import comcmput301f16t01.github.carrier.CarrierLocation;
 import comcmput301f16t01.github.carrier.R;
+import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.SetLocationsActivity;
 
@@ -38,6 +48,7 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        setTitle("Search");
 
         // Hide the price view until the user enables price filtering.
         LinearLayout priceLayout = (LinearLayout) findViewById( R.id.linearLayout_MinMaxPrice );
@@ -90,7 +101,6 @@ public class SearchActivity extends AppCompatActivity {
      * @param view the search by location button
      */
     public void searchByLocation(View view) {
-        Toast.makeText(this, "Search by Location", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(activity, SetLocationsActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("point", "search");
@@ -120,25 +130,25 @@ public class SearchActivity extends AppCompatActivity {
         if ( filterByPrice ) {
             EditText minEditText = (EditText) findViewById( R.id.editText_minPrice);
             EditText maxEditText = (EditText) findViewById( R.id.editText_maxPrice);
-            Float minPrice;
-            Float maxPrice;
+            Double minPrice;
+            Double maxPrice;
 
             try {
-                // Try to convert the input to a float, if we fail return an error message
-                minPrice = Float.valueOf(minEditText.getText().toString());
-                bundle.putFloat( "minPrice", minPrice );
+                // Try to convert the input to a double, if we fail return an error message
+                minPrice = Double.valueOf(minEditText.getText().toString());
+                bundle.putDouble( "minPrice", minPrice );
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("You must put a valid value for the minimum price you are searching for." );
             }
 
             // Check if the value is blank (user chose to leave this value out)
             if (maxEditText.getText().toString().equals("")) {
-                bundle.putFloat( "maxPrice", -1 ); // We use negative one to say "we will not be checking by maxPrice"
+                bundle.putDouble( "maxPrice", -1 ); // We use negative one to say "we will not be checking by maxPrice"
             } else {
                 // Else we check if we can parse the value and put it in our bundle.
                 try {
-                    maxPrice = Float.valueOf(maxEditText.getText().toString());
-                    bundle.putFloat( "maxPrice", maxPrice );
+                    maxPrice = Double.valueOf(maxEditText.getText().toString());
+                    bundle.putDouble( "maxPrice", maxPrice );
                     if ( minPrice > maxPrice ) {
                         throw new IllegalArgumentException( "You may not set the minimum price higher than the maximum price.");
                     }
@@ -153,13 +163,13 @@ public class SearchActivity extends AppCompatActivity {
         if ( filterByPricePerKM ) {
             EditText minEditText = (EditText) findViewById( R.id.editText_minPricePerKM);
             EditText maxEditText = (EditText) findViewById( R.id.editText_maxPricePerKM);
-            Float minPrice;
-            Float maxPrice;
+            Double minPrice;
+            Double maxPrice;
 
-            // Try to convert the input to a float, if we fail return an error message
+            // Try to convert the input to a double, if we fail return an error message
             try {
-                minPrice = Float.valueOf(minEditText.getText().toString());
-                bundle.putFloat( "minPricePerKM", minPrice );
+                minPrice = Double.valueOf(minEditText.getText().toString());
+                bundle.putDouble( "minPricePerKM", minPrice );
             } catch (NumberFormatException e) {
                 String message = "You must put a valid value for the minimum price per " +
                         "kilometer you are searching for.";
@@ -168,12 +178,12 @@ public class SearchActivity extends AppCompatActivity {
 
             // Check if the value is blank (user chose to leave this value out)
             if (maxEditText.getText().toString().equals("")) {
-                bundle.putFloat( "maxPricePerKM", -1 ); // We use negative one to say "we will not be checking by maxPrice"
+                bundle.putDouble( "maxPricePerKM", -1 ); // We use negative one to say "we will not be checking by maxPrice"
             } else {
                 // Else we check if we can parse the value and put it in our bundle.
                 try {
-                    maxPrice = Float.valueOf(maxEditText.getText().toString());
-                    bundle.putFloat( "maxPricePerKM", maxPrice );
+                    maxPrice = Double.valueOf(maxEditText.getText().toString());
+                    bundle.putDouble( "maxPricePerKM", maxPrice );
                     if ( minPrice > maxPrice ) {
                         throw new IllegalArgumentException( "You may not set the minimum price per kilometer higher than the maximum price.");
                     }
@@ -208,13 +218,28 @@ public class SearchActivity extends AppCompatActivity {
      * @param view the calling view (the checked checkbox)
      */
     public void setPricePerKMFilterVisibility(View view) {
-        LinearLayout pricePerKMLayout = (LinearLayout) findViewById( R.id.linearLayout_PricePerKM );
-        if ( ((CheckBox) view).isChecked() ) {
-            pricePerKMLayout.setVisibility( View.VISIBLE ); // We make it visible if the checkbox is checked
+        LinearLayout pricePerKMLayout = (LinearLayout) findViewById(R.id.linearLayout_PricePerKM);
+        if (((CheckBox) view).isChecked()) {
+            pricePerKMLayout.setVisibility(View.VISIBLE); // We make it visible if the checkbox is checked
             filterByPricePerKM = true;
         } else {
-            pricePerKMLayout.setVisibility( View.GONE ); // Else we make it invisible
+            pricePerKMLayout.setVisibility(View.GONE); // Else we make it invisible
             filterByPricePerKM = false;
         }
+    }
+
+    /**
+     * This will open a dialog to search for an address. The selected address
+     * will be shown on a map to confirm the location. This will create a
+     * query for available requests.
+     * @param view Search by address Button
+     */
+    public void searchByAddress(View view) {
+        // Based on: https://goo.gl/6AAnXP
+        // Author: Android Dev Docs
+        // Retrieved on: October 28, 2016
+        Intent intent = new Intent(activity, SearchAddressChoiceActivity.class);
+        bundleFilters( intent );
+        startActivity(intent);
     }
 }

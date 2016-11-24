@@ -6,13 +6,15 @@ import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestList;
+import comcmput301f16t01.github.carrier.Users.ElasticUserController;
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
 public class SearchingTests extends ApplicationTest {
-    // somewhere in Tokyo, Japan
-    private final double latitude1 = 35.6895;
-    private final double longitude1 = 139.6917;
+
+    // University of Alberta, Edmonton
+    static final double latitude1 = 53.5232;
+    static final double longitude1 = -113.5263;
 
     // somewhere in Seoul, South Korea
     private final double latitude2 = 37.5665;
@@ -26,10 +28,26 @@ public class SearchingTests extends ApplicationTest {
     private final double latitude4 = 35.6852;
     private final double longitude4 = 139.7528;
 
-    private User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234" );
-    private User driverOne = new User( "notifTestDriver", "notifyYou@email.com", "0118-99-112" );
+    private User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234", "Kia, Rio" );
+    private User driverOne = new User( "notifTestDriver", "notifyYou@email.com", "0118-99-112", "Kia, Rio"  );
 
-    // This tear down method may not be working entirely as expected...test further
+    // Set up a test user to receive notifications
+    private void setUpUser() {
+        String result = UserController.checkValidInputs(loggedInUser.getUsername(),
+                loggedInUser.getEmail(), loggedInUser.getPhone());
+
+        if (result == null) {
+            System.out.print( "null line" );
+        } else {
+            UserController.createNewUser(loggedInUser.getUsername(),
+                    loggedInUser.getEmail(), loggedInUser.getPhone(), loggedInUser.getVehicleDescription());
+        }
+        assertTrue( "Failed to log in for test.", UserController.logInUser( loggedInUser.getUsername() ) );
+    }
+
+    /**
+     * Clears requests created by searchTestUser and clears request offers made by searchTestDriver
+     */
     protected void tearDown() throws Exception {
         ElasticRequestController.ClearRiderRequestsTask crt = new ElasticRequestController.ClearRiderRequestsTask();
         crt.execute( loggedInUser.getUsername(), driverOne.getUsername());
@@ -38,8 +56,8 @@ public class SearchingTests extends ApplicationTest {
         rot.setMode( rot.MODE_USERNAME );
         rot.execute(loggedInUser.getUsername(), driverOne.getUsername());
 
-        UserController.deleteUser( driverOne.getUsername() );
-
+        ElasticUserController.DeleteUserTask dut = new ElasticUserController.DeleteUserTask();
+        dut.execute( driverOne.getUsername() );
         super.tearDown();
     }
 
@@ -54,6 +72,13 @@ public class SearchingTests extends ApplicationTest {
         }
     }
 
+    /**
+     * Tests the SearchByLocation functionality in the RequestController. Tests that the correct
+     * number of requests are returned and that they are returned in the correct order (i.e.
+     * starting with those closest to the driver searching).
+     *
+     * Addresses Use Cases Searching #1 and #5.
+     */
     public void testDriverSearchByLocation() {
         CarrierLocation startLocation1 = new CarrierLocation();
         CarrierLocation endLocation1 = new CarrierLocation();
@@ -113,36 +138,30 @@ public class SearchingTests extends ApplicationTest {
     }
 
     /**
-     * TEST1
-     *
      * Tests that requests with specific keywords in the description can be queried.
      *
-     * As a driver, I want to browse and search for open requests by keyword.
-     * Related: US 04.02.01
+     * Addressing Use Case Searching #2.
      */
     public void testDriverSearchByKeyword() {
-        // The logged in user must be someone other than who created the requests (otherwise they will
-        // not see offers)
-        UserController.createNewUser( driverOne.getUsername(),
-                driverOne.getEmail(),
-                driverOne.getPhone());
+        // We use gibbersih so that "live" requests do not interfere with tests
+        String keyword1 = "dkfjlasb";
+        String keyword2 = "ksjdahfk";
+        String keyword3 = "sjdjakfk";
+        String keyword4 = "dhsbskak";
 
+        // Add requests with the gibberish keywords
         Request requestOne = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
-                "Test keywords: downtown");
+                "Test keywords: " + keyword1);
         Request requestTwo = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
-                "Test keywords: home");
+                "Test keywords: " + keyword2);
         Request requestThree = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
-                "Test keywords: home, work");
-        
-        RequestController.addRequest(requestOne);
-        RequestController.addRequest(requestTwo);
-        RequestController.addRequest(requestThree);
+                "Test keywords: " + keyword2 + ", " + keyword3);
+        RequestController.addRequest( requestOne );
+        RequestController.addRequest( requestTwo );
+        RequestController.addRequest( requestThree );
 
+        // Ensure that they've been added to elastic search
         RequestList requests = RequestController.fetchAllRequestsWhereRider(loggedInUser);
-
-        /*
-         * Dealing with Async tasks means we need to wait for them to finish.
-         */
         int pass = 0;
         while( requests.size() < 3 ) {
             requests = RequestController.fetchAllRequestsWhereRider( loggedInUser );
@@ -151,34 +170,37 @@ public class SearchingTests extends ApplicationTest {
             if (pass > 10) { break; }
         }
 
-        // this method should return a list of requests based on keywords in the request description
-        String query1 = "home";
-        String query2 = "downtown"; // should not be case-dependent
-        String query3 = "walk";
-
-        RequestController.searchByKeyword(query1);
+        RequestController.searchByKeyword(keyword2);
         chillabit( 1000 );
-        Assert.assertTrue("Search did not return 2 requests: " + RequestController.getResult().size(), RequestController.getResult().size() == 2);
-        RequestController.searchByKeyword(query2);
+        Assert.assertTrue("Search did not return 2 requests: " + RequestController.getResult().size(),
+                RequestController.getResult().size() == 2);
+        RequestController.searchByKeyword(keyword1);
         chillabit( 1000 );
-        Assert.assertTrue("Search did not return 1 request", RequestController.getResult().size() == 1);
-        RequestController.searchByKeyword(query3);
+        Assert.assertTrue("Search did not return 1 request",
+                RequestController.getResult().size() == 1);
+        RequestController.searchByKeyword(keyword4);
         chillabit( 1000 );
-        Assert.assertTrue("Search returned requests", RequestController.getResult().size() == 0);
+        Assert.assertTrue("Search returned requests where it should not have",
+                RequestController.getResult().size() == 0);
     }
 
     // TODO confirmDriver method not complete, this test will not pass
     public void testDriverSearchByKeywordWithConfirmed() {
+        String keyword1 = "dkfjlasb";
+        String keyword2 = "ksjdahfk";
+        String keyword3 = "sjdjakfk";
+        String keyword4 = "dhsbskak";
+
         Request requestOne = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
-                "Test keywords: downtown");
+                "Test keywords: " + keyword1);
         Request requestTwo = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
-                "Test keywords: home");
+                "Test keywords: " + keyword2);
         Request requestThree = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
-                "Test keywords: home, work");
-        
-        RequestController.addRequest(requestOne);
-        RequestController.addRequest(requestTwo);
-        RequestController.addRequest(requestThree);
+                "Test keywords: " + keyword2 + ", " + keyword3);
+
+        RequestController.addRequest( requestOne );
+        RequestController.addRequest( requestTwo );
+        RequestController.addRequest( requestThree );
 
         RequestList requests = RequestController.fetchAllRequestsWhereRider(loggedInUser);
 
@@ -192,12 +214,7 @@ public class SearchingTests extends ApplicationTest {
             pass++;
             if (pass > 10) { break; }
         }
-
-        // this method should return a list of requests based on keywords in the request description
-        String query1 = "home";
-        String query2 = "downtown"; // should not be case-dependent
-        String query3 = "walk";
-
+        
         RequestController.addDriver(requestOne, driverOne);
         RequestController.confirmDriver(requestOne, driverOne);
 
@@ -212,17 +229,127 @@ public class SearchingTests extends ApplicationTest {
         }
 
         // requestOne should no longer be included in search results
-        RequestController.searchByKeyword(query1);
+        RequestController.searchByKeyword(keyword2);
         chillabit( 1000 );
-        Assert.assertTrue("Search did not return 2 requests", RequestController.getResult().size() == 2);
-        RequestController.searchByKeyword(query2);
-        chillabit( 1000 );
-        Assert.assertTrue("Search returned requests: " + RequestController.getResult().size(), RequestController.getResult().size() == 0);
-        RequestController.searchByKeyword(query3);
+        Assert.assertTrue("Search did not return 2 requests: " + RequestController.getResult().size(), RequestController.getResult().size() == 2);
+        RequestController.searchByKeyword(keyword1);
         chillabit( 1000 );
         Assert.assertTrue("Search did not return 1 request", RequestController.getResult().size() == 1);
+        RequestController.searchByKeyword(keyword4);
+        chillabit( 1000 );
+        Assert.assertTrue("Search returned requests", RequestController.getResult().size() == 0);
 
         RequestController.addDriver(requestThree, driverOne);
         RequestController.confirmDriver(requestThree, driverOne);
+    }
+
+    /** Test 4
+     * Test that we can filter by price.
+     */
+    public void testPriceFiltering() {
+        int pass;
+
+        RequestController.clearAllRiderRequests( loggedInUser );
+        UserController.createNewUser(driverOne.getUsername(),
+                driverOne.getEmail(),
+                driverOne.getPhone(),
+                "");
+        UserController.logInUser( driverOne.getUsername() );
+
+        // We put some requests in the elastic searches
+        Request requestOne = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
+                "@45jkLmNO02032aassssssssssssssssssssssssss");
+        requestOne.setFare( 1000 );
+        requestOne.setDistance( 2 );
+        Request requestTwo = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
+                "@45jkLmNO02032aassssssssssssssssssssssssss");
+        requestTwo.setFare( 998 );
+        requestTwo.setDistance( 2 );
+        Request requestThree = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
+                "@45jkLmNO02032aassssssssssssssssssssssssss");
+        requestThree.setFare( 1002 );
+        requestThree.setDistance( 2 );
+        RequestController.addRequest( requestOne );
+        RequestController.addRequest( requestTwo );
+        RequestController.addRequest( requestThree );
+
+        // Check that they've been added
+        RequestList requestList = RequestController.fetchAllRequestsWhereRider( loggedInUser );
+        pass = 0;
+        while ( requestList.size() != 3 ) {
+            requestList = RequestController.fetchRequestsWhereRider( loggedInUser );
+            chillabit( 1000 );
+            pass++;
+            if ( pass > 3 ) { break; }
+        }
+        assertTrue( "We should see the three requests we made got " + requestList.size(), requestList.size() == 3 );
+
+        // Ensure the search return all the requests we've added.
+        requestList.clear();
+        requestList = RequestController.getResult();
+        pass = 0;
+        while( requestList.size() != 3 && pass < 5 ) {
+            RequestController.searchByKeyword( "@45jkLmNO02032aassssssssssssssssssssssssss" );
+            requestList = RequestController.getResult();
+            chillabit( 1000 );
+            pass++;
+        }
+        assertTrue( "The search should return three requests got " + requestList.size(), requestList.size() == 3 );
+
+        // Ensure we can prune by price
+        RequestController.pruneByPrice( 9.99, 10.01 );
+        assertTrue( "There should be only one request after the price filter... got " + requestList.size(),
+                RequestController.getResult().size() == 1 );
+
+        // Ensure the search return all the requests we've added.
+        requestList.clear();
+        RequestController.searchByKeyword( "@45jkLmNO02032aassssssssssssssssssssssssss" );
+        requestList = RequestController.getResult();
+        pass = 0;
+        while( requestList.size() != 3 && pass < 5 ) {
+            requestList = RequestController.getResult();
+            chillabit( 1000 );
+            pass++;
+        }
+        assertTrue( "The search should return three requests", requestList.size() == 3 );
+
+        // Ensure we can prune by price per "KM"
+        RequestController.pruneByPricePerKM( 9.99/2 , 10.01/2 );
+        assertTrue( "There should be only one request after the perKM filter... got " + requestList.size(),
+                RequestController.getResult().size() == 1 );
+
+        // Ensure the search return all the requests we've added.
+        requestList.clear();
+        RequestController.searchByKeyword( "@45jkLmNO02032aassssssssssssssssssssssssss" );
+        requestList = RequestController.getResult();
+        pass = 0;
+        while( requestList.size() != 3 && pass < 5 ) {
+            requestList = RequestController.getResult();
+            chillabit( 1000 );
+            pass++;
+        }
+        assertTrue( "The search should return three requests", requestList.size() == 3 );
+
+        // Ensure we can prune by price per "KM" with the nullable attribute
+        RequestController.pruneByPricePerKM( 9.99/2 , null );
+        assertTrue( "There should be only two request after the perKM filter... got " + requestList.size(),
+                RequestController.getResult().size() == 2 );
+
+        // Ensure the search return all the requests we've added.
+        requestList.clear();
+        RequestController.searchByKeyword( "@45jkLmNO02032aassssssssssssssssssssssssss" );
+        requestList = RequestController.getResult();
+        pass = 0;
+        while( requestList.size() != 3 && pass < 5 ) {
+            requestList = RequestController.getResult();
+            chillabit( 1000 );
+            pass++;
+        }
+        assertTrue( "The search should return three requests", requestList.size() == 3 );
+
+        // Ensure we can prune by price with the nullable
+        RequestController.pruneByPrice( 9.99, null );
+        assertTrue( "There should be only two request after the price filter... got " + requestList.size(),
+                RequestController.getResult().size() == 2 );
     }
 }

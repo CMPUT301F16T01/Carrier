@@ -25,6 +25,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_results);
+        setTitle( "Search Results" );
 
         ListView requestListView = (ListView) findViewById( R.id.listView_searchResults );
 
@@ -66,15 +67,15 @@ public class SearchResultsActivity extends AppCompatActivity {
 
         // Check if we are filtering by price
         if (filterByPrice) {
-            Float minPrice = filterBundle.getFloat("minPrice");
-            Float maxPrice = filterBundle.getFloat("maxPrice");
+            Double minPrice = filterBundle.getDouble("minPrice");
+            Double maxPrice = filterBundle.getDouble("maxPrice");
             if (maxPrice == -1) { maxPrice = null; }
             RequestController.pruneByPrice( minPrice, maxPrice );
         }
         // Check if we are filtering by price per KM
         if (filterByPricePerKM) {
-            Float minPricePerKM = filterBundle.getFloat("minPricePerKM");
-            Float maxPricePerKM = filterBundle.getFloat("maxPricePerKM");
+            Double minPricePerKM = filterBundle.getDouble("minPricePerKM");
+            Double maxPricePerKM = filterBundle.getDouble("maxPricePerKM");
             if (maxPricePerKM == -1) { maxPricePerKM = null; }
             RequestController.pruneByPricePerKM( minPricePerKM, maxPricePerKM );
         }
