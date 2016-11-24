@@ -112,9 +112,7 @@ public class ElasticNotificationController {
                     throw new IllegalArgumentException();
                 }
             }
-
             return null;
-
         }
     }
 
@@ -140,7 +138,6 @@ public class ElasticNotificationController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
             return null;
         }
     }

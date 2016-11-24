@@ -5,10 +5,11 @@ import android.util.Log;
 import android.util.Patterns;
 
 /**
- * Singleton Pattern
- *
  * Holds an instance of an user (the user of the app), allows for logging in users with elastic
  * search or memory.
+ *
+ * @see comcmput301f16t01.github.carrier.Requests.Request
+ * @see comcmput301f16t01.github.carrier.Requests.RequestList
  */
 public class UserController {
     private static User loggedInUser = null;
@@ -69,18 +70,13 @@ public class UserController {
         return null;
     }
 
-
-
-
-
     /**
      * Attempt to create a new user.
      *
-     * @param username
-     * @param email
-     * @param phoneNumber
-     * @param vehicleDescription
-     * @return
+     * @param username The username the user should be made with
+     * @param email The email the user wants to have
+     * @param phoneNumber The phone number of the new user
+     * @param vehicleDescription The description of the user's vehicle
      */
     public static void createNewUser(String username, String email, String phoneNumber, String vehicleDescription) {
         // TODO check errors on the vehicle description???

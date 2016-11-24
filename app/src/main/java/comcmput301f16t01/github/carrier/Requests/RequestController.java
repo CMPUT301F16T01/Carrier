@@ -203,7 +203,7 @@ public class RequestController {
      *
      * @see #fetchAllRequestsWhereRider(User)
      * @see Request
-     * @see Request (TODO .Status when we use ENUMS)
+     * @see Request.Status
      *
      * @param rider the rider you want to match requests against
      * @param statuses the statues you would like to see (filters non listed ones) (null means grab all)

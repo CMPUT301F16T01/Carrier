@@ -11,6 +11,10 @@ import static java.security.AccessController.getContext;
 /**
  * Calculates an estimated fare between two locations and provides a method for converting
  * a fare into a float string.
+ *
+ * See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#farecalculator">FareCalculator</a>
+ * Formula from: <a href="http://www.ridesharingdriver.com/how-much-does-uber-cost-uber-fare-estimator/">How much does Uber cost? Uber fare estimator</a>
+ * Formula: fare = base fare + (cost per minute * time in ride) + (cost per km * ride distance) + booking fee
  */
 public class FareCalculator {
 
@@ -31,7 +35,7 @@ public class FareCalculator {
      * @return Returns whatever is greater: the calculated far or the minimum fare.
      */
     public static int getEstimate(double distance, double duration) {
-        // Calculate fare and multiply by 100 so that it is in it's equivalent integer form.
+        // Calculate fare and the the larger of fare vs minimum fare, we multiply by 100 to get an integer
         int calculatedFare = (int) Math.round(((BOOKING_FEE + (COST_PER_MIN * duration) +
                 (COST_PER_KM * distance)) * 100) * 100) / 1000;  // We divide by 1000 to round to two decimal places
 

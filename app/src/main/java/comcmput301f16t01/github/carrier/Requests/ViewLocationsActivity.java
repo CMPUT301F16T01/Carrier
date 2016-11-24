@@ -34,11 +34,14 @@ import comcmput301f16t01.github.carrier.R;
  * The ViewLocationsActivity allows the user to view on a map two start and end locations and
  * the route between them. Giving the user a better idea of what route they will be taking.
  *
- * Based on: https://goo.gl/4TKn2y
+ * See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#driverviewrequestactivity">DriverViewRequestActivity</a>
+ *
+ * Based on: <a href="https://github.com/MKergall/osmbonuspack/wiki/Tutorial_0">Tutorial_0</a>
+ * Author: MKergall
  * Retrieved on: November 10th, 2016
  *
- * Updated with: https://goo.gl/h2CKyn
- * Author: yubaraj poudel
+ * Updated with: <a href="http://stackoverflow.com/questions/38539637/osmbonuspack-roadmanager-networkonmainthreadexception">OSMBonuspack RoadManager NetworkOnMainThreadException</a>
+ * Author: <a href="http://stackoverflow.com/users/4670837/yubaraj-poudel">yubaraj poudel</a>
  * Posted: August 6th, 2016
  * Retrieved on: November 10th, 2016
  */

@@ -35,8 +35,19 @@ import comcmput301f16t01.github.carrier.R;
 import comcmput301f16t01.github.carrier.Users.UsernameTextView;
 
 /**
- * RiderRequestActivity displays request information from the rider's persepctive. It gives the rider
+ * RiderRequestActivity displays request information from the rider's perspective. It gives the rider
  * the ability to see their request, cancel it, or accept a driver from it.
+ *
+ * See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#driverviewrequestactivity">DriverViewRequestActivity</a>
+ *
+ * Based on: <a href="https://github.com/MKergall/osmbonuspack/wiki/Tutorial_0">Tutorial_0</a>
+ * Author: MKergall
+ * Retrieved on: November 10th, 2016
+ *
+ * Updated with: <a href="http://stackoverflow.com/questions/38539637/osmbonuspack-roadmanager-networkonmainthreadexception">OSMBonuspack RoadManager NetworkOnMainThreadException</a>
+ * Author: <a href="http://stackoverflow.com/users/4670837/yubaraj-poudel">yubaraj poudel</a>
+ * Posted: August 6th, 2016
+ * Retrieved on: November 10th, 2016
  */
 public class RiderRequestActivity extends AppCompatActivity {
     Activity activity = RiderRequestActivity.this;
@@ -102,14 +113,6 @@ public class RiderRequestActivity extends AppCompatActivity {
         map.getOverlays().add(endMarker);
         map.invalidate();
     }
-
-    // Based on: https://goo.gl/4TKn2y
-    // Retrieved on: November 10th, 2016
-
-    // Updated with: https://goo.gl/h2CKyn
-    // Author: yubaraj poudel
-    // Posted: August 6th, 2016
-    // Retrieved on: November 10th, 2016
 
     /**
      * Asynchronous task to get the route between the two points

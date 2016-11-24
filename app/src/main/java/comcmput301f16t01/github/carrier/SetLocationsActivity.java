@@ -42,6 +42,32 @@ import static com.google.android.gms.common.api.GoogleApiClient.*;
 /**
  * SetLocationsActivity allow the user to put a marker on the map to specify the start and end location
  * for their ride or search.
+ *
+ * See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#setlocationsactivity">SetLocationsActivity</a>
+ *
+ * Based on: <a href="http://stackoverflow.com/questions/14292398/how-to-pass-data-from-2nd-activity-to-1st-activity-when-pressed-back-android">How to pass data from 2nd activity to 1st activity when pressed back? - android</a>
+ * Author: <a href="http://stackoverflow.com/users/1202025/%CF%81%D1%8F%CF%83%D1%95%CF%81%D1%94%D1%8F-k">ρяσѕρєя K</a>
+ * Posted on: January 12th, 2013
+ * Retrieved on: November 7th, 2016
+ *
+ * Based on: <a href="https://developer.android.com/training/location/retrieve-current.html">Getting the last known location</a>
+ * Based on: <a href="https://developer.android.com/training/permissions/requesting.html">Requesting Permissions at Run Time</a>
+ * Author: Android Dev Docs
+ * Retrieved on: November 9th, 2016
+ *
+ * Based on: <a href="https://github.com/MKergall/osmbonuspack/wiki/Tutorial_0">Tutorial_0</a>
+ * Author: MKergall
+ * Retrieved on: November 10th, 2016
+ *
+ * Based on: <a href="http://stackoverflow.com/questions/37986082/android-googlemaps-mylocation-permission">Maps Permissions</a>
+ * Author: <a href="http://stackoverflow.com/users/4558709/antonio">antonio</a>
+ * Posted on: June 23rd, 2016
+ * Retrieved on: November 9th, 2016
+ *
+ * Based on: <a href="http://stackoverflow.com/questions/26217983/osmdroid-bonus-pack-reverse-geolocation">osmdroid bonus pack reverse geolocation</a>
+ * Author: <a href="http://stackoverflow.com/users/4095382/cristina">cristina</a>
+ * Posted on: October 6th, 2014
+ * Retrieved on: November 11th, 2016
  */
 public class SetLocationsActivity extends AppCompatActivity implements ConnectionCallbacks,
         OnConnectionFailedListener, MapEventsReceiver {
@@ -96,9 +122,6 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         }
 
         // Create an instance of GoogleAPIClient.
-        // Based on: https://goo.gl/Kpueci
-        // Author: Android Dev Docs
-        // Retrieved on: November 9th, 2016
         if (googleApiClient == null) {
             googleApiClient = new Builder(activity)
                     .addConnectionCallbacks((ConnectionCallbacks) activity)
@@ -107,10 +130,6 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
                     .build();
         }
 
-        // Based on: https://goo.gl/4TKn2y
-        // Author: MKergall
-        // Retrieved on: November 9th, 2016
-        // Center our map on our current location
         MapView map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setBuiltInZoomControls(true);
@@ -129,17 +148,11 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         }
     }
 
-    // Based on: https://goo.gl/Kpueci
-    // Author: Android Dev Docs
-    // Retrieved on: November 9th, 2016
     protected void onStart() {
         googleApiClient.connect();
         super.onStart();
     }
 
-    // Based on: https://goo.gl/Kpueci
-    // Author: Android Dev Docs
-    // Retrieved on: November 9th, 2016
     protected void onStop() {
         googleApiClient.disconnect();
         super.onStop();
@@ -339,9 +352,6 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         }
     }
 
-    // Based on: https://goo.gl/iMJdJX
-    // Author: cristina
-    // Retrieved on: November 11th, 2016
     /**
      * Get address string from a geo point
      *
@@ -396,10 +406,12 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         return pointAddress;
     }
 
-    // Inspired by: https://goo.gl/qh3Dzf
-    // Author: antonio
-    // Retrieved on: November 9th, 2016
     /**
+     *
+     * Inspired by: https://goo.gl/qh3Dzf
+     * Author: antonio
+     * Retrieved on: November 9th, 2016
+     *
      * Sets up the map to be pinpointed on the user's location.
      */
     public void getCurrentLocation() {
@@ -418,10 +430,6 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
             latitude = lastLocation.getLatitude();
             longitude = lastLocation.getLongitude();
 
-            // Based on: https://goo.gl/4TKn2y
-            // Author: MKergall
-            // Retrieved on: November 9th, 2016
-            // Center our map on our current location
             MapView map = (MapView) findViewById(R.id.map);
             GeoPoint startPoint = new GeoPoint(latitude,longitude);
             IMapController mapController = map.getController();
