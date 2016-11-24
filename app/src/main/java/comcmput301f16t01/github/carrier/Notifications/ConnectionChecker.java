@@ -13,7 +13,6 @@ import android.net.NetworkInfo;
  * Author: Android Dev Docs
  * Retrieved on: November 13, 2016
  */
-
 public class ConnectionChecker {
     public static boolean isConnected( Context context ) {
         ConnectivityManager cm =
