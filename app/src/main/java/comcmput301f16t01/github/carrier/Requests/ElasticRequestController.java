@@ -529,7 +529,6 @@ public class ElasticRequestController {
         @Override
         protected void onPostExecute(RequestList requests) {
             // Perform result update on UI thread if there is internet
-            //TODO: ask bennett about this
             if (ConnectionChecker.isThereInternet()) {
                 if (withAsync) {
                     RequestController rc = new RequestController();

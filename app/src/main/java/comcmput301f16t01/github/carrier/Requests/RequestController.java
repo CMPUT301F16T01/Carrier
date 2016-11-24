@@ -269,7 +269,6 @@ public class RequestController {
      *               but the rider has no confirmed their choice in driver.
      * @return An ArrayList of requests that the driver has offered to give a ride on.
      */
-    // TODO rename this method? i.e. getRequestsWhereDriverOffered, or something
     public RequestList getOfferedRequests(User driver) {
         // If there is no internet connection, load the cached driver requests into the requestsWhereOffered
         if (!ConnectionChecker.isThereInternet()) {
@@ -334,6 +333,11 @@ public class RequestController {
         return foundRequests;
     }
 
+    /**
+     * While online asks elastic search for all rider requests pertaining to a user. While offline just loads requests from file.
+     * @param rider The rider whose requests we want
+     * @return A RequestList containing requests of a user
+     */
     public RequestList fetchAllRequestsWhereRider( User rider ) {
         // If we're offline, load the cached rider requests rather than form elastic search
         if (!ConnectionChecker.isThereInternet()) {
@@ -385,7 +389,7 @@ public class RequestController {
     }
 
     /**
-     * For offline functionality. Loads the cached riderrequests.
+     * For offline functionality. Loads the cached rider requests.
      */
     public void loadRiderRequests() {
         FileInputStream fis = null;
@@ -418,7 +422,6 @@ public class RequestController {
             fos.close();
         } catch (Exception e) {
             e.printStackTrace();
-//            throw new RuntimeException();
         }
     }
 
