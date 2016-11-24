@@ -8,7 +8,11 @@ import java.util.Random;
 import static java.security.AccessController.getContext;
 
 /**
- * calculates an estimated fare between two locations.
+ * Calculates an estimated fare between two locations.
+ *
+ * See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#farecalculator">FareCalculator</a>
+ * Formula from: <a href="http://www.ridesharingdriver.com/how-much-does-uber-cost-uber-fare-estimator/">How much does Uber cost? Uber fare estimator</a>
+ * Formula: fare = base fare + (cost per minute * time in ride) + (cost per km * ride distance) + booking fee
  */
 public class FareCalculator {
 
@@ -20,13 +24,8 @@ public class FareCalculator {
 
     public static int getEstimate(double distance, double duration) {
 
-        // Distance is in km
-        // Duration is in sec
-
-        /* Formula from http://www.ridesharingdriver.com/how-much-does-uber-cost-uber-fare-estimator/
-        fare = base fare + (cost per minute * time in ride) + (cost per km * ride distance) + booking fee */
-        /* Calculate fare and the the larger of fare vs minimum fare we multiply by 100 because
-        we said we would */
+        // Distance is in km, duration is in sec
+        // Calculate fare and the the larger of fare vs minimum fare, we multiply by 100 to get an integer
         int calculatedFare = (int) Math.round(((BOOKING_FEE + (COST_PER_MIN * duration) +
                 (COST_PER_KM * distance)) * 100) * 100) / 100; // *100/100 to round to two decimals.
 
@@ -34,7 +33,6 @@ public class FareCalculator {
         // The least a fare could be.
         int minFare = MIN_FARE;
 
-        //fixed issue 3. local variable fare was redundant.
         return Math.max(calculatedFare, minFare);
     }
 

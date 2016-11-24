@@ -143,7 +143,7 @@ public class StatusTests extends ApplicationTest {
         //can not be paid for or completed to be cancelled
         //rc.completeRequest(request);
         //rc.payForRequest(request);
-        rc.cancelRequest(rider, request);
+        rc.cancelRequest(request);
         Assert.assertEquals("The status of the request should be CANCELLED",
                 Request.CANCELLED, request.getStatus());
 

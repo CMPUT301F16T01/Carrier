@@ -50,6 +50,15 @@ import comcmput301f16t01.github.carrier.Users.UserController;
 /**
  * Central activity for a user. After logging in, this is the activity the user will be taken to
  * whenever they open the app henceforth.
+ *
+ * See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#mainactivity">MainActivity</a>
+ * Author: Android Dev Docs
+ * Retrieved on: November 9th, 2016
+ *
+ * Based on: <a href="http://stackoverflow.com/questions/26295481/android-swiperefreshlayout-how-to-implement-canchildscrollup-if-child-is-not-a-l">Android SwipeRefreshLayout how to implement canChildScrollUp if child is not a ListView or ScrollView</a>
+ * Author: <a href="http://stackoverflow.com/users/2819876/twibit">Twibit</a>, <a href="http://stackoverflow.com/users/1032307/iamlukeyb">iamlukeyb</a>
+ * Posted on: October 10th, 2014
+ * Retrieved on: November 16th, 2016
  */
 public class MainActivity extends AppCompatActivity {
     RequestController rc = new RequestController();
@@ -190,9 +199,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Based on: https://goo.gl/9FTnEL
-    // Author: Android Dev Docs
-    // Retrieved on: November 9th, 2016
     /**
      * Result of the user granting or denying permissions. If they grant the permissions
      * we don't need to do anything. If they do not grant the permissions, we should tell
@@ -228,9 +234,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Based on: https://goo.gl/9FTnEL
-    // Author: Android Dev Docs
-    // Retrieved on: November 9th, 2016
     /**
      * Asks user to grant required permissions for the maps to work.
      */
@@ -376,10 +379,6 @@ public class MainActivity extends AppCompatActivity {
 
             final SwipeRefreshLayout srl = (SwipeRefreshLayout) rootView.findViewById( R.id.swiperefresh );
 
-            /* src: http://stackoverflow.com/questions/26295481/android-swiperefreshlayout-how-to-implement-canchildscrollup-if-child-is-not-a-l
-             * user: iamlukeyb
-             * accessed 2016-11-16
-             */
             // Set up a scroll listener to turn off swipe to refresh if the view is not at the top.
             requestListView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
                 @Override

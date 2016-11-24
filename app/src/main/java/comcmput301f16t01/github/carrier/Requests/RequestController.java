@@ -89,12 +89,6 @@ public class RequestController {
     }
 
 
-    // TODO Why does this need a rider? You can cancel a request just knowing the request.
-    @Deprecated
-    public void cancelRequest(User rider, Request request) {
-        throw new IllegalArgumentException( "This method is deprecated." );
-    }
-
     /**
      * Cancels a request using elastic search
      */
