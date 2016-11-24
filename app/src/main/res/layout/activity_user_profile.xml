@@ -22,11 +22,6 @@
         android:layout_width="match_parent"
         android:layout_height="2dp" />
 
-    <View
-        android:id="@+id/bottomDivider"
-        android:layout_below="@+id/scrollProfile"
-        android:layout_width="match_parent"
-        android:layout_height="2dp" />
 
     <ScrollView
         android:layout_width="wrap_content"
@@ -213,5 +208,10 @@
         </RelativeLayout>
     </ScrollView>
 
+    <View
+        android:id="@+id/bottomDivider"
+        android:layout_below="@+id/scrollProfile"
+        android:layout_width="match_parent"
+        android:layout_height="2dp" />
 
 </RelativeLayout>
