@@ -30,8 +30,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.List;
-
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationActivity;
@@ -79,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setTitle("Carrier");
 
-        checkPermissions();
+        checkPermissionsMaps();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -238,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Asks user to grant required permissions for the maps to work.
      */
-    private void checkPermissions() {
+    private void checkPermissionsMaps() {
         // if statement from https://developer.android.com/training/permissions/requesting.html
         if(ContextCompat.checkSelfPermission(MainActivity.this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {

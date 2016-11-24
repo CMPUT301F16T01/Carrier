@@ -13,7 +13,7 @@
         android:textSize="36sp"
         android:textColor="@android:color/background_light"
         android:layout_marginBottom="52dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="32dp"
         android:layout_centerHorizontal="true" />
 
 
@@ -22,7 +22,6 @@
         android:layout_below="@+id/TextView_profile"
         android:layout_width="match_parent"
         android:layout_height="2dp" />
-
 
     <ScrollView
         android:layout_width="wrap_content"
@@ -55,6 +54,7 @@
                 android:layout_below="@id/ImageView_usernameIcon"
                 android:layout_alignParentStart="true"
                 android:focusable="false"
+                android:layout_marginBottom="20dp"
                 android:clickable="false"
                 android:background="@null"/>
 
@@ -62,6 +62,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@mipmap/ic_email2"
+                android:onClick="emailUser"
                 android:id="@+id/ImageView_emailIcon"
                 android:layout_below="@+id/ImageButton_phoneEditIcon"
                 android:layout_alignParentStart="true" />
@@ -75,9 +76,11 @@
                 android:id="@+id/EditText_email"
                 android:textColor="@android:color/white"
                 android:textSize="24sp"
+                android:onClick="emailUser"
                 android:layout_below="@+id/ImageView_emailIcon"
                 android:layout_alignParentStart="true"
                 android:focusable="false"
+                android:layout_marginBottom="20dp"
                 android:clickable="false"
                 android:layout_toStartOf="@+id/ImageButton_emailEditIcon"
                 android:background="@null" />
@@ -86,6 +89,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@mipmap/ic_phone"
+                android:onClick="callPhone"
                 android:id="@+id/ImageView_phoneIcon"
                 android:layout_below="@+id/TextView_name"
                 android:layout_alignParentStart="true" />
@@ -99,6 +103,8 @@
                 android:textSize="24sp"
                 android:textColor="@android:color/white"
                 android:text="1234567"
+                android:onClick="callPhone"
+                android:layout_marginBottom="20dp"
                 android:focusable="false"
                 android:clickable="false"
                 android:background="@null"
@@ -134,6 +140,7 @@
                 app:srcCompat="@mipmap/ic_edit"
                 android:id="@+id/ImageButton_phoneEditIcon"
                 android:scaleType="fitStart"
+                android:layout_marginBottom="20dp"
                 android:background="@android:color/transparent"
                 android:onClick="editPhoneNumber"
                 android:layout_alignTop="@+id/Button_cancelPhoneEdit"
@@ -193,10 +200,6 @@
                 android:layout_alignBottom="@+id/ImageButton_emailEditIcon"
                 android:layout_alignEnd="@+id/ImageButton_emailEditIcon"
                 android:onClick="saveEditedEmailAddress" />
-
-
-
-
         </RelativeLayout>
     </ScrollView>
 
@@ -205,5 +208,6 @@
         android:layout_below="@+id/scrollProfile"
         android:layout_width="match_parent"
         android:layout_height="2dp" />
+
 
 </RelativeLayout>
