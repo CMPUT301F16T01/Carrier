@@ -33,7 +33,7 @@ public class UserController {
      * @param cachedUser The cached user to compare to
      * @return True on successful login, otherwise false
      */
-    public boolean offlineLogInUser(String usernameToLogin, User cachedUser) {
+    public static boolean offlineLogInUser(String usernameToLogin, User cachedUser) {
         // Case insensitive comparison of usernames, like elastic search
         if (usernameToLogin.toLowerCase().equals(cachedUser.getUsername().toLowerCase())) {
             loggedInUser = cachedUser;
