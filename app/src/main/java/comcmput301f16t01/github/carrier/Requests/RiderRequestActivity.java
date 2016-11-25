@@ -335,12 +335,7 @@ public class RiderRequestActivity extends AppCompatActivity {
         TextView driverTextView = (TextView) findViewById(R.id.textView_driver);
         driverTextView.setText(R.string.DriverHere);
         // Remove the listener and only set it if there are offering drivers
-        driverTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+        driverTextView.setOnClickListener(null);
         if (request.getChosenDriver() != null) {
             driverUsernameTextView.setText(request.getChosenDriver().getUsername());
             driverUsernameTextView.setUser(request.getChosenDriver());
