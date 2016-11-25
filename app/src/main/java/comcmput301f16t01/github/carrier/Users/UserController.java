@@ -23,75 +23,8 @@ public class UserController {
      * @throws IllegalAccessError if there is no currently logged in user.
      * @see #logInUser(String)
      */
-<<<<<<< HEAD
     public void setLoggedInUser(User user) {
         loggedInUser = user;
-    }
-
-    /**
-     * Making sure that the username is unique across all riders
-     * otherwise it throws an exception
-     * <p>
-     * return True if it is unique and False if it is similar
-     *
-     * @param rider
-     */
-    @Deprecated
-    public boolean uniqueRiderUsername(User rider) {
-        return false;
-    }
-
-    /**
-     * Making sure that the username is unique across all drivers
-     * otherwise it throws an exception
-     * <p>
-     * return True if it is unique and False if it is similar
-     *
-     * @param driver
-     */
-    @Deprecated
-    public boolean uniqueDriverUsername(User driver) {
-        return false;
-    }
-
-    private static boolean checkUniqueUsername(String username) {
-        ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();
-        fut.execute(username);
-        User foundUser = null;
-        try {
-            foundUser = fut.get();
-        } catch (Exception e) {
-            Log.i("checkUniqueUsername", "bad error");
-        }
-        if (foundUser == null) {
-            return true;
-        }
-        return false;
-    }
-
-    // TODO simplify above and below things (share the same code...)
-
-    /**
-     * returns false if no user with that username, otherwise sets them as logged in
-     *
-     * @param username
-     * @return
-     */
-    public boolean logInUser(String username) {
-
-        ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();
-        fut.execute(username);
-        User foundUser = null;
-        try {
-            foundUser = fut.get();
-        } catch (Exception e) {
-            Log.i("logInUser", "bad error");
-        }
-        if (foundUser == null) {
-            return false;
-        }
-        loggedInUser = foundUser;
-        return true;
     }
 
     /**
@@ -121,44 +54,9 @@ public class UserController {
         user.setUsername(username);
     }
 
-    @Deprecated
-    public void addDriver(User driver) {
-    }
-
-    @Deprecated
-    public void addRider(User rider) {
-    }
-
-    /**
-     * authenticate is called when the user needs to login. Checks to see if the username
-     * the user entered is valid. It throws an exception when the
-     * username is wrong. Authenticate also sets the loggedInUser upon
-     * successful login.
-     *
-     * @param usernameString The username the user attempts to login with
-     * @throws NullPointerException Happens when the user enters a username with a username that
-     *                              does not exist.
-     * @author Kieter
-     * @see LoginActivity
-     * @since Saturday October 15th, 2016
-     */
-    @Deprecated
-    //TODO re-implement after elastic search is all good
-    public boolean authenticate(String usernameString) throws NullPointerException {
-        User attemptedUser = null;
-
-        // Iterate over all the users, checking to see if the given username is the users
-        for (User user : this.getUserList()) {
-            // If there is a username match, store the user
-            if (usernameString.equals(user.getUsername())) {
-                this.loggedInUser = user;
-                return true;
-            }
-=======
     public static User getLoggedInUser() {
         if (loggedInUser == null) {
             throw new IllegalAccessError("You must first log in a user before getting an instance of one.");
->>>>>>> f7afec64ae10bae0e52699dd9aa33d1fdea9ca35
         }
         return loggedInUser;
     }
