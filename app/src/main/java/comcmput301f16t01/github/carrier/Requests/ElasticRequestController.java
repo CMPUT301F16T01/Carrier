@@ -27,8 +27,6 @@ import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 import io.searchbox.core.Update;
 
-import static comcmput301f16t01.github.carrier.Requests.ElasticRequestController.GetOfferedRequestsTask.verifySettings;
-
 /**
  * Handles elastic search tasks with requests.
  */
@@ -301,14 +299,9 @@ public class ElasticRequestController {
         protected void onPostExecute(RequestList requests) {
             // Perform our update on the UI thread
             if (withAsync) {
-<<<<<<< HEAD
-                RequestController rc = new RequestController();
-                rc.getRiderInstance().replaceList( requests );
-                // Save any updated rider requests
-                rc.saveRiderRequests();
-=======
                 RequestController.getRiderInstance().replaceList( requests );
->>>>>>> f7afec64ae10bae0e52699dd9aa33d1fdea9ca35
+                // Save any updated rider requests
+                RequestController.saveRiderRequests();
                 notifyListener();
             }
             super.onPostExecute(requests);
@@ -534,24 +527,15 @@ public class ElasticRequestController {
 
         @Override
         protected void onPostExecute(RequestList requests) {
-<<<<<<< HEAD
             // Perform result update on UI thread if there is internet
             if (ConnectionChecker.isThereInternet()) {
                 if (withAsync) {
-                    RequestController rc = new RequestController();
-                    rc.getOffersInstance().replaceList( requests );
+                    RequestController.getOffersInstance().replaceList( requests );
                     // Save any updated driver requests
-                    rc.saveDriverOfferedRequests();
+                    RequestController.saveDriverOfferedRequests();
                     notifyListener();
                 }
                 super.onPostExecute(requests);
-
-=======
-            // Perform result update on UI thread
-            if (withAsync) {
-                RequestController.getOffersInstance().replaceList( requests );
-                notifyListener();
->>>>>>> f7afec64ae10bae0e52699dd9aa33d1fdea9ca35
             }
         }
     } // GetOfferedRequestsTask
