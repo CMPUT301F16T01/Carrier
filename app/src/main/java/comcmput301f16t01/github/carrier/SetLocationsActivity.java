@@ -417,7 +417,8 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
                     MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         } else {
             lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-            if(lastLocation == null) {
+
+            if (lastLocation == null) {
                 lastLocation = new Location("");
                 lastLocation.setLatitude(0);
                 lastLocation.setLongitude(0);

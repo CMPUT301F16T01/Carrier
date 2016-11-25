@@ -16,6 +16,7 @@ import java.util.List;
 
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Listener;
+import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Users.UserController;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.DeleteByQuery;
@@ -299,6 +300,8 @@ public class ElasticRequestController {
             // Perform our update on the UI thread
             if (withAsync) {
                 RequestController.getRiderInstance().replaceList( requests );
+                // Save any updated rider requests
+                RequestController.saveRiderRequests();
                 notifyListener();
             }
             super.onPostExecute(requests);
@@ -524,12 +527,16 @@ public class ElasticRequestController {
 
         @Override
         protected void onPostExecute(RequestList requests) {
-            // Perform result update on UI thread
-            if (withAsync) {
-                RequestController.getOffersInstance().replaceList( requests );
-                notifyListener();
+            // Perform result update on UI thread if there is internet
+            if (ConnectionChecker.isThereInternet()) {
+                if (withAsync) {
+                    RequestController.getOffersInstance().replaceList( requests );
+                    // Save any updated driver requests
+                    RequestController.saveDriverOfferedRequests();
+                    notifyListener();
+                }
+                super.onPostExecute(requests);
             }
-            super.onPostExecute(requests);
         }
     } // GetOfferedRequestsTask
 
@@ -663,7 +670,7 @@ public class ElasticRequestController {
     /**
      * Opens a connection to the elastic search server.
      */
-    private static void verifySettings() {
+    static void verifySettings() {
         if (client == null) {
             DroidClientConfig.Builder builder =
                     new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");

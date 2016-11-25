@@ -79,12 +79,16 @@ public class MainActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle("Carrier");
+
         checkPermissions();
+        // Request controller requires a context to save in
+        RequestController.setContext(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -142,8 +146,17 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton driver_fab = (FloatingActionButton) findViewById(R.id.fab_driver);
         driver_fab.hide();
 
-        // Perform an update using RequestController
-        RequestController.performAsyncUpdate();
+        // Perform an update using RequestController if there is internet
+        if (ConnectionChecker.isThereInternet()) {
+            RequestController.performAsyncUpdate();
+        }
+        // Otherwise inform the user that they are offline
+        else {
+            Toast.makeText(this, "You are offline", Toast.LENGTH_SHORT).show();
+            // Load the cached rider and driver requests for the logged in user
+            RequestController.fetchAllRequestsWhereRider(UserController.getLoggedInUser());
+            RequestController.getOfferedRequests(UserController.getLoggedInUser());
+        }
     }
 
     @Override
@@ -537,5 +550,5 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
-    
+
 }
