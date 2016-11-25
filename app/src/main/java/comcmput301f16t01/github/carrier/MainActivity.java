@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
         RequestController.setContext(this);
 
         checkPermissionsMaps();
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

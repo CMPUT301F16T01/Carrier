@@ -1,6 +1,7 @@
 package comcmput301f16t01.github.carrier.Requests;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.content.DialogInterface;
@@ -9,8 +10,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,8 +38,18 @@ import java.util.List;
 import java.util.Locale;
 
 import comcmput301f16t01.github.carrier.FareCalculator;
+import comcmput301f16t01.github.carrier.OfferingDriversArrayAdapter;
 import comcmput301f16t01.github.carrier.R;
+import comcmput301f16t01.github.carrier.Requests.Request;
+import comcmput301f16t01.github.carrier.Requests.RequestController;
+import comcmput301f16t01.github.carrier.RiderViewOfferingDriversActivity;
+import comcmput301f16t01.github.carrier.Users.UserController;
 import comcmput301f16t01.github.carrier.Users.UsernameTextView;
+
+import static comcmput301f16t01.github.carrier.Requests.Request.Status.CANCELLED;
+import static comcmput301f16t01.github.carrier.Requests.Request.Status.COMPLETE;
+import static comcmput301f16t01.github.carrier.Requests.Request.Status.CONFIRMED;
+import static comcmput301f16t01.github.carrier.Requests.Request.Status.PAID;
 
 /**
  * RiderRequestActivity displays request information from the rider's perspective. It gives the rider
@@ -68,6 +82,7 @@ public class RiderRequestActivity extends AppCompatActivity {
 
         // unpacking the bundle to get the position of request
         Bundle bundle = getIntent().getExtras();
+
         int position = bundle.getInt("position");
         request = RequestController.getRiderInstance().get(position);
 
@@ -94,6 +109,11 @@ public class RiderRequestActivity extends AppCompatActivity {
         getRoadAsync();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        setViews();
+    }
     /**
      * This function finds a BoundingBox that fits both the start and end location points.
      *
@@ -220,7 +240,7 @@ public class RiderRequestActivity extends AppCompatActivity {
             }
             List<Overlay> mapOverlays = map.getOverlays();
             for (Road road : roads) {
-                if(road.mLength < minLength || minLength == 0) {
+                if (road.mLength < minLength || minLength == 0) {
                     minLength = road.mLength;
                     bestRoad = road;
                 }
@@ -247,6 +267,7 @@ public class RiderRequestActivity extends AppCompatActivity {
 
     /**
      * Get the center point of the route to center the screen on
+     *
      * @return GeoPoint
      */
     public GeoPoint getCenter() {
@@ -257,27 +278,38 @@ public class RiderRequestActivity extends AppCompatActivity {
 
         Location retLoc = new Location("");
 
-        if(startLat > endLat) {
-            retLoc.setLatitude(endLat + ((startLat - endLat)/2));
+        if (startLat > endLat) {
+            retLoc.setLatitude(endLat + ((startLat - endLat) / 2));
         } else {
-            retLoc.setLatitude(startLat + ((endLat - startLat)/2));
+            retLoc.setLatitude(startLat + ((endLat - startLat) / 2));
         }
 
-        if(startLong > endLong) {
-            retLoc.setLongitude(endLong + ((startLong - endLong)/2));
+        if (startLong > endLong) {
+            retLoc.setLongitude(endLong + ((startLong - endLong) / 2));
         } else {
-            retLoc.setLongitude(startLong + ((endLong - startLong)/2));
+            retLoc.setLongitude(startLong + ((endLong - startLong) / 2));
         }
 
         return new GeoPoint(retLoc);
     }
 
     /**
-     * Marks a request as paid using the request controller (if allowed)
-     * @param view The "pay" button
+     * Will confirm the completion of a request.
+     * @param view The view for the button that was clicked.
      */
-    public void payForRequest(View view) {
-        Toast.makeText(activity, "PAY FOR REQUEST", Toast.LENGTH_SHORT).show();
+    public void completeRequest(View view) {
+        if (request.getStatus() == CONFIRMED) {
+            RequestController.completeRequest(request);
+            ImageView statusImageView = (ImageView) findViewById(R.id.imageView_requestStatus);
+            statusImageView.setImageResource(R.drawable.complete);
+            Button cancelButton = (Button) findViewById(R.id.button_delete);
+            cancelButton.setAlpha(0.5f);
+            cancelButton.setEnabled(false);
+            view.setEnabled(false);
+            view.setAlpha(0.5f);
+            RequestController.getOffersInstance().notifyListeners();
+            RequestController.getRiderInstance().notifyListeners();
+        }
     }
 
     /**
@@ -299,28 +331,33 @@ public class RiderRequestActivity extends AppCompatActivity {
         // TODO why does it say "sarah" even though there is no confirmedDriver?
         // Set up the UsernameTextView of the driver
         UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
+        // If no driver has been selected we need to display the list of drivers who have made an offer.
+        TextView driverTextView = (TextView) findViewById(R.id.textView_driver);
+        driverTextView.setText(R.string.DriverHere);
         if (request.getChosenDriver() != null) {
             driverUsernameTextView.setText(request.getChosenDriver().getUsername());
             driverUsernameTextView.setUser(request.getChosenDriver());
+        } else if (request.getOfferedDrivers().size() > 0 && (request.getStatus() != CONFIRMED || request.getStatus() != PAID)) {
+            // If there is an offered driver
+            driverTextView = (TextView) findViewById(R.id.textView_driver);
+            driverTextView.setText(R.string.View_Offering_Drivers);
+            driverTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bundle bundle = getIntent().getExtras();
+                    Intent intent = new Intent(RiderRequestActivity.this, RiderViewOfferingDriversActivity.class);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            });
+
         }
 
         TextView startAddressTextView = (TextView) findViewById(R.id.textView_start);
-        String startAddress = request.getStart().getAddress();
-        if(startAddress != null) {
-            startAddressTextView.setText(startAddress);
-        } else {
-            String startPoint = request.getStart().getLatLong();
-            startAddressTextView.setText(startPoint);
-        }
+        startAddressTextView.setText(request.getStart().toString());
 
         TextView endAddressTextView = (TextView) findViewById(R.id.textView_end);
-        String endAddress = request.getEnd().getAddress();
-        if(endAddress != null) {
-            endAddressTextView.setText(request.getEnd().getAddress());
-        } else {
-            String endPoint = request.getEnd().getLatLong();
-            endAddressTextView.setText(endPoint);
-        }
+        endAddressTextView.setText(request.getEnd().toString());
 
         TextView descriptionTextView = (TextView) findViewById(R.id.textView_description);
         descriptionTextView.setText(request.getDescription());
@@ -352,22 +389,43 @@ public class RiderRequestActivity extends AppCompatActivity {
 
             }
         }
+        // Make the button grey if it is completed or paid.
+        if (request.getStatus() != CONFIRMED) {
+            Button completeButton = (Button) findViewById(R.id.button_confirm_completion);
+            completeButton.setAlpha(0.5f);
+            completeButton.setEnabled(false);
+        }
+        else {
+            Button completeButton = (Button) findViewById(R.id.button_confirm_completion);
+            completeButton.setAlpha(1f);
+            completeButton.setEnabled(true);
+        }
+        if (request.getStatus() == COMPLETE || request.getStatus() == PAID || request.getStatus() == CANCELLED){
+            Button cancelButton = (Button) findViewById(R.id.button_delete);
+            cancelButton.setEnabled(false);
+            cancelButton.setAlpha(0.5f);
+        }
     }
 
     /**
      * Will initialize the view ids for all the views in the activity.
+     * @param v the Cancel Request button.
      */
-    public void cancelRequest(View v){
+    public void cancelRequest(final View v) {
         AlertDialog.Builder adb = new AlertDialog.Builder(RiderRequestActivity.this);
         if ((request.getStatus() != Request.Status.CANCELLED)
-                && (request.getStatus() != Request.Status.COMPLETE)
-                && (request.getStatus() != Request.Status.PAID)) {
+                && (request.getStatus() != COMPLETE)
+                && (request.getStatus() != PAID)) {
             adb.setMessage("Cancel request?");
             adb.setCancelable(true);
             adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    RequestController.cancelRequest( request );
+                    RequestController.cancelRequest(request);
+                    v.setAlpha(0.5f);
+                    v.setEnabled(false);
+                    RequestController.getOffersInstance().notifyListeners();
+                    RequestController.getRiderInstance().notifyListeners();
                     finish();
                 }
             });
@@ -378,8 +436,7 @@ public class RiderRequestActivity extends AppCompatActivity {
 
                 }
             });
-        }
-        else {
+        } else {
             adb.setTitle("Error: ");
             adb.setMessage("Request cannot be cancelled.");
             adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {

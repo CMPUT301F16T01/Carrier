@@ -151,6 +151,11 @@ public class RequestController {
      */
     public static void confirmDriver(Request request, User driver) {
         // Modify and update the request, then execute the update task
+        // You should only be able to confirm the driver of a request if the user that is confirming
+        // is the rider.
+        if (!requestsWhereRider.contains(request)){
+            throw new RuntimeException();
+        }
         ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
         request.setChosenDriver( driver );
         request.setStatus( Request.Status.CONFIRMED );

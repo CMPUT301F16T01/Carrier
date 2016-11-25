@@ -42,6 +42,9 @@ import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
 
+import static comcmput301f16t01.github.carrier.Requests.Request.Status.COMPLETE;
+import static comcmput301f16t01.github.carrier.Requests.Request.Status.PAID;
+
 /**
  * This will help us show the request from the perspective of a driver. Will have
  * the position in the request controller bundled to determine what request to display.
@@ -114,6 +117,14 @@ public class DriverViewRequestActivity extends AppCompatActivity {
             setMarkers();
             getRoadAsync();
         }
+    }
+
+    /**
+     * Called when the activity is resumed.
+     */
+    public void onResume() {
+        super.onResume();
+        setViews();
     }
 
     /**
@@ -331,8 +342,10 @@ public class DriverViewRequestActivity extends AppCompatActivity {
 
         // Set up the UsernameTextView of the driver
         UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
-        driverUsernameTextView.setText(UserController.getLoggedInUser().getUsername());
-        driverUsernameTextView.setUser(UserController.getLoggedInUser());
+        if (request.getConfirmedDriver() != null) {
+            driverUsernameTextView.setText(request.getConfirmedDriver().getUsername());
+            driverUsernameTextView.setUser(request.getConfirmedDriver());
+        }
 
         TextView startAddressTextView = (TextView) findViewById(R.id.textView_start);
         startAddressTextView.setText(request.getStart().toString());
@@ -370,12 +383,46 @@ public class DriverViewRequestActivity extends AppCompatActivity {
 
             }
         }
+        // If status is complete we change the make an offer button to display that they have received payment
+        if (request.getStatus() == COMPLETE && request.getConfirmedDriver().getUsername().equals(loggedInUser.getUsername())) {
+            Button payment_button = (Button) findViewById(R.id.button_makeOffer);
+            payment_button.setText(R.string.payment_received);
+            payment_button.setEnabled( true ); // Make the button clickable
+            payment_button.setAlpha((float) 1);
+            payment_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    receivedPayment();
+                }
+            });
+        }
+        if (request.getStatus() == PAID ) {
+            Button payment_button = (Button) findViewById(R.id.button_makeOffer);
+            payment_button.setText(R.string.payment_received);
+            payment_button.setEnabled( false ); // Make the button clickable
+            payment_button.setAlpha((float) 0.5);
+        }
     }
 
     /**
-     * Attempts to make an offer for a request.
-     *
-     * @param view The button to make an offer.
+     * Will update the current request in elastic search to be paid for.
+     */
+    private void receivedPayment() {
+        Toast.makeText(this, "Request is now complete.", Toast.LENGTH_SHORT).show();
+        RequestController.payForRequest(request);
+        ImageView statusImageView = (ImageView) findViewById(R.id.imageView_requestStatus);
+        statusImageView.setImageResource(R.drawable.paid);
+        Button payment_button = (Button) findViewById(R.id.button_makeOffer);
+        payment_button.setText(R.string.payment_received);
+        payment_button.setEnabled( false ); // Make the button clickable
+        payment_button.setAlpha((float) 0.5);
+        RequestController.getOffersInstance().notifyListeners();
+        RequestController.getRiderInstance().notifyListeners();
+    }
+
+    /**
+     * Attempts to make an offer for a request as a driver
+     * @param view The make offer view that was clicked
      */
     public void makeOffer(View view) {
         // Prepare an alert dialogue in case of an error.
@@ -394,6 +441,9 @@ public class DriverViewRequestActivity extends AppCompatActivity {
             Button button = (Button) findViewById( R.id.button_makeOffer);
             button.setEnabled(false); // Make the button un-clickable after offering.
             button.setAlpha((float) 0.5); // The button becomes 50% transparent
+            ImageView statusImageView = (ImageView) findViewById(R.id.imageView_requestStatus);
+            statusImageView.setImageResource(R.drawable.offered);
+            RequestController.getOffersInstance().notifyListeners();
         } catch (Exception e) {
             // If there is an issue, set the message to the exception message and show it
             adb.setMessage(e.getMessage());
