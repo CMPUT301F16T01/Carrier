@@ -19,13 +19,22 @@ import java.util.concurrent.ExecutionException;
  * <p>Call to the static function ConnectionChecker.isConnected( context ) to check if you have
  * an available network connection. Note that this does not test if they actually have an internet
  * connection, just that they have access to some network (which may not have internet connection).</p>
- *
+ * </br>
  * <p>See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#connectionchecker">ConnectionChecker</a></p>
  * </br>
+ * <p>Based on: <a href="https://developer.android.com/training/monitoring-device-state/connectivity-monitoring.html">Determining and Monitoring the Connectivity Status</a></p>
+ * <p>Based on: <a href="https://developer.android.com/reference/java/net/HttpURLConnection.html">HttpURLConnection</a></p>
+ * <p>Based on: <a href="https://developer.android.com/reference/android/os/AsyncTask.html">AsyncTask</a></p>
  * <p>Author: Android Dev Docs</p>
- * <p>Retrieved on: November 13, 2016</p>
+ * <p>Retrieved on: November 24th, 2016</p>
+ * </br>
+ * <p>Based on: <a href="http://stackoverflow.com/questions/15496278/httpurlconnection-is-throwing-exception">HttpURLConnection is throwing exception</a></p>
+ * <p>Author: <a href="http://stackoverflow.com/users/653856/raghunandan">Raghunandan</a></p>
+ * <p>Posted on: March 19th, 2013</p>
+ * <p>Retrieved on: November 24th, 2016</p>
  */
 public class ConnectionChecker {
+
     public static boolean isConnected( Context context ) {
         ConnectivityManager cm =
                 (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -34,10 +43,6 @@ public class ConnectionChecker {
         return  activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
     }
-
-    //TODO: http://stackoverflow.com/questions/15496278/httpurlconnection-is-throwing-exception
-    //TODO: https://developer.android.com/reference/java/net/HttpURLConnection.html
-    //TODO: https://developer.android.com/reference/android/os/AsyncTask.html
 
     /**
      * Async task that checks to see if the user can connect to elastic search.Returns true if you
