@@ -83,6 +83,13 @@ public class RequestController {
     public static void addDriver(Request request, User driver) {
         request.addOfferingDriver( driver );
 
+        // remove the request from the search results because we are making an offer to it
+        for ( Request searchResultRequest : searchResult ) {
+            if ( searchResultRequest.getId().equals(request.getId())) {
+                searchResult.remove( searchResultRequest );
+            }
+        }
+
         // create an offer object [[ potentially throws IllegalArgumentException if called wrong ]]
         Offer newOffer = new Offer(request, driver);
 

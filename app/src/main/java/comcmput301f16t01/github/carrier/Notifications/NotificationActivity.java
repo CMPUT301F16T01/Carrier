@@ -55,6 +55,7 @@ public class NotificationActivity extends AppCompatActivity {
                     return;
                 }
 
+                // Listens for unread notifications/the list to be updated
                 NotificationController nc = new NotificationController();
                 nc.asyncUnreadNotification( UserController.getLoggedInUser(), new Listener() {
                     @Override
