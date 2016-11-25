@@ -9,6 +9,8 @@ import comcmput301f16t01.github.carrier.FareCalculator;
 import comcmput301f16t01.github.carrier.Users.User;
 import io.searchbox.annotations.JestId;
 
+import static comcmput301f16t01.github.carrier.Requests.Request.Status.CONFIRMED;
+
 /**
  * Represents a request for a ride.
  */
@@ -117,6 +119,7 @@ public class Request {
 
     public void setChosenDriver(User driver) {
         this.chosenDriver = driver;
+        setStatus(CONFIRMED);
     }
 
     public User getChosenDriver() {
@@ -212,7 +215,7 @@ public class Request {
             throw new IllegalArgumentException( "There is already a chosen driver for this request." );
         }
         chosenDriver = confirmedDriver;
-        setStatus(Request.Status.CONFIRMED); // TODO, dangerous to do this because of edge cases?
+        setStatus(CONFIRMED); // TODO, dangerous to do this because of edge cases?
     }
 
     /**
