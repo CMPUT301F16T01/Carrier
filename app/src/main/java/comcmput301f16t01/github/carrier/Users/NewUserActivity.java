@@ -45,7 +45,7 @@ public class NewUserActivity extends AppCompatActivity {
         String email = emailEditText.getText().toString();
 
         // validate the input before moving on
-        String result = UserController.checkValidInputs(username, phone, email);
+        String result = UserController.checkValidInputs(username, email, phone );
 
         // Ensure that result is okay
         if (result == null) {
