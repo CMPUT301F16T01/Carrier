@@ -21,7 +21,14 @@ import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UsernameTextView;
 
 /**
- * Takes an array of offering drivers and puts them into an array list..
+ * <p>Takes an array of offering drivers and puts them into an array list.</p>
+ * </br>
+ * <p>See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#offeringdriversarrayadapter">OfferingDriversArrayAdapter</a></p>
+ * </br>
+ * <p>Based on: <a href="http://stackoverflow.com/questions/9891360/getting-activity-from-context-in-android">Getting activity from context in android</a></p>
+ * <p>Author: <a href="http://stackoverflow.com/users/1108032/boris-strandjev">Boris Strandjev</a></p>
+ * <p>Posted on: March 27th, 2012</p>
+ * <p>Retrieved on: November 24th, 2016</p>
  */
 
 public class OfferingDriversArrayAdapter extends ArrayAdapter<User> {
@@ -31,7 +38,7 @@ public class OfferingDriversArrayAdapter extends ArrayAdapter<User> {
      * Request is needed to provide a way to confirm the driver.
      */
     private Request request = null;
-    // TODO: Give attribution to http://stackoverflow.com/questions/9891360/getting-activity-from-context-in-android for closing the activity from context.
+    // see code attribution
     public OfferingDriversArrayAdapter(Context context, int textViewResourceId, ArrayList<User> userArrayList) {
         super(context, textViewResourceId, userArrayList);
         this.offeringDriversList = userArrayList;
@@ -85,9 +92,8 @@ public class OfferingDriversArrayAdapter extends ArrayAdapter<User> {
                 }
             });
         }
-
-    return v;
-}
+        return v;
+    }
 
     /**
      * Is used to set the request that this array adapter is for.

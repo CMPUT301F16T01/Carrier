@@ -42,23 +42,23 @@ import comcmput301f16t01.github.carrier.Requests.RiderRequestActivity;
 import comcmput301f16t01.github.carrier.Searching.SearchActivity;
 import comcmput301f16t01.github.carrier.Users.LoginActivity;
 import comcmput301f16t01.github.carrier.Users.LoginMemory;
-import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 import comcmput301f16t01.github.carrier.Users.UserProfileActivity;
-import comcmput301f16t01.github.carrier.Users.UserController;
 
 /**
- * Central activity for a user. After logging in, this is the activity the user will be taken to
- * whenever they open the app henceforth.
- *
- * See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#mainactivity">MainActivity</a>
- * Author: Android Dev Docs
- * Retrieved on: November 9th, 2016
- *
- * Based on: <a href="http://stackoverflow.com/questions/26295481/android-swiperefreshlayout-how-to-implement-canchildscrollup-if-child-is-not-a-l">Android SwipeRefreshLayout how to implement canChildScrollUp if child is not a ListView or ScrollView</a>
- * Author: <a href="http://stackoverflow.com/users/2819876/twibit">Twibit</a>, <a href="http://stackoverflow.com/users/1032307/iamlukeyb">iamlukeyb</a>
- * Posted on: October 10th, 2014
- * Retrieved on: November 16th, 2016
+ * <p>Central activity for a user. After logging in, this is the activity the user will be taken to
+ * whenever they open the app henceforth.</p>
+ * </br>
+ * <p>See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#mainactivity">MainActivity</a></p>
+ * </br>
+ * <p>Based on: <a href="https://developer.android.com/training/permissions/requesting.html">Requesting Permissions at Run Time</a></p>
+ * <p>Author: Android Dev Docs</p>
+ * <p>Retrieved on: November 9th, 2016</p>
+ * </br>
+ * <p>Based on: <a href="http://stackoverflow.com/questions/26295481/android-swiperefreshlayout-how-to-implement-canchildscrollup-if-child-is-not-a-l">Android SwipeRefreshLayout how to implement canChildScrollUp if child is not a ListView or ScrollView</a></p>
+ * <p>Author: <a href="http://stackoverflow.com/users/2819876/twibit">Twibit</a>, <a href="http://stackoverflow.com/users/1032307/iamlukeyb">iamlukeyb</a></p>
+ * <p>Posted on: October 10th, 2014</p>
+ * <p>Retrieved on: November 16th, 2016</p>
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle("Carrier");
-        checkPermissionsMaps();
+        checkPermissions();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -208,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
      * @param permissions
      * @param grantResults
      */
+    // see code attribution
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[], @NonNull int[] grantResults) {
@@ -236,8 +237,8 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Asks user to grant required permissions for the maps to work.
      */
-    private void checkPermissionsMaps() {
-        // if statement from https://developer.android.com/training/permissions/requesting.html
+    // see code attribution
+    private void checkPermissions() {
         if(ContextCompat.checkSelfPermission(MainActivity.this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this,
