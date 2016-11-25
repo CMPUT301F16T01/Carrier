@@ -3,6 +3,9 @@ package comcmput301f16t01.github.carrier;
 import org.junit.After;
 import org.junit.Test;
 
+import comcmput301f16t01.github.carrier.Users.User;
+import comcmput301f16t01.github.carrier.Users.UserController;
+
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -24,7 +27,7 @@ public class RiderTests {
         String name = "kieter";
         String email = "kieter@kieter.me";
         String phoneNumber = "7801234567";
-        User kieter = new User(name, email, phoneNumber);
+        User kieter = new User(name, email, phoneNumber, "");
 
         // Test equality of all the fields.
         assertEquals("Username is not equal", name, kieter.getUsername());
@@ -38,7 +41,7 @@ public class RiderTests {
         String name = "kieter";
         String email = "kieter@kieter.me";
         String phoneNumber = "7801234567";
-        User kieterRider = new User(name, email, phoneNumber);
+        User kieterRider = new User(name, email, phoneNumber, "");
         RiderList riderList = new RiderList();
 
         // TODO should really be using something called addRider but that hasn't been made yet.

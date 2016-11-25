@@ -1,11 +1,10 @@
-package comcmput301f16t01.github.carrier;
+package comcmput301f16t01.github.carrier.Users;
 
 import android.content.Context;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -23,6 +22,10 @@ public class LoginMemory {
         saveContext = ctx;
     }
 
+    /**
+     * Saves a username to internal storage.
+     * @param username The username you would like to save to internal storage.
+     */
     public void saveUsername( String username ) {
         try {
             FileOutputStream fos = saveContext.openFileOutput(FILENAME, 0);
@@ -39,6 +42,10 @@ public class LoginMemory {
         }
     }
 
+    /**
+     * Loads a username from internal storage.
+     * @return the username it loaded, or null if it could not find a username.
+     */
     public String loadUsername() {
         String username;
         try {

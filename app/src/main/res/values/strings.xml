@@ -7,7 +7,8 @@
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="MakeOffer">Make an Offer!</string>
-    <string name="Pay">Pay</string>
+    <string name="payment_received">Received Payment</string>
+    <string name="confirm_completion">CONFIRM COMPLETION</string>
     <string name="Delete">Delete</string>
     <string name="title_activity_search_maps">Choose A Location</string>
 
@@ -30,7 +31,7 @@
     <string name="description_hint">Describe the ride you seek</string>
     <string name="submit_button_text">Submit</string>
     <!-- dialog_keyword_search.xml -->
-    <string name="searchHint">Enter a keyword</string>
+    <string name="searchKeywordHint">Enter a keyword</string>
 
     <!--for RiderRequestActivity-->
     <string name="DriverHere">Driver: </string>
@@ -40,4 +41,7 @@
     <string name="end_address">End:</string>
     <string name="description">Description:</string>
     <string name="Cancel">CANCEL</string>
+    <string name="View_Offering_Drivers"><b>View Offering Drivers</b></string>
+    <string name="vehiclePrompt"><b>If you have a vehicle please enter description here, otherwise click register.</b></string>
+    <string name="searchAddressHint">Enter an address</string>
 </resources>

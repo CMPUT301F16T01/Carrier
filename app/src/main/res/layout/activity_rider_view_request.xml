@@ -136,6 +136,8 @@
                     android:gravity="start"
                     android:layout_weight="8.5" />
 
+
+
             </LinearLayout>
 
         </RelativeLayout>
@@ -161,15 +163,15 @@
         android:weightSum="5" >
 
         <Button
-            android:id="@+id/button_pay"
+            android:id="@+id/button_confirm_completion"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text="@string/Pay"
+            android:text="@string/confirm_completion"
             android:layout_weight="2"
             android:textAllCaps="false"
             android:textColor="@android:color/background_light"
             android:background="@color/colorPrimary"
-            android:onClick="payForRequest" />
+            android:onClick="completeRequest" />
 
         <!-- REPRESENTS STATUS OF REQUEST-->
         <ImageView
@@ -207,7 +209,7 @@
             android:layout_height="wrap_content"
             android:text="Rider: " />
 
-        <comcmput301f16t01.github.carrier.UsernameTextView
+        <comcmput301f16t01.github.carrier.Users.UsernameTextView
             android:text=""
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -234,7 +236,7 @@
             android:text="Driver: "
             android:layout_toStartOf="@+id/UsernameTextView_driver"/>
 
-        <comcmput301f16t01.github.carrier.UsernameTextView
+        <comcmput301f16t01.github.carrier.Users.UsernameTextView
             android:text=""
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

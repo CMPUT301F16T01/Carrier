@@ -1,8 +1,7 @@
-package comcmput301f16t01.github.carrier;
+package comcmput301f16t01.github.carrier.Users;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
@@ -10,6 +9,8 @@ import com.searchly.jestdroid.JestDroidClient;
 
 import java.io.IOException;
 
+import comcmput301f16t01.github.carrier.Users.User;
+import comcmput301f16t01.github.carrier.Users.UserController;
 import io.searchbox.core.DeleteByQuery;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;

@@ -1,19 +1,27 @@
-package comcmput301f16t01.github.carrier;
+package comcmput301f16t01.github.carrier.Users;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.text.method.KeyListener;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
-// TODO A lot can be done to reduce code duplication. Notice how there are 4 functions that close,
-// and 2 that open. I feel like a lot of code generalization can be done here to reduce bugs
-// from editing one thing and forgetting to edit the other four. This is a low priority issue ^Ben
+import comcmput301f16t01.github.carrier.R;
 
 /**
  * UserProfileActivity allows the user to view their profile information and edit their
@@ -23,7 +31,15 @@ public class UserProfileActivity extends AppCompatActivity {
     // Saves the values of the old fields just in case the user cancels their edit.
     private String oldPhoneNumber;
     private String oldEmailAddress;
+    private String vehicleDescription;
     private User currentUser = UserController.getLoggedInUser();
+    private User user;
+
+    private Boolean editingPhone = false;
+    private Boolean editingEmail = false;
+
+    //used for calling permissions
+    private static final int MY_PERMISSIONS_CALL = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +48,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
         // Retrieve the user this intent was started with.
         Bundle bundle = getIntent().getExtras();
-        User user = bundle.getParcelable("user");
-
-        // Get an instance of the UserController
-        UserController uc = new UserController();
-        //User currentUser = UserController.getLoggedInUser();
+        user = bundle.getParcelable("user");
 
         String username;
 
@@ -53,18 +65,26 @@ public class UserProfileActivity extends AppCompatActivity {
         } else {
             oldEmailAddress = user.getEmail();
             oldPhoneNumber = user.getPhone();
+            vehicleDescription = user.getVehicleDescription();
             username = user.getUsername();
         }
 
         // Get the TextViews for the information that is going to be shown.
-        EditText usernameEditText = (EditText) findViewById(R.id.EditText_name);
+        TextView usernameTextView = (TextView) findViewById(R.id.TextView_name);
         EditText emailAddressEditText = (EditText) findViewById(R.id.EditText_email);
         EditText phoneNumberEditText = (EditText) findViewById(R.id.EditText_phone);
+        TextView vehicleDescriptionTextView = (TextView) findViewById(R.id.textView_vehicleDescription);
 
         //Save old values in case the user changes their mind about editing.
-        usernameEditText.setText(username);
+        usernameTextView.setText(username);
         emailAddressEditText.setText(oldEmailAddress);
         phoneNumberEditText.setText(oldPhoneNumber);
+        vehicleDescriptionTextView.setText(vehicleDescription);
+
+        vehicleDescriptionTextView.setSelected(true);
+
+        //check permissions
+        checkPermissionsCall();
 
         // Removes the key listener, so that it can't hear keys.
         // Also stores it as their tag, so we can grab it later...
@@ -72,7 +92,7 @@ public class UserProfileActivity extends AppCompatActivity {
         phoneNumberEditText.setKeyListener(null);
         emailAddressEditText.setTag(emailAddressEditText.getKeyListener());
         emailAddressEditText.setKeyListener(null);
-        usernameEditText.setKeyListener(null);
+        usernameTextView.setKeyListener(null);
 
         /*If profile being viewed is not the logged in user's, the edit buttons are hidden and are
         unclickable.
@@ -93,6 +113,7 @@ public class UserProfileActivity extends AppCompatActivity {
      * @param v v is a View, allows usage of on click in xml
      */
     public void editPhoneNumber(View v) {
+        editingPhone = true;
         ImageButton cancelButton = (ImageButton) findViewById(R.id.Button_cancelPhoneEdit);
         ImageButton saveButton = (ImageButton) findViewById(R.id.EditButton_savePhoneEdit);
         ImageButton editButton = (ImageButton) findViewById(R.id.ImageButton_phoneEditIcon);
@@ -140,6 +161,7 @@ public class UserProfileActivity extends AppCompatActivity {
         this.oldPhoneNumber = phoneNumber;
         // The edit button is weirdly dissapearing? This fixes it.
         editButton.setVisibility(View.VISIBLE);
+        editingPhone = false;
     }
 
     /**
@@ -164,6 +186,7 @@ public class UserProfileActivity extends AppCompatActivity {
         phoneNumberText.setKeyListener(null);
 
         hideKeyboard(phoneNumberText);
+        editingPhone = false;
     }
 
     /**
@@ -172,6 +195,7 @@ public class UserProfileActivity extends AppCompatActivity {
      * @param v v is a View, allows usage of on click in xml
      */
     public void editEmailAddress(View v) {
+        editingEmail = true;
         ImageButton cancelButton = (ImageButton) findViewById(R.id.ImageButton_cancelEmailEdit);
         ImageButton saveButton = (ImageButton) findViewById(R.id.EditButton_saveEmail);
         ImageButton editButton = (ImageButton) findViewById(R.id.ImageButton_emailEditIcon);
@@ -195,6 +219,7 @@ public class UserProfileActivity extends AppCompatActivity {
      * @param v v is a View, allows usage of on click in xml
      */
     public void saveEditedEmailAddress(View v) {
+        editingEmail = false;
         ImageButton cancelButton = (ImageButton) findViewById(R.id.ImageButton_cancelEmailEdit);
         ImageButton saveButton = (ImageButton) findViewById(R.id.EditButton_saveEmail);
         ImageButton editButton = (ImageButton) findViewById(R.id.ImageButton_emailEditIcon);
@@ -224,6 +249,7 @@ public class UserProfileActivity extends AppCompatActivity {
      * @param v v is a View, allows usage of on click in xml
      */
     public void cancelEditEmailAddress(View v) {
+        editingEmail = false;
         ImageButton cancelButton = (ImageButton) findViewById(R.id.ImageButton_cancelEmailEdit);
         ImageButton saveButton = (ImageButton) findViewById(R.id.EditButton_saveEmail);
         ImageButton editButton = (ImageButton) findViewById(R.id.ImageButton_emailEditIcon);
@@ -246,5 +272,88 @@ public class UserProfileActivity extends AppCompatActivity {
     public void hideKeyboard(View v) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+    }
+
+
+    /**
+     * This is the function that calls the number presented
+     *
+     * @param v view clicked when we press on the call number button
+     */
+    public void callPhone(View v) {
+        /* Source: http://stackoverflow.com/questions/5403308/make-a-phone-call-click-on-a-button
+        * Author: Shaista Naaz
+        * TODO fix this like all the other code re use things
+        * Retrieved on: November 21st 2016 */
+        if (!editingPhone) {
+            Intent callIntent = new Intent(Intent.ACTION_CALL);
+            String phoneClicked = "tel:" + user.getPhone();
+            callIntent.setData(Uri.parse(phoneClicked));
+            Log.i("activity", "made to function");
+
+            //this if statement checks to make sure we have the correct permissions
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+                startActivity(callIntent);
+            } else {
+                Toast.makeText(this, "You do not have the correct permissions to make a phone call.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+    /**
+     * This is the function that will email the email pressed
+     * @param v view clicked when we press on the email button
+     */
+    public void emailUser(View v) {
+        /**
+         * Source: http://stackoverflow.com/questions/21720640/sending-email-from-android-app-when-click-on-button
+         * Author: localhost
+         * * TODO fix this like all the other code re use things
+         * Retrieved on: November 21st 2016
+         */
+        if (!editingEmail) {
+            Intent email = new Intent(android.content.Intent.ACTION_SEND);
+            email.setType("plain/text");
+            email.putExtra(Intent.EXTRA_EMAIL, new String[]{user.getEmail()});
+            email.putExtra(Intent.EXTRA_SUBJECT, "");
+            email.putExtra(Intent.EXTRA_TEXT, "");
+            startActivity(Intent.createChooser(email, "Choose an Email client :"));
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_CALL: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    break; // permission was granted, yay!
+                } else {
+                    // permission denied, boo!
+                    AlertDialog.Builder adb = new AlertDialog.Builder(this);
+                    adb.setTitle("Permissions Denied");
+                    adb.setMessage("You will not be allowed to call in this app.");
+                    adb.setCancelable(true);
+                    adb.setPositiveButton("OK", null);
+                    adb.show();
+                }
+                break;
+            }
+        }
+    }
+
+    /**
+     * Asks user to grant required permissions for the maps to work.
+     */
+    private void checkPermissionsCall() {
+        if(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CALL_PHONE},
+                    MY_PERMISSIONS_CALL);
+        }
     }
 }

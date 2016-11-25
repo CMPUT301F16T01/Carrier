@@ -1,8 +1,9 @@
 package comcmput301f16t01.github.carrier;
 
 /**
- * Created by Ben on 2016-11-13.
+ * Basic listener interface for observer pattern objects.
+ * Observables will implement the ability to use a listener and call .update() when they are changed.
  */
 public interface Listener {
-    public void update();
+    void update();
 }

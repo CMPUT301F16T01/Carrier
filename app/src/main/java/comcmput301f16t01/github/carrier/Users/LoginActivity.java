@@ -1,4 +1,4 @@
-package comcmput301f16t01.github.carrier;
+package comcmput301f16t01.github.carrier.Users;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,8 +8,13 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import comcmput301f16t01.github.carrier.MainActivity;
+import comcmput301f16t01.github.carrier.R;
+
 /**
  * LoginActivity is where the user enters a username and password so they can access their account.
+ *
+ * @see LoginMemory
  */
 public class LoginActivity extends AppCompatActivity {
 
@@ -40,9 +45,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        UserController uc = new UserController();
-
-        if ( !uc.logInUser( username ) ) {
+        if ( !UserController.logInUser( username ) ) {
             EditText usernameEditText = (EditText) findViewById( R.id.EditText_username );
             usernameEditText.setText( username );
             AlertDialog.Builder adb = new AlertDialog.Builder( this );
@@ -62,8 +65,7 @@ public class LoginActivity extends AppCompatActivity {
         EditText usernameEditText = (EditText) findViewById(R.id.EditText_username);
         String username = usernameEditText.getText().toString().trim();
 
-        UserController uc = new UserController();
-        if (!uc.logInUser(username)) {
+        if (!UserController.logInUser(username)) {
             Toast.makeText(this, "Username not found", Toast.LENGTH_LONG).show();
         } else {
             // Save username to file

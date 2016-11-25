@@ -1,4 +1,4 @@
-package comcmput301f16t01.github.carrier;
+package comcmput301f16t01.github.carrier.Users;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import comcmput301f16t01.github.carrier.R;
+
 /**
  * This TextView is specifically used for usernames. It contains logic that highlights on touch
  * and redirects the user to the profile of the username that was touched.
@@ -20,8 +22,8 @@ public class UsernameTextView extends TextView {
 
     /**
      * Constructor
-     * @param context
-     * @param attrs
+     * @param context Where the UsernameTextView is situated
+     * @param attrs A list of attributes
      */
     public UsernameTextView(Context context, AttributeSet attrs) {
         super(context, attrs);

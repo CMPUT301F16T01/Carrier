@@ -5,31 +5,27 @@ import junit.framework.Assert;
 import comcmput301f16t01.github.carrier.Notifications.ElasticNotificationController;
 import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
 import comcmput301f16t01.github.carrier.Requests.Request;
+import comcmput301f16t01.github.carrier.Users.User;
+import comcmput301f16t01.github.carrier.Users.UserController;
 
 public class LocationTests extends ApplicationTest {
     // University of Alberta, Edmonton
-    static final double latitude1 = 53.5232;
-    static final double longitude1 = 113.5263;
+    private final double latitude1 = 53.5232;
+    private final double longitude1 = 113.5263;
 
     // somewhere in London, Ontario
-    static final double latitude2 = 42.9870;
-    static final double longitude2 = 81.2432;
+    private final double latitude2 = 42.9870;
+    private final double longitude2 = 81.2432;
 
-    private User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234" );
-    private User driverOne = new User( "notifTestDriver", "notifyYou@email.com", "0118-99-112" );
+    private final User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234", "your mom" );
+    private final User driverOne = new User( "notifTestDriver", "notifyYou@email.com", "0118-99-112", "my mom" );
 
     // Set up a test user to receive notifications
     private void setUpUser() {
-        UserController uc = new UserController();
-        String result = uc.createNewUser( loggedInUser.getUsername(),
+        UserController.createNewUser( loggedInUser.getUsername(),
                 loggedInUser.getEmail(),
-                loggedInUser.getPhone() );
-
-        if (result == null) {
-            System.out.print( "null line" );
-        }
-
-        Assert.assertTrue( "Failed to log in for test.", uc.logInUser( loggedInUser.getUsername() ) );
+                loggedInUser.getPhone(),
+                loggedInUser.getVehicleDescription() );
     }
 
     // This tear down method may not be working entirely as expected...test further
@@ -43,6 +39,8 @@ public class LocationTests extends ApplicationTest {
         ElasticRequestController.RemoveOffersTask rot = new ElasticRequestController.RemoveOffersTask();
         rot.setMode( rot.MODE_USERNAME );
         rot.execute(loggedInUser.getUsername(), driverOne.getUsername());
+
+        UserController.logOutUser();
 
         super.tearDown();
     }

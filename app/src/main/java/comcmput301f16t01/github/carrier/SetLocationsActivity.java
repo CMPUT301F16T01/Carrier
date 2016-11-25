@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -11,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -30,11 +32,46 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.OverlayItem;
 
 import java.util.List;
 
+import comcmput301f16t01.github.carrier.Requests.RequestController;
+import comcmput301f16t01.github.carrier.Requests.ViewLocationsActivity;
+import comcmput301f16t01.github.carrier.Searching.SearchResultsActivity;
+
 import static com.google.android.gms.common.api.GoogleApiClient.*;
 
+/**
+ * SetLocationsActivity allow the user to put a marker on the map to specify the start and end location
+ * for their ride or search.
+ *
+ * See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#setlocationsactivity">SetLocationsActivity</a>
+ *
+ * Based on: <a href="http://stackoverflow.com/questions/14292398/how-to-pass-data-from-2nd-activity-to-1st-activity-when-pressed-back-android">How to pass data from 2nd activity to 1st activity when pressed back? - android</a>
+ * Author: <a href="http://stackoverflow.com/users/1202025/%CF%81%D1%8F%CF%83%D1%95%CF%81%D1%94%D1%8F-k">ρяσѕρєя K</a>
+ * Posted on: January 12th, 2013
+ * Retrieved on: November 7th, 2016
+ *
+ * Based on: <a href="https://developer.android.com/training/location/retrieve-current.html">Getting the last known location</a>
+ * Based on: <a href="https://developer.android.com/training/permissions/requesting.html">Requesting Permissions at Run Time</a>
+ * Author: Android Dev Docs
+ * Retrieved on: November 9th, 2016
+ *
+ * Based on: <a href="https://github.com/MKergall/osmbonuspack/wiki/Tutorial_0">Tutorial_0</a>
+ * Author: MKergall
+ * Retrieved on: November 10th, 2016
+ *
+ * Based on: <a href="http://stackoverflow.com/questions/37986082/android-googlemaps-mylocation-permission">Maps Permissions</a>
+ * Author: <a href="http://stackoverflow.com/users/4558709/antonio">antonio</a>
+ * Posted on: June 23rd, 2016
+ * Retrieved on: November 9th, 2016
+ *
+ * Based on: <a href="http://stackoverflow.com/questions/26217983/osmdroid-bonus-pack-reverse-geolocation">osmdroid bonus pack reverse geolocation</a>
+ * Author: <a href="http://stackoverflow.com/users/4095382/cristina">cristina</a>
+ * Posted on: October 6th, 2014
+ * Retrieved on: November 11th, 2016
+ */
 public class SetLocationsActivity extends AppCompatActivity implements ConnectionCallbacks,
         OnConnectionFailedListener, MapEventsReceiver {
     // result code for when we return to an instance of this activity
@@ -55,11 +92,15 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_set_locations);
+        setContentView(R.layout.activity_map);
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        point = bundle.getString("point");
-        type = bundle.getString("type");
+        if(intent.hasExtra("point")){
+            point = bundle.getString("point");
+        }
+        if(intent.hasExtra("type")) {
+            type = bundle.getString("type");
+        }
         setTitle("Choose " + point + " point");
 
         Button button = (Button) findViewById(R.id.button_confirmLocation);
@@ -84,9 +125,6 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         }
 
         // Create an instance of GoogleAPIClient.
-        // Based on: https://goo.gl/Kpueci
-        // Author: Android Dev Docs
-        // Retrieved on: November 9th, 2016
         if (googleApiClient == null) {
             googleApiClient = new Builder(activity)
                     .addConnectionCallbacks((ConnectionCallbacks) activity)
@@ -95,10 +133,6 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
                     .build();
         }
 
-        // Based on: https://goo.gl/4TKn2y
-        // Author: MKergall
-        // Retrieved on: November 9th, 2016
-        // Center our map on our current location
         MapView map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setBuiltInZoomControls(true);
@@ -115,20 +149,13 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
             setLocationMarker(map, geoPoint);
             mapController.setCenter(geoPoint);
         }
-
     }
 
-    // Based on: https://goo.gl/Kpueci
-    // Author: Android Dev Docs
-    // Retrieved on: November 9th, 2016
     protected void onStart() {
         googleApiClient.connect();
         super.onStart();
     }
 
-    // Based on: https://goo.gl/Kpueci
-    // Author: Android Dev Docs
-    // Retrieved on: November 9th, 2016
     protected void onStop() {
         googleApiClient.disconnect();
         super.onStop();
@@ -137,12 +164,13 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
     /**
      * Set the location marker on the map for the user-selected location
      *
-     * @param map
-     * @param geoPoint
+     * @param map the map to set the location on
+     * @param geoPoint the geographical point on the map the marker will be placed
      */
     private void setLocationMarker(MapView map, GeoPoint geoPoint) {
         marker.setPosition(geoPoint);
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        marker.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_location_on, null));
 
         marker.setDraggable(true);
         marker.setOnMarkerDragListener(new Marker.OnMarkerDragListener() {
@@ -174,9 +202,10 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         getCurrentLocation();
     }
 
+    /** Handle the user's response to accepting/denying permissions. */
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
                 if (grantResults.length > 0
@@ -197,11 +226,19 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         // TODO potentially offline behaviour?
     }
 
+    /**
+     * Implemented to catch clicks/taps on the screen to place a location marker. This function is
+     * called by an overlay.
+     *
+     * @param geoPoint the geopoint generated by clicking
+     * @return Boolean, false should this event need be handled by anyone else.
+     *
+     * Based on: https://goo.gl/4TKn2y
+     * Author: MKergall
+     * Retrieved on: November 9th, 2016
+     */
     @Override
     public boolean singleTapConfirmedHelper(GeoPoint geoPoint) {
-        // Based on: https://goo.gl/4TKn2y
-        // Author: MKergall
-        // Retrieved on: November 9th, 2016
         MapView map = (MapView) findViewById(R.id.map);
         if(marker == null) {
             marker = new Marker(map);
@@ -214,14 +251,22 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         locationPoint.setAddress(getAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
         locationPoint.setShortAddress(getShortAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
         setLocationMarker(map, geoPoint);
-        return false;
+        return true;
     }
 
+    /**
+     * Implemented to catch long clicks/taps on the screen to place a location marker. This function is
+     * called by an overlay.
+     *
+     * @param geoPoint the geopoint generated by long pressing
+     * @return Boolean, false should this event need be handled by anyone else.
+     *
+     * Based on: https://goo.gl/4TKn2y
+     * Author: MKergall
+     * Retrieved on: November 9th, 2016
+     */
     @Override
     public boolean longPressHelper(GeoPoint geoPoint) {
-        // Based on: https://goo.gl/4TKn2y
-        // Author: MKergall
-        // Retrieved on: November 9th, 2016
         MapView map = (MapView) findViewById(R.id.map);
         if(marker == null) {
             marker = new Marker(map);
@@ -234,14 +279,17 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         locationPoint.setAddress(getAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
         locationPoint.setShortAddress(getShortAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
         setLocationMarker(map, geoPoint);
-        return false;
+        return true;
     }
 
-    // from: https://goo.gl/IxFxpG
-    // author: ρяσѕρєя K
-    // retrieved on: November 7th, 2016
-    // This is called when we startActivityForResult from here and get a result back when that activity finishes.
-    // This allows us to do any "clean up actions" when we get back here
+    /**
+     * This is called when we startActivityForResult from here and get a result back when that activity finishes.
+     * This allows us to do any "clean up actions" when we get back here
+     *
+     * from: https://goo.gl/IxFxpG
+     * author: ρяσѕρєя K
+     * retrieved on: November 7th, 2016
+     */
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if(requestCode == PASS_ACTIVITY_BACK) {
@@ -272,7 +320,7 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
      * If the user has selected a location, set the location point and continue to the next screen
      * in the workflow.
      *
-     * @param view
+     * @param view The calling view, the confirmLocation button
      */
     public void confirmLocation(View view) {
         if(locationPoint != null) {
@@ -294,20 +342,24 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
                 backIntent.putExtras(lastBundle);
                 setResult(RESULT_OK, backIntent);
                 activity.finish();
+            } else if (point.equals("search")) {
+                // if choosing search point, go to search results activity, passing bundle with search location
+                RequestController.searchByLocation(locationPoint);
+                Intent intent = new Intent(activity, SearchResultsActivity.class);
+                // Move the filter from this intent to the SearchResultActivity intent. 
+                intent.putExtra( "filterBundle", getIntent().getBundleExtra("filterBundle") );
+                activity.finish();
+                startActivity(intent);
             }
         } else {
             Toast.makeText(activity, "You must first choose a location", Toast.LENGTH_SHORT).show();
         }
     }
 
-    // Based on: https://goo.gl/iMJdJX
-    // Author: cristina
-    // Retrieved on: November 11th, 2016
     /**
      * Get address string from a geo point
-     * @param latitude
-     * @param longitude
-     * @return String
+     *
+     * @return the address as a string.
      */
     private String getAddress(double latitude, double longitude) {
         String pointAddress;
@@ -336,9 +388,10 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
 
     /**
      * Get short address string from a geo point
-     * @param latitude
-     * @param longitude
-     * @return String
+     *
+     * @see #getAddress(double, double)
+     *
+     * @return A shorter version of the address (compared to getAddress)
      */
     private String getShortAddress(double latitude, double longitude) {
         String pointAddress;
@@ -357,9 +410,14 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         return pointAddress;
     }
 
-    // Inspired by: https://goo.gl/qh3Dzf
-    // Author: antonio
-    // Retrieved on: November 9th, 2016
+    /**
+     *
+     * Inspired by: https://goo.gl/qh3Dzf
+     * Author: antonio
+     * Retrieved on: November 9th, 2016
+     *
+     * Sets up the map to be pinpointed on the user's location.
+     */
     public void getCurrentLocation() {
         if(ContextCompat.checkSelfPermission(activity,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -368,13 +426,14 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
                     MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         } else {
             lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+            if(lastLocation == null) {
+                lastLocation = new Location("");
+                lastLocation.setLatitude(0);
+                lastLocation.setLongitude(0);
+            }
             latitude = lastLocation.getLatitude();
             longitude = lastLocation.getLongitude();
 
-            // Based on: https://goo.gl/4TKn2y
-            // Author: MKergall
-            // Retrieved on: November 9th, 2016
-            // Center our map on our current location
             MapView map = (MapView) findViewById(R.id.map);
             GeoPoint startPoint = new GeoPoint(latitude,longitude);
             IMapController mapController = map.getController();

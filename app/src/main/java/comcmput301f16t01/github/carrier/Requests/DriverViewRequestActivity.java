@@ -5,27 +5,30 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import comcmput301f16t01.github.carrier.FareCalculator;
 import comcmput301f16t01.github.carrier.R;
-import comcmput301f16t01.github.carrier.User;
-import comcmput301f16t01.github.carrier.UserController;
-import comcmput301f16t01.github.carrier.Requests.RequestController;
-import comcmput301f16t01.github.carrier.UsernameTextView;
-
-import com.google.gson.Gson;
+import comcmput301f16t01.github.carrier.Users.User;
+import comcmput301f16t01.github.carrier.Users.UserController;
+import comcmput301f16t01.github.carrier.Users.UsernameTextView;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
@@ -39,9 +42,23 @@ import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
 
+import static comcmput301f16t01.github.carrier.Requests.Request.Status.COMPLETE;
+import static comcmput301f16t01.github.carrier.Requests.Request.Status.PAID;
+
 /**
- * This will help us show the request from the perspective of a driver
- * Will have the position in the request controller bundled to determine what request to display.
+ * This will help us show the request from the perspective of a driver. Will have
+ * the position in the request controller bundled to determine what request to display.
+ *
+ * See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#driverviewrequestactivity">DriverViewRequestActivity</a>
+ *
+ * Based on: <a href="https://github.com/MKergall/osmbonuspack/wiki/Tutorial_0">Tutorial_0</a>
+ * Author: MKergall
+ * Retrieved on: November 10th, 2016
+ *
+ * Updated with: <a href="http://stackoverflow.com/questions/38539637/osmbonuspack-roadmanager-networkonmainthreadexception">OSMBonuspack RoadManager NetworkOnMainThreadException</a>
+ * Author: <a href="http://stackoverflow.com/users/4670837/yubaraj-poudel">yubaraj poudel</a>
+ * Posted: August 6th, 2016
+ * Retrieved on: November 10th, 2016
  */
 public class DriverViewRequestActivity extends AppCompatActivity {
     Activity activity = DriverViewRequestActivity.this;
@@ -57,14 +74,27 @@ public class DriverViewRequestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_view_request);
+        setTitle("Request");
+
         //getting the request controller to get a list of requests
         loggedInUser = UserController.getLoggedInUser();
 
         // unpacking the bundle to get the position of request
         Bundle bundle = getIntent().getExtras();
-        request = new Gson().fromJson(bundle.getString("request"), Request.class);
 
-        setTitle("Request");
+        int pos = bundle.getInt( "position" );
+        if (pos == -1) {
+            // signal that the request was searched and has not been related to the user yet
+            request = new Gson().fromJson( bundle.getString( "request" ), Request.class );
+        } else {
+            // else we can grab it from the request controller.
+            request = RequestController.getOffersInstance().get(pos);
+
+            // They have already made an offer, so we can turn off "make offer" button
+            Button makeOfferButton = (Button) findViewById( R.id.button_makeOffer );
+            makeOfferButton.setEnabled( false ); // Make the button un-clickable
+            makeOfferButton.setAlpha((float) 0.5); // Set transparency to 50%
+        }
 
         map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
@@ -75,10 +105,8 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         endPoint = new GeoPoint(request.getEnd());
 
         mapController = map.getController();
-        // TODO figure out a way to zoom dynamically to include both points?
-        mapController.setZoom(12);
-        GeoPoint centerPoint = getCenter();
-        mapController.setCenter(centerPoint);
+        mapController.setCenter(getCenter());
+        zoomToBounds(getBoundingBox(startPoint, endPoint));
 
         ArrayList<OverlayItem> overlayItems = new ArrayList<>();
         overlayItems.add(new OverlayItem("Starting Point", "This is the starting point", startPoint));
@@ -92,11 +120,76 @@ public class DriverViewRequestActivity extends AppCompatActivity {
     }
 
     /**
-     * Given the request passed in by the user, set the map according to the start and end locations
+     * Called when the activity is resumed.
+     */
+    public void onResume() {
+        super.onResume();
+        setViews();
+    }
+
+    /**
+     * This function finds a BoundingBox that fits both the start and end location points.
+     *
+     * @param start GeoPoint for start location
+     * @param end GeoPoint for end location
+     * @return BoundingBox that holds both location points
+     */
+    public BoundingBox getBoundingBox(GeoPoint start, GeoPoint end) {
+        double north;
+        double south;
+        double east;
+        double west;
+        if(start.getLatitude() > end.getLatitude()) {
+            north = start.getLatitude();
+            south = end.getLatitude();
+        } else {
+            north = end.getLatitude();
+            south = start.getLatitude();
+        }
+        if(start.getLongitude() > end.getLongitude()) {
+            east = start.getLongitude();
+            west = end.getLongitude();
+        } else {
+            east = end.getLongitude();
+            west = start.getLongitude();
+        }
+        return new BoundingBox(north, east, south, west);
+    }
+
+    // TODO http://stackoverflow.com/questions/20608590/osmdroid-zooming-to-show-the-whole-pathoverlay
+
+    /**
+     * This function allows the MapView to zoom to show the whole path between
+     * the start and end points.
+     *
+     * @param box BoundingBox for start and end points
+     */
+    public void zoomToBounds(final BoundingBox box) {
+        if (map.getHeight() > 0) {
+            map.zoomToBoundingBox(box, false);
+            map.zoomToBoundingBox(box, false);
+        } else {
+            ViewTreeObserver vto = map.getViewTreeObserver();
+            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    map.zoomToBoundingBox(box, false);
+                    map.zoomToBoundingBox(box, false);
+                    ViewTreeObserver vto2 = map.getViewTreeObserver();
+                    vto2.removeOnGlobalLayoutListener(this);
+                }
+            });
+        }
+    }
+
+    /**
+     * Given the request the user is viewing, set the map according to the start and end locations of the trip.
      */
     private void setMarkers() {
         Marker startMarker = new Marker(map);
+        startMarker.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_start_marker, null));
         Marker endMarker = new Marker(map);
+        endMarker.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_end_marker, null));
 
         startMarker.setPosition(startPoint);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
@@ -112,16 +205,17 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         map.invalidate();
     }
 
-    // Based on: https://goo.gl/4TKn2y
-    // Retrieved on: November 10th, 2016
-
-    // Updated with: https://goo.gl/h2CKyn
-    // Author: yubaraj poudel
-    // Posted: August 6th, 2016
-    // Retrieved on: November 10th, 2016
 
     /**
      * Asynchronous task to get the route between the two points
+     *
+     * Based on: https://goo.gl/4TKn2y
+     * Retrieved on: November 10th, 2016
+     *
+     * Updated with: https://goo.gl/h2CKyn
+     * Author: yubaraj poudel
+     * Posted: August 6th, 2016
+     * Retrieved on: November 10th, 2016
      */
     public void getRoadAsync() {
         roadList = null;
@@ -142,7 +236,8 @@ public class DriverViewRequestActivity extends AppCompatActivity {
 
 
     /**
-     * Class to update the road on the map
+     * This AsyncTask updates the road on the map and maps a route between two points. This is
+     * so that it does not lock up the UI thread or try to make a network connection on it.
      */
     private class UpdateRoadTask extends AsyncTask<Object, Void, Road[]> {
 
@@ -184,17 +279,28 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Center the map on the Start point of the trip.
+     *
+     * @param view the TextView that shows the Start address
+     */
     public void centerStart(View view) {
         mapController.setCenter(startPoint);
     }
 
+    /**
+     * Center the map on the End point of the trip.
+     *
+     * @param view the TextView that shows the End address
+     */
     public void centerEnd(View view) {
         mapController.setCenter(endPoint);
     }
 
     /**
-     * Get the center point of the route to center the screen on
-     * @return GeoPoint
+     * Get the center point of the route to center the screen on.
+     *
+     * @return GeoPoint that specifies center between start and end points
      */
     public GeoPoint getCenter() {
         double startLat = startPoint.getLatitude();
@@ -220,15 +326,12 @@ public class DriverViewRequestActivity extends AppCompatActivity {
     }
 
     /**
-     * Given the request passed in by the user, set the views in the layout.
+     * Given the request the user is viewing, set the views in the layout.
      */
     public void setViews() {
-        UserController uc = new UserController();
-
         // Set up the fare
-        FareCalculator fc = new FareCalculator();
         Currency localCurrency = Currency.getInstance( Locale.getDefault() );
-        String price = localCurrency.getSymbol() + fc.toString(request.getFare());
+        String price = localCurrency.getSymbol() + FareCalculator.toString(request.getFare());
         TextView fareTextView = (TextView) findViewById(R.id.textView_$fareAmount);
         fareTextView.setText(price);
 
@@ -239,28 +342,16 @@ public class DriverViewRequestActivity extends AppCompatActivity {
 
         // Set up the UsernameTextView of the driver
         UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
-        driverUsernameTextView.setText(uc.getLoggedInUser().getUsername());
-        driverUsernameTextView.setUser(uc.getLoggedInUser());
+        if (request.getConfirmedDriver() != null) {
+            driverUsernameTextView.setText(request.getConfirmedDriver().getUsername());
+            driverUsernameTextView.setUser(request.getConfirmedDriver());
+        }
 
         TextView startAddressTextView = (TextView) findViewById(R.id.textView_start);
-        String startAddress = request.getStart().getAddress();
-        if (startAddress != null) {
-            startAddressTextView.setText(startAddress);
-        } else {
-            String startPoint = "(" + String.valueOf(request.getStart().getLatitude()) + ", " +
-                    String.valueOf(request.getStart().getLongitude()) + ")";
-            startAddressTextView.setText(startPoint);
-        }
+        startAddressTextView.setText(request.getStart().toString());
 
         TextView endAddressTextView = (TextView) findViewById(R.id.textView_end);
-        String endAddress = request.getEnd().getAddress();
-        if (endAddress != null) {
-            endAddressTextView.setText(request.getEnd().getAddress());
-        } else {
-            String endPoint = "(" + String.valueOf(request.getEnd().getLatitude()) + ", " +
-                    String.valueOf(request.getEnd().getLongitude()) + ")";
-            endAddressTextView.setText(endPoint);
-        }
+        endAddressTextView.setText(request.getEnd().toString());
 
         TextView descriptionTextView = (TextView) findViewById(R.id.textView_description);
         descriptionTextView.setText(request.getDescription());
@@ -271,34 +362,70 @@ public class DriverViewRequestActivity extends AppCompatActivity {
         ImageView statusImageView = (ImageView) findViewById(R.id.imageView_requestStatus);
         if (statusImageView != null) {
             switch (request.getStatus()) {
-                case (Request.OPEN):
+                case OPEN:
                     statusImageView.setImageResource(R.drawable.open);
                     break;
-                case (Request.OFFERED):
+                case OFFERED:
                     statusImageView.setImageResource(R.drawable.offered);
                     break;
-                case (Request.CONFIRMED):
+                case CONFIRMED:
                     statusImageView.setImageResource(R.drawable.confirmed);
                     break;
-                case (Request.COMPLETE):
+                case COMPLETE:
                     statusImageView.setImageResource(R.drawable.complete);
                     break;
-                case (Request.PAID):
+                case PAID:
                     statusImageView.setImageResource(R.drawable.paid);
                     break;
-                case (Request.CANCELLED):
+                case CANCELLED:
                     statusImageView.setImageResource(R.drawable.cancel);
                     break;
 
             }
         }
+        // If status is complete we change the make an offer button to display that they have received payment
+        if (request.getStatus() == COMPLETE && request.getConfirmedDriver().getUsername().equals(loggedInUser.getUsername())) {
+            Button payment_button = (Button) findViewById(R.id.button_makeOffer);
+            payment_button.setText(R.string.payment_received);
+            payment_button.setEnabled( true ); // Make the button clickable
+            payment_button.setAlpha((float) 1);
+            payment_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    receivedPayment();
+                }
+            });
+        }
+        if (request.getStatus() == PAID ) {
+            Button payment_button = (Button) findViewById(R.id.button_makeOffer);
+            payment_button.setText(R.string.payment_received);
+            payment_button.setEnabled( false ); // Make the button clickable
+            payment_button.setAlpha((float) 0.5);
+        }
     }
 
+    /**
+     * Will update the current request in elastic search to be paid for.
+     */
+    private void receivedPayment() {
+        Toast.makeText(this, "Request is now complete.", Toast.LENGTH_SHORT).show();
+        RequestController.payForRequest(request);
+        ImageView statusImageView = (ImageView) findViewById(R.id.imageView_requestStatus);
+        statusImageView.setImageResource(R.drawable.paid);
+        Button payment_button = (Button) findViewById(R.id.button_makeOffer);
+        payment_button.setText(R.string.payment_received);
+        payment_button.setEnabled( false ); // Make the button clickable
+        payment_button.setAlpha((float) 0.5);
+        RequestController.getOffersInstance().notifyListeners();
+        RequestController.getRiderInstance().notifyListeners();
+    }
+
+    /**
+     * Attempts to make an offer for a request as a driver
+     * @param view The make offer view that was clicked
+     */
     public void makeOffer(View view) {
-        RequestController rc = new RequestController();
-        // Can not make an offer on a request that has a confirmed driver.
-        // Can not make an offer on a request that you hae already made an offer on.
-        // Can not make an offer on a cancelled request.
+        // Prepare an alert dialogue in case of an error.
         AlertDialog.Builder adb = new AlertDialog.Builder(DriverViewRequestActivity.this);
         adb.setTitle("Error: ");
         adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -306,19 +433,21 @@ public class DriverViewRequestActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
             }
         });
-        // TODO this code needs to be in the controller, because it's used in multiple locations?
-        if (request.getConfirmedDriver() != null) {
-            adb.setMessage("Unable to make an offer on the request. There is already a confirmed driver.");
-            adb.show();
-        } else if (request.getOfferedDrivers().contains(loggedInUser)) {
-            adb.setMessage("Unable to make an offer on the request. You have already made an offer.");
-            adb.show();
-        } else if (request.getStatus() == Request.CANCELLED) {
-            adb.setMessage("Unable to make an offer on the request. The request has been cancelled.");
-            adb.show();
-        } else {
-            rc.addDriver(request, loggedInUser);
+
+        // We use the controller to attempt to add the driver
+        try {
+            RequestController.addDriver( request, loggedInUser );
             Toast.makeText(this, "Made an offer.", Toast.LENGTH_SHORT).show();
+            Button button = (Button) findViewById( R.id.button_makeOffer);
+            button.setEnabled(false); // Make the button un-clickable after offering.
+            button.setAlpha((float) 0.5); // The button becomes 50% transparent
+            ImageView statusImageView = (ImageView) findViewById(R.id.imageView_requestStatus);
+            statusImageView.setImageResource(R.drawable.offered);
+            RequestController.getOffersInstance().notifyListeners();
+        } catch (Exception e) {
+            // If there is an issue, set the message to the exception message and show it
+            adb.setMessage(e.getMessage());
+            adb.show();
         }
     }
 }

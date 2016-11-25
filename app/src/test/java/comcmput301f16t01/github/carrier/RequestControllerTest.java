@@ -1,16 +1,14 @@
 package comcmput301f16t01.github.carrier;
 
-import android.location.Location;
-
 import org.junit.Test;
 
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestList;
+import comcmput301f16t01.github.carrier.Users.User;
 
 import static org.junit.Assert.*;
 
-import static org.junit.Assert.*;
 
 public class RequestControllerTest {
     @Test
@@ -36,10 +34,10 @@ public class RequestControllerTest {
         rc.addRequest(paidRequest);
         rc.addRequest(completedRequest);
         // Cancel the different reqeusts
-        rc.cancelRequest(user, openRequest);
-        rc.cancelRequest(user, paidRequest);
-        rc.cancelRequest(user,cancelledRequest);
-        rc.cancelRequest(user, completedRequest);
+        rc.cancelRequest(openRequest);
+        rc.cancelRequest(paidRequest);
+        rc.cancelRequest(cancelledRequest);
+        rc.cancelRequest(completedRequest);
         // Check that the expected behavior happened.
         assertTrue("openRequest not cancelled", openRequest.getStatus() == Request.CANCELLED);
         assertTrue("paidRequest changed when it shouldn't have.", paidRequest.getStatus() == Request.PAID);

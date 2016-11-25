@@ -1,13 +1,12 @@
 package comcmput301f16t01.github.carrier;
 
-import android.location.Location;
-
 import org.junit.Test;
 
 import comcmput301f16t01.github.carrier.Requests.Request;
+import comcmput301f16t01.github.carrier.Users.User;
+import comcmput301f16t01.github.carrier.Users.UserController;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Created by meind on 2016-10-11.

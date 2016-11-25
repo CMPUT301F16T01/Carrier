@@ -1,24 +1,29 @@
 package comcmput301f16t01.github.carrier.Requests;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.content.DialogInterface;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.gson.Gson;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
@@ -33,15 +38,33 @@ import java.util.List;
 import java.util.Locale;
 
 import comcmput301f16t01.github.carrier.FareCalculator;
+import comcmput301f16t01.github.carrier.OfferingDriversArrayAdapter;
 import comcmput301f16t01.github.carrier.R;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
-import comcmput301f16t01.github.carrier.User;
-import comcmput301f16t01.github.carrier.UserController;
-import comcmput301f16t01.github.carrier.UsernameTextView;
+import comcmput301f16t01.github.carrier.RiderViewOfferingDriversActivity;
+import comcmput301f16t01.github.carrier.Users.UserController;
+import comcmput301f16t01.github.carrier.Users.UsernameTextView;
+
+import static comcmput301f16t01.github.carrier.Requests.Request.Status.CANCELLED;
+import static comcmput301f16t01.github.carrier.Requests.Request.Status.COMPLETE;
+import static comcmput301f16t01.github.carrier.Requests.Request.Status.CONFIRMED;
+import static comcmput301f16t01.github.carrier.Requests.Request.Status.PAID;
 
 /**
- * This will help us show the request from the perspective of a rider
+ * RiderRequestActivity displays request information from the rider's perspective. It gives the rider
+ * the ability to see their request, cancel it, or accept a driver from it.
+ *
+ * See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#driverviewrequestactivity">DriverViewRequestActivity</a>
+ *
+ * Based on: <a href="https://github.com/MKergall/osmbonuspack/wiki/Tutorial_0">Tutorial_0</a>
+ * Author: MKergall
+ * Retrieved on: November 10th, 2016
+ *
+ * Updated with: <a href="http://stackoverflow.com/questions/38539637/osmbonuspack-roadmanager-networkonmainthreadexception">OSMBonuspack RoadManager NetworkOnMainThreadException</a>
+ * Author: <a href="http://stackoverflow.com/users/4670837/yubaraj-poudel">yubaraj poudel</a>
+ * Posted: August 6th, 2016
+ * Retrieved on: November 10th, 2016
  */
 public class RiderRequestActivity extends AppCompatActivity {
     Activity activity = RiderRequestActivity.this;
@@ -52,8 +75,6 @@ public class RiderRequestActivity extends AppCompatActivity {
     IMapController mapController;
     private Request request;
 
-    RequestController rc = new RequestController();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,10 +82,9 @@ public class RiderRequestActivity extends AppCompatActivity {
 
         // unpacking the bundle to get the position of request
         Bundle bundle = getIntent().getExtras();
-        //int position = bundle.getInt("position");
-        //request = rc.getResult().get(position);
 
-        request = new Gson().fromJson( bundle.getString("request"), Request.class );
+        int position = bundle.getInt("position");
+        request = RequestController.getRiderInstance().get(position);
 
         setTitle("Request");
 
@@ -77,10 +97,8 @@ public class RiderRequestActivity extends AppCompatActivity {
         endPoint = new GeoPoint(request.getEnd());
 
         mapController = map.getController();
-        // TODO figure out a way to zoom dynamically to include both points?
-        mapController.setZoom(12);
-        GeoPoint centerPoint = getCenter();
-        mapController.setCenter(centerPoint);
+        mapController.setCenter(getCenter());
+        zoomToBounds(getBoundingBox(startPoint, endPoint));
 
         ArrayList<OverlayItem> overlayItems = new ArrayList<>();
         overlayItems.add(new OverlayItem("Starting Point", "This is the starting point", startPoint));
@@ -91,12 +109,74 @@ public class RiderRequestActivity extends AppCompatActivity {
         getRoadAsync();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        setViews();
+    }
+    /**
+     * This function finds a BoundingBox that fits both the start and end location points.
+     *
+     * @param start GeoPoint for start location
+     * @param end GeoPoint for end location
+     * @return BoundingBox that holds both location points
+     */
+    public BoundingBox getBoundingBox(GeoPoint start, GeoPoint end) {
+        double north;
+        double south;
+        double east;
+        double west;
+        if(start.getLatitude() > end.getLatitude()) {
+            north = start.getLatitude();
+            south = end.getLatitude();
+        } else {
+            north = end.getLatitude();
+            south = start.getLatitude();
+        }
+        if(start.getLongitude() > end.getLongitude()) {
+            east = start.getLongitude();
+            west = end.getLongitude();
+        } else {
+            east = end.getLongitude();
+            west = start.getLongitude();
+        }
+        return new BoundingBox(north, east, south, west);
+    }
+
+    // TODO http://stackoverflow.com/questions/20608590/osmdroid-zooming-to-show-the-whole-pathoverlay
+
+    /**
+     * This function allows the MapView to zoom to show the whole path between
+     * the start and end points.
+     *
+     * @param box BoundingBox for start and end points
+     */
+    public void zoomToBounds(final BoundingBox box) {
+        if (map.getHeight() > 0) {
+            map.zoomToBoundingBox(box, false);
+            map.zoomToBoundingBox(box, false);
+        } else {
+            ViewTreeObserver vto = map.getViewTreeObserver();
+            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    map.zoomToBoundingBox(box, false);
+                    map.zoomToBoundingBox(box, false);
+                    ViewTreeObserver vto2 = map.getViewTreeObserver();
+                    vto2.removeOnGlobalLayoutListener(this);
+                }
+            });
+        }
+    }
+
     /**
      * Given the request passed in by the user, set the map according to the start and end locations
      */
     private void setMarkers() {
         Marker startMarker = new Marker(map);
+        startMarker.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_start_marker, null));
         Marker endMarker = new Marker(map);
+        endMarker.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_end_marker, null));
 
         startMarker.setPosition(startPoint);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
@@ -111,14 +191,6 @@ public class RiderRequestActivity extends AppCompatActivity {
         map.getOverlays().add(endMarker);
         map.invalidate();
     }
-
-    // Based on: https://goo.gl/4TKn2y
-    // Retrieved on: November 10th, 2016
-
-    // Updated with: https://goo.gl/h2CKyn
-    // Author: yubaraj poudel
-    // Posted: August 6th, 2016
-    // Retrieved on: November 10th, 2016
 
     /**
      * Asynchronous task to get the route between the two points
@@ -141,7 +213,7 @@ public class RiderRequestActivity extends AppCompatActivity {
     }
 
     /**
-     * Class to update the road on the map
+     * Class to update the road on the map, Async to prevent locking up UI thread.
      */
     private class UpdateRoadTask extends AsyncTask<Object, Void, Road[]> {
 
@@ -168,7 +240,7 @@ public class RiderRequestActivity extends AppCompatActivity {
             }
             List<Overlay> mapOverlays = map.getOverlays();
             for (Road road : roads) {
-                if(road.mLength < minLength || minLength == 0) {
+                if (road.mLength < minLength || minLength == 0) {
                     minLength = road.mLength;
                     bestRoad = road;
                 }
@@ -183,16 +255,19 @@ public class RiderRequestActivity extends AppCompatActivity {
         }
     }
 
+    /** Centers the map on the start of the route */
     public void centerStart(View view) {
         mapController.setCenter(startPoint);
     }
 
+    /** Centers the map on the end of the map */
     public void centerEnd(View view) {
         mapController.setCenter(endPoint);
     }
 
     /**
      * Get the center point of the route to center the screen on
+     *
      * @return GeoPoint
      */
     public GeoPoint getCenter() {
@@ -203,24 +278,38 @@ public class RiderRequestActivity extends AppCompatActivity {
 
         Location retLoc = new Location("");
 
-        if(startLat > endLat) {
-            retLoc.setLatitude(endLat + ((startLat - endLat)/2));
+        if (startLat > endLat) {
+            retLoc.setLatitude(endLat + ((startLat - endLat) / 2));
         } else {
-            retLoc.setLatitude(startLat + ((endLat - startLat)/2));
+            retLoc.setLatitude(startLat + ((endLat - startLat) / 2));
         }
 
-        if(startLong > endLong) {
-            retLoc.setLongitude(endLong + ((startLong - endLong)/2));
+        if (startLong > endLong) {
+            retLoc.setLongitude(endLong + ((startLong - endLong) / 2));
         } else {
-            retLoc.setLongitude(startLong + ((endLong - startLong)/2));
+            retLoc.setLongitude(startLong + ((endLong - startLong) / 2));
         }
 
         return new GeoPoint(retLoc);
     }
 
-    // TODO fill in
-    public void payForRequest(View view) {
-        Toast.makeText(activity, "PAY FOR REQUEST", Toast.LENGTH_SHORT).show();
+    /**
+     * Will confirm the completion of a request.
+     * @param view The view for the button that was clicked.
+     */
+    public void completeRequest(View view) {
+        if (request.getStatus() == CONFIRMED) {
+            RequestController.completeRequest(request);
+            ImageView statusImageView = (ImageView) findViewById(R.id.imageView_requestStatus);
+            statusImageView.setImageResource(R.drawable.complete);
+            Button cancelButton = (Button) findViewById(R.id.button_delete);
+            cancelButton.setAlpha(0.5f);
+            cancelButton.setEnabled(false);
+            view.setEnabled(false);
+            view.setAlpha(0.5f);
+            RequestController.getOffersInstance().notifyListeners();
+            RequestController.getRiderInstance().notifyListeners();
+        }
     }
 
     /**
@@ -228,9 +317,8 @@ public class RiderRequestActivity extends AppCompatActivity {
      */
     public void setViews() {
         // Set up the fare
-        FareCalculator fc = new FareCalculator();
         Currency localCurrency = Currency.getInstance( Locale.getDefault() );
-        String price = localCurrency.getSymbol() + fc.toString(request.getFare());
+        String price = localCurrency.getSymbol() + FareCalculator.toString(request.getFare());
         TextView fareTextView = (TextView) findViewById(R.id.textView_$fareAmount);
         fareTextView.setText(price);
 
@@ -243,28 +331,33 @@ public class RiderRequestActivity extends AppCompatActivity {
         // TODO why does it say "sarah" even though there is no confirmedDriver?
         // Set up the UsernameTextView of the driver
         UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
+        // If no driver has been selected we need to display the list of drivers who have made an offer.
+        TextView driverTextView = (TextView) findViewById(R.id.textView_driver);
+        driverTextView.setText(R.string.DriverHere);
         if (request.getChosenDriver() != null) {
             driverUsernameTextView.setText(request.getChosenDriver().getUsername());
             driverUsernameTextView.setUser(request.getChosenDriver());
+        } else if (request.getOfferedDrivers().size() > 0 && (request.getStatus() != CONFIRMED || request.getStatus() != PAID)) {
+            // If there is an offered driver
+            driverTextView = (TextView) findViewById(R.id.textView_driver);
+            driverTextView.setText(R.string.View_Offering_Drivers);
+            driverTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bundle bundle = getIntent().getExtras();
+                    Intent intent = new Intent(RiderRequestActivity.this, RiderViewOfferingDriversActivity.class);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            });
+
         }
 
         TextView startAddressTextView = (TextView) findViewById(R.id.textView_start);
-        String startAddress = request.getStart().getAddress();
-        if(startAddress != null) {
-            startAddressTextView.setText(startAddress);
-        } else {
-            String startPoint = request.getStart().getLatLong();
-            startAddressTextView.setText(startPoint);
-        }
+        startAddressTextView.setText(request.getStart().toString());
 
         TextView endAddressTextView = (TextView) findViewById(R.id.textView_end);
-        String endAddress = request.getEnd().getAddress();
-        if(endAddress != null) {
-            endAddressTextView.setText(request.getEnd().getAddress());
-        } else {
-            String endPoint = request.getEnd().getLatLong();
-            endAddressTextView.setText(endPoint);
-        }
+        endAddressTextView.setText(request.getEnd().toString());
 
         TextView descriptionTextView = (TextView) findViewById(R.id.textView_description);
         descriptionTextView.setText(request.getDescription());
@@ -275,43 +368,64 @@ public class RiderRequestActivity extends AppCompatActivity {
         ImageView statusImageView = (ImageView) findViewById(R.id.imageView_requestStatus);
         if (statusImageView != null) {
             switch (request.getStatus()) {
-                case (Request.OPEN):
+                case OPEN:
                     statusImageView.setImageResource(R.drawable.open);
                     break;
-                case (Request.OFFERED):
+                case OFFERED:
                     statusImageView.setImageResource(R.drawable.offered);
                     break;
-                case (Request.CONFIRMED):
+                case CONFIRMED:
                     statusImageView.setImageResource(R.drawable.confirmed);
                     break;
-                case (Request.COMPLETE):
+                case COMPLETE:
                     statusImageView.setImageResource(R.drawable.complete);
                     break;
-                case (Request.PAID):
+                case PAID:
                     statusImageView.setImageResource(R.drawable.paid);
                     break;
-                case (Request.CANCELLED):
+                case CANCELLED:
                     statusImageView.setImageResource(R.drawable.cancel);
                     break;
 
             }
         }
+        // Make the button grey if it is completed or paid.
+        if (request.getStatus() != CONFIRMED) {
+            Button completeButton = (Button) findViewById(R.id.button_confirm_completion);
+            completeButton.setAlpha(0.5f);
+            completeButton.setEnabled(false);
+        }
+        else {
+            Button completeButton = (Button) findViewById(R.id.button_confirm_completion);
+            completeButton.setAlpha(1f);
+            completeButton.setEnabled(true);
+        }
+        if (request.getStatus() == COMPLETE || request.getStatus() == PAID || request.getStatus() == CANCELLED){
+            Button cancelButton = (Button) findViewById(R.id.button_delete);
+            cancelButton.setEnabled(false);
+            cancelButton.setAlpha(0.5f);
+        }
     }
 
     /**
      * Will initialize the view ids for all the views in the activity.
+     * @param v the Cancel Request button.
      */
-    public void cancelRequest(View v){
+    public void cancelRequest(final View v) {
         AlertDialog.Builder adb = new AlertDialog.Builder(RiderRequestActivity.this);
-        if ((request.getStatus() != Request.CANCELLED) && (request.getStatus() != Request.COMPLETE)
-                && (request.getStatus() != Request.PAID)) {
+        if ((request.getStatus() != Request.Status.CANCELLED)
+                && (request.getStatus() != COMPLETE)
+                && (request.getStatus() != PAID)) {
             adb.setMessage("Cancel request?");
             adb.setCancelable(true);
             adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    RequestController rc = new RequestController();
-                    rc.cancelRequest(request.getRider(), request);
+                    RequestController.cancelRequest(request);
+                    v.setAlpha(0.5f);
+                    v.setEnabled(false);
+                    RequestController.getOffersInstance().notifyListeners();
+                    RequestController.getRiderInstance().notifyListeners();
                     finish();
                 }
             });
@@ -322,8 +436,7 @@ public class RiderRequestActivity extends AppCompatActivity {
 
                 }
             });
-        }
-        else {
+        } else {
             adb.setTitle("Error: ");
             adb.setMessage("Request cannot be cancelled.");
             adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
