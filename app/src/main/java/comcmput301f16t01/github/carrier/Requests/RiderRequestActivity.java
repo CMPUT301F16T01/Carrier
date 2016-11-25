@@ -43,9 +43,13 @@ import comcmput301f16t01.github.carrier.RiderViewOfferingDriversActivity;
 import comcmput301f16t01.github.carrier.Users.UserController;
 import comcmput301f16t01.github.carrier.Users.UsernameTextView;
 
+import static comcmput301f16t01.github.carrier.Requests.Request.Status.COMPLETE;
+import static comcmput301f16t01.github.carrier.Requests.Request.Status.CONFIRMED;
+import static comcmput301f16t01.github.carrier.Requests.Request.Status.PAID;
+
 /**
- * This will help us show the request from the perspective of a rider. Will have
- * the position in the request controller bundled to determine what request to display.
+ * RiderRequestActivity displays request information from the rider's perspective. It gives the rider
+ * the ability to see their request, cancel it, or accept a driver from it.
  *
  * See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#driverviewrequestactivity">DriverViewRequestActivity</a>
  *
@@ -67,8 +71,6 @@ public class RiderRequestActivity extends AppCompatActivity {
     IMapController mapController;
     private Request request;
 
-    RequestController rc = new RequestController();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +80,7 @@ public class RiderRequestActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
 
         int position = bundle.getInt("position");
-        request = rc.getRiderInstance().get(position);
+        request = RequestController.getRiderInstance().get(position);
 
         setTitle("Request");
 
@@ -152,7 +154,7 @@ public class RiderRequestActivity extends AppCompatActivity {
     }
 
     /**
-     * Class to update the road on the map
+     * Class to update the road on the map, Async to prevent locking up UI thread.
      */
     private class UpdateRoadTask extends AsyncTask<Object, Void, Road[]> {
 
@@ -194,10 +196,12 @@ public class RiderRequestActivity extends AppCompatActivity {
         }
     }
 
+    /** Centers the map on the start of the route */
     public void centerStart(View view) {
         mapController.setCenter(startPoint);
     }
 
+    /** Centers the map on the end of the map */
     public void centerEnd(View view) {
         mapController.setCenter(endPoint);
     }
@@ -235,9 +239,8 @@ public class RiderRequestActivity extends AppCompatActivity {
      * @param view The view for the button that was clicked.
      */
     public void completeRequest(View view) {
-        if (request.getStatus() == Request.CONFIRMED) {
-            RequestController rc = new RequestController();
-            rc.completeRequest(request);
+        if (request.getStatus() == CONFIRMED) {
+            RequestController.completeRequest(request);
             ImageView statusImageView = (ImageView) findViewById(R.id.imageView_requestStatus);
             statusImageView.setImageResource(R.drawable.complete);
             Button cancelButton = (Button) findViewById(R.id.button_delete);
@@ -245,8 +248,8 @@ public class RiderRequestActivity extends AppCompatActivity {
             cancelButton.setEnabled(false);
             view.setEnabled(false);
             view.setAlpha(0.5f);
-            rc.getOffersInstance().notifyListeners();
-            rc.getRiderInstance().notifyListeners();
+            RequestController.getOffersInstance().notifyListeners();
+            RequestController.getRiderInstance().notifyListeners();
         }
     }
 
@@ -255,9 +258,8 @@ public class RiderRequestActivity extends AppCompatActivity {
      */
     public void setViews() {
         // Set up the fare
-        FareCalculator fc = new FareCalculator();
-        Currency localCurrency = Currency.getInstance(Locale.getDefault());
-        String price = localCurrency.getSymbol() + fc.toString(request.getFare());
+        Currency localCurrency = Currency.getInstance( Locale.getDefault() );
+        String price = localCurrency.getSymbol() + FareCalculator.toString(request.getFare());
         TextView fareTextView = (TextView) findViewById(R.id.textView_$fareAmount);
         fareTextView.setText(price);
 
@@ -276,7 +278,7 @@ public class RiderRequestActivity extends AppCompatActivity {
         if (request.getChosenDriver() != null) {
             driverUsernameTextView.setText(request.getChosenDriver().getUsername());
             driverUsernameTextView.setUser(request.getChosenDriver());
-        } else if (request.getOfferedDrivers().size() > 0 && (request.getStatus() != Request.CONFIRMED || request.getStatus() != Request.PAID)) {
+        } else if (request.getOfferedDrivers().size() > 0 && (request.getStatus() != CONFIRMED || request.getStatus() != PAID)) {
             // If there is an offered driver
             driverTextView = (TextView) findViewById(R.id.textView_driver);
             driverTextView.setText(R.string.View_Offering_Drivers);
@@ -319,29 +321,29 @@ public class RiderRequestActivity extends AppCompatActivity {
         ImageView statusImageView = (ImageView) findViewById(R.id.imageView_requestStatus);
         if (statusImageView != null) {
             switch (request.getStatus()) {
-                case (Request.OPEN):
+                case OPEN:
                     statusImageView.setImageResource(R.drawable.open);
                     break;
-                case (Request.OFFERED):
+                case OFFERED:
                     statusImageView.setImageResource(R.drawable.offered);
                     break;
-                case (Request.CONFIRMED):
+                case CONFIRMED:
                     statusImageView.setImageResource(R.drawable.confirmed);
                     break;
-                case (Request.COMPLETE):
+                case COMPLETE:
                     statusImageView.setImageResource(R.drawable.complete);
                     break;
-                case (Request.PAID):
+                case PAID:
                     statusImageView.setImageResource(R.drawable.paid);
                     break;
-                case (Request.CANCELLED):
+                case CANCELLED:
                     statusImageView.setImageResource(R.drawable.cancel);
                     break;
 
             }
         }
         // Make the button grey if it is completed or paid.
-        if (request.getStatus() != Request.CONFIRMED) {
+        if (request.getStatus() != CONFIRMED) {
             Button completeButton = (Button) findViewById(R.id.button_confirm_completion);
             completeButton.setAlpha(0.5f);
             completeButton.setEnabled(false);
@@ -351,7 +353,7 @@ public class RiderRequestActivity extends AppCompatActivity {
             completeButton.setAlpha(1f);
             completeButton.setEnabled(true);
         }
-        if (request.getStatus() == Request.COMPLETE || request.getStatus() == Request.PAID){
+        if (request.getStatus() == COMPLETE || request.getStatus() == PAID){
             Button cancelButton = (Button) findViewById(R.id.button_delete);
             cancelButton.setEnabled(false);
             cancelButton.setAlpha(0.5f);
@@ -364,19 +366,19 @@ public class RiderRequestActivity extends AppCompatActivity {
      */
     public void cancelRequest(final View v) {
         AlertDialog.Builder adb = new AlertDialog.Builder(RiderRequestActivity.this);
-        if ((request.getStatus() != Request.CANCELLED) && (request.getStatus() != Request.COMPLETE)
-                && (request.getStatus() != Request.PAID)) {
+        if ((request.getStatus() != Request.Status.CANCELLED)
+                && (request.getStatus() != COMPLETE)
+                && (request.getStatus() != PAID)) {
             adb.setMessage("Cancel request?");
             adb.setCancelable(true);
             adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    RequestController rc = new RequestController();
-                    rc.cancelRequest(request);
+                    RequestController.cancelRequest(request);
                     v.setAlpha(0.5f);
                     v.setEnabled(false);
-                    rc.getOffersInstance().notifyListeners();
-                    rc.getRiderInstance().notifyListeners();
+                    RequestController.getOffersInstance().notifyListeners();
+                    RequestController.getRiderInstance().notifyListeners();
                     finish();
                 }
             });

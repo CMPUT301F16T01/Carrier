@@ -10,58 +10,26 @@ import comcmput301f16t01.github.carrier.Users.ElasticUserController;
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
-
 public class SearchingTests extends ApplicationTest {
 
     // University of Alberta, Edmonton
     static final double latitude1 = 53.5232;
     static final double longitude1 = -113.5263;
 
-    // somewhere in London, Ontario
-    static final double latitude2 = 42.9870;
-    static final double longitude2 = -81.2432;
+    // somewhere in Seoul, South Korea
+    private final double latitude2 = 37.5665;
+    private final double longitude2 = 126.9780;
 
-    // somewhere in St. Albert, Alberta
-    static final double latitude3 = 53.6305;
-    static final double longitude3 = -113.6256;
+    // somewhere in Kawasaki, Japan
+    private final double latitude3 = 35.5308;
+    private final double longitude3 = 139.7030;
 
-    // somewhere in Edmonton, Alberta
-    static final double latitude4 = 53.5444;
-    static final double longitude4 = -113.4909;
+    // Imperial Palace, Tokyo, Japan
+    private final double latitude4 = 35.6852;
+    private final double longitude4 = 139.7528;
 
     private User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234", "Kia, Rio" );
     private User driverOne = new User( "notifTestDriver", "notifyYou@email.com", "0118-99-112", "Kia, Rio"  );
-
-    // Set up a test user to receive notifications
-    private void setUpUser() {
-        UserController uc = new UserController();
-        String result = uc.checkValidInputs(loggedInUser.getUsername(),
-                loggedInUser.getEmail(), loggedInUser.getPhone());
-
-        if (result == null) {
-            System.out.print( "null line" );
-        } else {
-            uc.createNewUser(loggedInUser.getUsername(),
-                    loggedInUser.getEmail(), loggedInUser.getPhone(), loggedInUser.getVehicleDescription());
-        }
-        assertTrue( "Failed to log in for test.", uc.logInUser( loggedInUser.getUsername() ) );
-    }
-
-    /*// somewhere in Tokyo, Japan
-    static final double latitude1 = 35.6895;
-    static final double longitude1 = 139.6917;
-
-    // somewhere in Seoul, South Korea
-    static final double latitude2 = 37.5665;
-    static final double longitude2 = 126.9780;
-
-    // somewhere in Kawasaki, Japan
-    static final double latitude3 = 35.5308;
-    static final double longitude3 = 139.7030;
-
-    // Imperial Palace, Tokyo, Japan
-    static final double latitude4 = 35.6852;
-    static final double longitude4 = 139.7528;*/
 
     /**
      * Clears requests created by searchTestUser and clears request offers made by searchTestDriver
@@ -76,6 +44,9 @@ public class SearchingTests extends ApplicationTest {
 
         ElasticUserController.DeleteUserTask dut = new ElasticUserController.DeleteUserTask();
         dut.execute( driverOne.getUsername() );
+
+        UserController.logOutUser();
+
         super.tearDown();
     }
 
@@ -98,6 +69,11 @@ public class SearchingTests extends ApplicationTest {
      * Addresses Use Cases Searching #1 and #5.
      */
     public void testDriverSearchByLocation() {
+        UserController.createNewUser( driverOne.getUsername(),
+                driverOne.getEmail(),
+                driverOne.getPhone(),
+                driverOne.getVehicleDescription() );
+
         CarrierLocation startLocation1 = new CarrierLocation();
         CarrierLocation endLocation1 = new CarrierLocation();
         startLocation1.setLatitude(latitude1);
@@ -115,40 +91,37 @@ public class SearchingTests extends ApplicationTest {
         startLocation3.setLatitude(latitude3);
         startLocation3.setLongitude(longitude3);
         Request request3 = new Request(loggedInUser, startLocation3, endLocation3, "");
+        
+        RequestController.addRequest(request3);
+        RequestController.addRequest(request2);
+        RequestController.addRequest(request1);
 
-        RequestController rc = new RequestController();
-        rc.addRequest(request3);
-        rc.addRequest(request2);
-        rc.addRequest(request1);
-
-        RequestList requests = rc.fetchAllRequestsWhereRider(loggedInUser);
-
-        /*
-         * Dealing with Async tasks means we need to wait for them to finish.
-         */
+        // Lets confirm that all the requests we've added are in elastic search.
+        RequestList requests = RequestController.fetchAllRequestsWhereRider(loggedInUser);
         int pass = 0;
-        while (requests.size() < 3) {
-            requests = rc.fetchAllRequestsWhereRider(loggedInUser);
+        while (requests.size() != 3) {
+            requests = RequestController.fetchAllRequestsWhereRider(loggedInUser);
             chillabit(1000);
             pass++;
-            if (pass > 10) {
-                break;
-            }
+            if (pass > 5) { fail("It took too long to check if the requests were properly added"); }
         }
 
         CarrierLocation driverLocation = new CarrierLocation();
         driverLocation.setLatitude(latitude4);
         driverLocation.setLongitude(longitude4);
+
         // this method should return a list of requests, sorted based on proximity of start location
         // for now I'm assuming there are limits on how far away a request can be to be included in this list
-        rc.searchByLocation(driverLocation);
-        Assert.assertTrue("Search did not return 2 requests: " + rc.getResult().size(), rc.getResult().size() == 2);
+        RequestController.searchByLocation(driverLocation);
+        Assert.assertTrue("Search did not return 2 requests: " + RequestController.getResult().size(),
+                RequestController.getResult().size() == 2);
+
         // check that the requests are ordered properly
-        Assert.assertEquals("Closest request lat incorrect", request1.getStart().getLatitude(), rc.getResult().get(0).getStart().getLatitude());
-        Assert.assertEquals("Closest request long incorrect", request1.getStart().getLongitude(), rc.getResult().get(0).getStart().getLongitude());
-        Assert.assertEquals("2nd closest request lat incorrect", request3.getStart().getLatitude(), rc.getResult().get(1).getStart().getLatitude());
-        Assert.assertEquals("2nd closest request long incorrect", request3.getStart().getLongitude(), rc.getResult().get(1).getStart().getLongitude());
-        Assert.assertFalse("Search returned location out of range", rc.getResult().contains(request2));
+        Assert.assertEquals("Closest request lat incorrect", request1.getStart().getLatitude(), RequestController.getResult().get(0).getStart().getLatitude());
+        Assert.assertEquals("Closest request long incorrect", request1.getStart().getLongitude(), RequestController.getResult().get(0).getStart().getLongitude());
+        Assert.assertEquals("2nd closest request lat incorrect", request3.getStart().getLatitude(), RequestController.getResult().get(1).getStart().getLatitude());
+        Assert.assertEquals("2nd closest request long incorrect", request3.getStart().getLongitude(), RequestController.getResult().get(1).getStart().getLongitude());
+        Assert.assertFalse("Search returned location out of range", RequestController.getResult().contains(request2));
     }
 
     public void testDriverSearchByLocationWithConfirmed() {
@@ -162,45 +135,50 @@ public class SearchingTests extends ApplicationTest {
      * Addressing Use Case Searching #2.
      */
     public void testDriverSearchByKeyword() {
+        // We use gibbersih so that "live" requests do not interfere with tests
         String keyword1 = "dkfjlasb";
         String keyword2 = "ksjdahfk";
         String keyword3 = "sjdjakfk";
         String keyword4 = "dhsbskak";
 
+        UserController.createNewUser( driverOne.getUsername(),
+                driverOne.getEmail(),
+                driverOne.getPhone(),
+                driverOne.getVehicleDescription() );
+
+        // Add requests with the gibberish keywords
         Request requestOne = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
                 "Test keywords: " + keyword1);
         Request requestTwo = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
                 "Test keywords: " + keyword2);
         Request requestThree = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
                 "Test keywords: " + keyword2 + ", " + keyword3);
+        RequestController.addRequest( requestOne );
+        RequestController.addRequest( requestTwo );
+        RequestController.addRequest( requestThree );
 
-        RequestController rc = new RequestController();
-        rc.addRequest(requestOne);
-        rc.addRequest(requestTwo);
-        rc.addRequest(requestThree);
-
-        RequestList requests = rc.fetchAllRequestsWhereRider(loggedInUser);
-
-        /*
-         * Dealing with Async tasks means we need to wait for them to finish.
-         */
+        // Ensure that they've been added to elastic search
+        RequestList requests = RequestController.fetchAllRequestsWhereRider(loggedInUser);
         int pass = 0;
         while( requests.size() < 3 ) {
-            requests = rc.fetchAllRequestsWhereRider( loggedInUser );
+            requests = RequestController.fetchAllRequestsWhereRider( loggedInUser );
             chillabit( 1000 );
             pass++;
             if (pass > 10) { break; }
         }
 
-        rc.searchByKeyword(keyword2);
+        RequestController.searchByKeyword(keyword2);
         chillabit( 1000 );
-        Assert.assertTrue("Search did not return 2 requests: " + rc.getResult().size(), rc.getResult().size() == 2);
-        rc.searchByKeyword(keyword1);
+        Assert.assertTrue("Search did not return 2 requests: " + RequestController.getResult().size(),
+                RequestController.getResult().size() == 2);
+        RequestController.searchByKeyword(keyword1);
         chillabit( 1000 );
-        Assert.assertTrue("Search did not return 1 request", rc.getResult().size() == 1);
-        rc.searchByKeyword(keyword4);
+        Assert.assertTrue("Search did not return 1 request",
+                RequestController.getResult().size() == 1);
+        RequestController.searchByKeyword(keyword4);
         chillabit( 1000 );
-        Assert.assertTrue("Search returned requests", rc.getResult().size() == 0);
+        Assert.assertTrue("Search returned requests where it should not have",
+                RequestController.getResult().size() == 0);
     }
 
     // TODO confirmDriver method not complete, this test will not pass
@@ -210,6 +188,11 @@ public class SearchingTests extends ApplicationTest {
         String keyword3 = "sjdjakfk";
         String keyword4 = "dhsbskak";
 
+        UserController.createNewUser( driverOne.getUsername(),
+                driverOne.getEmail(),
+                driverOne.getPhone(),
+                driverOne.getVehicleDescription() );
+
         Request requestOne = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
                 "Test keywords: " + keyword1);
         Request requestTwo = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
@@ -217,66 +200,101 @@ public class SearchingTests extends ApplicationTest {
         Request requestThree = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
                 "Test keywords: " + keyword2 + ", " + keyword3);
 
-        RequestController rc = new RequestController();
-        rc.addRequest(requestOne);
-        rc.addRequest(requestTwo);
-        rc.addRequest(requestThree);
+        RequestController.addRequest( requestOne );
+        RequestController.addRequest( requestTwo );
+        RequestController.addRequest( requestThree );
 
-        RequestList requests = rc.fetchAllRequestsWhereRider(loggedInUser);
-
-        /*
-         * Dealing with Async tasks means we need to wait for them to finish.
-         */
+        // Confirm that we added three requests
+        RequestList requests = RequestController.fetchAllRequestsWhereRider(loggedInUser);
         int pass = 0;
-        while( requests.size() < 3 ) {
-            requests = rc.fetchAllRequestsWhereRider( loggedInUser );
+        while( requests.size() != 3 ) {
+            requests = RequestController.fetchAllRequestsWhereRider( loggedInUser );
             chillabit( 1000 );
             pass++;
             if (pass > 10) { break; }
         }
+        assertTrue( "There should only be three requests fetched",
+                requests.size() == 3);
 
-        rc.addDriver(requestOne, driverOne);
-        rc.confirmDriver(requestOne, driverOne);
-
-        /*
-         * Dealing with Async tasks means we need to wait for them to finish.
-         */
         pass = 0;
-        while( requestOne.getStatus() != 3 ) {
-            chillabit( 1000 );
+        for (Request request : requests ) {
             pass++;
-            if (pass > 10) { break; }
+            if (request.getDescription().equals(requestOne.getDescription())) {
+                RequestController.addDriver( request, driverOne );
+                break;
+            }
+            if (pass == 3) { fail( "We should have added a driver"); }
         }
 
-        // requestOne should no longer be included in search results
-        rc.searchByKeyword(keyword2);
-        chillabit( 1000 );
-        Assert.assertTrue("Search did not return 2 requests: " + rc.getResult().size(), rc.getResult().size() == 2);
-        rc.searchByKeyword(keyword1);
-        chillabit( 1000 );
-        Assert.assertTrue("Search did not return 1 request", rc.getResult().size() == 1);
-        rc.searchByKeyword(keyword4);
-        chillabit( 1000 );
-        Assert.assertTrue("Search returned requests", rc.getResult().size() == 0);
+        // Need to wait until we can add a confirmed driver
+        requests = RequestController.fetchAllRequestsWhereRider(loggedInUser);
+        pass = 0;
+        Boolean status = true;
+        while(status) {
+            for (Request request : requests) {
+                if (request.getOfferedDrivers().size() != 0) {
+                    RequestController.confirmDriver( request, request.getOfferedDrivers().get(0));
+                    status = false;
+                } // break out if we found a request with a chosen driver.
+            }
+            chillabit(1000);
+            pass++;
+            if (pass > 5) { fail( "Took too long to add chosen driver..." ); }
+            requests = RequestController.fetchAllRequestsWhereRider(loggedInUser);
+        }
 
-        rc.addDriver(requestThree, driverOne);
-        rc.confirmDriver(requestThree, driverOne);
+        // Ensure that we've fetched requests where the driver has been chosen
+        requests.clear();
+        requests = RequestController.fetchAllRequestsWhereRider(loggedInUser);
+        pass = 0;
+        while(status) {
+            for (Request request : requests) {
+                if (request.getChosenDriver() != null) {
+                    break;
+                } // break out if we found a request with a chosen driver.
+            }
+            chillabit(1000);
+            pass++;
+            if (pass > 5) { fail( "Took too long to find chosen driver..." ); }
+            requests = RequestController.fetchAllRequestsWhereRider(loggedInUser);
+        }
+
+        // search by keyword2 (requestTwo, requestThree)
+        RequestController.searchByKeyword(keyword2);
+        chillabit( 1000 );
+        Assert.assertTrue("Search did not return 2 requests... got: " + RequestController.getResult().size(),
+                RequestController.getResult().size() == 2);
+
+        // search by keyword1 (requestOne)
+        // Because this is from the driver perspective, requestOne is filtered out because the
+        // request has been marked as "CONFIRMED". Therefore no requests should return.
+        RequestController.searchByKeyword(keyword1);
+        chillabit( 1000 );
+        Assert.assertTrue("Search did not return 0 request... got: " + RequestController.getResult().size(),
+                RequestController.getResult().size() == 0);
+
+        // No requests use this keyword, and thus nothing should be returned
+        RequestController.searchByKeyword(keyword4);
+        chillabit( 1000 );
+        Assert.assertTrue("Search returned requests... got: " + RequestController.getResult().size(),
+                RequestController.getResult().size() == 0);
+
+        RequestController.addDriver(requestThree, driverOne);
+        RequestController.confirmDriver(requestThree, driverOne);
+        // TODO more with this? It was left like this.
     }
 
     /** Test 4
      * Test that we can filter by price.
      */
     public void testPriceFiltering() {
-        RequestController rc = new RequestController();
         int pass;
 
-        rc.clearAllRiderRequests( loggedInUser );
+        RequestController.clearAllRiderRequests( loggedInUser );
         UserController.createNewUser(driverOne.getUsername(),
                 driverOne.getEmail(),
                 driverOne.getPhone(),
                 "");
-        UserController uc = new UserController();
-        uc.logInUser( driverOne.getUsername() );
 
         // We put some requests in the elastic searches
         Request requestOne = new Request(loggedInUser, new CarrierLocation(), new CarrierLocation(),
@@ -291,15 +309,15 @@ public class SearchingTests extends ApplicationTest {
                 "@45jkLmNO02032aassssssssssssssssssssssssss");
         requestThree.setFare( 1002 );
         requestThree.setDistance( 2 );
-        rc.addRequest( requestOne );
-        rc.addRequest( requestTwo );
-        rc.addRequest( requestThree );
+        RequestController.addRequest( requestOne );
+        RequestController.addRequest( requestTwo );
+        RequestController.addRequest( requestThree );
 
         // Check that they've been added
-        RequestList requestList = rc.fetchAllRequestsWhereRider( loggedInUser );
+        RequestList requestList = RequestController.fetchAllRequestsWhereRider( loggedInUser );
         pass = 0;
         while ( requestList.size() != 3 ) {
-            requestList = rc.fetchRequestsWhereRider( loggedInUser );
+            requestList = RequestController.fetchRequestsWhereRider( loggedInUser );
             chillabit( 1000 );
             pass++;
             if ( pass > 3 ) { break; }
@@ -308,70 +326,70 @@ public class SearchingTests extends ApplicationTest {
 
         // Ensure the search return all the requests we've added.
         requestList.clear();
-        requestList = rc.getResult();
+        requestList = RequestController.getResult();
         pass = 0;
         while( requestList.size() != 3 && pass < 5 ) {
-            rc.searchByKeyword( "@45jkLmNO02032aassssssssssssssssssssssssss" );
-            requestList = rc.getResult();
+            RequestController.searchByKeyword( "@45jkLmNO02032aassssssssssssssssssssssssss" );
+            requestList = RequestController.getResult();
             chillabit( 1000 );
             pass++;
         }
         assertTrue( "The search should return three requests got " + requestList.size(), requestList.size() == 3 );
 
         // Ensure we can prune by price
-        rc.pruneByPrice( 9.99, 10.01 );
+        RequestController.pruneByPrice( 9.99, 10.01 );
         assertTrue( "There should be only one request after the price filter... got " + requestList.size(),
-                rc.getResult().size() == 1 );
+                RequestController.getResult().size() == 1 );
 
         // Ensure the search return all the requests we've added.
         requestList.clear();
-        rc.searchByKeyword( "@45jkLmNO02032aassssssssssssssssssssssssss" );
-        requestList = rc.getResult();
+        RequestController.searchByKeyword( "@45jkLmNO02032aassssssssssssssssssssssssss" );
+        requestList = RequestController.getResult();
         pass = 0;
         while( requestList.size() != 3 && pass < 5 ) {
-            requestList = rc.getResult();
+            requestList = RequestController.getResult();
             chillabit( 1000 );
             pass++;
         }
         assertTrue( "The search should return three requests", requestList.size() == 3 );
 
         // Ensure we can prune by price per "KM"
-        rc.pruneByPricePerKM( 9.99/2 , 10.01/2 );
+        RequestController.pruneByPricePerKM( 9.99/2 , 10.01/2 );
         assertTrue( "There should be only one request after the perKM filter... got " + requestList.size(),
-                rc.getResult().size() == 1 );
+                RequestController.getResult().size() == 1 );
 
         // Ensure the search return all the requests we've added.
         requestList.clear();
-        rc.searchByKeyword( "@45jkLmNO02032aassssssssssssssssssssssssss" );
-        requestList = rc.getResult();
+        RequestController.searchByKeyword( "@45jkLmNO02032aassssssssssssssssssssssssss" );
+        requestList = RequestController.getResult();
         pass = 0;
         while( requestList.size() != 3 && pass < 5 ) {
-            requestList = rc.getResult();
+            requestList = RequestController.getResult();
             chillabit( 1000 );
             pass++;
         }
         assertTrue( "The search should return three requests", requestList.size() == 3 );
 
         // Ensure we can prune by price per "KM" with the nullable attribute
-        rc.pruneByPricePerKM( 9.99/2 , null );
+        RequestController.pruneByPricePerKM( 9.99/2 , null );
         assertTrue( "There should be only two request after the perKM filter... got " + requestList.size(),
-                rc.getResult().size() == 2 );
+                RequestController.getResult().size() == 2 );
 
         // Ensure the search return all the requests we've added.
         requestList.clear();
-        rc.searchByKeyword( "@45jkLmNO02032aassssssssssssssssssssssssss" );
-        requestList = rc.getResult();
+        RequestController.searchByKeyword( "@45jkLmNO02032aassssssssssssssssssssssssss" );
+        requestList = RequestController.getResult();
         pass = 0;
         while( requestList.size() != 3 && pass < 5 ) {
-            requestList = rc.getResult();
+            requestList = RequestController.getResult();
             chillabit( 1000 );
             pass++;
         }
         assertTrue( "The search should return three requests", requestList.size() == 3 );
 
         // Ensure we can prune by price with the nullable
-        rc.pruneByPrice( 9.99, null );
+        RequestController.pruneByPrice( 9.99, null );
         assertTrue( "There should be only two request after the price filter... got " + requestList.size(),
-                rc.getResult().size() == 2 );
+                RequestController.getResult().size() == 2 );
     }
 }

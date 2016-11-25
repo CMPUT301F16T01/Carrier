@@ -21,7 +21,6 @@ import comcmput301f16t01.github.carrier.Users.User;
 
 public class RiderViewOfferingDriversActivity extends AppCompatActivity {
     private Request request;
-    private RequestController rc = new RequestController();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +28,7 @@ public class RiderViewOfferingDriversActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
 
         int position = bundle.getInt("position");
-        request = rc.getRiderInstance().get(position);
+        request = RequestController.getRiderInstance().get(position);
         final ArrayList<User> offeringDrivers = request.getOfferedDrivers();
         OfferingDriversArrayAdapter offeringDriversArrayAdapter = new OfferingDriversArrayAdapter(this, R.layout.offeringdriverslist_item, offeringDrivers);
         offeringDriversArrayAdapter.setRequest(request);

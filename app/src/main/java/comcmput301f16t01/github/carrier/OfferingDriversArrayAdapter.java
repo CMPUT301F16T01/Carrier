@@ -69,11 +69,10 @@ public class OfferingDriversArrayAdapter extends ArrayAdapter<User> {
                     adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            RequestController rc = new RequestController();
-                            rc.confirmDriver(request, offeringDriver);
+                            RequestController.confirmDriver(request, offeringDriver);
                             Toast.makeText(view.getContext(), "Confirmed Driver", Toast.LENGTH_SHORT).show();
-                            rc.getRiderInstance().notifyListeners();
-                            rc.getOffersInstance().notifyListeners();
+                            RequestController.getRiderInstance().notifyListeners();
+                            RequestController.getOffersInstance().notifyListeners();
                             activity.finish(); // Finish the activity.
                         }
                     });

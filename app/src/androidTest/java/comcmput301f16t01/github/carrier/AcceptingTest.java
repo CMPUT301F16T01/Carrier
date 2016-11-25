@@ -1,9 +1,11 @@
 package comcmput301f16t01.github.carrier;
 
+import java.util.ArrayList;
+
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Notifications.ElasticNotificationController;
+import comcmput301f16t01.github.carrier.Notifications.Notification;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
-import comcmput301f16t01.github.carrier.Notifications.NotificationList;
 import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
@@ -11,7 +13,7 @@ import comcmput301f16t01.github.carrier.Requests.RequestList;
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
-
+// TODO javadoc?
 public class AcceptingTest extends ApplicationTest {
     // abstracts reused code to prevent mistakes and aid in readability of tests
     // Makes the current thread sleep for the specified amount of time (in ms)
@@ -56,17 +58,16 @@ public class AcceptingTest extends ApplicationTest {
      * From RequestTest test with the same name.
      */
     public void testAddingDriverToRequest() {
-        RequestController rc = new RequestController();
         RequestList requestList;
         int pass;
 
         // clear all the requests and make sure we have done so.
-        rc.clearAllRiderRequests( basicRider );
-        requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        RequestController.clearAllRiderRequests( basicRider );
+        requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
         pass = 0;
         while( requestList.size() != 0 ) {
             chillabit( 1000 );
-            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
             pass++;
             if (pass > 5) { break; }
         }
@@ -76,12 +77,12 @@ public class AcceptingTest extends ApplicationTest {
         // Add a request and check that it is there
         Request request = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
                 "testAddingDriverToRequest" );
-        rc.addRequest( request );
-        requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        RequestController.addRequest( request );
+        requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
         pass = 0;
         while( requestList.size() != 1 ) {
             chillabit( 1000 );
-            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
             pass++;
             if (pass > 5) { break; }
         }
@@ -94,12 +95,12 @@ public class AcceptingTest extends ApplicationTest {
                 test.getOfferedDrivers() == null || test.getOfferedDrivers().size() == 0);
 
         // Add the driver then assert that we could fetch it from elastic search
-        rc.addDriver( test, basicDriver );
+        RequestController.addDriver( test, basicDriver );
         pass = 0;
-        requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
         while( requestList.get(0).getOfferedDrivers().size() == 0 ) {
             chillabit( 1000 );
-            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
             pass++;
             if (pass > 5) { break; }
         }
@@ -112,18 +113,17 @@ public class AcceptingTest extends ApplicationTest {
      *  From RequestTest function with the same name.
      */
     public void testGetRequestsWhereOffered() {
-        RequestController rc = new RequestController();
         RequestList requestList;
         int pass;
 
         // clear all the requests and make sure we have done so.
-        rc.clearAllRiderRequests( basicDriver );
-        rc.clearAllRiderRequests( basicRider );
-        requestList = rc.fetchAllRequestsWhereRider( basicRider );
+        RequestController.clearAllRiderRequests( basicDriver );
+        RequestController.clearAllRiderRequests( basicRider );
+        requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
         pass = 0;
         while( requestList.size() != 0 ) {
             chillabit( 1000 );
-            requestList = rc.fetchAllRequestsWhereRider( basicRider );
+            requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
             pass++;
             if (pass > 5) { break; }
         }
@@ -138,16 +138,16 @@ public class AcceptingTest extends ApplicationTest {
         Request requestThree = new Request( basicDriver, new CarrierLocation(), new CarrierLocation(),
                 "testGetRequestsWhereOffered (driver's request)");
 
-        rc.addRequest( requestOne );
-        rc.addRequest( requestTwo );
-        rc.addRequest( requestThree );
+        RequestController.addRequest( requestOne );
+        RequestController.addRequest( requestTwo );
+        RequestController.addRequest( requestThree );
 
         // Ensure that at least the basicDriver's request is present
-        requestList = rc.fetchRequestsWhereRider( basicDriver );
+        requestList = RequestController.fetchRequestsWhereRider( basicDriver );
         pass = 0;
         while( requestList.size() != 1 ) {
             chillabit( 1000 );
-            requestList = rc.fetchRequestsWhereRider( basicDriver );
+            requestList = RequestController.fetchRequestsWhereRider( basicDriver );
             pass++;
             if (pass > 5) { break; }
         }
@@ -155,14 +155,14 @@ public class AcceptingTest extends ApplicationTest {
                 requestList.size() == 1);
 
         // add the driver to the previous two requests
-        rc.addDriver( requestOne, basicDriver );
-        rc.addDriver( requestTwo, basicDriver );
+        RequestController.addDriver( requestOne, basicDriver );
+        RequestController.addDriver( requestTwo, basicDriver );
 
-        requestList = rc.getOfferedRequests( basicDriver );
+        requestList = RequestController.getOfferedRequests( basicDriver );
         pass = 0;
         while( requestList.size() != 2 ) {
             chillabit( 1000 );
-            requestList = rc.getOfferedRequests( basicDriver );
+            requestList = RequestController.getOfferedRequests( basicDriver );
             pass++;
             if (pass > 5) { break; }
         }
@@ -192,7 +192,6 @@ public class AcceptingTest extends ApplicationTest {
         setUpUser();
 
         NotificationController nc = new NotificationController();
-        RequestController rc = new RequestController();
 
         nc.clearAllNotifications( basicDriver );
 
@@ -200,17 +199,17 @@ public class AcceptingTest extends ApplicationTest {
                 new CarrierLocation(), new CarrierLocation(), "testDriverGetNotified" );
 
         // Unnecessary clutter for request elastic search, and irrelevant to this test (?)
-        rc.addRequest( newRequest );
+        RequestController.addRequest( newRequest );
 
-        NotificationList notificationList = nc.fetchNotifications( basicDriver );
+        ArrayList<Notification> notificationList = nc.fetchNotifications( basicDriver );
 
         assertTrue( "Driver should have no notifications yet", notificationList.size() == 0 );
 
         // driverOne offers to complete the request
-        rc.addDriver( newRequest, basicDriver ); // creates a notification for loggedInUser
+        RequestController.addDriver( newRequest, basicDriver ); // creates a notification for loggedInUser
 
         // driverOne is accepted as the driver
-        rc.confirmDriver( newRequest, basicDriver ); // creates a notification for driverOne
+        RequestController.confirmDriver( newRequest, basicDriver ); // creates a notification for driverOne
 
         notificationList = nc.fetchNotifications( basicDriver );
 
@@ -237,18 +236,11 @@ public class AcceptingTest extends ApplicationTest {
     public void testConfirmation() {
 
     }
+
     private void setUpUser() {
-        UserController uc = new UserController();
-        String result = uc.checkValidInputs(loggedInUser.getUsername(),
-                loggedInUser.getEmail(), loggedInUser.getPhone());
-
-        if (result == null) {
-            System.out.print( "null line" );
-        } else {
-            uc.createNewUser(loggedInUser.getUsername(),
-                    loggedInUser.getEmail(), loggedInUser.getPhone(), loggedInUser.getVehicleDescription());
-        }
-
-        assertTrue( "Failed to log in for test.", uc.logInUser( loggedInUser.getUsername() ) );
+        UserController.createNewUser( loggedInUser.getUsername(),
+                loggedInUser.getEmail(),
+                loggedInUser.getPhone(),
+                loggedInUser.getVehicleDescription() );
     }
 }
