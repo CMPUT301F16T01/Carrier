@@ -9,6 +9,7 @@ import com.searchly.jestdroid.JestDroidClient;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import comcmput301f16t01.github.carrier.Listener;
@@ -101,15 +102,16 @@ public class ElasticNotificationController {
             }
 
             // If we have a listener, it wants to know if there are unread notifications
-            // We will tell the listener in onPostExecute (incase it needs to update a view on UI thread).
+            // We will tell the listener in onPostExecute (in case it needs to update a view on UI thread).
+            Collections.sort( foundNotifications );
             if (listener != null) {
                 for (Notification notification : foundNotifications) {
                     if (!notification.isRead()) {
                         unreadExists = true;
+                        break;
                     }
                 }
             }
-
             return foundNotifications;
         }
 
@@ -118,11 +120,10 @@ public class ElasticNotificationController {
             // If the listener is not null, we can call update if we have detected an unread notification
             if (listener != null && unreadExists) {
                 listener.update();
-
-                // We will also update the notifications from here.
-                NotificationController.getNotificationListInstance().clear();
-                NotificationController.getNotificationListInstance().addAll( notifications );
             }
+            // We will update the notifications from here.
+            NotificationController.getNotificationListInstance().clear();
+            NotificationController.getNotificationListInstance().addAll( notifications );
             super.onPostExecute(notifications);
         }
     }

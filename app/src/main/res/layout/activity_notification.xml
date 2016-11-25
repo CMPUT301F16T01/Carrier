@@ -11,10 +11,19 @@
     android:orientation="vertical"
     tools:context="comcmput301f16t01.github.carrier.Notifications.NotificationActivity">
 
-    <ListView
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swiperefresh"
         android:layout_width="match_parent"
-        android:layout_height="263dp"
-        android:id="@+id/ListView_notifications" />
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="263dp"
+            android:id="@+id/ListView_notifications" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <Button
         android:text="Clear All"

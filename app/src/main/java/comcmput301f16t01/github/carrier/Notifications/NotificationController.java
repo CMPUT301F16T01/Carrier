@@ -2,6 +2,7 @@ package comcmput301f16t01.github.carrier.Notifications;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -46,10 +47,11 @@ public class NotificationController {
      *
      * @param user The user you would like to search for unread notifications with
      * @param listener A listener that will be called if an unread notification is detected
+     *                 If the listener is null,
      *
      * @see comcmput301f16t01.github.carrier.Notifications.ElasticNotificationController.FindNotificationTask
      */
-    public void asyncUnreadNotification( User user, Listener listener ) {
+    public void asyncUnreadNotification( User user, @Nullable Listener listener ) {
         ElasticNotificationController.FindNotificationTask fut = new ElasticNotificationController.FindNotificationTask();
         fut.addListener(listener);
         fut.execute( user.getUsername() );
