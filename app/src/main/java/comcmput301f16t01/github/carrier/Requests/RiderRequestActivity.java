@@ -43,6 +43,7 @@ import comcmput301f16t01.github.carrier.RiderViewOfferingDriversActivity;
 import comcmput301f16t01.github.carrier.Users.UserController;
 import comcmput301f16t01.github.carrier.Users.UsernameTextView;
 
+import static comcmput301f16t01.github.carrier.Requests.Request.Status.CANCELLED;
 import static comcmput301f16t01.github.carrier.Requests.Request.Status.COMPLETE;
 import static comcmput301f16t01.github.carrier.Requests.Request.Status.CONFIRMED;
 import static comcmput301f16t01.github.carrier.Requests.Request.Status.PAID;
@@ -341,7 +342,7 @@ public class RiderRequestActivity extends AppCompatActivity {
             completeButton.setAlpha(1f);
             completeButton.setEnabled(true);
         }
-        if (request.getStatus() == COMPLETE || request.getStatus() == PAID){
+        if (request.getStatus() == COMPLETE || request.getStatus() == PAID || request.getStatus() == CANCELLED){
             Button cancelButton = (Button) findViewById(R.id.button_delete);
             cancelButton.setEnabled(false);
             cancelButton.setAlpha(0.5f);
