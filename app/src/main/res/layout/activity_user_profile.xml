@@ -24,7 +24,7 @@
 
 
     <ScrollView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:scrollbars="vertical"
         android:id="@+id/scrollProfile"
@@ -100,6 +100,18 @@
                 android:layout_below="@+id/ImageView_phoneIcon"
                 android:layout_alignParentStart="true"
                 android:layout_toStartOf="@+id/EditButton_savePhoneEdit" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/car"
+                android:onClick="callPhone"
+                android:id="@+id/imageView_car"
+                android:scaleX="1.5"
+                android:scaleY="1.5"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/EditText_email"
+                android:layout_alignEnd="@+id/ImageView_emailIcon" />
 
             <TextView
                 android:text="Kia Rio"
@@ -193,7 +205,7 @@
                 android:background="@null"
                 android:layout_below="@+id/ImageView_usernameIcon"
                 android:layout_alignParentStart="true" />
-
+            
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -205,6 +217,16 @@
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/EditText_email"
                 android:layout_alignEnd="@+id/ImageView_emailIcon" />
+
+            <TextView
+                android:text="Kia Rio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/imageView_car"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:id="@+id/textView_vehicleDescription" />
         </RelativeLayout>
     </ScrollView>
 

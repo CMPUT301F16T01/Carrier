@@ -9,12 +9,13 @@ import java.util.Random;
 import static java.security.AccessController.getContext;
 
 /**
- * Calculates an estimated fare between two locations and provides a method for converting
- * a fare into a float string.
- *
- * See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#farecalculator">FareCalculator</a>
- * Formula from: <a href="http://www.ridesharingdriver.com/how-much-does-uber-cost-uber-fare-estimator/">How much does Uber cost? Uber fare estimator</a>
- * Formula: fare = base fare + (cost per minute * time in ride) + (cost per km * ride distance) + booking fee
+ * <p>Calculates an estimated fare between two locations and provides a method for converting
+ * a fare into a float string.</p>
+ * </br>
+ * <p>See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#farecalculator">FareCalculator</a></p>
+ * </br>
+ * <p>Formula from: <a href="http://www.ridesharingdriver.com/how-much-does-uber-cost-uber-fare-estimator/">How much does Uber cost? Uber fare estimator</a></p>
+ * <p>Formula: fare = base fare + (cost per minute * time in ride) + (cost per km * ride distance) + booking fee</p>
  */
 public class FareCalculator {
 
@@ -34,6 +35,7 @@ public class FareCalculator {
      * @param duration The duration of the ride in seconds
      * @return Returns whatever is greater: the calculated far or the minimum fare.
      */
+    // see code attribution
     public static int getEstimate(double distance, double duration) {
         // Calculate fare and the the larger of fare vs minimum fare, we multiply by 100 to get an integer
         int calculatedFare = (int) Math.round(((BOOKING_FEE + (COST_PER_MIN * duration) +

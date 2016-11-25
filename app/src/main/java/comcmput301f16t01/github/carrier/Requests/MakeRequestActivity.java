@@ -28,25 +28,25 @@ import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
 /**
- * MakeRequestActivity is where the user can request a trip. It begins by passing the user to select
+ * <p>MakeRequestActivity is where the user can request a trip. It begins by passing the user to select
  * their start and end locations on map and then returns here to get further information about the
- * fare and a description, finally allowing them to submit it to the RequestController.
+ * fare and a description, finally allowing them to submit it to the RequestController.</p>
  *
  * @see RequestController
  * @see Request
  * @see SetLocationsActivity
- *
- * See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#makerequestactivity">MakeRequestActivity</a>
- *
- * Incrementing/decrementing arrows code based on: <a href="http://stackoverflow.com/questions/7938516/continuously-increase-integer-value-as-the-button-is-pressed">Continuously increase integer value as the button is pressed</a>
- * Author: <a href="http://stackoverflow.com/users/525319/yar">Yar</a>
- * Posted on: October 29th, 2011
- * Retrieved on: November 5th, 2016
- *
- * Based on: <a href="http://stackoverflow.com/questions/14292398/how-to-pass-data-from-2nd-activity-to-1st-activity-when-pressed-back-android">How to pass data from 2nd activity to 1st activity when pressed back? - android</a>
- * Author: <a href="http://stackoverflow.com/users/1202025/%CF%81%D1%8F%CF%83%D1%95%CF%81%D1%94%D1%8F-k">ρяσѕρєя K</a>
- * Posted on: January 12th, 2013
- * Retrieved on: November 7th, 2016
+ * </br>
+ * <p>See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#makerequestactivity">MakeRequestActivity</a></p>
+ * </br>
+ * <p>Incrementing/decrementing arrows code based on: <a href="http://stackoverflow.com/questions/7938516/continuously-increase-integer-value-as-the-button-is-pressed">Continuously increase integer value as the button is pressed</a></p>
+ * <p>Author: <a href="http://stackoverflow.com/users/525319/yar">Yar</a></p>
+ * <p>Posted on: October 29th, 2011</p>
+ * <p>Retrieved on: November 5th, 2016</p>
+ * </br>
+ * <p>Based on: <a href="http://stackoverflow.com/questions/14292398/how-to-pass-data-from-2nd-activity-to-1st-activity-when-pressed-back-android">How to pass data from 2nd activity to 1st activity when pressed back? - android</a></p>
+ * <p>Author: <a href="http://stackoverflow.com/users/1202025/%CF%81%D1%8F%CF%83%D1%95%CF%81%D1%94%D1%8F-k">ρяσѕρєя K</a></p>
+ * <p>Posted on: January 12th, 2013</p>
+ * <p>Retrieved on: November 7th, 2016</p>
  */
 public class MakeRequestActivity extends AppCompatActivity {
 
@@ -72,6 +72,7 @@ public class MakeRequestActivity extends AppCompatActivity {
      * Class that runs in a thread to handle the repeated increments/decrements
      * to the estimated fare.
      */
+    // see code attribution
     class RepeatUpdater implements Runnable {
         public void run() {
             if(autoIncrement) {
@@ -113,6 +114,7 @@ public class MakeRequestActivity extends AppCompatActivity {
      * This allows us to do any "clean up actions" when we get back here. In this case, our "clean up" actions are
      * getting the start and end points, and the distance and duration from the intent.
      */
+    // see code attribution
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if(requestCode == PASS_ACTIVITY_BACK) {
@@ -128,6 +130,7 @@ public class MakeRequestActivity extends AppCompatActivity {
     /**
      * Set the buttons for incrementing and decrementing the fare estimate by the user holding it down
      */
+    // see code attribution
     private void setButtons() {
         ImageButton fareUpButton = (ImageButton) findViewById(R.id.imageButton_fareUp);
         fareUpButton.setOnLongClickListener(new View.OnLongClickListener() {

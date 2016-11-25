@@ -20,12 +20,26 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import comcmput301f16t01.github.carrier.R;
 
 /**
- * UserProfileActivity allows the user to view their profile information and edit their
- * contact information.
+ * <p>UserProfileActivity allows the user to view their profile information and edit their
+ * contact information.</p>
+ * </br>
+ * <p>Based on: <a href="http://stackoverflow.com/questions/5403308/make-a-phone-call-click-on-a-button">make a phone call click on a button</a></p>
+ * <p>Author: <a href="http://stackoverflow.com/users/628090/shaista-naaz>Shaista Naaz</a></p>
+ * <p>Posted on: March 23rd, 2011</p>
+ * <p>Retrieved on: November 21st, 2016</p>
+ * </br>
+ * <p>Based on: <a href="http://stackoverflow.com/questions/21720640/sending-email-from-android-app-when-click-on-button">Sending Email from Android app when click on button</a></p>
+ * <p>Author: <a href="http://stackoverflow.com/users/3275491/localhost">localhost</a></p>
+ * <p>Posted on: February 12th, 2014</p>
+ * <p>Retrieved on: November 21st, 2016</p>
+ * </br>
+ * <p>Based on: <a href="http://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard">Close/hide the Android Soft Keyboard</a></p>
+ * <p>Author: <a href="http://stackoverflow.com/users/822/reto-meier">Reto Meier</a></p>
+ * <p>Posted on: September 11th, 2015</p>
+ * <p>Retrieved on: November 24th, 2016</p>
  */
 public class UserProfileActivity extends AppCompatActivity {
     // Saves the values of the old fields just in case the user cancels their edit.
@@ -268,23 +282,19 @@ public class UserProfileActivity extends AppCompatActivity {
         emailView.setKeyListener(null);
     }
 
-    // TODO src: http://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
+    // see code attribution
     public void hideKeyboard(View v) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
     }
-
 
     /**
      * This is the function that calls the number presented
      *
      * @param v view clicked when we press on the call number button
      */
+    // see code attribution
     public void callPhone(View v) {
-        /* Source: http://stackoverflow.com/questions/5403308/make-a-phone-call-click-on-a-button
-        * Author: Shaista Naaz
-        * TODO fix this like all the other code re use things
-        * Retrieved on: November 21st 2016 */
         if (!editingPhone) {
             Intent callIntent = new Intent(Intent.ACTION_CALL);
             String phoneClicked = "tel:" + user.getPhone();
@@ -300,18 +310,12 @@ public class UserProfileActivity extends AppCompatActivity {
         }
     }
 
-
     /**
      * This is the function that will email the email pressed
      * @param v view clicked when we press on the email button
      */
+    // see code attribution
     public void emailUser(View v) {
-        /**
-         * Source: http://stackoverflow.com/questions/21720640/sending-email-from-android-app-when-click-on-button
-         * Author: localhost
-         * * TODO fix this like all the other code re use things
-         * Retrieved on: November 21st 2016
-         */
         if (!editingEmail) {
             Intent email = new Intent(android.content.Intent.ACTION_SEND);
             email.setType("plain/text");
