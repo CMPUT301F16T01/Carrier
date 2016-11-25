@@ -23,6 +23,37 @@ public class UserController {
      * @throws IllegalAccessError if there is no currently logged in user.
      * @see #logInUser(String)
      */
+    public void setLoggedInUser(User user) {
+        loggedInUser = user;
+    }
+
+    /**
+     * Allows the user to log in while offline. Only the last logged in user has the ability to log in.
+     * @param usernameToLogin The username attempt to log in
+     * @param cachedUser The cached user to compare to
+     * @return True on successful login, otherwise false
+     */
+    public static boolean offlineLogInUser(String usernameToLogin, User cachedUser) {
+        // Case insensitive comparison of usernames, like elastic search
+        if (usernameToLogin.toLowerCase().equals(cachedUser.getUsername().toLowerCase())) {
+            loggedInUser = cachedUser;
+            return true;
+        }
+        return false;
+    }
+
+    public void setEmail(User user, String email) {
+        user.setEmail(email);
+    }
+
+    public void setPhone(User user, String phone) {
+        user.setPhone(phone);
+    }
+
+    public void setUsername(User user, String username) {
+        user.setUsername(username);
+    }
+
     public static User getLoggedInUser() {
         if (loggedInUser == null) {
             throw new IllegalAccessError("You must first log in a user before getting an instance of one.");
