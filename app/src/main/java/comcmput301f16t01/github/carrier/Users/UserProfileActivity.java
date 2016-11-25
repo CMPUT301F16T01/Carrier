@@ -22,10 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import comcmput301f16t01.github.carrier.R;
 
-// TODO A lot can be done to reduce code duplication. Notice how there are 4 functions that close,
-// and 2 that open. I feel like a lot of code generalization can be done here to reduce bugs
-// from editing one thing and forgetting to edit the other four. This is a low priority issue ^Ben
-
 /**
  * UserProfileActivity allows the user to view their profile information and edit their
  * contact information.
@@ -52,10 +48,6 @@ public class UserProfileActivity extends AppCompatActivity {
         // Retrieve the user this intent was started with.
         Bundle bundle = getIntent().getExtras();
         user = bundle.getParcelable("user");
-
-        // Get an instance of the UserController
-        UserController uc = new UserController();
-        //User currentUser = UserController.getLoggedInUser();
 
         String username;
 

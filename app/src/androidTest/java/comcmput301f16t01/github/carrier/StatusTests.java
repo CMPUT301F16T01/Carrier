@@ -21,12 +21,11 @@ public class StatusTests extends ApplicationTest {
         User rider = new User("Mandy");
         User driver = new User("username2");
 
-        RequestController rc = new RequestController();
         Request request = new Request(rider, new CarrierLocation(), new CarrierLocation(), "");
 
-        rc.addRequest(request);
+        RequestController.addRequest(request);
         Assert.assertEquals("The status of the request should be OPEN",
-                Request.OPEN, request.getStatus());
+                Request.Status.OPEN, request.getStatus());
 
         ElasticRequestController.RemoveOffersTask rot = new ElasticRequestController.RemoveOffersTask();
         rot.setMode( rot.MODE_USERNAME );
@@ -44,13 +43,12 @@ public class StatusTests extends ApplicationTest {
         CarrierLocation car = new CarrierLocation(445.67,44.6);
         System.out.print(car.getLatLong());
 
-        RequestController rc = new RequestController();
         Request request = new Request(rider, new CarrierLocation(32.2,43.2), new CarrierLocation(117.6,32.5), "");
 
-        rc.addRequest(request);
-        rc.addDriver(request, driver);
+        RequestController.addRequest(request);
+        RequestController.addDriver(request, driver);
         Assert.assertEquals("The status of the request should be OFFERED",
-                Request.OFFERED, request.getStatus());
+                Request.Status.OFFERED, request.getStatus());
 
         ElasticRequestController.RemoveOffersTask rot = new ElasticRequestController.RemoveOffersTask();
         rot.setMode( rot.MODE_USERNAME );
@@ -65,14 +63,13 @@ public class StatusTests extends ApplicationTest {
         User rider = new User("Mandy");
         User driver = new User("username2");
 
-        RequestController rc = new RequestController();
         Request request = new Request(rider, new CarrierLocation(), new CarrierLocation(), "");
 
-        rc.addRequest(request);
-        rc.addDriver(request, driver);
-        rc.confirmDriver(request, driver);
+        RequestController.addRequest(request);
+        RequestController.addDriver(request, driver);
+        RequestController.confirmDriver(request, driver);
         Assert.assertEquals("The status of the request should be CONFIRMED",
-                Request.CONFIRMED, request.getStatus());
+                Request.Status.CONFIRMED, request.getStatus());
 
         ElasticRequestController.RemoveOffersTask rot = new ElasticRequestController.RemoveOffersTask();
         rot.setMode( rot.MODE_USERNAME );
@@ -87,15 +84,14 @@ public class StatusTests extends ApplicationTest {
         User rider = new User("Mandy");
         User driver = new User("username2");
 
-        RequestController rc = new RequestController();
         Request request = new Request(rider, new CarrierLocation(), new CarrierLocation(), "");
 
-        rc.addRequest(request);
-        rc.addDriver(request, driver);
-        rc.confirmDriver(request, driver);
-        rc.completeRequest(request);
+        RequestController.addRequest(request);
+        RequestController.addDriver(request, driver);
+        RequestController.confirmDriver(request, driver);
+        RequestController.completeRequest(request);
         Assert.assertEquals("The status of the request should be COMPLETE",
-                Request.COMPLETE, request.getStatus());
+                Request.Status.COMPLETE, request.getStatus());
 
         ElasticRequestController.RemoveOffersTask rot = new ElasticRequestController.RemoveOffersTask();
         rot.setMode( rot.MODE_USERNAME );
@@ -110,16 +106,15 @@ public class StatusTests extends ApplicationTest {
         User rider = new User("Mandy");
         User driver = new User("username2");
 
-        RequestController rc = new RequestController();
         Request request = new Request(rider, new CarrierLocation(), new CarrierLocation(), "");
 
-        rc.addRequest(request);
-        rc.addDriver(request, driver);
-        rc.confirmDriver(request, driver);
-        rc.completeRequest(request);
-        rc.payForRequest(request);
+        RequestController.addRequest(request);
+        RequestController.addDriver(request, driver);
+        RequestController.confirmDriver(request, driver);
+        RequestController.completeRequest(request);
+        RequestController.payForRequest(request);
         Assert.assertEquals("The status of the request should be PAID",
-                Request.PAID, request.getStatus());
+                Request.Status.PAID, request.getStatus());
 
         ElasticRequestController.RemoveOffersTask rot = new ElasticRequestController.RemoveOffersTask();
         rot.setMode( rot.MODE_USERNAME );
@@ -134,18 +129,17 @@ public class StatusTests extends ApplicationTest {
         User rider = new User("Mandy");
         User driver = new User("username2");
 
-        RequestController rc = new RequestController();
         Request request = new Request(rider, new CarrierLocation(), new CarrierLocation(), "");
 
-        rc.addRequest(request);
-        rc.addDriver(request, driver);
-        rc.confirmDriver(request, driver);
+        RequestController.addRequest(request);
+        RequestController.addDriver(request, driver);
+        RequestController.confirmDriver(request, driver);
         //can not be paid for or completed to be cancelled
         //rc.completeRequest(request);
         //rc.payForRequest(request);
-        rc.cancelRequest(request);
+        RequestController.cancelRequest(request);
         Assert.assertEquals("The status of the request should be CANCELLED",
-                Request.CANCELLED, request.getStatus());
+                Request.Status.CANCELLED, request.getStatus());
 
         ElasticRequestController.RemoveOffersTask rot = new ElasticRequestController.RemoveOffersTask();
         rot.setMode( rot.MODE_USERNAME );

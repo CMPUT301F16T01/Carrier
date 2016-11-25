@@ -31,7 +31,8 @@ import comcmput301f16t01.github.carrier.CarrierLocation;
 import comcmput301f16t01.github.carrier.R;
 
 /**
- * Displays a map view with the route between the start and end points of a request visible.
+ * The ViewLocationsActivity allows the user to view on a map two start and end locations and
+ * the route between them. Giving the user a better idea of what route they will be taking.
  *
  * See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#driverviewrequestactivity">DriverViewRequestActivity</a>
  *

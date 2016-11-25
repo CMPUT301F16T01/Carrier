@@ -9,9 +9,6 @@ import android.widget.EditText;
 
 import comcmput301f16t01.github.carrier.R;
 
-import comcmput301f16t01.github.carrier.MainActivity;
-import comcmput301f16t01.github.carrier.R;
-
 /**
  * User can enter their information and a username
  * They will then go to the next screen to enter vehicle info
@@ -47,9 +44,8 @@ public class NewUserActivity extends AppCompatActivity {
         String phone = phoneEditText.getText().toString();
         String email = emailEditText.getText().toString();
 
-        // Send new user to UserController
-        UserController uc = new UserController();
-        String result = uc.checkValidInputs(username, email, phone);
+        // validate the input before moving on
+        String result = UserController.checkValidInputs(username, phone, email);
 
         // Ensure that result is okay
         if (result == null) {

@@ -61,7 +61,6 @@ import comcmput301f16t01.github.carrier.Users.UserController;
  * Retrieved on: November 16th, 2016
  */
 public class MainActivity extends AppCompatActivity {
-    RequestController rc = new RequestController();
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -88,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         setTitle("Carrier");
 
         // Request controller requires a context to save in
-        rc.setContext(this);
+        RequestController.setContext(this);
 
         checkPermissionsMaps();
 
@@ -151,15 +150,17 @@ public class MainActivity extends AppCompatActivity {
 
         // Perform an update using RequestController if there is internet
         if (ConnectionChecker.isThereInternet()) {
-            rc.performAsyncUpdate();
+            RequestController.performAsyncUpdate();
         }
         // Otherwise inform the user that they are offline
         else {
             Toast.makeText(this, "You are offline", Toast.LENGTH_SHORT).show();
             // Load the cached rider and driver requests for the logged in user
-            rc.fetchAllRequestsWhereRider(UserController.getLoggedInUser());
-            rc.getOfferedRequests(UserController.getLoggedInUser());
+            RequestController.fetchAllRequestsWhereRider(UserController.getLoggedInUser());
+            RequestController.getOfferedRequests(UserController.getLoggedInUser());
         }
+        // Perform an update using RequestController
+        RequestController.performAsyncUpdate();
     }
 
     @Override
@@ -325,8 +326,7 @@ public class MainActivity extends AppCompatActivity {
                 activity.finish();
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
-                UserController uc = new UserController();
-                uc.logOutUser();
+                UserController.logOutUser();
             }
         });
         adb.setNegativeButton("Cancel", null);  // have cancel only close the dialog and nothing else
@@ -435,8 +435,8 @@ public class MainActivity extends AppCompatActivity {
 
                     // Perform the async update with the listener in place to stop the refresh
                     // symbol when the async tasks have finished.
-                    RequestController rc = new RequestController();
-                    rc.performAsyncUpdate();
+
+                    RequestController.performAsyncUpdate();
                 }
             });
 
@@ -448,10 +448,8 @@ public class MainActivity extends AppCompatActivity {
          * @param requestListView The view that will contain the request items to be presented
          */
         private void fillDriverRequests(final ListView requestListView) {
-            RequestController rc = new RequestController();
-
             // Get the reference to the list of offered requests and adapt it to the listview
-            final RequestList requestList = rc.getOffersInstance();
+            final RequestList requestList = RequestController.getOffersInstance();
             final RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
                     R.layout.requestlist_item,
                     requestList);
@@ -488,10 +486,8 @@ public class MainActivity extends AppCompatActivity {
          * @param requestListView The view that will contain the request items to be presented
          */
         private void fillRiderRequests(final ListView requestListView) {
-            RequestController rc = new RequestController();
-
             // Get the reference to the list of requested requests and adapt it to the listview
-            final RequestList requestList = rc.getRiderInstance();
+            final RequestList requestList = RequestController.getRiderInstance();
             final RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
                     R.layout.requestlist_item,
                     requestList);

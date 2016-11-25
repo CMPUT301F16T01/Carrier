@@ -28,8 +28,13 @@ import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
 /**
- * Activity for making a request. User can set the start and end locations,
- * the fare and an optional description before submitting it.
+ * MakeRequestActivity is where the user can request a trip. It begins by passing the user to select
+ * their start and end locations on map and then returns here to get further information about the
+ * fare and a description, finally allowing them to submit it to the RequestController.
+ *
+ * @see RequestController
+ * @see Request
+ * @see SetLocationsActivity
  *
  * See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#makerequestactivity">MakeRequestActivity</a>
  *
@@ -282,8 +287,6 @@ public class MakeRequestActivity extends AppCompatActivity {
      * @param view Submit button
      */
     public void submitRequest(View view) {
-        RequestController rc = new RequestController();
-
         User user = UserController.getLoggedInUser();
 
         EditText descEditText = (EditText) findViewById(R.id.editText_description);
@@ -300,7 +303,7 @@ public class MakeRequestActivity extends AppCompatActivity {
 
         request.setDistance( distance );
 
-        String result = rc.addRequest(request);
+        String result = RequestController.addRequest(request);
 
         // Check that a new request was created
         if (result == null) {

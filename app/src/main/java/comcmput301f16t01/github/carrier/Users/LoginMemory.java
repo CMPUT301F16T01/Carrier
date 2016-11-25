@@ -35,8 +35,13 @@ public class LoginMemory {
     }
 
     /**
+<<<<<<< HEAD
      * Saves the last logged in username for quick login while online
      * @param username The username to save
+=======
+     * Saves a username to internal storage.
+     * @param username The username you would like to save to internal storage.
+>>>>>>> f7afec64ae10bae0e52699dd9aa33d1fdea9ca35
      */
     public void saveUsername( String username ) {
         try {
@@ -55,6 +60,7 @@ public class LoginMemory {
     }
 
     /**
+<<<<<<< HEAD
      * Saves the last logged in user for quick login while offline
      * @param userToCache The user to save
      */
@@ -79,6 +85,10 @@ public class LoginMemory {
     /**
      * Loads the file containing the last logged in username for quick login online
      * @return The username of the last logged in user
+=======
+     * Loads a username from internal storage.
+     * @return the username it loaded, or null if it could not find a username.
+>>>>>>> f7afec64ae10bae0e52699dd9aa33d1fdea9ca35
      */
     public String loadUsername() {
         String username;

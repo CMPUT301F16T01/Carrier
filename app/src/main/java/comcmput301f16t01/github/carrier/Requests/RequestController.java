@@ -4,6 +4,7 @@ import android.content.Context;
 import android.location.Location;
 import android.util.Log;
 
+<<<<<<< HEAD
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -19,28 +20,26 @@ import android.support.annotation.Nullable;
 import java.util.ArrayList;
 
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
+=======
+>>>>>>> f7afec64ae10bae0e52699dd9aa33d1fdea9ca35
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
+import comcmput301f16t01.github.carrier.Users.ElasticUserController;
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
 /**
- * Uses a singleton pattern to query and get results of requests.
- *
- * Typical use:
- *      rc.searchType( params );            // Change the singleton's information
- *      requestList = rc.getResults();      // Get the results of that search (global to program)
- *
- * Or use one of the getX() functions to get immediate info.
+ * Uses a singleton pattern to store information about three types of requests. (Request requested,
+ * requests offered to complete, and requests searched for.
  */
 public class RequestController {
     /** Holds requests where the rider has requested a ride. */
-    private static RequestList requestsWhereRider;
+    private static final RequestList requestsWhereRider = new RequestList();
 
     /** Holds requests where the rider has offered to ride. */
-    private static RequestList requestsWhereOffered;
+    private static final RequestList requestsWhereOffered = new RequestList();
 
     /** Holds requests that have been searched for by the user. */
-    private static RequestList searchResult;
+    private static final RequestList searchResult = new RequestList();
 
     /** The file name of the locally saved made rider requests .*/
     private final String RIDER_FILENAME = "RiderRequests.sav";
@@ -55,42 +54,37 @@ public class RequestController {
      * Prevents errors when a RequestController is initialized and methods that require requestList
      * to not be null (i.e. getResult() )
      */
-    public RequestController() {
-        // Note that requestList is static, so it will not be null if you create a second instance of RequestController
-        if (requestsWhereRider == null) {
-            requestsWhereRider = new RequestList();
-        }
-        if (requestsWhereOffered == null){
-            requestsWhereOffered = new RequestList();
-        }
-        if (searchResult == null) {
-            searchResult = new RequestList();
-        }
-    }
+    private RequestController() { /* prevent instantiation */ }
 
     /**
      * In order to save to file, we require a context. This function sets the context.
      * @param contextToSet The context in which to save.
      */
-    public void setContext(Context contextToSet) {
+    public static void setContext(Context contextToSet) {
         this.saveContext = contextToSet;
     }
 
     /** Returns an instance of all requests where the user has offered to drive */
-    public RequestList getOffersInstance() {
+    public static RequestList getOffersInstance() {
         return requestsWhereOffered;
     }
 
     /** Returns an instance of all requests where the user has requested a ride */
-    public RequestList getRiderInstance() {
+    public static RequestList getRiderInstance() {
         return requestsWhereRider;
     }
 
-    /** Get the results of a searchByKeyword or a getSearchByLocation query. */
-    public RequestList getResult() { return searchResult; }
+    /**
+     *  Get the results of a searchByKeyword or a getSearchByLocation query.
+     *  @see #pruneByPrice(Double, Double)
+     *  @see #pruneByPricePerKM(Double, Double)
+     */
+    public static RequestList getResult() {
+        return searchResult;
+    }
 
     /** Adds a request to elastic search. */
-    public String addRequest(Request request) {
+    public static String addRequest(Request request) {
         if (request.getStart() == null || request.getEnd() == null) {
             return "You must first select a start and end location";
         } else if (request.getFare() == -1) {
@@ -109,15 +103,10 @@ public class RequestController {
         return null;
     }
 
-    /** Clears information in the singleton, not exactly necessary */
-    @Deprecated
-    public void clear() {
-        throw new IllegalArgumentException( "This method is deprecated." );
-    }
-
     /**
-     * Deprecated: see fetch requests where rider?
+     * Cancels a request using elastic search.
      */
+<<<<<<< HEAD
     @Deprecated
     public RequestList getRequests(User rider) {
         throw new IllegalArgumentException( "This method is deprecated." );
@@ -127,19 +116,23 @@ public class RequestController {
      * Cancels a request using elastic search
      */
     public void cancelRequest( Request request ) {
+=======
+    public static void cancelRequest( Request request ) {
+>>>>>>> f7afec64ae10bae0e52699dd9aa33d1fdea9ca35
         ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
-        request.setStatus(Request.CANCELLED);
+        request.setStatus(Request.Status.CANCELLED);
         urt.execute( request );
     }
 
     /**
-     * Is used to add a driver to a request.
+     * Is used to add a driver to a specified request (the request should be in the request controller).
      *
      * @param request The request we are modifying
      * @param driver  the driver that is being added as a driver for the request.
      *
      * @see Offer
      */
+<<<<<<< HEAD
     public void addDriver(Request request, User driver) {
         try {
             request.addOfferingDriver( driver );
@@ -155,6 +148,17 @@ public class RequestController {
             ElasticRequestController.AddOfferTask aot = new ElasticRequestController.AddOfferTask();
             aot.execute( newOffer );
         }
+=======
+    public static void addDriver(Request request, User driver) {
+        request.addOfferingDriver( driver );
+
+        // create an offer object [[ potentially throws IllegalArgumentException if called wrong ]]
+        Offer newOffer = new Offer(request, driver);
+
+        // Add offer to elastic search
+        ElasticRequestController.AddOfferTask aot = new ElasticRequestController.AddOfferTask();
+        aot.execute( newOffer );
+>>>>>>> f7afec64ae10bae0e52699dd9aa33d1fdea9ca35
         // TODO add addOffer task to queue if offline
 
         // Regardless of whether or not there is internet, create a notification and add the offer to the local requestsWhereOffered RequestList
@@ -167,15 +171,21 @@ public class RequestController {
     }
 
     /**
-     * Is used to show that the user has accepted the provided driver.
+     * Is used accept a given driver (who has offered) for the request.
      *
      * @param request The request that is being modified
      * @param driver  The driver that is being accepted
      */
-    public void confirmDriver(Request request, User driver) {
+    public static void confirmDriver(Request request, User driver) {
         // Modify and update the request, then execute the update task
+<<<<<<< HEAD
         request.setChosenDriver( driver );
         request.setStatus( Request.CONFIRMED );
+=======
+        ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
+        request.setChosenDriver( driver ); // TODO did they really offer?
+        request.setStatus( Request.Status.CONFIRMED );
+>>>>>>> f7afec64ae10bae0e52699dd9aa33d1fdea9ca35
         requestsWhereOffered.notifyListeners();
 
         // If there is internet, update the request on ElasticSearch with confirmed driver.
@@ -192,8 +202,9 @@ public class RequestController {
     }
 
     /**
-     * Completes a request
+     * Marks a request as complete in elastic search.
      */
+<<<<<<< HEAD
     public void completeRequest(Request request) {
         // If there is internet update elastic search with the completed request
         if (ConnectionChecker.isThereInternet()) {
@@ -202,6 +213,12 @@ public class RequestController {
             urt.execute( request );
         }
         // Regardles so of whether or not there is internet update the UI statuses and save the request lists.
+=======
+    public static void completeRequest(Request request) {
+        ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
+        request.setStatus( Request.Status.COMPLETE );
+        urt.execute( request );
+>>>>>>> f7afec64ae10bae0e52699dd9aa33d1fdea9ca35
         requestsWhereOffered.notifyListeners();
         requestsWhereRider.notifyListeners();
         saveDriverOfferedRequests();
@@ -211,6 +228,7 @@ public class RequestController {
     /**
      * Sets a request as paid for
      */
+<<<<<<< HEAD
     public void payForRequest(Request request) {
         // If there is internet update elastic search with the paid request
         if (ConnectionChecker.isThereInternet()) {
@@ -219,6 +237,12 @@ public class RequestController {
             urt.execute( request );
         }
         // Regardless of whether or not there is internet update the UI with the new status and save the request lists
+=======
+    public static void payForRequest(Request request) {
+        ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
+        request.setStatus( Request.Status.PAID );
+        urt.execute( request );
+>>>>>>> f7afec64ae10bae0e52699dd9aa33d1fdea9ca35
         requestsWhereOffered.notifyListeners();
         requestsWhereRider.notifyListeners();
         saveDriverOfferedRequests();
@@ -230,7 +254,7 @@ public class RequestController {
      * this query. Use getResults() to get the information.
      * @param keyword This is the keyword that the user wants to look for requests with. We use to Query.
      */
-    public void searchByKeyword(String keyword) {
+    public static void searchByKeyword(String keyword) {
         ElasticRequestController.SearchByKeywordTask sbkt = new ElasticRequestController.SearchByKeywordTask();
         sbkt.execute(keyword);
         try {
@@ -244,7 +268,7 @@ public class RequestController {
      * Search requests by a location. This sets it so the singleton contains the information for
      * this query. Use getResults() to get the information.
      */
-    public void searchByLocation(Location location) {
+    public static void searchByLocation(Location location) {
         ElasticRequestController.SearchByLocationTask sblt = new ElasticRequestController.SearchByLocationTask();
         sblt.execute(location);
         try {
@@ -261,6 +285,7 @@ public class RequestController {
      *               but the rider has no confirmed their choice in driver.
      * @return An ArrayList of requests that the driver has offered to give a ride on.
      */
+<<<<<<< HEAD
     public RequestList getOfferedRequests(User driver) {
         // If there is no internet connection, load the cached driver requests into the requestsWhereOffered
         if (!ConnectionChecker.isThereInternet()) {
@@ -268,6 +293,10 @@ public class RequestController {
             return requestsWhereOffered;
         }
         // If there is connection, fetch requests from elastic search to load into requestsWhereOffered
+=======
+    // TODO rename this method? i.e. getRequestsWhereDriverOffered, or something
+    public static RequestList getOfferedRequests(User driver) {
+>>>>>>> f7afec64ae10bae0e52699dd9aa33d1fdea9ca35
         ElasticRequestController.GetOfferedRequestsTask gort = new ElasticRequestController.GetOfferedRequestsTask();
         gort.execute( driver.getUsername() );
         try {
@@ -281,26 +310,40 @@ public class RequestController {
     }
 
     /**
+<<<<<<< HEAD
      * Used for testing. Clears out all the requested requests for a user
+=======
+     * Clears out all the requested requests for a user in elastic search
+>>>>>>> f7afec64ae10bae0e52699dd9aa33d1fdea9ca35
      */
-    public void clearAllRiderRequests(User rider) {
+    public static void clearAllRiderRequests(User rider) {
         ElasticRequestController.ClearRiderRequestsTask crrt = new ElasticRequestController.ClearRiderRequestsTask();
         crrt.execute( rider.getUsername() );
         requestsWhereRider.replaceList( new RequestList() );
     }
 
     /**
+     * Has the same function as {@link #fetchAllRequestsWhereRider}, but allows the ability to
+     * filter by status integers (provided by the Request class).
+     *
+     * @see #fetchAllRequestsWhereRider(User)
+     * @see Request
+     * @see Request.Status
      *
      * @param rider the rider you want to match requests against
      * @param statuses the statues you would like to see (filters non listed ones) (null means grab all)
      * @return A list of requests from the given criteria
      */
+<<<<<<< HEAD
     public RequestList fetchRequestsWhereRider(User rider, Integer... statuses ) {
         // If the user is offline, load from rider requests from file rather than from elastic search
         if (!ConnectionChecker.isThereInternet()) {
             loadRiderRequests();
             return requestsWhereRider;
         }
+=======
+    public static RequestList fetchRequestsWhereRider(User rider, Request.Status... statuses ) {
+>>>>>>> f7afec64ae10bae0e52699dd9aa33d1fdea9ca35
         // Open a fetch task for the user
         ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
 
@@ -308,7 +351,7 @@ public class RequestController {
         String[] vars = new String[1 + statuses.length];
         vars[0] = rider.getUsername();
         for (int i = 1; i <= statuses.length; i++ ) {
-            vars[i] = Integer.toString( statuses[i-1] );
+            vars[i] = statuses[i-1].toString();
         }
         frrt.execute( vars );
 
@@ -326,6 +369,7 @@ public class RequestController {
     }
 
     /**
+<<<<<<< HEAD
      * While online asks elastic search for all rider requests pertaining to a user. While offline just loads requests from file.
      * @param rider The rider whose requests we want
      * @return A RequestList containing requests of a user
@@ -336,6 +380,18 @@ public class RequestController {
             loadRiderRequests();
             return requestsWhereRider;
         }
+=======
+     * Use this to grab requests for the given rider, however it may be better to use the async update
+     * method as it will not lock up the UI thread. This method also updates the singleton instance
+     * of the rider's requests.
+     *
+     * @see #performAsyncUpdate()
+     *
+     * @param rider the rider you wish to find requests for.
+     * @return The requests found by this search (locks UI thread).
+     */
+    public static RequestList fetchAllRequestsWhereRider( User rider ) {
+>>>>>>> f7afec64ae10bae0e52699dd9aa33d1fdea9ca35
         ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
         frrt.execute( rider.getUsername() );
         RequestList foundRequests = new RequestList();
@@ -350,7 +406,14 @@ public class RequestController {
         return foundRequests;
     }
 
-    public void performAsyncUpdate() {
+    /**
+     * Updates the requestsWhereRider and requestsWhereOffered lists in the background (do not need
+     * to wait on the main UI thread at all).
+     *
+     * @see ElasticRequestController.FetchRiderRequestsTask
+     * @see ElasticRequestController.GetOfferedRequestsTask
+     */
+    public static void performAsyncUpdate() {
         ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
         frrt.withAsync = true;
         frrt.execute(UserController.getLoggedInUser().getUsername());
@@ -436,11 +499,11 @@ public class RequestController {
 
     /**
      * Ensures that the request controller on has results for requests within the price range of
-     * minPrice to maxPrice.
+     * minPrice to maxPrice. (This affects getResult).
      * @param minPrice The minimum value you wish to prune by.
      * @param maxPrice The maximum value you wish to prune by. (Passing null is equivalent to passing positive infinity)
      */
-    public void pruneByPrice(@NonNull Double minPrice, @Nullable Double maxPrice) {
+    public static void pruneByPrice(@NonNull Double minPrice, @Nullable Double maxPrice) {
         RequestList filteredRequests = new RequestList();
         for ( Request request : searchResult ) {
 
@@ -461,11 +524,11 @@ public class RequestController {
 
     /**
      * Ensures that the request controller only has results for requests within the price per kilometer range of
-     * minPricePerKM to maxPricePerKM.
+     * minPricePerKM to maxPricePerKM. (This affects getResult).
      * @param minPricePerKM The minimum value you wish to prune by.
      * @param maxPricePerKM The maximum value you wish to prune by. (Passing null is equivalent to passing positive infinity)
      */
-    public void pruneByPricePerKM(@NonNull Double minPricePerKM, @Nullable Double maxPricePerKM ) {
+    public static void pruneByPricePerKM( @NonNull Double minPricePerKM, @Nullable Double maxPricePerKM ) {
         RequestList filteredRequests = new RequestList();
         for ( Request request : searchResult ) {
             double pricePerKM = (request.getFare() / request.getDistance()) / 100;
@@ -484,6 +547,7 @@ public class RequestController {
         }
         searchResult.replaceList( filteredRequests );
     }
+<<<<<<< HEAD
 
     /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      * * * * * * * * * * * * * * * * *    DEPRECATED FUNCTIONS   * * * * * * * * * * * * * * * * * *
@@ -531,4 +595,6 @@ public class RequestController {
         throw new IllegalArgumentException( "This method is deprecated." );
     }
 
+=======
+>>>>>>> f7afec64ae10bae0e52699dd9aa33d1fdea9ca35
 }

@@ -17,6 +17,8 @@ import comcmput301f16t01.github.carrier.R;
 
 /**
  * LoginActivity is where the user enters a username and password so they can access their account.
+ *
+ * @see LoginMemory
  */
 public class LoginActivity extends AppCompatActivity {
 
@@ -50,6 +52,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
+<<<<<<< HEAD
         UserController uc = new UserController();
 
         /* If there is internet connection, attempt to login the user from
@@ -72,6 +75,16 @@ public class LoginActivity extends AppCompatActivity {
             /*
             If the user is offline, login the user from file.
              */
+=======
+        if ( !UserController.logInUser( username ) ) {
+            EditText usernameEditText = (EditText) findViewById( R.id.EditText_username );
+            usernameEditText.setText( username );
+            AlertDialog.Builder adb = new AlertDialog.Builder( this );
+            String message = "Your account '" + username + "' was not found!";
+            adb.setTitle( "Warning!" );
+            adb.setMessage( message );
+            adb.setPositiveButton( "OK", null );
+>>>>>>> f7afec64ae10bae0e52699dd9aa33d1fdea9ca35
         } else {
             User cachedUser = lm.loadUser();
             uc.offlineLogInUser(cachedUser.getUsername(), cachedUser);
@@ -87,7 +100,15 @@ public class LoginActivity extends AppCompatActivity {
     public void attemptLogin(View v) {
         EditText usernameEditText = (EditText) findViewById(R.id.EditText_username);
         String username = usernameEditText.getText().toString().trim();
+<<<<<<< HEAD
             UserController uc = new UserController();
+=======
+
+        if (!UserController.logInUser(username)) {
+            Toast.makeText(this, "Username not found", Toast.LENGTH_LONG).show();
+        } else {
+            // Save username to file
+>>>>>>> f7afec64ae10bae0e52699dd9aa33d1fdea9ca35
             LoginMemory lm = new LoginMemory( this );
             // If there is internet connection, attempt to log in with elastic search
         if (ConnectionChecker.isThereInternet()) {

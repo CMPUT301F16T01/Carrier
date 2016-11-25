@@ -27,6 +27,8 @@ import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 import io.searchbox.core.Update;
 
+import static comcmput301f16t01.github.carrier.Requests.ElasticRequestController.GetOfferedRequestsTask.verifySettings;
+
 /**
  * Handles elastic search tasks with requests.
  */
@@ -94,8 +96,8 @@ public class ElasticRequestController {
                     "    \"bool\": {\n" +
                     "      \"must\": { \"match\": { \"description\": \"" + search_parameters[0] + "\" }},\n" +
                     "      \"should\": [\n" +
-                    "              { \"match\": { \"status\": 1 }},\n" +
-                    "              { \"match\": { \"status\": 2 }}\n" +
+                    "              { \"match\": { \"status\": \"" + Request.Status.OPEN + "\" }},\n" +
+                    "              { \"match\": { \"status\": \"" + Request.Status.OFFERED + "\" }}\n" +
                     "      ],\n" +
                     "      \"minimum_should_match\": \"1\"\n" +
                     "    }\n" +
@@ -154,8 +156,8 @@ public class ElasticRequestController {
                 "      \"query\" : {\n" +
                 "        \"bool\": { " +
                 "          \"should\": [\n" +
-                "            { \"match\": { \"status\": 1 }},\n" +
-                "            { \"match\": { \"status\": 2 }}\n" +
+                "            { \"match\": { \"status\": \"" + Request.Status.OPEN + "\" }},\n" +
+                "            { \"match\": { \"status\": \"" + Request.Status.OFFERED + "\" }}\n" +
                 "          ],\n" +
                 "          \"minimum_should_match\": \"1\"\n" +
                 "        }\n" +
@@ -228,7 +230,7 @@ public class ElasticRequestController {
 
     /**
      * Get all of a rider's requests filtered by status
-     * @see RequestController#fetchRequestsWhereRider(User, Integer...)
+     * @see RequestController#fetchRequestsWhereRider(User, Request.Status...)
      */
     public static class FetchRiderRequestsTask extends AsyncTask<String, Void, RequestList> {
 
@@ -251,11 +253,11 @@ public class ElasticRequestController {
                 int last = 0;
                 for (int i = 1; i < params.length-1; i++) {
                     // complete n-1 filters with a comma
-                    query += "{ \"match\": { \"status\": " + params[i] + " }},";
+                    query += "{ \"match\": { \"status\": \"" + params[i] + "\" }},";
                     last = i;
                 }
                 // Do the final parameter without a comma and close it.
-                query += "{ \"match\": { \"status\": " + params[params.length-1]  + " }}\n],\n";
+                query += "{ \"match\": { \"status\": \"" + params[params.length-1]  + "\" }}\n],\n";
                 query += "\"minimum_should_match\": \"1\"\n";
             }
 
@@ -299,10 +301,14 @@ public class ElasticRequestController {
         protected void onPostExecute(RequestList requests) {
             // Perform our update on the UI thread
             if (withAsync) {
+<<<<<<< HEAD
                 RequestController rc = new RequestController();
                 rc.getRiderInstance().replaceList( requests );
                 // Save any updated rider requests
                 rc.saveRiderRequests();
+=======
+                RequestController.getRiderInstance().replaceList( requests );
+>>>>>>> f7afec64ae10bae0e52699dd9aa33d1fdea9ca35
                 notifyListener();
             }
             super.onPostExecute(requests);
@@ -528,6 +534,7 @@ public class ElasticRequestController {
 
         @Override
         protected void onPostExecute(RequestList requests) {
+<<<<<<< HEAD
             // Perform result update on UI thread if there is internet
             if (ConnectionChecker.isThereInternet()) {
                 if (withAsync) {
@@ -539,6 +546,12 @@ public class ElasticRequestController {
                 }
                 super.onPostExecute(requests);
 
+=======
+            // Perform result update on UI thread
+            if (withAsync) {
+                RequestController.getOffersInstance().replaceList( requests );
+                notifyListener();
+>>>>>>> f7afec64ae10bae0e52699dd9aa33d1fdea9ca35
             }
         }
     } // GetOfferedRequestsTask
@@ -555,7 +568,7 @@ public class ElasticRequestController {
                 String query =
                         "{\n" +
                         "    \"doc\": {\n" +
-                        "        \"status\": " + request.getStatus();
+                        "        \"status\": \"" + request.getStatus() + "\"";
 
                 // If there is a chosenDriver, update that as well.
                 // TODO if the status is changing to complete or paid or cancelled we might not need this.
@@ -673,7 +686,7 @@ public class ElasticRequestController {
     /**
      * Opens a connection to the elastic search server.
      */
-    private static void verifySettings() {
+    static void verifySettings() {
         if (client == null) {
             DroidClientConfig.Builder builder =
                     new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");

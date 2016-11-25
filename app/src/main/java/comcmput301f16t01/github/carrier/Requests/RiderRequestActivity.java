@@ -35,8 +35,8 @@ import comcmput301f16t01.github.carrier.R;
 import comcmput301f16t01.github.carrier.Users.UsernameTextView;
 
 /**
- * This will help us show the request from the perspective of a rider. Will have
- * the position in the request controller bundled to determine what request to display.
+ * RiderRequestActivity displays request information from the rider's perspective. It gives the rider
+ * the ability to see their request, cancel it, or accept a driver from it.
  *
  * See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#driverviewrequestactivity">DriverViewRequestActivity</a>
  *
@@ -58,8 +58,6 @@ public class RiderRequestActivity extends AppCompatActivity {
     IMapController mapController;
     private Request request;
 
-    RequestController rc = new RequestController();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +66,7 @@ public class RiderRequestActivity extends AppCompatActivity {
         // unpacking the bundle to get the position of request
         Bundle bundle = getIntent().getExtras();
         int position = bundle.getInt("position");
-        request = rc.getRiderInstance().get(position);
+        request = RequestController.getRiderInstance().get(position);
 
         setTitle("Request");
 
@@ -137,7 +135,7 @@ public class RiderRequestActivity extends AppCompatActivity {
     }
 
     /**
-     * Class to update the road on the map
+     * Class to update the road on the map, Async to prevent locking up UI thread.
      */
     private class UpdateRoadTask extends AsyncTask<Object, Void, Road[]> {
 
@@ -179,10 +177,12 @@ public class RiderRequestActivity extends AppCompatActivity {
         }
     }
 
+    /** Centers the map on the start of the route */
     public void centerStart(View view) {
         mapController.setCenter(startPoint);
     }
 
+    /** Centers the map on the end of the map */
     public void centerEnd(View view) {
         mapController.setCenter(endPoint);
     }
@@ -214,7 +214,10 @@ public class RiderRequestActivity extends AppCompatActivity {
         return new GeoPoint(retLoc);
     }
 
-    // TODO fill in
+    /**
+     * Marks a request as paid using the request controller (if allowed)
+     * @param view The "pay" button
+     */
     public void payForRequest(View view) {
         Toast.makeText(activity, "PAY FOR REQUEST", Toast.LENGTH_SHORT).show();
     }
@@ -224,9 +227,8 @@ public class RiderRequestActivity extends AppCompatActivity {
      */
     public void setViews() {
         // Set up the fare
-        FareCalculator fc = new FareCalculator();
         Currency localCurrency = Currency.getInstance( Locale.getDefault() );
-        String price = localCurrency.getSymbol() + fc.toString(request.getFare());
+        String price = localCurrency.getSymbol() + FareCalculator.toString(request.getFare());
         TextView fareTextView = (TextView) findViewById(R.id.textView_$fareAmount);
         fareTextView.setText(price);
 
@@ -271,22 +273,22 @@ public class RiderRequestActivity extends AppCompatActivity {
         ImageView statusImageView = (ImageView) findViewById(R.id.imageView_requestStatus);
         if (statusImageView != null) {
             switch (request.getStatus()) {
-                case (Request.OPEN):
+                case OPEN:
                     statusImageView.setImageResource(R.drawable.open);
                     break;
-                case (Request.OFFERED):
+                case OFFERED:
                     statusImageView.setImageResource(R.drawable.offered);
                     break;
-                case (Request.CONFIRMED):
+                case CONFIRMED:
                     statusImageView.setImageResource(R.drawable.confirmed);
                     break;
-                case (Request.COMPLETE):
+                case COMPLETE:
                     statusImageView.setImageResource(R.drawable.complete);
                     break;
-                case (Request.PAID):
+                case PAID:
                     statusImageView.setImageResource(R.drawable.paid);
                     break;
-                case (Request.CANCELLED):
+                case CANCELLED:
                     statusImageView.setImageResource(R.drawable.cancel);
                     break;
 
@@ -299,15 +301,15 @@ public class RiderRequestActivity extends AppCompatActivity {
      */
     public void cancelRequest(View v){
         AlertDialog.Builder adb = new AlertDialog.Builder(RiderRequestActivity.this);
-        if ((request.getStatus() != Request.CANCELLED) && (request.getStatus() != Request.COMPLETE)
-                && (request.getStatus() != Request.PAID)) {
+        if ((request.getStatus() != Request.Status.CANCELLED)
+                && (request.getStatus() != Request.Status.COMPLETE)
+                && (request.getStatus() != Request.Status.PAID)) {
             adb.setMessage("Cancel request?");
             adb.setCancelable(true);
             adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    RequestController rc = new RequestController();
-                    rc.cancelRequest(request);
+                    RequestController.cancelRequest( request );
                     finish();
                 }
             });

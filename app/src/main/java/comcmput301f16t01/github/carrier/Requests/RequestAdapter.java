@@ -17,8 +17,10 @@ import comcmput301f16t01.github.carrier.FareCalculator;
 import comcmput301f16t01.github.carrier.R;
 
 /**
- * From hreherch's implementation of LonelyTwitter
- * Takes an array of Requests and molds it into a ListView of requests
+ * RequestAdapter adapts a request to show the user information easily, such as the status as an icon
+ * the start and end addresses and the fare.
+ *
+ * @see Request
  */
 public class RequestAdapter extends ArrayAdapter<Request> {
     private ArrayList<Request> requestList;
@@ -50,7 +52,7 @@ public class RequestAdapter extends ArrayAdapter<Request> {
 
             // Set the start location in the item's view
             if (startLocTextView != null) {
-                String startLoc = null;
+                String startLoc;
                 if (request.getStart().getShortAddress() != null) {
                     startLoc = "Start: " + request.getStart().getShortAddress();
                 } else {
@@ -61,7 +63,7 @@ public class RequestAdapter extends ArrayAdapter<Request> {
 
             // Set the end location in the item's view
             if (endLocTextView != null) {
-                String endLoc = null;
+                String endLoc;
                 if (request.getEnd().getShortAddress() != null) {
                     endLoc = "End: " + request.getEnd().getShortAddress();
                 } else {
@@ -72,31 +74,30 @@ public class RequestAdapter extends ArrayAdapter<Request> {
 
             // Set the price in the item's view
             if (priceTextView != null) {
-                FareCalculator fc = new FareCalculator();
                 Currency localCurrency = Currency.getInstance( Locale.getDefault() );
-                String price = localCurrency.getSymbol() + fc.toString(request.getFare());
+                String price = localCurrency.getSymbol() + FareCalculator.toString(request.getFare());
                 priceTextView.setText(price);
             }
 
             // Set up the status icon depending on the status of the request
             if (statusImageView != null) {
                 switch( request.getStatus() ) {
-                    case( Request.OPEN ):
+                    case OPEN:
                         statusImageView.setImageResource(R.drawable.open);
                         break;
-                    case( Request.OFFERED ):
+                    case OFFERED:
                         statusImageView.setImageResource(R.drawable.offered);
                         break;
-                    case( Request.CONFIRMED ):
+                    case CONFIRMED:
                         statusImageView.setImageResource(R.drawable.confirmed);
                         break;
-                    case( Request.COMPLETE):
+                    case COMPLETE:
                         statusImageView.setImageResource(R.drawable.complete);
                         break;
-                    case( Request.PAID):
+                    case PAID:
                         statusImageView.setImageResource(R.drawable.paid);
                         break;
-                    case( Request.CANCELLED):
+                    case CANCELLED:
                         statusImageView.setImageResource(R.drawable.cancel);
                         break;
                 }
