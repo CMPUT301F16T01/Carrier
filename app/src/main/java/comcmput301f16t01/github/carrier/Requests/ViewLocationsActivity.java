@@ -2,11 +2,18 @@ package comcmput301f16t01.github.carrier.Requests;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -16,6 +23,7 @@ import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
@@ -88,9 +96,8 @@ public class ViewLocationsActivity extends AppCompatActivity {
         }
 
         IMapController mapController = map.getController();
-        // TODO figure out a way to zoom dynamically to include both points?
-        mapController.setZoom(12);
         mapController.setCenter(getCenter());
+        zoomToBounds(getBoundingBox(startPoint, endPoint));
 
         ArrayList<OverlayItem> overlayItems = new ArrayList<>();
         overlayItems.add(new OverlayItem("Starting Point", "This is the starting point", startPoint));
@@ -98,6 +105,62 @@ public class ViewLocationsActivity extends AppCompatActivity {
 
         setMarkers();
         getRoadAsync();
+        map.invalidate();
+    }
+
+    /**
+     * This function finds a BoundingBox that fits both the start and end location points.
+     *
+     * @param start GeoPoint for start location
+     * @param end GeoPoint for end location
+     * @return BoundingBox that holds both location points
+     */
+    public BoundingBox getBoundingBox(GeoPoint start, GeoPoint end) {
+        double north;
+        double south;
+        double east;
+        double west;
+        if(start.getLatitude() > end.getLatitude()) {
+            north = start.getLatitude();
+            south = end.getLatitude();
+        } else {
+            north = end.getLatitude();
+            south = start.getLatitude();
+        }
+        if(start.getLongitude() > end.getLongitude()) {
+            east = start.getLongitude();
+            west = end.getLongitude();
+        } else {
+            east = end.getLongitude();
+            west = start.getLongitude();
+        }
+        return new BoundingBox(north, east, south, west);
+    }
+
+    // TODO http://stackoverflow.com/questions/20608590/osmdroid-zooming-to-show-the-whole-pathoverlay
+
+    /**
+     * This function allows the MapView to zoom to show the whole path between
+     * the start and end points.
+     *
+     * @param box BoundingBox for start and end points
+     */
+    public void zoomToBounds(final BoundingBox box) {
+        if (map.getHeight() > 0) {
+            map.zoomToBoundingBox(box, false);
+            map.zoomToBoundingBox(box, false);
+        } else {
+            ViewTreeObserver vto = map.getViewTreeObserver();
+            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    map.zoomToBoundingBox(box, false);
+                    map.zoomToBoundingBox(box, false);
+                    ViewTreeObserver vto2 = map.getViewTreeObserver();
+                    vto2.removeOnGlobalLayoutListener(this);
+                }
+            });
+        }
     }
 
     /**
@@ -156,7 +219,9 @@ public class ViewLocationsActivity extends AppCompatActivity {
     private void setMarkers() {
         // set the map
         Marker startMarker = new Marker(map);
+        startMarker.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_start_marker, null));
         Marker endMarker = new Marker(map);
+        endMarker.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_end_marker, null));
 
         startMarker.setPosition(startPoint);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
