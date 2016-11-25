@@ -8,8 +8,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+
+import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
+
 import comcmput301f16t01.github.carrier.MainActivity;
 import comcmput301f16t01.github.carrier.R;
+
 
 /**
  * LoginActivity is where the user enters a username and password so they can access their account.
@@ -30,7 +34,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * Attempts to log in a user from memory.
+     * If there is internet connection, attempts to login a user through
+     * elastic search, otherwise attempts to login a cached user from
+     * file. This login enters the app right away if the user has
+     * logged in once before already.
      * @see LoginMemory
      */
     private void tryQuickLogin() {
@@ -44,17 +51,30 @@ public class LoginActivity extends AppCompatActivity {
         if (username.trim().equals("")) {
             return;
         }
-
-        if ( !UserController.logInUser( username ) ) {
-            EditText usernameEditText = (EditText) findViewById( R.id.EditText_username );
-            usernameEditText.setText( username );
-            AlertDialog.Builder adb = new AlertDialog.Builder( this );
-            String message = "Your account '" + username + "' was not found!";
-            adb.setTitle( "Warning!" );
-            adb.setMessage( message );
-            adb.setPositiveButton( "OK", null );
+        /* If there is internet connection, attempt to login the user from
+        elastic search
+         */
+        if (ConnectionChecker.isThereInternet()) {
+            if ( !UserController.logInUser( username ) ) {
+                EditText usernameEditText = (EditText) findViewById( R.id.EditText_username );
+                usernameEditText.setText( username );
+                AlertDialog.Builder adb = new AlertDialog.Builder( this );
+                String message = "Your account '" + username + "' was not found!";
+                adb.setTitle( "Warning!" );
+                adb.setMessage( message );
+                adb.setPositiveButton( "OK", null );
+            } else {
+                enterApp( username );
+                Toast.makeText(this, "Logged in online", Toast.LENGTH_LONG).show();
+            }
+            /*
+            If the user is offline, login the user from file.
+             */
         } else {
-            enterApp( username );
+            User cachedUser = lm.loadUser();
+            UserController.offlineLogInUser(cachedUser.getUsername(), cachedUser);
+            enterApp(cachedUser.getUsername());
+            Toast.makeText(this, "Logged in offline", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -64,15 +84,31 @@ public class LoginActivity extends AppCompatActivity {
     public void attemptLogin(View v) {
         EditText usernameEditText = (EditText) findViewById(R.id.EditText_username);
         String username = usernameEditText.getText().toString().trim();
+        // Save username to file
+        LoginMemory lm = new LoginMemory(this);
+        // If there is internet connection, attempt to log in with elastic search
+        if (ConnectionChecker.isThereInternet()) {
+            if (!UserController.logInUser(username)) {
+                Toast.makeText(this, "Username not found", Toast.LENGTH_LONG).show();
+            } else {
 
-        if (!UserController.logInUser(username)) {
-            Toast.makeText(this, "Username not found", Toast.LENGTH_LONG).show();
-        } else {
-            // Save username to file
-            LoginMemory lm = new LoginMemory( this );
-            lm.saveUsername( username );
+                // Save username to file
+                lm.saveUsername(username);
+                lm.saveUser(UserController.getLoggedInUser());
 
-            enterApp( username );
+                enterApp(username);
+            }
+        }
+    /* Otherwise attempt login by loading the cached user and
+    comparing usernames
+     */
+        else {
+            User cachedUser = lm.loadUser();
+            if (!UserController.offlineLogInUser(username, cachedUser)) {
+                Toast.makeText(this, "Username not found", Toast.LENGTH_LONG).show();
+            } else {
+                enterApp(cachedUser.getUsername());
+            }
         }
     }
 
@@ -80,8 +116,6 @@ public class LoginActivity extends AppCompatActivity {
      * Standard welcome when entering the application.
      */
     private void enterApp( String username ) {
-        String welcome = "Welcome back, " + username + "!";
-        Toast.makeText(this, welcome, Toast.LENGTH_LONG).show();
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
         this.finish();

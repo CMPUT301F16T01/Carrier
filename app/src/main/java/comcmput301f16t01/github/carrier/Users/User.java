@@ -3,6 +3,7 @@ package comcmput301f16t01.github.carrier.Users;
 import io.searchbox.annotations.JestId;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 /**
  * Abstract base class for a user of Carrier.
@@ -33,7 +34,7 @@ public class User implements Parcelable{
      * @param inputPhoneNumber          The phone number
      * @param inputvehicleDescription   The vehicle information
      */
-    public User(String inputUsername, String inputEmail, String inputPhoneNumber, String inputvehicleDescription) {
+    public User(@NonNull String inputUsername, @NonNull String inputEmail, @NonNull String inputPhoneNumber, @NonNull String inputvehicleDescription) {
         this.username = inputUsername;
         this.email = inputEmail;
         this.phoneNumber = inputPhoneNumber;
