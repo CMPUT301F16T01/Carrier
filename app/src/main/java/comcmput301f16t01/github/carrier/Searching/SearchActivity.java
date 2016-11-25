@@ -3,10 +3,6 @@ package comcmput301f16t01.github.carrier.Searching;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,30 +13,21 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import org.apache.http.annotation.NotThreadSafe;
-
-import java.util.IllegalFormatException;
-
-import com.google.gson.Gson;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import comcmput301f16t01.github.carrier.CarrierLocation;
 import comcmput301f16t01.github.carrier.R;
-import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.SetLocationsActivity;
 
 
 /**
- * The SearchActivity is the driver's hub for finding requests to accept. Here the driver can find
+ * <p>The SearchActivity is the driver's hub for finding requests to accept. Here the driver can find
  * their way to multiple requests they can offer to that match their needs (be it price range, location
- * a description, or otherwise).
- *
- * See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#searchactivity">SearchActivity</a>
- * Author: Android Dev Docs
- * Retrieved on: October 28th, 2016
+ * a description, or otherwise).</p>
+ * </br>
+ * <p>See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#searchactivity">SearchActivity</a></p>
+ * </br>
+ * <p>Based on: <a href="https://developer.android.com/guide/topics/ui/dialogs.html>Dialogs</a></p>
+ * <p>Author: Android Dev Docs</p>
+ * <p>Retrieved on: October 28th, 2016</p>
  */
 public class SearchActivity extends AppCompatActivity {
     final Activity activity = SearchActivity.this;
@@ -69,6 +56,7 @@ public class SearchActivity extends AppCompatActivity {
      * search on available requests.
      * @param view the searchByKeyword button
      */
+    // see code attribution
     public void searchByKeyword(View view) {
         AlertDialog.Builder adb = new AlertDialog.Builder(activity);
         final LayoutInflater inflater = activity.getLayoutInflater();

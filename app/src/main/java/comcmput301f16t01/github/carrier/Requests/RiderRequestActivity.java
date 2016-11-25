@@ -10,11 +10,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,12 +36,8 @@ import java.util.List;
 import java.util.Locale;
 
 import comcmput301f16t01.github.carrier.FareCalculator;
-import comcmput301f16t01.github.carrier.OfferingDriversArrayAdapter;
 import comcmput301f16t01.github.carrier.R;
-import comcmput301f16t01.github.carrier.Requests.Request;
-import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.RiderViewOfferingDriversActivity;
-import comcmput301f16t01.github.carrier.Users.UserController;
 import comcmput301f16t01.github.carrier.Users.UsernameTextView;
 
 import static comcmput301f16t01.github.carrier.Requests.Request.Status.CANCELLED;
@@ -52,19 +46,24 @@ import static comcmput301f16t01.github.carrier.Requests.Request.Status.CONFIRMED
 import static comcmput301f16t01.github.carrier.Requests.Request.Status.PAID;
 
 /**
- * RiderRequestActivity displays request information from the rider's perspective. It gives the rider
- * the ability to see their request, cancel it, or accept a driver from it.
- *
- * See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#driverviewrequestactivity">DriverViewRequestActivity</a>
- *
- * Based on: <a href="https://github.com/MKergall/osmbonuspack/wiki/Tutorial_0">Tutorial_0</a>
- * Author: MKergall
- * Retrieved on: November 10th, 2016
- *
- * Updated with: <a href="http://stackoverflow.com/questions/38539637/osmbonuspack-roadmanager-networkonmainthreadexception">OSMBonuspack RoadManager NetworkOnMainThreadException</a>
- * Author: <a href="http://stackoverflow.com/users/4670837/yubaraj-poudel">yubaraj poudel</a>
- * Posted: August 6th, 2016
- * Retrieved on: November 10th, 2016
+ * <p>RiderRequestActivity displays request information from the rider's perspective. It gives the rider
+ * the ability to see their request, cancel it, or accept a driver from it.</p>
+ * </br>
+ * <p>See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#driverviewrequestactivity">DriverViewRequestActivity</a></p>
+ * </br>
+ * <p>Based on: <a href="https://github.com/MKergall/osmbonuspack/wiki/Tutorial_0">Tutorial_0</a></p>
+ * <p>Author: MKergall</p>
+ * <p>Retrieved on: November 10th, 2016</p>
+ * </br>
+ * <p>Updated with: <a href="http://stackoverflow.com/questions/38539637/osmbonuspack-roadmanager-networkonmainthreadexception">OSMBonuspack RoadManager NetworkOnMainThreadException</a></p>
+ * <p>Author: <a href="http://stackoverflow.com/users/4670837/yubaraj-poudel">yubaraj poudel</a></p>
+ * <p>Posted: August 6th, 2016</p>
+ * <p>Retrieved on: November 10th, 2016</p>
+ * </br>
+ * <p>Based on: <a href="http://stackoverflow.com/questions/20608590/osmdroid-zooming-to-show-the-whole-pathoverlay">OSMDroid: zooming to show the whole PathOverlay</a></p>
+ * <p>Author: <a href="http://stackoverflow.com/users/6769091/thebugger">theBugger</a></p>
+ * <p>Posted on: September 30th, 2016</p>
+ * <p>Retrieved on: November 24th, 2016</p>
  */
 public class RiderRequestActivity extends AppCompatActivity {
     Activity activity = RiderRequestActivity.this;
@@ -143,14 +142,13 @@ public class RiderRequestActivity extends AppCompatActivity {
         return new BoundingBox(north, east, south, west);
     }
 
-    // TODO http://stackoverflow.com/questions/20608590/osmdroid-zooming-to-show-the-whole-pathoverlay
-
     /**
      * This function allows the MapView to zoom to show the whole path between
      * the start and end points.
      *
      * @param box BoundingBox for start and end points
      */
+    // see code attribution
     public void zoomToBounds(final BoundingBox box) {
         if (map.getHeight() > 0) {
             map.zoomToBoundingBox(box, false);
@@ -195,6 +193,7 @@ public class RiderRequestActivity extends AppCompatActivity {
     /**
      * Asynchronous task to get the route between the two points
      */
+    // see code attribution
     public void getRoadAsync() {
         roadList = null;
 
@@ -215,6 +214,7 @@ public class RiderRequestActivity extends AppCompatActivity {
     /**
      * Class to update the road on the map, Async to prevent locking up UI thread.
      */
+    // see code attribution
     private class UpdateRoadTask extends AsyncTask<Object, Void, Road[]> {
 
         @Override
@@ -225,7 +225,6 @@ public class RiderRequestActivity extends AppCompatActivity {
             return roadManager.getRoads(waypoints);
         }
 
-        // TODO try to deal with the path too large to render problem
         @Override
         protected void onPostExecute(Road[] roads) {
             double minLength = 0;
@@ -328,7 +327,6 @@ public class RiderRequestActivity extends AppCompatActivity {
         riderUsernameTextView.setText(request.getRider().getUsername());
         riderUsernameTextView.setUser(request.getRider());
 
-        // TODO why does it say "sarah" even though there is no confirmedDriver?
         // Set up the UsernameTextView of the driver
         UsernameTextView driverUsernameTextView = (UsernameTextView) findViewById(R.id.UsernameTextView_driver);
         // If no driver has been selected we need to display the list of drivers who have made an offer.

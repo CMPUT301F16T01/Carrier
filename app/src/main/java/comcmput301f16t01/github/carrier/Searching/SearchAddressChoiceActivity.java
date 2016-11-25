@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
-import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -16,20 +15,29 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 import comcmput301f16t01.github.carrier.CarrierLocation;
 import comcmput301f16t01.github.carrier.R;
-import comcmput301f16t01.github.carrier.Requests.DriverViewRequestActivity;
 import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
-import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 
+/**
+ * <p>This activity allows the user to choose between possible addresses based on their address search.</p>
+ * </br>
+ * <p>See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#searchaddresschoiceactivity">SearchAddressChoiceActivity</a></p>
+ * </br>
+ * <p>Based on: <a href="http://stackoverflow.com/questions/4451374/use-enter-key-on-softkeyboard-instead-of-clicking-button">Use “ENTER” key on softkeyboard instead of clicking button</a></p>
+ * <p>Author: <a href="http://stackoverflow.com/users/310001/nailuj">Nailuj</a></p>
+ * <p>Posted on: December 15th, 2010</p>
+ * <p>Retrieved on: November 24th, 2016</p>
+ * </br>
+ * <p>Based on: <a href="http://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard">Close/hide the Android Soft Keyboard</a></p>
+ * <p>Author: <a href="http://stackoverflow.com/users/822/reto-meier">Reto Meier</a></p>
+ * <p>Posted on: September 11th, 2015</p>
+ * <p>Retrieved on: November 24th, 2016</p>
+ */
 public class SearchAddressChoiceActivity extends AppCompatActivity {
     final Activity activity = SearchAddressChoiceActivity.this;
     ArrayAdapter<CarrierLocation> locationArrayAdapter;
@@ -38,6 +46,7 @@ public class SearchAddressChoiceActivity extends AppCompatActivity {
 
     @Override
     @SuppressWarnings("unchecked")
+    // see code attribution
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_address_choice);
@@ -46,7 +55,6 @@ public class SearchAddressChoiceActivity extends AppCompatActivity {
         locationListView = (ListView) findViewById( R.id.listView_addressChoiceList );
 
         searchEditText = (EditText) findViewById(R.id.editText_addressSearch);
-        // TODO http://stackoverflow.com/questions/4451374/use-enter-key-on-softkeyboard-instead-of-clicking-button
         searchEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
@@ -87,7 +95,7 @@ public class SearchAddressChoiceActivity extends AppCompatActivity {
         }
     }
 
-    // TODO src: http://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
+    // see code attribution
     public void hideKeyboard(View v) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);

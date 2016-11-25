@@ -39,19 +39,24 @@ import comcmput301f16t01.github.carrier.CarrierLocation;
 import comcmput301f16t01.github.carrier.R;
 
 /**
- * The ViewLocationsActivity allows the user to view on a map two start and end locations and
- * the route between them. Giving the user a better idea of what route they will be taking.
- *
- * See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#driverviewrequestactivity">DriverViewRequestActivity</a>
- *
- * Based on: <a href="https://github.com/MKergall/osmbonuspack/wiki/Tutorial_0">Tutorial_0</a>
- * Author: MKergall
- * Retrieved on: November 10th, 2016
- *
- * Updated with: <a href="http://stackoverflow.com/questions/38539637/osmbonuspack-roadmanager-networkonmainthreadexception">OSMBonuspack RoadManager NetworkOnMainThreadException</a>
- * Author: <a href="http://stackoverflow.com/users/4670837/yubaraj-poudel">yubaraj poudel</a>
- * Posted: August 6th, 2016
- * Retrieved on: November 10th, 2016
+ * <p>The ViewLocationsActivity allows the user to view on a map two start and end locations and
+ * the route between them. Giving the user a better idea of what route they will be taking.</p>
+ * </br>
+ * <p>See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#driverviewrequestactivity">DriverViewRequestActivity</a></p>
+ * </br>
+ * <p>Based on: <a href="https://github.com/MKergall/osmbonuspack/wiki/Tutorial_0">Tutorial_0</a></p>
+ * <p>Author: MKergall</p>
+ * <p>Retrieved on: November 10th, 2016</p>
+ * </br>
+ * <p>Updated with: <a href="http://stackoverflow.com/questions/38539637/osmbonuspack-roadmanager-networkonmainthreadexception">OSMBonuspack RoadManager NetworkOnMainThreadException</a></p>
+ * <p>Author: <a href="http://stackoverflow.com/users/4670837/yubaraj-poudel">yubaraj poudel</a></p>
+ * <p>Posted on: August 6th, 2016</p>
+ * <p>Retrieved on: November 10th, 2016</p>
+ * </br>
+ * <p>Based on: <a href="http://stackoverflow.com/questions/20608590/osmdroid-zooming-to-show-the-whole-pathoverlay">OSMDroid: zooming to show the whole PathOverlay</a></p>
+ * <p>Author: <a href="http://stackoverflow.com/users/6769091/thebugger">theBugger</a></p>
+ * <p>Posted on: September 30th, 2016</p>
+ * <p>Retrieved on: November 24th, 2016</p>
  */
 public class ViewLocationsActivity extends AppCompatActivity {
     final Activity activity = ViewLocationsActivity.this;
@@ -137,14 +142,13 @@ public class ViewLocationsActivity extends AppCompatActivity {
         return new BoundingBox(north, east, south, west);
     }
 
-    // TODO http://stackoverflow.com/questions/20608590/osmdroid-zooming-to-show-the-whole-pathoverlay
-
     /**
      * This function allows the MapView to zoom to show the whole path between
      * the start and end points.
      *
      * @param box BoundingBox for start and end points
      */
+    // see code attribution
     public void zoomToBounds(final BoundingBox box) {
         if (map.getHeight() > 0) {
             map.zoomToBoundingBox(box, false);
@@ -260,6 +264,7 @@ public class ViewLocationsActivity extends AppCompatActivity {
     /**
      * Asynchronous task to get the route between the two points
      */
+    // see code attribution
     public void getRoadAsync() {
         roadList = null;
 
@@ -280,6 +285,7 @@ public class ViewLocationsActivity extends AppCompatActivity {
     /**
      * Class to update the road on the map
      */
+    // see code attribution
     private class UpdateRoadTask extends AsyncTask<Object, Void, Road[]> {
 
         @Override
@@ -290,7 +296,6 @@ public class ViewLocationsActivity extends AppCompatActivity {
             return roadManager.getRoads(waypoints);
         }
 
-        // TODO try to deal with the path too large to render problem
         @Override
         protected void onPostExecute(Road[] roads) {
             double minLength = 0;
