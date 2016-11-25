@@ -2,6 +2,7 @@ package comcmput301f16t01.github.carrier;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -150,11 +151,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        // Inform the user of unread notifications.
+        // Will toast if there are unread notifications.
+        final Context context = this;
         NotificationController nc = new NotificationController();
-        if (nc.unreadNotification( UserController.getLoggedInUser() )) {
-            promptViewNotifications();
-        }
+        nc.asyncUnreadNotification(UserController.getLoggedInUser(), new Listener() {
+            @Override
+            public void update() {
+                Toast.makeText( context, "You have unread notifications!", Toast.LENGTH_LONG ).show();
+            }
+        });
     }
 
     /**
@@ -164,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void promptViewNotifications() {
         AlertDialog.Builder adb = new AlertDialog.Builder( this );
-        adb.setTitle( "New Notifications!" );
+        adb.setTitle( "Unread Notifications!" );
         adb.setMessage( "You've received notifications, do you want to see them?" );
         adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
@@ -400,6 +405,16 @@ public class MainActivity extends AppCompatActivity {
                         srl.setRefreshing( false );
                         return;
                     }
+
+                    // Will toast if there are unread notifications.
+                    NotificationController nc = new NotificationController();
+                    nc.asyncUnreadNotification(UserController.getLoggedInUser(), new Listener() {
+                        @Override
+                        public void update() {
+                            Toast.makeText( getContext(), "You have unread notifications!", Toast.LENGTH_LONG ).show();
+                        }
+                    });
+
 
                     // Checks for when the AsyncTask is finished. It waits for two calls from the
                     // onPostExecute methods of the task, meaning that the two tasks (get driver requests

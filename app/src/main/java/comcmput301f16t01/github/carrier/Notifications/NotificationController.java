@@ -1,22 +1,28 @@
 package comcmput301f16t01.github.carrier.Notifications;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
+import comcmput301f16t01.github.carrier.Listener;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Users.User;
 
 /**
- * Controller pattern. Allows a view to get information about notifications and/or allows
+ * Controller. Allows a view to get information about notifications and/or allows
  * other controllers to set up new notifications.
  *
  * @see comcmput301f16t01.github.carrier.Requests.RequestController
  */
 public class NotificationController {
-    private static ArrayList<Notification> notificationList;
+    private static ArrayList<Notification> notificationList = new ArrayList<>();
+
+    public static ArrayList<Notification> getNotificationListInstance() {
+        return notificationList;
+    }
 
     /**
      * @return A sorted NotificationList
@@ -26,7 +32,8 @@ public class NotificationController {
         ElasticNotificationController.FindNotificationTask fnt = new ElasticNotificationController.FindNotificationTask();
         fnt.execute( user.getUsername() );
         try {
-            notificationList = fnt.get();
+            notificationList.clear();
+            notificationList.addAll( fnt.get() );
             Collections.sort(notificationList);
         } catch (Exception e) {
             Log.i("NotificationController", "bad error");
@@ -35,16 +42,17 @@ public class NotificationController {
     }
 
     /**
-     * @return true, if an unread notification exists. false otherwise
+     *
+     *
+     * @param user The user you would like to search for unread notifications with
+     * @param listener A listener that will be called if an unread notification is detected
+     *
+     * @see comcmput301f16t01.github.carrier.Notifications.ElasticNotificationController.FindNotificationTask
      */
-    public boolean unreadNotification( User user ) {
-        fetchNotifications( user );
-        for ( Notification notification : notificationList ) {
-            if (!notification.isRead()) {
-                return true;
-            }
-        }
-        return false;
+    public void asyncUnreadNotification( User user, Listener listener ) {
+        ElasticNotificationController.FindNotificationTask fut = new ElasticNotificationController.FindNotificationTask();
+        fut.addListener(listener);
+        fut.execute( user.getUsername() );
     }
 
     /**
@@ -105,6 +113,7 @@ public class NotificationController {
      * Marks all request for user as read, if they are currently unread.
      *
      * @param user A user is anyone who uses our app. This is who we will clear notifications for.
+     * @see #markNotificationAsRead(Notification)
      */
     public void markAllAsRead( User user ) {
         ArrayList<Notification> notificationList = this.fetchNotifications( user );
