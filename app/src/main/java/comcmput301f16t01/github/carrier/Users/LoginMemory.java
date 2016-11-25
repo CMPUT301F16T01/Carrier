@@ -1,6 +1,8 @@
 package comcmput301f16t01.github.carrier.Users;
 
 import android.content.Context;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -17,6 +19,8 @@ import java.lang.reflect.Type;
 
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
+
+import static java.security.AccessController.getContext;
 
 /**
  * Creates a save file to tie a user's phone to their account after creating or logging in
@@ -55,7 +59,6 @@ public class LoginMemory {
     }
 
     /**
-<<<<<<< HEAD
      * Saves the last logged in user for quick login while offline
      * @param userToCache The user to save
      */
@@ -70,6 +73,7 @@ public class LoginMemory {
                 gson.toJson(userToCache, out);
             }
             out.flush();
+            Log.i("Saved User", userToCache.getUsername());
             fos.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,10 +84,6 @@ public class LoginMemory {
     /**
      * Loads the file containing the last logged in username for quick login online
      * @return The username of the last logged in user
-=======
-     * Loads a username from internal storage.
-     * @return the username it loaded, or null if it could not find a username.
->>>>>>> f7afec64ae10bae0e52699dd9aa33d1fdea9ca35
      */
     public String loadUsername() {
         String username;

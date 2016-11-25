@@ -84,32 +84,30 @@ public class LoginActivity extends AppCompatActivity {
     public void attemptLogin(View v) {
         EditText usernameEditText = (EditText) findViewById(R.id.EditText_username);
         String username = usernameEditText.getText().toString().trim();
-        if (!UserController.logInUser(username)) {
-            Toast.makeText(this, "Username not found", Toast.LENGTH_LONG).show();
-        } else {
-            // Save username to file
-            LoginMemory lm = new LoginMemory(this);
-            // If there is internet connection, attempt to log in with elastic search
-            if (ConnectionChecker.isThereInternet()) {
-                if (!UserController.logInUser(username)) {
-                    Toast.makeText(this, "Username not found", Toast.LENGTH_LONG).show();
-                } else {
-                    // Save username to file
-                    lm.saveUsername(username);
-                    lm.saveUser(UserController.getLoggedInUser());
-                    enterApp(username);
-                }
+        // Save username to file
+        LoginMemory lm = new LoginMemory(this);
+        // If there is internet connection, attempt to log in with elastic search
+        if (ConnectionChecker.isThereInternet()) {
+            if (!UserController.logInUser(username)) {
+                Toast.makeText(this, "Username not found", Toast.LENGTH_LONG).show();
+            } else {
+
+                // Save username to file
+                lm.saveUsername(username);
+                lm.saveUser(UserController.getLoggedInUser());
+
+                enterApp(username);
             }
-        /* Otherwise attempt login by loading the cached user and
-        comparing usernames
-         */
-            else {
-                User cachedUser = lm.loadUser();
-                if (!UserController.offlineLogInUser(username, cachedUser)) {
-                    Toast.makeText(this, "Username not found", Toast.LENGTH_LONG).show();
-                } else {
-                    enterApp(cachedUser.getUsername());
-                }
+        }
+    /* Otherwise attempt login by loading the cached user and
+    comparing usernames
+     */
+        else {
+            User cachedUser = lm.loadUser();
+            if (!UserController.offlineLogInUser(username, cachedUser)) {
+                Toast.makeText(this, "Username not found", Toast.LENGTH_LONG).show();
+            } else {
+                enterApp(cachedUser.getUsername());
             }
         }
     }

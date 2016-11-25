@@ -159,8 +159,6 @@ public class MainActivity extends AppCompatActivity {
             RequestController.fetchAllRequestsWhereRider(UserController.getLoggedInUser());
             RequestController.getOfferedRequests(UserController.getLoggedInUser());
         }
-        // Perform an update using RequestController
-        RequestController.performAsyncUpdate();
     }
 
     @Override
