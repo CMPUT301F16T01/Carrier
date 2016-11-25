@@ -295,22 +295,10 @@ public class RiderRequestActivity extends AppCompatActivity {
         }
 
         TextView startAddressTextView = (TextView) findViewById(R.id.textView_start);
-        String startAddress = request.getStart().getAddress();
-        if (startAddress != null) {
-            startAddressTextView.setText(startAddress);
-        } else {
-            String startPoint = request.getStart().getLatLong();
-            startAddressTextView.setText(startPoint);
-        }
+        startAddressTextView.setText(request.getStart().toString());
 
         TextView endAddressTextView = (TextView) findViewById(R.id.textView_end);
-        String endAddress = request.getEnd().getAddress();
-        if (endAddress != null) {
-            endAddressTextView.setText(request.getEnd().getAddress());
-        } else {
-            String endPoint = request.getEnd().getLatLong();
-            endAddressTextView.setText(endPoint);
-        }
+        endAddressTextView.setText(request.getEnd().toString());
 
         TextView descriptionTextView = (TextView) findViewById(R.id.textView_description);
         descriptionTextView.setText(request.getDescription());
