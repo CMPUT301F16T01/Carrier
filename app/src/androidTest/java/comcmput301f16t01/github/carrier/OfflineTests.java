@@ -19,8 +19,6 @@ import comcmput301f16t01.github.carrier.Users.UserController;
  * Tests offline functionality
  */
 public class OfflineTests extends ApplicationTest {
-    private RequestController rc = new RequestController();
-    private UserController uc = new UserController();
     private User offlineTestUser = new User("offlineTestUser", "offline@offline.com", "00000000", "offline car");
     private User offlineTestUser2 = new User("offlineTestUser2", "offline2@offline.com", "00000001", "offline car2");
     private Request offlineTestRequest = new Request(offlineTestUser, new CarrierLocation(), new CarrierLocation());
@@ -41,11 +39,11 @@ public class OfflineTests extends ApplicationTest {
 //            uc.createNewUser(offlineTestUser2.getUsername(), offlineTestUser2.getEmail(), offlineTestUser2.getPhone(), offlineTestUser2.getVehicleDescription());
 //        Thread.sleep(1000);
 //        }
-        uc.offlineLogInUser(offlineTestUser.getUsername(), offlineTestUser);
+        UserController.offlineLogInUser(offlineTestUser.getUsername(), offlineTestUser);
         Thread.sleep(1000);
-        rc.addRequest(offlineTestRequest);
+        RequestController.addRequest(offlineTestRequest);
         Thread.sleep(1000);
-        rc.addDriver(offlineTestRequest, offlineTestUser2);
+        RequestController.addDriver(offlineTestRequest, offlineTestUser2);
         Thread.sleep(1000);
 
     }
@@ -76,7 +74,7 @@ public class OfflineTests extends ApplicationTest {
         wifiManager.setWifiEnabled(false);
         Thread.sleep(500);
         // While offline fetchAllRequestsWhereRider just loads file and store a copy
-        RequestList offlineDriverOfferedList = rc.getOfferedRequests(offlineTestUser2);
+        RequestList offlineDriverOfferedList = RequestController.getOfferedRequests(offlineTestUser2);
         Thread.sleep(500);
         // Store the offline version of the request
         Request offlineVersion = offlineDriverOfferedList.get(0);
@@ -85,7 +83,7 @@ public class OfflineTests extends ApplicationTest {
         wifiManager.setWifiEnabled(true);
         Thread.sleep(500);
         // Store a copy of the online requestList
-        RequestList onlineDriverOfferedList = rc.getOfferedRequests(offlineTestUser2);
+        RequestList onlineDriverOfferedList = RequestController.getOfferedRequests(offlineTestUser2);
         Thread.sleep(500);
         Request onlineVersion = onlineDriverOfferedList.get(0);
 
@@ -106,7 +104,7 @@ public class OfflineTests extends ApplicationTest {
         wifiManager.setWifiEnabled(false);
         Thread.sleep(500);
         // While offline fetchAllRequestsWhereRider just loads file and store a copy
-        RequestList offlineRequestList = rc.fetchAllRequestsWhereRider(UserController.getLoggedInUser());
+        RequestList offlineRequestList = RequestController.fetchAllRequestsWhereRider(UserController.getLoggedInUser());
         Thread.sleep(500);
         // Store the offline version of the request
         Request offlineVersion = offlineRequestList.get(0);
@@ -115,7 +113,7 @@ public class OfflineTests extends ApplicationTest {
         wifiManager.setWifiEnabled(true);
         Thread.sleep(500);
         // Store a copy of the online requestList
-        RequestList onlineRequestList = rc.fetchAllRequestsWhereRider(UserController.getLoggedInUser());
+        RequestList onlineRequestList = RequestController.fetchAllRequestsWhereRider(UserController.getLoggedInUser());
         Thread.sleep(500);
         Request onlineVersion = onlineRequestList.get(0);
 
