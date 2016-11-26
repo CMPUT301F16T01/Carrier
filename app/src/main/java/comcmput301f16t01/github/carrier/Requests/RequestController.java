@@ -371,20 +371,27 @@ public class RequestController {
 
     /**
      * Updates the requestsWhereRider and requestsWhereOffered lists in the background (do not need
-     * to wait on the main UI thread at all).
+     * to wait on the main UI thread at all). If a rider had made requests while offline and they
+     * regain connectivity, also adds their offline requests to elastic search.
      *
      * @see ElasticRequestController.FetchRiderRequestsTask
      * @see ElasticRequestController.GetOfferedRequestsTask
      */
     public static void performAsyncUpdate() {
+        // If there is connectivity, perform updates
         if (ConnectionChecker.isThereInternet()) {
+            /* If the size of the list of requests made offline is greater than 0, add them to
+             elastic search
+              */
             if (RequestController.getOfflineRiderRequests().size() > 0) {
                 ElasticRequestController.AddRequestTask art = new ElasticRequestController.AddRequestTask();
+                // Convert to an array since async tasks don't take in array lists as arguments.
                 Request[] requestsToPass = new Request[RequestController.getOfflineRiderRequests().size()];
                 for (int i = 0; i < RequestController.getOfflineRiderRequests().size(); i++) {
                     requestsToPass[i] = RequestController.getOfflineRiderRequests().get(i);
                 }
                 art.execute(requestsToPass);
+                // Empty the offline RequestList and save an empty file
                 RequestController.getOfflineRiderRequests().clear();
                 saveOfflineRiderRequests();
             }
@@ -473,6 +480,9 @@ public class RequestController {
         }
     }
 
+    /**
+     * For offline functionality. Saves the offline rider requests from the controller to file.
+     */
     public static void saveOfflineRiderRequests() {
         try {
             FileOutputStream fos = saveContext.openFileOutput(OFFLINE_FILENAME, 0);
@@ -490,6 +500,9 @@ public class RequestController {
         }
     }
 
+    /**
+     * For offline functionality. Loads the offlineRiderRequests from file into the controller.
+     */
     public static void loadOfflineRiderRequests() {
         FileInputStream fis = null;
         try {
