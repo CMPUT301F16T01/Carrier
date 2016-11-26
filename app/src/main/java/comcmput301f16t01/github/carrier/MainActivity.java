@@ -40,6 +40,7 @@ import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestList;
 import comcmput301f16t01.github.carrier.Requests.RiderRequestActivity;
 import comcmput301f16t01.github.carrier.Searching.SearchActivity;
+import comcmput301f16t01.github.carrier.Searching.SearchResultsActivity;
 import comcmput301f16t01.github.carrier.Users.LoginActivity;
 import comcmput301f16t01.github.carrier.Users.LoginMemory;
 import comcmput301f16t01.github.carrier.Users.UserController;
@@ -71,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private static SectionsPagerAdapter mSectionsPagerAdapter;
+
+    private final Activity activity = MainActivity.this;
 
     /** The {@link ViewPager} that will host the section contents. */
     private ViewPager mViewPager;
@@ -182,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
         adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(MainActivity.this, NotificationActivity.class );
+                Intent intent = new Intent(activity, NotificationActivity.class );
                 startActivity(intent);
             }
         });
@@ -252,9 +255,9 @@ public class MainActivity extends AppCompatActivity {
      */
     // see code attribution
     private void checkPermissions() {
-        if(ContextCompat.checkSelfPermission(MainActivity.this,
+        if(ContextCompat.checkSelfPermission(activity,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this,
+            ActivityCompat.requestPermissions(activity,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
         }
@@ -276,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
 
         // User selected to view profile
         if (id == R.id.action_viewProfile) {
-            Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
+            Intent intent = new Intent(activity, UserProfileActivity.class);
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", UserController.getLoggedInUser());
             intent.putExtras(bundle);
@@ -285,13 +288,13 @@ public class MainActivity extends AppCompatActivity {
 
         // User selected "help" (goto help activity)
         if (id == R.id.action_help) {
-            Intent intent = new Intent(MainActivity.this, HelpActivity.class);
+            Intent intent = new Intent(activity, HelpActivity.class);
             startActivity(intent);
         }
 
         // User selected view notifications (goto view notification activity)
         if (id == R.id.action_viewNotifications ) {
-            Intent intent = new Intent(MainActivity.this, NotificationActivity.class );
+            Intent intent = new Intent(activity, NotificationActivity.class );
             startActivity(intent);
         }
 
@@ -314,14 +317,13 @@ public class MainActivity extends AppCompatActivity {
         adb.setTitle("Are you sure?");
         adb.setMessage("Log out and return to the login screen?");
         adb.setCancelable(true);
-        final Activity activity = MainActivity.this;
         adb.setPositiveButton("Log Out", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 LoginMemory lm = new LoginMemory( activity );
                 lm.saveUsername( "" ); // remove the username from memory
                 activity.finish();
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                Intent intent = new Intent(activity, LoginActivity.class);
                 startActivity(intent);
                 UserController.logOutUser();
             }
@@ -340,19 +342,27 @@ public class MainActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putString("point","start");
         bundle.putString("type","new");
-        Intent intent = new Intent(MainActivity.this, SetLocationsActivity.class);
+        Intent intent = new Intent(activity, SetLocationsActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
     }
 
     /**
      * This will start the Search activity for a driver when they want to search requests
-     * after they press the driver FAB
+     * after they press the driver FAB. If they have internet, they will be navigated to the
+     * regular search screen to make their search. If they do not have internet, they will be
+     * immediately directed to a cache of their previous search results.
      * @param view The calling view (Driver Floating Action Button)
      */
     public void startSearchActivity(View view) {
-        Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-        startActivity(intent);
+        if (ConnectionChecker.isThereInternet()) {
+            Intent intent = new Intent(activity, SearchActivity.class);
+            startActivity(intent);
+        } else {
+            // if there is no internet, we will skip straight to the SearchResultsActivity
+            Intent intent = new Intent(activity, SearchResultsActivity.class);
+            startActivity(intent);
+        }
     }
 
     /**

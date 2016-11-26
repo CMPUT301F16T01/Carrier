@@ -81,6 +81,10 @@ public class RequestController {
      *  @see #pruneByPricePerKM(Double, Double)
      */
     public static RequestList getResult() {
+        // If the user is offline, load from search results from file rather than from elastic search
+        if (!ConnectionChecker.isThereInternet()) {
+            loadSearchResults();
+        }
         return searchResult;
     }
 
