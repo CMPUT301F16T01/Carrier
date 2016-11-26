@@ -409,6 +409,7 @@ public class RequestController {
             Type listType = new TypeToken<RequestList>() {}.getType();
             // Append previous search results
             saveList.append((RequestList) gson.fromJson(in, listType));
+            // if we have network connection, check our list to remove unavailable requests
             if (ConnectionChecker.isThereInternet()) {
                 saveList.verifyAll();
             }
@@ -440,6 +441,7 @@ public class RequestController {
             searchResult.replaceList((RequestList) gson.fromJson(in, listType));
             // Reverse the list so we see the most recent searches first
             Collections.reverse(searchResult);
+            // if we have network connection, check our list to remove unavailable requests
             if (ConnectionChecker.isThereInternet()) {
                 searchResult.verifyAll();
             }
