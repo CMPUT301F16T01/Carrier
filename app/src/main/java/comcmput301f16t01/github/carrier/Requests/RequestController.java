@@ -16,13 +16,11 @@ import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import java.util.ArrayList;
+
 import java.util.Collections;
-import java.util.concurrent.ExecutionException;
 
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
-import comcmput301f16t01.github.carrier.Users.ElasticUserController;
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
@@ -42,7 +40,7 @@ public class RequestController {
     /** Offers that drivers make on a request while offline that are put on elastic search
      * when there is connection.
      */
-    private static final OfferList offlineDriverOfferRequests = new OfferList();
+    private static final OfferList offlineRequestsWhereOffered = new OfferList();
 
     /** Holds requests that have been searched for by the user. */
     private static final RequestList searchResult = new RequestList();
@@ -140,30 +138,29 @@ public class RequestController {
      * @see Offer
      */
     public static void addDriver(Request request, User driver) {
-        // Create an offer object [[ potentially throws IllegalArgumentException if called wrong ]]
-        Offer newOffer = new Offer(request, driver);
         try {
             request.addOfferingDriver( driver );
         } catch ( Exception e ) {
             return; // If the driver is already offered we shouldn't do this action.
         }
+        // Create an offer object [[ potentially throws IllegalArgumentException if called wrong ]]
+        Offer newOffer = new Offer(request, driver);
         // If there is internet update the request on elastic search with the new accepting driver.
         if (ConnectionChecker.isThereInternet()) {
             // Add offer to elastic search
             ElasticRequestController.AddOfferTask aot = new ElasticRequestController.AddOfferTask();
             aot.execute( newOffer );
-        } else {
-            offlineDriverOfferRequests.add(newOffer);
+        } /*else {
+            offlineRequestsWhereOffered.add(newOffer);
             saveDriverOfferQueue();
-        }
-
+        }*/
         // Regardless of whether or not there is internet, create a notification and add the offer to the local requestsWhereOffered RequestList
         // Add a notification
         NotificationController nc = new NotificationController();
         nc.addNotification(request.getRider(), request);
-
-        requestsWhereOffered.add( request ); // Notifies offerList views
+        requestsWhereOffered.add(request); // Notifies offerList views
         saveDriverOfferedRequests();
+        // TODO if offline queue notifications to be sent when online
     }
 
     /**
@@ -399,9 +396,9 @@ public class RequestController {
     }
 
 
-    public static OfferList getOfflineDriverOfferRequests() {
+    public static OfferList getOfflineRequestsWhereOffered() {
         loadDriverOfferQueue();
-        return offlineDriverOfferRequests;
+        return offlineRequestsWhereOffered;
     }
 
     /**
@@ -413,12 +410,12 @@ public class RequestController {
      */
     public static void performAsyncUpdate() {
         if(ConnectionChecker.isThereInternet()) {
-            if(RequestController.getOfflineDriverOfferRequests().size() > 0) {
+            if(RequestController.getOfflineRequestsWhereOffered().size() > 0) {
                 ElasticRequestController.AddOfferTask aot = new ElasticRequestController.AddOfferTask();
-                Offer[] offersToPass = new Offer[RequestController.getOfflineDriverOfferRequests().size()];
-                for (int i = 0; i < RequestController.getOfflineDriverOfferRequests().size(); i++) {
-                    if(verifyRequestAvailable(RequestController.getOfflineDriverOfferRequests().get(i).getRequestID())) {
-                        offersToPass[i] = RequestController.getOfflineDriverOfferRequests().get(i);
+                Offer[] offersToPass = new Offer[RequestController.getOfflineRequestsWhereOffered().size()];
+                for (int i = 0; i < RequestController.getOfflineRequestsWhereOffered().size(); i++) {
+                    if(verifyRequestAvailable(RequestController.getOfflineRequestsWhereOffered().get(i).getRequestID())) {
+                        offersToPass[i] = RequestController.getOfflineRequestsWhereOffered().get(i);
                     }
                 }
                 aot.execute(offersToPass);
@@ -451,7 +448,7 @@ public class RequestController {
             FileOutputStream fos = saveContext.openFileOutput(DRIVER_QUEUE_FILENAME, 0);
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
             // Append new request to add to queue
-            saveList.append(offlineDriverOfferRequests);
+            saveList.append(offlineRequestsWhereOffered);
 
             gson.toJson(saveList, out);
             out.flush();
@@ -471,7 +468,7 @@ public class RequestController {
             Gson gson = new Gson();
             Type listType = new TypeToken<OfferList>() {}.getType();
             // Load the search results into the controller
-            offlineDriverOfferRequests.replaceList((OfferList) gson.fromJson(in, listType));
+            offlineRequestsWhereOffered.replaceList((OfferList) gson.fromJson(in, listType));
         } catch (Exception e) {
             e.printStackTrace();
         }

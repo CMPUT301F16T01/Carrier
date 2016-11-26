@@ -430,12 +430,15 @@ public class ElasticRequestController {
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
                         if (ConnectionChecker.isThereInternet()) {
-                            RequestController.getOfflineDriverOfferRequests().remove(offer);
+                            RequestController.getOfflineRequestsWhereOffered().remove(offer);
+                        } else {
+                            Log.i("Remove Q Offer Failure", "Failed to remove offer from queue");
                         }
-                        Log.i("Add Request Failure", "Failed to add request to elastic search");
+                    } else {
+                        Log.i("Add Offer Failure", "Failed to add offer to elastic search");
                     }
                 } catch (IOException e) {
-                    Log.i("Add Request Failure", "Something went wrong adding a request to elastic search.");
+                    Log.i("Add Offer Failure", "Something went wrong adding a offer to elastic search.");
                     e.printStackTrace();
                 }
             }
