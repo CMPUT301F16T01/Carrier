@@ -78,6 +78,54 @@ public class ElasticRequestController {
     } // AddRequestTask
 
     /**
+     * Verifies that request is available, which means that the status is either "OPEN" or "OFFERED".
+     * @see RequestController#verifyRequestAvailable(Request)
+     */
+    public static class VerifyRequestAvailableTask extends AsyncTask<String, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(String... ids) {
+            verifySettings();
+
+            String query =
+                    "{ \"from\" : 0, \"size\" : 500,\n" +
+                    "  \"query\": {\n" +
+                    "    \"bool\": {\n" +
+                    "      \"must\": { \"match\": { \"_id\": \"" + ids[0] + "\" }},\n" +
+                    "      \"should\": [\n" +
+                    "              { \"match\": { \"status\": \"" + Request.Status.OPEN + "\" }},\n" +
+                    "              { \"match\": { \"status\": \"" + Request.Status.OFFERED + "\" }}\n" +
+                    "      ],\n" +
+                    "      \"minimum_should_match\": \"1\"\n" +
+                    "    }\n" +
+                    "  }\n" +
+                    "}";
+
+            Search search = new Search.Builder(query)
+                    .addIndex("cmput301f16t01")
+                    .addType("request")
+                    .build();
+
+            RequestList foundRequests = new RequestList();
+
+            try {
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()) {
+                    List<Request> notificationList = result.getSourceAsObjectList(Request.class);
+                    foundRequests.addAll( notificationList );
+                } else {
+                    return null;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.i("Error", "Something went wrong when we tried to talk to elastic search");
+            }
+
+            return foundRequests.size() != 0;
+        }
+    }
+
+    /**
      * Searches by a keyword/string based phrase.
      * @see RequestController#searchByKeyword(String)
      */

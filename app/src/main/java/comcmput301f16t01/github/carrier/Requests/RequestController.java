@@ -17,6 +17,7 @@ import java.lang.reflect.Type;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
@@ -43,6 +44,9 @@ public class RequestController {
 
     /** The file name of the locally saved offered driver requests. */
     private static final String DRIVER_FILENAME = "DriverRequests.sav";
+
+    /** The file name of the locally saved driver searched requests. */
+    private static final String SEARCH_FILENAME = "SearchResults.sav";
 
     /** The context with which to save */
     private static Context saveContext;
@@ -213,10 +217,16 @@ public class RequestController {
      * @param keyword This is the keyword that the user wants to look for requests with. We use to Query.
      */
     public static void searchByKeyword(String keyword) {
+        // If the user is offline, load from search results from file rather than from elastic search
+        if (!ConnectionChecker.isThereInternet()) {
+            loadSearchResults();
+            return;
+        }
         ElasticRequestController.SearchByKeywordTask sbkt = new ElasticRequestController.SearchByKeywordTask();
         sbkt.execute(keyword);
         try {
             searchResult.replaceList( sbkt.get() );
+            saveSearchResults();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -227,13 +237,33 @@ public class RequestController {
      * this query. Use getResults() to get the information.
      */
     public static void searchByLocation(Location location) {
+        // If the user is offline, load from search results from file rather than from elastic search
+        if (!ConnectionChecker.isThereInternet()) {
+            loadSearchResults();
+            return;
+        }
         ElasticRequestController.SearchByLocationTask sblt = new ElasticRequestController.SearchByLocationTask();
         sblt.execute(location);
         try {
             searchResult.replaceList(sblt.get());
+            saveSearchResults();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Verifies that request status is available, which means that it is either "OPEN" or "OFFERED".
+     *
+     * @param request The request whose status we want to verify to be available.
+     *
+     * @return boolean The boolean indicates whether or not the request is still available
+     */
+    public static boolean verifyRequestAvailable(Request request) throws ExecutionException, InterruptedException {
+        ElasticRequestController.VerifyRequestAvailableTask vrat = new ElasticRequestController.VerifyRequestAvailableTask();
+        vrat.execute(request.getId());
+        Log.i("Result of test", vrat.get().toString());
+        return vrat.get();
     }
 
     /**
@@ -263,11 +293,7 @@ public class RequestController {
     }
 
     /**
-<<<<<<< HEAD
-     * Used for testing. Clears out all the requested requests for a user
-=======
      * Clears out all the requested requests for a user in elastic search
->>>>>>> f7afec64ae10bae0e52699dd9aa33d1fdea9ca35
      */
     public static void clearAllRiderRequests(User rider) {
         ElasticRequestController.ClearRiderRequestsTask crrt = new ElasticRequestController.ClearRiderRequestsTask();
@@ -366,6 +392,56 @@ public class RequestController {
     }
 
     /**
+     * Caches the requests that the driver has searched for.
+     */
+    public static void saveSearchResults() {
+        RequestList saveList = new RequestList();
+        try {
+            // get previous search results
+            FileInputStream fis = saveContext.openFileInput(SEARCH_FILENAME);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+            Gson gson = new Gson();
+            Type listType = new TypeToken<RequestList>() {}.getType();
+            // Append previous search results
+            saveList.append((RequestList) gson.fromJson(in, listType));
+            if (ConnectionChecker.isThereInternet()) {
+                saveList.verifyAll();
+            }
+
+            FileOutputStream fos = saveContext.openFileOutput(SEARCH_FILENAME, 0);
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
+            saveList.append(searchResult);
+            gson.toJson(saveList, out);
+            out.flush();
+
+            fos.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * For offline functionality. Loads the cached search results.
+     */
+    public static void loadSearchResults() {
+        try {
+            FileInputStream fis = saveContext.openFileInput(SEARCH_FILENAME);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+            Gson gson = new Gson();
+            Type listType = new TypeToken<RequestList>() {}.getType();
+
+            // Load the search results into the controller
+            searchResult.replaceList((RequestList) gson.fromJson(in, listType));
+            if (ConnectionChecker.isThereInternet()) {
+                searchResult.verifyAll();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Caches the requests that the rider has made.
      */
     public static void saveRiderRequests() {
@@ -402,7 +478,6 @@ public class RequestController {
             e.printStackTrace();
         }
     }
-
 
     /**
      * Caches the requests that the driver offered to fulfill.
