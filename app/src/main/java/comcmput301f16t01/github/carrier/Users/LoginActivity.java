@@ -26,8 +26,13 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        tryQuickLogin();
+        try {
+            UserController.getLoggedInUser();
+            // Will check if someone is logged in.
+            // If someone is not logged in we can do a tryQuickLogin()
+        } catch (IllegalStateException e) {
+            tryQuickLogin();
+        }
 
         // TODO grab their username based on their ID?
         // TODO alert them if they cannot log in because they are offline
