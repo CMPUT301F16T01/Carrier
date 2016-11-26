@@ -2,6 +2,8 @@ package comcmput301f16t01.github.carrier;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -409,7 +411,7 @@ public class MainActivity extends AppCompatActivity {
 
                     // We first check if there is connection, if not, we stop refreshing and
                     // inform them that we cannot perform a live update.
-                    if(!ConnectionChecker.isConnected(getContext())) {
+                    if(!ConnectionChecker.isThereInternet()) {
                         Toast.makeText(getContext(), "You have no network connection!", Toast.LENGTH_LONG ).show();
                         srl.setRefreshing( false );
                         return;
@@ -432,7 +434,6 @@ public class MainActivity extends AppCompatActivity {
 
                     // Perform the async update with the listener in place to stop the refresh
                     // symbol when the async tasks have finished.
-
                     RequestController.performAsyncUpdate();
                 }
             });
@@ -550,5 +551,4 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
-
 }

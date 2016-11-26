@@ -16,7 +16,11 @@ import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.widget.Toast;
+
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
 
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
@@ -35,6 +39,10 @@ public class RequestController {
     /** Holds requests where the rider has offered to ride. */
     private static final RequestList requestsWhereOffered = new RequestList();
 
+    /** Requests that are made while offline that are put on elastic search when there
+     * there is connection. */
+    private static final RequestList offlineRiderRequests = new RequestList();
+
     /** Holds requests that have been searched for by the user. */
     private static final RequestList searchResult = new RequestList();
 
@@ -43,6 +51,9 @@ public class RequestController {
 
     /** The file name of the locally saved offered driver requests. */
     private static final String DRIVER_FILENAME = "DriverRequests.sav";
+
+    /** The file name of the locally saved offline rider requests. */
+    private static final String OFFLINE_FILENAME = "OfflineRequests.sav";
 
     /** The context with which to save */
     private static Context saveContext;
@@ -87,10 +98,18 @@ public class RequestController {
         } else if (request.getFare() == -1) {
             return "You must first estimate the fare";
         } else {
+            boolean internetConnection = ConnectionChecker.isThereInternet();
             // If there is internet we update ElasticSearch with the new request.
-            if (ConnectionChecker.isThereInternet()) {
+            if (internetConnection) {
                 ElasticRequestController.AddRequestTask art = new ElasticRequestController.AddRequestTask();
                 art.execute(request);
+            }
+
+            // If there is no internet, add to the offline request queue and save it
+            if (!internetConnection) {
+                offlineRiderRequests.add(request);
+                Toast.makeText(saveContext, "Offline saving" + Integer.toString(offlineRiderRequests.size()), Toast.LENGTH_SHORT).show();
+                saveOfflineRiderRequests();
             }
             // Regardless of whether or not there is internet, we add the request to the local requestWhereRider RequestList
             requestsWhereRider.add( request ); // Add new request to requestList (will notify riderList views)
@@ -263,11 +282,8 @@ public class RequestController {
     }
 
     /**
-<<<<<<< HEAD
      * Used for testing. Clears out all the requested requests for a user
-=======
      * Clears out all the requested requests for a user in elastic search
->>>>>>> f7afec64ae10bae0e52699dd9aa33d1fdea9ca35
      */
     public static void clearAllRiderRequests(User rider) {
         ElasticRequestController.ClearRiderRequestsTask crrt = new ElasticRequestController.ClearRiderRequestsTask();
@@ -294,6 +310,7 @@ public class RequestController {
             return requestsWhereRider;
         }
         // Open a fetch task for the user
+        loadOfflineRiderRequests();
         ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
 
         // Convert the parameters of this method to a string array for the execution of the task
@@ -333,6 +350,7 @@ public class RequestController {
             loadRiderRequests();
             return requestsWhereRider;
         }
+        loadOfflineRiderRequests();
         ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
         frrt.execute( rider.getUsername() );
         RequestList foundRequests = new RequestList();
@@ -347,6 +365,10 @@ public class RequestController {
         return foundRequests;
     }
 
+    public static RequestList getOfflineRiderRequests() {
+        return offlineRiderRequests;
+    }
+
     /**
      * Updates the requestsWhereRider and requestsWhereOffered lists in the background (do not need
      * to wait on the main UI thread at all).
@@ -355,14 +377,25 @@ public class RequestController {
      * @see ElasticRequestController.GetOfferedRequestsTask
      */
     public static void performAsyncUpdate() {
-        ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
-        frrt.withAsync = true;
-        frrt.execute(UserController.getLoggedInUser().getUsername());
+        if (ConnectionChecker.isThereInternet()) {
+            if (RequestController.getOfflineRiderRequests().size() > 0) {
+                ElasticRequestController.AddRequestTask art = new ElasticRequestController.AddRequestTask();
+                Request[] requestsToPass = new Request[RequestController.getOfflineRiderRequests().size()];
+                for (int i = 0; i < RequestController.getOfflineRiderRequests().size(); i++) {
+                    requestsToPass[i] = RequestController.getOfflineRiderRequests().get(i);
+                }
+                art.execute(requestsToPass);
+            }
 
-        ElasticRequestController.GetOfferedRequestsTask gort = new ElasticRequestController.GetOfferedRequestsTask();
-        gort.withAsync = true;
-        gort.execute( UserController.getLoggedInUser().getUsername());
 
+            ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
+            frrt.withAsync = true;
+            frrt.execute(UserController.getLoggedInUser().getUsername());
+
+            ElasticRequestController.GetOfferedRequestsTask gort = new ElasticRequestController.GetOfferedRequestsTask();
+            gort.withAsync = true;
+            gort.execute( UserController.getLoggedInUser().getUsername());
+        }
     }
 
     /**
@@ -433,6 +466,39 @@ public class RequestController {
             Type listType = new TypeToken<RequestList>() {}.getType();
             // Load the driver requests into the controller
             requestsWhereOffered.replaceList((RequestList) gson.fromJson(in, listType));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void saveOfflineRiderRequests() {
+        try {
+            FileOutputStream fos = saveContext.openFileOutput(OFFLINE_FILENAME, 0);
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
+
+            Gson gson = new Gson();
+            gson.toJson(offlineRiderRequests, out);
+            out.flush();
+            fos.close();
+
+            Log.i("Saving offline: ", "Size of offline save " + Integer.toString(offlineRiderRequests.size()));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void loadOfflineRiderRequests() {
+        FileInputStream fis = null;
+        try {
+            fis = saveContext.openFileInput(OFFLINE_FILENAME);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+            Gson gson = new Gson();
+            Type listType = new TypeToken<RequestList>() {}.getType();
+            // Load the offline requests into the controller
+            offlineRiderRequests.replaceList((RequestList) gson.fromJson(in, listType));
+
+            Log.i("Loading offline: ", "Size of offline load " + Integer.toString(offlineRiderRequests.size()));
         } catch (Exception e) {
             e.printStackTrace();
         }

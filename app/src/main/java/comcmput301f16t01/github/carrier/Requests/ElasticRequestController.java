@@ -55,6 +55,7 @@ public class ElasticRequestController {
      */
     public static class AddRequestTask extends AsyncTask<Request, Void, Void> {
 
+
         @Override
         protected Void doInBackground(Request... requests) {
             verifySettings();
@@ -65,6 +66,9 @@ public class ElasticRequestController {
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
                         request.setId(result.getId());
+                        if (ConnectionChecker.isThereInternet()) {
+                            RequestController.getOfflineRiderRequests().remove(request);
+                        }
                     } else {
                         Log.i("Add Request Failure", "Failed to add request to elastic search");
                     }
