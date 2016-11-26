@@ -46,8 +46,12 @@ public class RequestController {
     /** The file name of the locally saved offered driver requests. */
     private static final String DRIVER_FILENAME = "DriverRequests.sav";
 
-    /** The file name of the locally saved driver searched requests. */
+    /** The file name of the locally saved driver search results (50 most recent). */
     private static final String SEARCH_FILENAME = "SearchResults.sav";
+
+    /** The file name of the locally saved queue of driver offers. */
+    private static final String DRIVER_QUEUE_FILENAME = "DriverOfferQueue.sav";
+    public static final int MAX_SEARCH_RESULTS = 50;
 
     /** The context with which to save */
     private static Context saveContext;
@@ -140,8 +144,9 @@ public class RequestController {
             // Add offer to elastic search
             ElasticRequestController.AddOfferTask aot = new ElasticRequestController.AddOfferTask();
             aot.execute( newOffer );
+        } else {
+            saveDriverOfferQueue(request);
         }
-        // TODO add addOffer task to queue if offline
 
         // Regardless of whether or not there is internet, create a notification and add the offer to the local requestsWhereOffered RequestList
         // Add a notification
@@ -393,7 +398,34 @@ public class RequestController {
         ElasticRequestController.GetOfferedRequestsTask gort = new ElasticRequestController.GetOfferedRequestsTask();
         gort.withAsync = true;
         gort.execute( UserController.getLoggedInUser().getUsername());
+    }
 
+    /**
+     * Caches the queue of driver offers to make once we regain connection.
+     * @param request Request to append to end of queue
+     */
+    private static void saveDriverOfferQueue(Request request) {
+        RequestList saveList = new RequestList();
+        try {
+            // get previous requests in queue
+            FileInputStream fis = saveContext.openFileInput(DRIVER_QUEUE_FILENAME);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+            Gson gson = new Gson();
+            Type listType = new TypeToken<RequestList>() {}.getType();
+            // Append previous requests in queue
+            saveList.append((RequestList) gson.fromJson(in, listType));
+
+            FileOutputStream fos = saveContext.openFileOutput(DRIVER_QUEUE_FILENAME, 0);
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
+            // Append new request to add to queue
+            saveList.append(request);
+
+            gson.toJson(saveList, out);
+            out.flush();
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -408,7 +440,7 @@ public class RequestController {
             Gson gson = new Gson();
             Type listType = new TypeToken<RequestList>() {}.getType();
             // Append previous search results
-            saveList.append((RequestList) gson.fromJson(in, listType));
+            saveList.append((RequestList) gson.fromJson(in, listType), MAX_SEARCH_RESULTS);
             // if we have network connection, check our list to remove unavailable requests
             if (ConnectionChecker.isThereInternet()) {
                 saveList.verifyAll();
@@ -416,7 +448,7 @@ public class RequestController {
 
             FileOutputStream fos = saveContext.openFileOutput(SEARCH_FILENAME, 0);
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
-            saveList.append(searchResult);
+            saveList.append(searchResult, MAX_SEARCH_RESULTS);
             gson.toJson(saveList, out);
             out.flush();
 

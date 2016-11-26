@@ -1,5 +1,6 @@
 package comcmput301f16t01.github.carrier.Requests;
 
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -15,7 +16,6 @@ import comcmput301f16t01.github.carrier.Listener;
  * @see Request
  */
 public class RequestList extends ArrayList<Request> {
-    private static final int MAX_SIZE = 50;
     private ArrayList<Listener> listeners = new ArrayList<>();
 
     @Override
@@ -46,10 +46,15 @@ public class RequestList extends ArrayList<Request> {
         notifyListeners();
     }
 
-    /** Appends new requests to the end of the list and notifies listeners of the update. */
-    public void append(RequestList appendList) {
-        for(Request request : appendList) {
-            if(!this.contains(request.getId()) && this.size() < MAX_SIZE) {
+    /**
+     * Appends new requests to the end of the list and notifies listeners of the update. This method
+     * includes a limit on the size of the ArrayList.
+     * @param requests The RequestList to append to this RequestList
+     * @param maxSize The maximum length of the ArrayList
+     */
+    public void append(RequestList requests, int maxSize) {
+        for(Request request : requests) {
+            if(!this.contains(request.getId()) && this.size() <  maxSize) {
                 // still room on list and the request is not already in the list
                 this.add(request);
             } else if(!this.contains(request.getId())) {
@@ -57,6 +62,31 @@ public class RequestList extends ArrayList<Request> {
                 this.remove(0);
                 this.add(request);
             }
+        }
+        notifyListeners();
+    }
+
+    /** Appends new requests to the end of the list and notifies listeners of the update.
+     * @param requests The RequestList to append to this RequestList
+     */
+    public void append(RequestList requests) {
+        for(Request request : requests) {
+            if(!this.contains(request.getId())) {
+                // the request is not already in the list
+                this.add(request);
+            }
+        }
+        notifyListeners();
+    }
+
+    /**
+     * Appends new requests to the end of the list and notifies listeners of the update.
+     * @param request Request to append to this RequestList
+     */
+    public void append(Request request) {
+        if(!this.contains(request.getId())) {
+            // the request is not already in the list
+            this.add(request);
         }
         notifyListeners();
     }
