@@ -66,9 +66,6 @@ public class ElasticRequestController {
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
                         request.setId(result.getId());
-                        if (ConnectionChecker.isThereInternet()) {
-                            RequestController.getOfflineRiderRequests().remove(request);
-                        }
                     } else {
                         Log.i("Add Request Failure", "Failed to add request to elastic search");
                     }

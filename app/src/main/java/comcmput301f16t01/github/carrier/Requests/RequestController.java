@@ -385,6 +385,8 @@ public class RequestController {
                     requestsToPass[i] = RequestController.getOfflineRiderRequests().get(i);
                 }
                 art.execute(requestsToPass);
+                RequestController.getOfflineRiderRequests().clear();
+                saveOfflineRiderRequests();
             }
 
 
