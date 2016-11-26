@@ -73,17 +73,6 @@ public class RequestList extends ArrayList<Request> {
         Log.i("After", String.valueOf(this.size()));
     }
 
-    /** Removes request based on ID */
-    private void remove(String id) {
-        for(Request request : this) {
-            if(request.getId().equals(id)) {
-                this.remove(request);
-                Log.i("Removing", request.toString());
-                break;
-            }
-        }
-    }
-
     /** Checks if the request is already contained in the requestList. */
     private boolean contains(String id) {
         for(Request request : this) {
