@@ -79,7 +79,7 @@ public class ElasticRequestController {
 
     /**
      * Verifies that request is available, which means that the status is either "OPEN" or "OFFERED".
-     * @see RequestController#verifyRequestAvailable(Request)
+     * @see RequestController#verifyRequestAvailable(String)
      */
     public static class VerifyRequestAvailableTask extends AsyncTask<String, Void, Boolean> {
 
@@ -429,8 +429,9 @@ public class ElasticRequestController {
                 try {
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
-                        //offer.setId(result.getId());
-                    } else {
+                        if (ConnectionChecker.isThereInternet()) {
+                            RequestController.getOfflineDriverOfferRequests().remove(offer);
+                        }
                         Log.i("Add Request Failure", "Failed to add request to elastic search");
                     }
                 } catch (IOException e) {

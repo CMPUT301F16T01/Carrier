@@ -79,24 +79,12 @@ public class RequestList extends ArrayList<Request> {
         notifyListeners();
     }
 
-    /**
-     * Appends new requests to the end of the list and notifies listeners of the update.
-     * @param request Request to append to this RequestList
-     */
-    public void append(Request request) {
-        if(!this.contains(request.getId())) {
-            // the request is not already in the list
-            this.add(request);
-        }
-        notifyListeners();
-    }
-
     /** Verify that the status of the requests is still either "OPEN" or "OFFERED". */
     public void verifyAll() throws ExecutionException, InterruptedException {
         Iterator<Request> iterator = this.iterator();
         Log.i("Before", String.valueOf(this.size()));
         while(iterator.hasNext()) {
-            if(!RequestController.verifyRequestAvailable(iterator.next())) {
+            if(!RequestController.verifyRequestAvailable(iterator.next().getId())) {
                 iterator.remove();
             }
         }

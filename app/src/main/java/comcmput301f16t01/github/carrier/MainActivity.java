@@ -30,6 +30,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.concurrent.ExecutionException;
+
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationActivity;
@@ -442,7 +444,6 @@ public class MainActivity extends AppCompatActivity {
 
                     // Perform the async update with the listener in place to stop the refresh
                     // symbol when the async tasks have finished.
-
                     RequestController.performAsyncUpdate();
                 }
             });
