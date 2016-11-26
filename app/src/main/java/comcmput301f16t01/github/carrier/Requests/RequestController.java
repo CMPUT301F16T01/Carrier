@@ -17,6 +17,7 @@ import java.lang.reflect.Type;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
@@ -437,6 +438,8 @@ public class RequestController {
 
             // Load the search results into the controller
             searchResult.replaceList((RequestList) gson.fromJson(in, listType));
+            // Reverse the list so we see the most recent searches first
+            Collections.reverse(searchResult);
             if (ConnectionChecker.isThereInternet()) {
                 searchResult.verifyAll();
             }
