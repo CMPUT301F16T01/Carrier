@@ -237,7 +237,6 @@ public class ElasticRequestController {
 
             try {
                 SearchResult result = client.execute(search);
-                Log.i("Result", result.toString());
                 if (result.isSucceeded()) {
                     List<Request> notificationList = result.getSourceAsObjectList(Request.class);
                     foundRequests.addAll( notificationList );
@@ -429,10 +428,8 @@ public class ElasticRequestController {
                 try {
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
-                        if (ConnectionChecker.isThereInternet()) {
-                            RequestController.getOfflineRequestsWhereOffered().remove(offer);
-                        } else {
-                            Log.i("Remove Q Offer Failure", "Failed to remove offer from queue");
+                        if (RequestController.getOfflineDriverOfferCommands().contains(offer.getRequestID())) {
+                            RequestController.getOfflineDriverOfferCommands().remove(offer.getRequestID());
                         }
                     } else {
                         Log.i("Add Offer Failure", "Failed to add offer to elastic search");
@@ -517,7 +514,6 @@ public class ElasticRequestController {
 
             RequestList foundRequests;
 
-
             String query =
                     "{ \"from\": 0, \"size\": 500,\n" +
                     "    \"query\": { \"match\": { \"offeringUser\": \"" + params[0] + "\" } }\n" +
@@ -582,7 +578,23 @@ public class ElasticRequestController {
             // Perform result update on UI thread if there is internet
             if (ConnectionChecker.isThereInternet()) {
                 if (withAsync) {
+                    // replace list of offered requests with those we just got from elasticsearch
                     RequestController.getOffersInstance().replaceList( requests );
+                    // load in any offline requests
+                    RequestController.loadDriverOfferCommands();
+                    Log.i("Offline offers", String.valueOf(RequestController.getOfflineDriverOfferCommands().size()));
+                    if(RequestController.getOfflineDriverOfferCommands().size() > 0) {
+                        RequestList offlineRequests = new RequestList();
+                        for(OfferCommand offerCommand : RequestController.getOfflineDriverOfferCommands()) {
+                            Log.i("Offline offers", offerCommand.getDriver().getUsername());
+                            offerCommand.getRequest().removeOfferingDriver(offerCommand.getDriver());
+                            RequestController.addDriver(offerCommand.getRequest(), offerCommand.getDriver());
+                            offlineRequests.add(offerCommand.getRequest());
+                        }
+                        RequestController.getOffersInstance().append(offlineRequests);
+                        RequestController.getOfflineDriverOfferCommands().clear();
+                        RequestController.saveDriverOfferCommands();
+                    }
                     // Save any updated driver requests
                     RequestController.saveDriverOfferedRequests();
                     notifyListener();

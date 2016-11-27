@@ -82,13 +82,11 @@ public class RequestList extends ArrayList<Request> {
     /** Verify that the status of the requests is still either "OPEN" or "OFFERED". */
     public void verifyAll() throws ExecutionException, InterruptedException {
         Iterator<Request> iterator = this.iterator();
-        Log.i("Before", String.valueOf(this.size()));
         while(iterator.hasNext()) {
             if(!RequestController.verifyRequestAvailable(iterator.next().getId())) {
                 iterator.remove();
             }
         }
-        Log.i("After", String.valueOf(this.size()));
     }
 
     /** Checks if the request is already contained in the requestList. */

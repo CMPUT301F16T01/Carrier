@@ -433,8 +433,8 @@ public class DriverViewRequestActivity extends AppCompatActivity {
 
         // We use the controller to attempt to add the driver
         try {
-            RequestController.addDriver( request, loggedInUser );
             Toast.makeText(this, "Made an offer.", Toast.LENGTH_SHORT).show();
+            RequestController.addDriver( request, loggedInUser );
             Button button = (Button) findViewById( R.id.button_makeOffer);
             button.setEnabled(false); // Make the button un-clickable after offering.
             button.setAlpha((float) 0.5); // The button becomes 50% transparent

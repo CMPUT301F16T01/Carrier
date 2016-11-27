@@ -17,6 +17,7 @@ import java.lang.reflect.Type;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
@@ -37,10 +38,10 @@ public class RequestController {
     /** Holds requests where the rider has offered to ride. */
     private static final RequestList requestsWhereOffered = new RequestList();
 
-    /** Offers that drivers make on a request while offline that are put on elastic search
+    /** Offer commands that drivers make on a request while offline that are put on elastic search
      * when there is connection.
      */
-    private static final OfferList offlineRequestsWhereOffered = new OfferList();
+    private static final OfferCommandList offlineDriverOfferCommands = new OfferCommandList();
 
     /** Holds requests that have been searched for by the user. */
     private static final RequestList searchResult = new RequestList();
@@ -138,29 +139,34 @@ public class RequestController {
      * @see Offer
      */
     public static void addDriver(Request request, User driver) {
-        try {
-            request.addOfferingDriver( driver );
-        } catch ( Exception e ) {
-            return; // If the driver is already offered we shouldn't do this action.
-        }
-        // Create an offer object [[ potentially throws IllegalArgumentException if called wrong ]]
-        Offer newOffer = new Offer(request, driver);
         // If there is internet update the request on elastic search with the new accepting driver.
         if (ConnectionChecker.isThereInternet()) {
+            try {
+                request.addOfferingDriver( driver );
+                Log.i("Offer made", "added offering driver to request");
+            } catch ( Exception e ) {
+                Log.i("Error", e.toString());
+                return; // If the driver is already offered we shouldn't do this action.
+            }
+            // Create an offer object [[ potentially throws IllegalArgumentException if called wrong ]]
+            Offer newOffer = new Offer(request, driver);
+            Log.i("Offer created", "new offer set");
+
             // Add offer to elastic search
             ElasticRequestController.AddOfferTask aot = new ElasticRequestController.AddOfferTask();
             aot.execute( newOffer );
-        } /*else {
-            offlineRequestsWhereOffered.add(newOffer);
-            saveDriverOfferQueue();
-        }*/
+        } else {
+            request.addOfferingDriver( driver );
+            OfferCommand offerCommand = new OfferCommand(request, driver);
+            offlineDriverOfferCommands.add(offerCommand);
+            saveDriverOfferCommands();
+        }
         // Regardless of whether or not there is internet, create a notification and add the offer to the local requestsWhereOffered RequestList
         // Add a notification
         NotificationController nc = new NotificationController();
         nc.addNotification(request.getRider(), request);
         requestsWhereOffered.add(request); // Notifies offerList views
         saveDriverOfferedRequests();
-        // TODO if offline queue notifications to be sent when online
     }
 
     /**
@@ -281,7 +287,6 @@ public class RequestController {
         Boolean result = false;
         try {
             result = vrat.get();
-            Log.i("Result of test", result.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -396,32 +401,19 @@ public class RequestController {
     }
 
 
-    public static OfferList getOfflineRequestsWhereOffered() {
-        loadDriverOfferQueue();
-        return offlineRequestsWhereOffered;
+    public static OfferCommandList getOfflineDriverOfferCommands() {
+        return offlineDriverOfferCommands;
     }
 
     /**
      * Updates the requestsWhereRider and requestsWhereOffered lists in the background (do not need
      * to wait on the main UI thread at all).
      *
+     * @see ElasticRequestController.AddOfferTask
      * @see ElasticRequestController.FetchRiderRequestsTask
      * @see ElasticRequestController.GetOfferedRequestsTask
      */
     public static void performAsyncUpdate() {
-        if(ConnectionChecker.isThereInternet()) {
-            if(RequestController.getOfflineRequestsWhereOffered().size() > 0) {
-                ElasticRequestController.AddOfferTask aot = new ElasticRequestController.AddOfferTask();
-                Offer[] offersToPass = new Offer[RequestController.getOfflineRequestsWhereOffered().size()];
-                for (int i = 0; i < RequestController.getOfflineRequestsWhereOffered().size(); i++) {
-                    if(verifyRequestAvailable(RequestController.getOfflineRequestsWhereOffered().get(i).getRequestID())) {
-                        offersToPass[i] = RequestController.getOfflineRequestsWhereOffered().get(i);
-                    }
-                }
-                aot.execute(offersToPass);
-            }
-        }
-
         ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
         frrt.withAsync = true;
         frrt.execute(UserController.getLoggedInUser().getUsername());
@@ -434,23 +426,15 @@ public class RequestController {
     /**
      * Caches the queue of driver offers to make once we regain connection.
      */
-    private static void saveDriverOfferQueue() {
-        OfferList saveList = new OfferList();
+    public static void saveDriverOfferCommands() {
+        Gson gson = new Gson();
         try {
-            // get previous requests in queue
-            FileInputStream fis = saveContext.openFileInput(DRIVER_QUEUE_FILENAME);
-            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
-            Gson gson = new Gson();
-            Type listType = new TypeToken<OfferList>() {}.getType();
-            // Append previous requests in queue
-            saveList.append((OfferList) gson.fromJson(in, listType));
-
             FileOutputStream fos = saveContext.openFileOutput(DRIVER_QUEUE_FILENAME, 0);
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
             // Append new request to add to queue
-            saveList.append(offlineRequestsWhereOffered);
 
-            gson.toJson(saveList, out);
+            Log.i("Saving", String.valueOf(offlineDriverOfferCommands.size()));
+            gson.toJson(offlineDriverOfferCommands, out);
             out.flush();
             fos.close();
         } catch (Exception e) {
@@ -461,14 +445,15 @@ public class RequestController {
     /**
      * For offline functionality. Loads the cached driver offers queue.
      */
-    private static void loadDriverOfferQueue() {
+    public static void loadDriverOfferCommands() {
         try {
             FileInputStream fis = saveContext.openFileInput(DRIVER_QUEUE_FILENAME);
             BufferedReader in = new BufferedReader(new InputStreamReader(fis));
             Gson gson = new Gson();
-            Type listType = new TypeToken<OfferList>() {}.getType();
+            Type listType = new TypeToken<OfferCommandList>() {}.getType();
             // Load the search results into the controller
-            offlineRequestsWhereOffered.replaceList((OfferList) gson.fromJson(in, listType));
+            offlineDriverOfferCommands.replaceList((OfferCommandList) gson.fromJson(in, listType));
+            Log.i("Loading", String.valueOf(offlineDriverOfferCommands.size()));
         } catch (Exception e) {
             e.printStackTrace();
         }

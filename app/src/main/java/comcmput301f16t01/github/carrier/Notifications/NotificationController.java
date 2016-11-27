@@ -23,14 +23,6 @@ public class NotificationController {
     private static ArrayList<Notification> notificationList;
 
     /**
-     * Notifications from offline tasks that must be sent when we regain connection.
-     */
-    private static final ArrayList<Notification> offlineNotifications = new ArrayList<>();
-
-    /** The file name of the locally saved notifications .*/
-    private static final String NOTIF_FILENAME = "Notifications.sav";
-
-    /**
      * @return A sorted NotificationList
      * @see Notification#compareTo(Notification)
      */
@@ -91,14 +83,8 @@ public class NotificationController {
         if(ConnectionChecker.isThereInternet()) {
             ElasticNotificationController.AddNotificationTask ant = new ElasticNotificationController.AddNotificationTask();
             ant.execute(newNotification);
-        } else {
-            offlineNotifications.add(newNotification);
-            saveOfflineNotifications();
         }
         return newNotification;
-    }
-
-    private void saveOfflineNotifications() {
     }
 
     /**

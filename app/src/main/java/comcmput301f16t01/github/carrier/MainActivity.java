@@ -83,13 +83,16 @@ public class MainActivity extends AppCompatActivity {
     // TODO please comment this. Why is it here?
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle("Carrier");
+
+        //ElasticRequestController.RemoveOffersTask rot = new ElasticRequestController.RemoveOffersTask();
+        //rot.execute("shoven", "shoven2", "shoven3", "shoven4", "shoven5", "shoven6");
+        //ElasticRequestController.ClearRiderRequestsTask crrt = new ElasticRequestController.ClearRiderRequestsTask();
+        //crrt.execute("shoven", "shoven2", "shoven3", "shoven4", "shoven5", "shoven6");
 
         checkPermissions();
         // Request controller requires a context to save in
