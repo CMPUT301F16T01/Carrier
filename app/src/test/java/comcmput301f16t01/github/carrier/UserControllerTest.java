@@ -18,7 +18,6 @@ public class UserControllerTest {
         user.setEmail("T@mail.com");
         user.setPhone("7801234567");
         user.setUsername("Mike");
-        uc.setLoggedInUser(user);
         User user1 = UserController.getLoggedInUser();
         assertTrue("The users are not the same", user == user1);
 

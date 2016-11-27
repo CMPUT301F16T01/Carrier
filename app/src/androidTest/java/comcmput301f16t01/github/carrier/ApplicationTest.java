@@ -37,16 +37,39 @@ import android.test.ApplicationTestCase;
  *
  * UserProfile =====================================================================================
  * US 03.01.01 [Unique username and contact info]
- * TODO
+ * @see UserTest#testUniqueUsername()
  *
  * US 03.02.01 [Edit own contact info]
- * TODO
+ * @see UserTest#testEditUserTask()
  *
- * US 03.03.01 [See contact info of user]
- * TODO
+ * US 03.03.01 [See contact info of user] (proof of backend)
+ * @see UserTest
  *
- * US 03.04.01 [Provide vehicle details]
- * TODO
+ * US 03.04.01 [Provide vehicle details] (proof of backend)
+ * @see UserTest
+ *
+ * Searching =======================================================================================
+ * US 04.01.01 [Browse reqeusts by geo-location]
+ * @see SearchingTests#testDriverSearchByLocation()
+ * @see SearchingTests#testDriverSearchByKeywordWithConfirmed()
+ *
+ * US 04.02.01 [Browse by keyword]
+ * @see SearchingTests#testDriverSearchByKeyword()
+ * @see SearchingTests#testDriverSearchByKeywordWithConfirmed()
+ *
+ * US 04.03.01
+ * @see SearchingTests#testPriceFiltering()
+ *
+ * US 04.04.01 [see addresses of requests] : (proof of backend)
+ * US 04.05.01 [search by address] : (proof of backend)
+ * @see SearchingTests
+ *
+ * Accepting =======================================================================================
+ * US 05.01.01 [Accept a request as a driver]
+ * @see RequestTest#testRequestStatus()
+ * @see RequestTest#testAddingDriverToRequest()
+ *
+ * 
  *
  */
 public class ApplicationTest extends ApplicationTestCase<Application> {

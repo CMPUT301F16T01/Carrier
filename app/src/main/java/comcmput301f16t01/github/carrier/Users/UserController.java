@@ -17,17 +17,6 @@ public class UserController {
     private UserController() { /* prevent UserController instantiation */ }
 
     /**
-     * Will return the singleton instance of the current logged in user.
-     *
-     * @return Returns the currently logged in user
-     * @throws IllegalAccessError if there is no currently logged in user.
-     * @see #logInUser(String)
-     */
-    public void setLoggedInUser(User user) {
-        loggedInUser = user;
-    }
-
-    /**
      * Allows the user to log in while offline. Only the last logged in user has the ability to log in.
      * @param usernameToLogin The username attempt to log in
      * @param cachedUser The cached user to compare to
@@ -182,8 +171,10 @@ public class UserController {
      */
     public static void editUser(String newEmail, String newPhone) {
         // TODO this should modify the logged in user here, but it does not?
+        loggedInUser.setEmail( newEmail );
+        loggedInUser.setPhone( newPhone );
         ElasticUserController.EditUserTask eut = new ElasticUserController.EditUserTask();
-        eut.execute(UserController.getLoggedInUser().getId(), newEmail, newPhone);
+        eut.execute(getLoggedInUser().getId(), newEmail, newPhone);
     }
 
     /**
@@ -210,10 +201,6 @@ public class UserController {
      * @return True if the user was successfully logged in, else false.
      */
     public static boolean logInUser(String username) {
-        if ( loggedInUser != null ) {
-            throw new IllegalStateException( "You may not log in a user when one is already logged in" );
-        }
-
         ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();
         fut.execute(username);
         User foundUser = null;
