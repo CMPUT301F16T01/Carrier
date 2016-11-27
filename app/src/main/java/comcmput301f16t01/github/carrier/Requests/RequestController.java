@@ -10,7 +10,9 @@ import com.google.gson.reflect.TypeToken;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
@@ -476,11 +478,11 @@ public class RequestController {
      */
     public static void saveSearchResults() {
         RequestList saveList = new RequestList();
+        Gson gson = new Gson();
         try {
             // get previous search results
             FileInputStream fis = saveContext.openFileInput(SEARCH_FILENAME);
             BufferedReader in = new BufferedReader(new InputStreamReader(fis));
-            Gson gson = new Gson();
             Type listType = new TypeToken<RequestList>() {}.getType();
             // Append previous search results
             saveList.append((RequestList) gson.fromJson(in, listType), MAX_SEARCH_RESULTS);
@@ -488,15 +490,17 @@ public class RequestController {
             if (ConnectionChecker.isThereInternet()) {
                 saveList.verifyAll();
             }
-
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
             FileOutputStream fos = saveContext.openFileOutput(SEARCH_FILENAME, 0);
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
             saveList.append(searchResult, MAX_SEARCH_RESULTS);
+            Log.i("Saving",String.valueOf(saveList.size()));
             gson.toJson(saveList, out);
             out.flush();
-
             fos.close();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -516,6 +520,7 @@ public class RequestController {
             searchResult.replaceList((RequestList) gson.fromJson(in, listType));
             // Reverse the list so we see the most recent searches first
             Collections.reverse(searchResult);
+            Log.i("Loading",String.valueOf(searchResult.size()));
             // if we have network connection, check our list to remove unavailable requests
             if (ConnectionChecker.isThereInternet()) {
                 searchResult.verifyAll();
