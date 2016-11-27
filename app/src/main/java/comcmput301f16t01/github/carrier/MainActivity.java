@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
         nc.asyncUnreadNotification(UserController.getLoggedInUser(), new Listener() {
             @Override
             public void update() {
-                Toast.makeText( context, "You have unread notifications!", Toast.LENGTH_LONG ).show();
+                Toast.makeText( context, "You have unread notifications!", Toast.LENGTH_SHORT ).show();
             }
         });
     }
