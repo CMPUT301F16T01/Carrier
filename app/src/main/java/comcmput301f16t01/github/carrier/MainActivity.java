@@ -177,26 +177,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Creates a dialogue that tells the user to go view their notifications, if they have unread
-     * ones. (Called from onResume).
-     * TODO link this to swipe-refreshing?
-     */
-    private void promptViewNotifications() {
-        AlertDialog.Builder adb = new AlertDialog.Builder( this );
-        adb.setTitle( "Unread Notifications!" );
-        adb.setMessage( "You've received notifications, do you want to see them?" );
-        adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(MainActivity.this, NotificationActivity.class );
-                startActivity(intent);
-            }
-        });
-        adb.setNegativeButton( "Later", null );
-        adb.show();
-    }
-
-    /**
      * Shows the correct FAB depending on what tab position we are at.
      *
      * @param position the current screen tab we are in (i.e. 0=Rider, 1=Driver)
@@ -415,7 +395,7 @@ public class MainActivity extends AppCompatActivity {
                     // We first check if there is connection, if not, we stop refreshing and
                     // inform them that we cannot perform a live update.
                     if(!ConnectionChecker.isConnected(getContext())) {
-                        Toast.makeText(getContext(), "You have no network connection!", Toast.LENGTH_LONG ).show();
+                        Toast.makeText(getContext(), "You have no network connection!", Toast.LENGTH_SHORT ).show();
                         srl.setRefreshing( false );
                         return;
                     }
@@ -425,7 +405,7 @@ public class MainActivity extends AppCompatActivity {
                     nc.asyncUnreadNotification(UserController.getLoggedInUser(), new Listener() {
                         @Override
                         public void update() {
-                            Toast.makeText( getContext(), "You have unread notifications!", Toast.LENGTH_LONG ).show();
+                            Toast.makeText( getContext(), "You have unread notifications!", Toast.LENGTH_SHORT ).show();
                         }
                     });
 

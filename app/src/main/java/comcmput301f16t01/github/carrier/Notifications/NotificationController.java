@@ -21,6 +21,10 @@ import comcmput301f16t01.github.carrier.Users.User;
 public class NotificationController {
     private static ArrayList<Notification> notificationList = new ArrayList<>();
 
+    /**
+     * Returns the list of notifications held by this controller relating to the user logged in
+     * @see comcmput301f16t01.github.carrier.Users.UserController
+     */
     public static ArrayList<Notification> getNotificationListInstance() {
         return notificationList;
     }
