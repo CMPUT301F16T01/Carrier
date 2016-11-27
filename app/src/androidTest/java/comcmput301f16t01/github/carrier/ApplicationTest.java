@@ -66,6 +66,7 @@ import android.test.ApplicationTestCase;
  * US 04.04.01 [see addresses of requests] : (proof of backend)
  * US 04.05.01 [search by address] : (proof of backend)
  * @see SearchingTests
+ * @see LocationTests
  *
  * Accepting =======================================================================================
  * US 05.01.01 [Accept a request as a driver]
