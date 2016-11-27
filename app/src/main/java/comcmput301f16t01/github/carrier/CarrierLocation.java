@@ -29,8 +29,10 @@ public class CarrierLocation extends Location {
 
     // TODO http://stackoverflow.com/questions/454908/split-java-string-by-new-line
     public void setAddress(String address) {
-        this.address = address;
-        this.shortAddress = address.split("\\r?\\n")[0];
+        if(address != null) {
+            this.address = address;
+            this.shortAddress = address.split("\\r?\\n")[0];
+        }
     }
 
     public String getShortAddress() {

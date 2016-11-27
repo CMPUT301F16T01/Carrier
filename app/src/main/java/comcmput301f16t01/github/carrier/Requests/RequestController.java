@@ -436,10 +436,10 @@ public class RequestController {
                 }
                 pointAddress = new String(sb);
             } else {
-                pointAddress = null;
+                pointAddress = "";
             }
         } catch (Exception e) {
-            pointAddress = null;
+            pointAddress = "";
         }
         return pointAddress;
     }
