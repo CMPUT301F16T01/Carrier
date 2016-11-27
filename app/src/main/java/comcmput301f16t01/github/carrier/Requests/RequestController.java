@@ -18,13 +18,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
-
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
-import comcmput301f16t01.github.carrier.Users.ElasticUserController;
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
@@ -53,7 +48,7 @@ public class RequestController {
     private static final String DRIVER_FILENAME = "DriverRequests.sav";
 
     /** The file name of the locally saved offline rider requests. */
-    private static final String OFFLINE_FILENAME = "OfflineRequests.sav";
+    private static final String OFFLINE_REQUEST_FILENAME = "OfflineRequests.sav";
 
     /** The context with which to save */
     private static Context saveContext;
@@ -485,7 +480,7 @@ public class RequestController {
      */
     public static void saveOfflineRiderRequests() {
         try {
-            FileOutputStream fos = saveContext.openFileOutput(OFFLINE_FILENAME, 0);
+            FileOutputStream fos = saveContext.openFileOutput(OFFLINE_REQUEST_FILENAME, 0);
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
 
             Gson gson = new Gson();
@@ -506,7 +501,7 @@ public class RequestController {
     public static void loadOfflineRiderRequests() {
         FileInputStream fis = null;
         try {
-            fis = saveContext.openFileInput(OFFLINE_FILENAME);
+            fis = saveContext.openFileInput(OFFLINE_REQUEST_FILENAME);
             BufferedReader in = new BufferedReader(new InputStreamReader(fis));
             Gson gson = new Gson();
             Type listType = new TypeToken<RequestList>() {}.getType();

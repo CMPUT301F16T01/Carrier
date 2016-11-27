@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -36,6 +37,7 @@ import org.osmdroid.views.overlay.OverlayItem;
 
 import java.util.List;
 
+import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.ViewLocationsActivity;
 import comcmput301f16t01.github.carrier.Searching.SearchResultsActivity;
@@ -122,6 +124,16 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
             if(intent.hasExtra("endLocation")) {
                 lastBundle.putString("endLocation",bundle.getString("endLocation"));
             }
+        }
+
+        // If the user is offline and the point is start, tell them that the map is a bit slow
+        if (!ConnectionChecker.isThereInternet() && (point.equals("start")) || point.equals("search")) {
+            AlertDialog.Builder adb = new AlertDialog.Builder(this);
+            adb.setTitle("Offline");
+            adb.setMessage("While you're offline some functionality (like maps) may function more "
+                    + "slowly than usual.");
+            adb.setPositiveButton("Okay", null);
+            adb.show();
         }
 
         // Create an instance of GoogleAPIClient.
