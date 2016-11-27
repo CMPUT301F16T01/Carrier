@@ -587,15 +587,15 @@ public class ElasticRequestController {
                     RequestController.loadDriverOfferCommands();
                     // if there are offline offer commands that must be posted, post them
                     if(RequestController.getOfflineDriverOfferCommands().size() > 0) {
-                        // the requests we need to add to the driver offers list
                         RequestList offlineRequests = new RequestList();
-                        for(OfferCommand offerCommand : RequestController.getOfflineDriverOfferCommands()) {
-                            // remove the offering driver since we need to "overwrite" the offering driver
-                            offerCommand.getRequest().removeOfferingDriver(offerCommand.getDriver());
-                            RequestController.addDriver(offerCommand.getRequest(), offerCommand.getDriver());
-                            offlineRequests.add(offerCommand.getRequest());
+                        Iterator<OfferCommand> iterator = RequestController.getOfflineDriverOfferCommands().iterator();
+                        while(iterator.hasNext()) {
+                            OfferCommand tempOfferCommand = iterator.next();
+                            iterator.remove();
+                            Request request = RequestController.addOfflineOffer(tempOfferCommand);
+                            offlineRequests.add(request);
                         }
-                        // add the offline requests to the list we just grabbed from elasticsearch
+                        // add the offline request to the list we just grabbed from elasticsearch
                         RequestController.getOffersInstance().append(offlineRequests);
                         // get rid of all the offline requests, since they now live on elasticsearch
                         RequestController.getOfflineDriverOfferCommands().clear();

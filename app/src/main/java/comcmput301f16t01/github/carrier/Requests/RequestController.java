@@ -180,6 +180,13 @@ public class RequestController {
         saveDriverOfferedRequests();
     }
 
+    public static Request addOfflineOffer(OfferCommand offerCommand) {
+        // remove the offering driver since we need to "overwrite" the offering driver
+        offerCommand.getRequest().removeOfferingDriver(offerCommand.getDriver());
+        RequestController.addDriver(offerCommand.getRequest(), offerCommand.getDriver());
+        return offerCommand.getRequest();
+    }
+
     /**
      * Is used accept a given driver (who has offered) for the request.
      *
