@@ -20,6 +20,7 @@ import comcmput301f16t01.github.carrier.Requests.RequestList;
  * SearchResultsActivity handles displaying and linking to new requests for a driver to choose from.
  */
 public class SearchResultsActivity extends AppCompatActivity {
+    ArrayAdapter<Request> requestArrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +35,7 @@ public class SearchResultsActivity extends AppCompatActivity {
         // It shouldn't matter what query we used, the singleton will be up to date with the query when we get here
         final RequestList requestList = RequestController.getResult();
 
-        ArrayAdapter<Request> requestArrayAdapter = new ArrayAdapter<>( this, android.R.layout.simple_list_item_1, requestList );
+        requestArrayAdapter = new ArrayAdapter<>( this, android.R.layout.simple_list_item_1, requestList );
         requestListView.setAdapter( requestArrayAdapter );
 
         // Create an onClickListener for the items to take them to a "make offer" page.
@@ -54,6 +55,13 @@ public class SearchResultsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        /** we update the list view to remove requests if the user made an offer to it */
+        requestArrayAdapter.notifyDataSetChanged();
+        super.onResume();
     }
 
     /**

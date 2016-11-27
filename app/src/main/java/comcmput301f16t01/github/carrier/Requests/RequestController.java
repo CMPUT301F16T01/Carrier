@@ -123,6 +123,14 @@ public class RequestController {
         } catch ( Exception e ) {
             return; // If the driver is already offered we shouldn't do this action.
         }
+
+        // remove the request from the search results because we are making an offer to it
+        for ( Request searchResultRequest : searchResult ) {
+            if ( searchResultRequest.getId().equals(request.getId())) {
+                searchResult.remove( searchResultRequest );
+            }
+        }
+
         // If there is internet update the request on elastic search with the new accepting driver.
         if (ConnectionChecker.isThereInternet()) {
             // create an offer object [[ potentially throws IllegalArgumentException if called wrong ]]
@@ -131,7 +139,10 @@ public class RequestController {
             // Add offer to elastic search
             ElasticRequestController.AddOfferTask aot = new ElasticRequestController.AddOfferTask();
             aot.execute( newOffer );
+            ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
+            urt.execute(request);
         }
+        
         // TODO add addOffer task to queue if offline
 
         // Regardless of whether or not there is internet, create a notification and add the offer to the local requestsWhereOffered RequestList
