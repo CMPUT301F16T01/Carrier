@@ -78,6 +78,7 @@ public class OfflineMakeOfferTest extends ApplicationTest {
         wifiManager.setWifiEnabled(false);
         Thread.sleep(1000);
 
+        // starting to search now
         RequestController.searchByKeyword(keyword);
         Thread.sleep(1000);
         RequestList offlineSearchResults = RequestController.getResult();
