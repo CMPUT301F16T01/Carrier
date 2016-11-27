@@ -194,7 +194,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Name"
+                android:text=""
                 android:layout_marginBottom="20dp"
                 android:ems="10"
                 android:id="@+id/TextView_name"
@@ -219,7 +219,7 @@
                 android:layout_alignEnd="@+id/ImageView_emailIcon" />
 
             <TextView
-                android:text="Kia Rio"
+                android:text=""
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/imageView_car"
