@@ -2,6 +2,7 @@ package comcmput301f16t01.github.carrier;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
     /** The {@link ViewPager} that will host the section contents. */
     private ViewPager mViewPager;
 
-    // TODO please comment this. Why is it here?
+    /** Identifying which permission we are checking for. */
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
 
     @Override
@@ -166,31 +167,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        // Inform the user of unread notifications.
+        // Will toast if there are unread notifications.
+        final Context context = this;
         NotificationController nc = new NotificationController();
-        if (nc.unreadNotification( UserController.getLoggedInUser() )) {
-            promptViewNotifications();
-        }
-    }
-
-    /**
-     * Creates a dialogue that tells the user to go view their notifications, if they have unread
-     * ones. (Called from onResume).
-     * TODO link this to swipe-refreshing?
-     */
-    private void promptViewNotifications() {
-        AlertDialog.Builder adb = new AlertDialog.Builder( this );
-        adb.setTitle( "New Notifications!" );
-        adb.setMessage( "You've received notifications, do you want to see them?" );
-        adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        nc.asyncUnreadNotification(UserController.getLoggedInUser(), new Listener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(activity, NotificationActivity.class );
-                startActivity(intent);
+            public void update() {
+                Toast.makeText( context, "You have unread notifications!", Toast.LENGTH_SHORT ).show();
             }
         });
-        adb.setNegativeButton( "Later", null );
-        adb.show();
     }
 
     /**
@@ -420,10 +405,20 @@ public class MainActivity extends AppCompatActivity {
                     // We first check if there is connection, if not, we stop refreshing and
                     // inform them that we cannot perform a live update.
                     if(!ConnectionChecker.isConnected(getContext())) {
-                        Toast.makeText(getContext(), "You have no network connection!", Toast.LENGTH_LONG ).show();
+                        Toast.makeText(getContext(), "You have no network connection!", Toast.LENGTH_SHORT ).show();
                         srl.setRefreshing( false );
                         return;
                     }
+
+                    // Will toast if there are unread notifications.
+                    NotificationController nc = new NotificationController();
+                    nc.asyncUnreadNotification(UserController.getLoggedInUser(), new Listener() {
+                        @Override
+                        public void update() {
+                            Toast.makeText( getContext(), "You have unread notifications!", Toast.LENGTH_SHORT ).show();
+                        }
+                    });
+
 
                     // Checks for when the AsyncTask is finished. It waits for two calls from the
                     // onPostExecute methods of the task, meaning that the two tasks (get driver requests

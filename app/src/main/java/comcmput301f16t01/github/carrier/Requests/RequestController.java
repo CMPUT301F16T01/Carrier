@@ -144,18 +144,26 @@ public class RequestController {
         if (ConnectionChecker.isThereInternet()) {
             try {
                 request.addOfferingDriver( driver );
-                Log.i("Offer made", "added offering driver to request");
             } catch ( Exception e ) {
-                Log.i("Error", e.toString());
                 return; // If the driver is already offered we shouldn't do this action.
             }
+
+            // remove the request from the search results because we are making an offer to it
+            for ( Request searchResultRequest : searchResult ) {
+                if ( searchResultRequest.getId().equals(request.getId())) {
+                    searchResult.remove( searchResultRequest );
+                }
+            }
+
             // Create an offer object [[ potentially throws IllegalArgumentException if called wrong ]]
             Offer newOffer = new Offer(request, driver);
-            Log.i("Offer created", "new offer set");
-
             // Add offer to elastic search
             ElasticRequestController.AddOfferTask aot = new ElasticRequestController.AddOfferTask();
             aot.execute( newOffer );
+
+            // update status of request
+            ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
+            urt.execute(request);
         } else {
             // if there is no network connection, add the offline offer command to the queue
             request.addOfferingDriver( driver );
