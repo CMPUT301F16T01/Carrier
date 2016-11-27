@@ -474,7 +474,7 @@ public class RequestTest extends ApplicationTest {
             chillabit();
             requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
             pass++;
-            if (pass > 5) { fail( "Took too long to fetch requests" ); }
+            if (pass > 5) { fail( "Took too long to fetch requests, had: " + requestList.size() ); }
         }
         assertTrue( "Both requests should have the same status.",
                 requestList.get(0).getStatus().equals(requestList.get(1).getStatus()));
@@ -491,18 +491,17 @@ public class RequestTest extends ApplicationTest {
         // Check that we made a request cancelled in elastic search
         pass = 0;
         requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
-        while ( requestList.get(0).getStatus().equals(Request.Status.OPEN) ) {
-            for (Request request : requestList ) {
-                // End the while loop if we find the cancelled request
-                if (request.getStatus().equals(Request.Status.CANCELLED)) { break; }
-            }
+        while ( requestList.get(0).getStatus().equals(Request.Status.OPEN) &&
+                requestList.get(1).getStatus().equals(Request.Status.OPEN)) {
             chillabit();
             requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
             pass++;
             if (pass > 5) { fail( "Took too long to find the cancelled request" ); }
         }
+        assertTrue( "There should only be two requests in the list (cancelling should not add a request)",
+                requestList.size() == 2);
         assertFalse( "The requests should not have the same status",
-                requestList.get(0).getStatus().equals(requestList.get(0).getStatus()));
+                requestList.get(0).getStatus().equals(requestList.get(1).getStatus()));
         for (Request request : requestList) {
             if (request.getDescription().equals(cancelledRequestDesc)) {
                 assertTrue( "The request we cancelled was not cancelled",

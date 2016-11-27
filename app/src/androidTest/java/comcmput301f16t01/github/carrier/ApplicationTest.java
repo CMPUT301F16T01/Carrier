@@ -11,8 +11,9 @@ import android.test.ApplicationTestCase;
  * up (click the drop down between Make Project (hammer button) and Run (play button), click
  * Edit Configurations, and you should see the text box for the option.
  *
- * US 01.01.01 [request a ride]: (proof of back-end.
- * US 01.02.01 [see current requests] : (proof of back-end)
+ * Request Tests ===================================================================================
+ * US 01.01.01 [request a ride]: (proof of backend)
+ * US 01.02.01 [see current requests] : (proof of backend)
  * @see RequestTest
  *
  * US 01.03.01 [driver notification]
@@ -21,8 +22,31 @@ import android.test.ApplicationTestCase;
  * US 01.04.01 [rider cancelling a request]
  * @see RequestTest#testCancelRequest()
  *
+ * US 01.07.01 [Confirm completion and pay] : (proof of backend)
+ * @see RequestTest#testRequestStatus()
  *
+ * US 01.08.01 [Confirm driver]
+ * @see RequestTest
  *
+ * US 01.09.01 [See driver's vehicle] : (proof of backend)
+ * TODO
+ *
+ * Status ==========================================================================================
+ * US 02.01.01 [see status of request] : (proof of backend)
+ * @see RequestTest#testRequestStatus()
+ *
+ * UserProfile =====================================================================================
+ * US 03.01.01 [Unique username and contact info]
+ * TODO
+ *
+ * US 03.02.01 [Edit own contact info]
+ * TODO
+ *
+ * US 03.03.01 [See contact info of user]
+ * TODO
+ *
+ * US 03.04.01 [Provide vehicle details]
+ * TODO
  *
  */
 public class ApplicationTest extends ApplicationTestCase<Application> {

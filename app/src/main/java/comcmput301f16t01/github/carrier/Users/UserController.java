@@ -109,10 +109,15 @@ public class UserController {
      * @param phoneNumber The phone number of the new user
      * @param vehicleDescription The description of the user's vehicle
      */
-    public static void createNewUser(String username, String email, String phoneNumber, String vehicleDescription) {
+    public static String createNewUser(String username, String email, String phoneNumber, String vehicleDescription) {
         // TODO check errors on the vehicle description???
         // TODO testing offline behaviour
         User newUser = new User();
+
+        String value = checkValidInputs( username, email, phoneNumber );
+        if (value != null) {
+            return value;
+        }
 
         // Trim leading and trailing whitespace
         email = email.trim();
@@ -133,6 +138,7 @@ public class UserController {
         }
 
         loggedInUser = newUser; // set the logged in user to be the one we created.
+        return null;
     }
 
     /**
