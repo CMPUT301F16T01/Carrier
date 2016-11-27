@@ -30,6 +30,9 @@ public class NotificationController {
     }
 
     /**
+     * Fetches notifications for a user, does this on the main UI thread.
+     * @see #asyncUnreadNotification(User, Listener) for better implementation off UI thread. 
+     *
      * @return A sorted NotificationList
      * @see Notification#compareTo(Notification)
      */
