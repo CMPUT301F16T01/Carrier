@@ -490,7 +490,31 @@ public class ElasticRequestController {
             List<Offer> offers = result.getSourceAsObjectList(Offer.class);
 
             foundRequests = getRequests( offers );
+            // Now we get a list of requests where the driver is the confirmed driver since
+            // there is no offer for a request that has been confirmed.
+            query =
+                    "{ \"from\": 0, \"size\": 500,\n" +
+                            "    \"query\": { \"match\": { \"chosenDriver.username\": \"" + params[0] + "\" } }\n" +
+                            "}";
 
+            search = new Search.Builder(query)
+                    .addIndex("cmput301f16t01")
+                    .addType("request")
+                    .build();
+            SearchResult result1;
+            try {
+                result1 = client.execute(search);
+                if (!result1.isSucceeded()) {
+                    return null;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+            List<Request> requests = result1.getSourceAsObjectList(Request.class);
+            if (requests != null) {
+                foundRequests.addAll(requests);
+            }
             return foundRequests;
         }
 
