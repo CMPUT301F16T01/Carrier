@@ -16,11 +16,14 @@ import android.test.ApplicationTestCase;
  * US 01.02.01 [see current requests] : (proof of backend)
  * @see RequestTest
  *
- * US 01.03.01 [driver notification]
- * @see NotificationTest#testDriverGetNotified()
+ * US 01.03.01 [offer recieved notification]
+ * @see NotificationTest#testRiderGetNotified()
  *
  * US 01.04.01 [rider cancelling a request]
  * @see RequestTest#testCancelRequest()
+ *
+ * US 01.06.01 [Calculate a fair fare]
+ * @see FareCalculatorTests#testGetEstimate()
  *
  * US 01.07.01 [Confirm completion and pay] : (proof of backend)
  * @see RequestTest#testRequestStatus()
@@ -29,7 +32,7 @@ import android.test.ApplicationTestCase;
  * @see RequestTest
  *
  * US 01.09.01 [See driver's vehicle] : (proof of backend)
- * TODO
+ * @see UserTest
  *
  * Status ==========================================================================================
  * US 02.01.01 [see status of request] : (proof of backend)
@@ -69,8 +72,35 @@ import android.test.ApplicationTestCase;
  * @see RequestTest#testRequestStatus()
  * @see RequestTest#testAddingDriverToRequest()
  *
- * 
+ * US 05.02.01 [View pending offers as driver]
+ * @see RequestTest#testGetRequestsWhereOffered()
  *
+ * US 05.03.01 [See if acceptance was accepted] : (proof of backend)
+ * @see RequestTest#testRequestStatus()
+ * @see RequestTest#testAddingDriverToRequest()
+ *
+ * US 05.04.01 [Notification when offer was accepted]
+ * @see NotificationTest#testDriverGetNotified()
+ *
+ * Offline behavior ================================================================================
+ * US 08.01.01 [I want see requests I accepted while offline]
+ * @see OfflineTests#testSavingLoadingOfflineDriverRequests()
+ *
+ * US 08.02.01 [See requests made while offline]
+ * @see OfflineTests#testSavingLoadingOfflineRiderRequests() t
+ *
+ * US 08.03.01 [make requests offline]
+ * TODO
+ *
+ * US 08.04.01 [make offers offline]
+ * TODO
+ *
+ * Location ========================================================================================
+ * US 10.01.01 [Specify on map for request] : (proof of backend)
+ * @see SearchingTests
+ *
+ * US 10.02.01 [View start and end for request] : (proof of backend)
+ * @see SearchingTests
  */
 public class ApplicationTest extends ApplicationTestCase<Application> {
     public ApplicationTest() {
