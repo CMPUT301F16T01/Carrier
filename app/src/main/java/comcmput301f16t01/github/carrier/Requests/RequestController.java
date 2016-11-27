@@ -1,6 +1,8 @@
 package comcmput301f16t01.github.carrier.Requests;
 
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.util.Log;
 
@@ -388,7 +390,10 @@ public class RequestController {
                 // Convert to an array since async tasks don't take in array lists as arguments.
                 Request[] requestsToPass = new Request[RequestController.getOfflineRiderRequests().size()];
                 for (int i = 0; i < RequestController.getOfflineRiderRequests().size(); i++) {
-                    requestsToPass[i] = RequestController.getOfflineRiderRequests().get(i);
+                    Request request = RequestController.getOfflineRiderRequests().get(i);
+                    request.getStart().setAddress(getAddress(request.getStart().getLatitude(), request.getEnd().getLongitude()));
+                    request.getEnd().setAddress(getAddress(request.getEnd().getLatitude(), request.getEnd().getLongitude()));
+                    requestsToPass[i] = request;
                 }
                 art.execute(requestsToPass);
                 // Empty the offline RequestList and save an empty file
@@ -405,6 +410,38 @@ public class RequestController {
             gort.withAsync = true;
             gort.execute( UserController.getLoggedInUser().getUsername());
         }
+    }
+
+
+    /**
+     * Get address string from a geo point
+     *
+     * @return the address as a string.
+     */
+    // see code attribution
+    private static String getAddress(double latitude, double longitude) {
+        String pointAddress;
+        try {
+            Geocoder geocoder = new Geocoder(saveContext);
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            StringBuilder sb = new StringBuilder();
+            if(addresses.size() > 0) {
+                Address address = addresses.get(0);
+                int n = address.getMaxAddressLineIndex();
+                for(int i = 0; i <= n; i++) {
+                    if(i != 0) {
+                        sb.append("\n");
+                    }
+                    sb.append(address.getAddressLine(i));
+                }
+                pointAddress = new String(sb);
+            } else {
+                pointAddress = null;
+            }
+        } catch (Exception e) {
+            pointAddress = null;
+        }
+        return pointAddress;
     }
 
     /**
