@@ -26,18 +26,30 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        try {
-            UserController.getLoggedInUser();
-            // Will check if someone is logged in.
-            // If someone is not logged in we can do a tryQuickLogin()
-        } catch (IllegalStateException e) {
-            tryQuickLogin();
-        }
 
         // TODO grab their username based on their ID?
         // TODO alert them if they cannot log in because they are offline
     }
 
+    /**
+     * Called when the activity is resumed. Attempts to log users in by checking if a user is already
+     * logged in. If no one is currently logged in it will execute tryQuickLogin which will look in
+     * the internal memory to see if we can log a user in.
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            // If someone is already loggedIn we will enter the app immediatly. If not
+            // an IllegalAccessError will be thrown meaning no one is logged in allowing us
+            // to tryQuickLogin.
+            enterApp(UserController.getLoggedInUser().getUsername());
+            // Will check if someone is logged in.
+            // If someone is not logged in we can do a tryQuickLogin()
+        } catch (IllegalAccessError e) {
+            tryQuickLogin();
+        }
+    }
     /**
      * If there is internet connection, attempts to login a user through
      * elastic search, otherwise attempts to login a cached user from
