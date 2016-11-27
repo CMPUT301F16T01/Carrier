@@ -44,8 +44,8 @@ public class CarrierLocation extends Location {
      * @return String
      */
     public String getLatLong() {
-        return "(" + String.valueOf(getLatitude()) + ", " +
-                String.valueOf(getLongitude()) + ")";
+        return "(" + String.format("%.4f",getLatitude()) + ", " +
+                String.format("%.4f",getLongitude()) + ")";
     }
 
     @Override

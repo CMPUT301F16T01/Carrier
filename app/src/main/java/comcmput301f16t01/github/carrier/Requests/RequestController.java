@@ -20,6 +20,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.Collections;
+import java.util.Iterator;
 
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
@@ -140,6 +141,14 @@ public class RequestController {
      * @see Offer
      */
     public static void addDriver(Request request, User driver) {
+        // remove the request from the search results because we are making an offer to it
+        Iterator<Request> iterator = searchResult.iterator();
+        while(iterator.hasNext()) {
+            if ( iterator.next().getId().equals(request.getId())) {
+                iterator.remove();
+                saveSearchResults(false);
+            }
+        }
         // If there is internet update the request on elastic search with the new accepting driver.
         if (ConnectionChecker.isThereInternet()) {
             try {
@@ -147,14 +156,6 @@ public class RequestController {
             } catch ( Exception e ) {
                 return; // If the driver is already offered we shouldn't do this action.
             }
-
-            // remove the request from the search results because we are making an offer to it
-            for ( Request searchResultRequest : searchResult ) {
-                if ( searchResultRequest.getId().equals(request.getId())) {
-                    searchResult.remove( searchResultRequest );
-                }
-            }
-
             // Create an offer object [[ potentially throws IllegalArgumentException if called wrong ]]
             Offer newOffer = new Offer(request, driver);
             // Add offer to elastic search
@@ -165,8 +166,8 @@ public class RequestController {
             ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
             urt.execute(request);
         } else {
-            // if there is no network connection, add the offline offer command to the queue
             request.addOfferingDriver( driver );
+            // if there is no network connection, add the offline offer command to the queue
             OfferCommand offerCommand = new OfferCommand(request, driver);
             offlineDriverOfferCommands.add(offerCommand);
             saveDriverOfferCommands();
@@ -262,7 +263,7 @@ public class RequestController {
         sbkt.execute(keyword);
         try {
             searchResult.replaceList( sbkt.get() );
-            saveSearchResults();
+            saveSearchResults(true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -283,7 +284,7 @@ public class RequestController {
         sblt.execute(location);
         try {
             searchResult.replaceList(sblt.get());
-            saveSearchResults();
+            saveSearchResults(true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -482,22 +483,25 @@ public class RequestController {
     /**
      * Caches the requests that the driver has searched for.
      */
-    public static void saveSearchResults() {
+    public static void saveSearchResults(boolean append) {
         RequestList saveList = new RequestList();
         Gson gson = new Gson();
-        try {
-            // get previous search results
-            FileInputStream fis = saveContext.openFileInput(SEARCH_FILENAME);
-            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
-            Type listType = new TypeToken<RequestList>() {}.getType();
-            // Append previous search results
-            saveList.append((RequestList) gson.fromJson(in, listType), MAX_SEARCH_RESULTS);
-            // if we have network connection, check our list to remove unavailable requests
-            if (ConnectionChecker.isThereInternet()) {
-                saveList.verifyAll();
+        if(append) {
+            try {
+                // get previous search results
+                FileInputStream fis = saveContext.openFileInput(SEARCH_FILENAME);
+                BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+                Type listType = new TypeToken<RequestList>() {
+                }.getType();
+                // Append previous search results
+                saveList.append((RequestList) gson.fromJson(in, listType), MAX_SEARCH_RESULTS);
+                // if we have network connection, check our list to remove unavailable requests
+                if (ConnectionChecker.isThereInternet()) {
+                    saveList.verifyAll();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         try {
             FileOutputStream fos = saveContext.openFileOutput(SEARCH_FILENAME, 0);

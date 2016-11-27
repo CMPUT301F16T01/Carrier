@@ -12,6 +12,7 @@ import com.searchly.jestdroid.JestDroidClient;
 import org.osmdroid.bonuspack.location.GeocoderNominatim;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 import comcmput301f16t01.github.carrier.Users.User;
@@ -584,7 +585,6 @@ public class ElasticRequestController {
                     RequestController.getOffersInstance().replaceList( requests );
                     // load in any offline requests
                     RequestController.loadDriverOfferCommands();
-                    Log.i("Offline offers to post", String.valueOf(RequestController.getOfflineDriverOfferCommands().size()));
                     // if there are offline offer commands that must be posted, post them
                     if(RequestController.getOfflineDriverOfferCommands().size() > 0) {
                         // the requests we need to add to the driver offers list

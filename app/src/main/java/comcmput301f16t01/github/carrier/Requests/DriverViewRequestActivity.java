@@ -443,8 +443,9 @@ public class DriverViewRequestActivity extends AppCompatActivity {
             RequestController.getOffersInstance().notifyListeners();
         } catch (Exception e) {
             // If there is an issue, set the message to the exception message and show it
-            adb.setMessage(e.getMessage());
+            adb.setMessage(e.toString());
             adb.show();
+            e.printStackTrace();
         }
     }
 }

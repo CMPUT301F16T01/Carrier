@@ -47,6 +47,20 @@ public class RequestList extends ArrayList<Request> {
     }
 
     /**
+     * Removes request based on the request Id.
+     */
+    public boolean remove(Request request) {
+        Iterator<Request> iterator = this.iterator();
+        while(iterator.hasNext()) {
+            if(iterator.next().getId().equals(request.getId())) {
+                iterator.remove();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Appends new requests to the end of the list and notifies listeners of the update. This method
      * includes a limit on the size of the ArrayList.
      * @param requests The RequestList to append to this RequestList
