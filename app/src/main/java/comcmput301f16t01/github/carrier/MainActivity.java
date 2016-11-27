@@ -80,8 +80,6 @@ public class MainActivity extends AppCompatActivity {
     // TODO please comment this. Why is it here?
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

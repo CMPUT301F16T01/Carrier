@@ -185,8 +185,7 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
             public void onMarkerDragEnd(Marker marker) {
                 locationPoint.setLatitude(marker.getPosition().getLatitude());
                 locationPoint.setLongitude(marker.getPosition().getLongitude());
-                locationPoint.setAddress(getAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
-                locationPoint.setShortAddress(getShortAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
+                locationPoint.setAddress(RequestController.getAddress(activity, locationPoint.getLatitude(), locationPoint.getLongitude()));
             }
 
             @Override
@@ -248,8 +247,7 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         }
         locationPoint.setLatitude(geoPoint.getLatitude());
         locationPoint.setLongitude(geoPoint.getLongitude());
-        locationPoint.setAddress(getAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
-        locationPoint.setShortAddress(getShortAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
+        locationPoint.setAddress(RequestController.getAddress(activity, locationPoint.getLatitude(), locationPoint.getLongitude()));
         setLocationMarker(map, geoPoint);
         return true;
     }
@@ -273,8 +271,7 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         }
         locationPoint.setLatitude(geoPoint.getLatitude());
         locationPoint.setLongitude(geoPoint.getLongitude());
-        locationPoint.setAddress(getAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
-        locationPoint.setShortAddress(getShortAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
+        locationPoint.setAddress(RequestController.getAddress(activity, locationPoint.getLatitude(), locationPoint.getLongitude()));
         setLocationMarker(map, geoPoint);
         return true;
     }
@@ -348,61 +345,6 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         } else {
             Toast.makeText(activity, "You must first choose a location", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    /**
-     * Get address string from a geo point
-     *
-     * @return the address as a string.
-     */
-    // see code attribution
-    private String getAddress(double latitude, double longitude) {
-        String pointAddress;
-        try {
-            Geocoder geocoder = new Geocoder(activity);
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            StringBuilder sb = new StringBuilder();
-            if(addresses.size() > 0) {
-                Address address = addresses.get(0);
-                int n = address.getMaxAddressLineIndex();
-                for(int i = 0; i <= n; i++) {
-                    if(i != 0) {
-                        sb.append("\n");
-                    }
-                    sb.append(address.getAddressLine(i));
-                }
-                pointAddress = new String(sb);
-            } else {
-                pointAddress = null;
-            }
-        } catch (Exception e) {
-            pointAddress = null;
-        }
-        return pointAddress;
-    }
-
-    /**
-     * Get short address string from a geo point
-     *
-     * @see #getAddress(double, double)
-     *
-     * @return A shorter version of the address (compared to getAddress)
-     */
-    private String getShortAddress(double latitude, double longitude) {
-        String pointAddress;
-        try {
-            Geocoder geocoder = new Geocoder(activity);
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            StringBuilder sb = new StringBuilder();
-            if(addresses.size() > 0) {
-                Address address = addresses.get(0);
-                sb.append(address.getAddressLine(0));
-            }
-            pointAddress = new String(sb);
-        } catch (Exception e) {
-            pointAddress = null;
-        }
-        return pointAddress;
     }
 
     /**

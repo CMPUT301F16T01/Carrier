@@ -391,8 +391,8 @@ public class RequestController {
                 Request[] requestsToPass = new Request[RequestController.getOfflineRiderRequests().size()];
                 for (int i = 0; i < RequestController.getOfflineRiderRequests().size(); i++) {
                     Request request = RequestController.getOfflineRiderRequests().get(i);
-                    request.getStart().setAddress(getAddress(request.getStart().getLatitude(), request.getEnd().getLongitude()));
-                    request.getEnd().setAddress(getAddress(request.getEnd().getLatitude(), request.getEnd().getLongitude()));
+                    request.getStart().setAddress(getAddress(saveContext, request.getStart().getLatitude(), request.getEnd().getLongitude()));
+                    request.getEnd().setAddress(getAddress(saveContext, request.getEnd().getLatitude(), request.getEnd().getLongitude()));
                     requestsToPass[i] = request;
                 }
                 art.execute(requestsToPass);
@@ -419,10 +419,10 @@ public class RequestController {
      * @return the address as a string.
      */
     // see code attribution
-    private static String getAddress(double latitude, double longitude) {
+    public static String getAddress(Context context, double latitude, double longitude) {
         String pointAddress;
         try {
-            Geocoder geocoder = new Geocoder(saveContext);
+            Geocoder geocoder = new Geocoder(context);
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             StringBuilder sb = new StringBuilder();
             if(addresses.size() > 0) {
