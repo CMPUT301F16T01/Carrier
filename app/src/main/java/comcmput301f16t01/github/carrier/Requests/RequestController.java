@@ -131,6 +131,8 @@ public class RequestController {
             // Add offer to elastic search
             ElasticRequestController.AddOfferTask aot = new ElasticRequestController.AddOfferTask();
             aot.execute( newOffer );
+            ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
+            urt.execute(request);
         }
         // TODO add addOffer task to queue if offline
 
