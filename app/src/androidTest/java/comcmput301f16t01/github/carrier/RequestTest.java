@@ -8,6 +8,8 @@ import comcmput301f16t01.github.carrier.Requests.RequestList;
 import comcmput301f16t01.github.carrier.Users.User;
 
 /**
+ * @see ApplicationTest for info about which tests relate to which use cases.
+ *
  * Test suite for Elastic Requests.
  * Test List:
  *      1) Test clearing all requests for a user. (Confirms that we can add a request for a user).
@@ -16,7 +18,8 @@ import comcmput301f16t01.github.carrier.Users.User;
  *      4) Test getting requests where the driver has offered
  *      5) Test getting a request by its ID.
  *      6) Tests that the request statuses are properly up to date at each step of the request life-cycle
- *      7) Tests that erroneous status states will never be created.
+ *      7) Tests cancelling a request
+ *      TODO X) Tests that erroneous status states will never be created.
  *
  *      TODO various tests:
  *      X) Test to ensure separation from "offering drivers" and "rider" (when searching)
@@ -451,9 +454,60 @@ public class RequestTest extends ApplicationTest {
 
     /** TEST7 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-     *
+     * Tests that a user can cancel a request
      */
-    public void testStatusStateErrors() {
+    public void testCancelRequest() {
+        int pass;
+        // Create and add a requests to elastic search
+        String cancelledRequestDesc = "testRequestCancel (cancelled)";
+        Request requestOne = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
+                cancelledRequestDesc );
+        Request requestTwo = new Request( basicRider, new CarrierLocation(), new CarrierLocation(),
+                "testRequestCancel (open)" );
+        RequestController.addRequest( requestOne );
+        RequestController.addRequest( requestTwo );
 
+        // Check that we have added the requests
+        pass = 0;
+        RequestList requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
+        while ( requestList.size() != 2 ) {
+            chillabit();
+            requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
+            pass++;
+            if (pass > 5) { fail( "Took too long to fetch requests" ); }
+        }
+        assertTrue( "Both requests should have the same status.",
+                requestList.get(0).getStatus().equals(requestList.get(1).getStatus()));
+        assertTrue( "The status of the requests should be OPEN.",
+                requestList.get(0).getStatus().equals(Request.Status.OPEN));
+
+        // cancel the request with our specific description
+        for ( Request request : requestList ) {
+            if (request.getDescription().equals(cancelledRequestDesc)) {
+                RequestController.cancelRequest( request );
+            }
+        }
+
+        // Check that we made a request cancelled in elastic search
+        pass = 0;
+        requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
+        while ( requestList.get(0).getStatus().equals(Request.Status.OPEN) ) {
+            for (Request request : requestList ) {
+                // End the while loop if we find the cancelled request
+                if (request.getStatus().equals(Request.Status.CANCELLED)) { break; }
+            }
+            chillabit();
+            requestList = RequestController.fetchAllRequestsWhereRider( basicRider );
+            pass++;
+            if (pass > 5) { fail( "Took too long to find the cancelled request" ); }
+        }
+        assertFalse( "The requests should not have the same status",
+                requestList.get(0).getStatus().equals(requestList.get(0).getStatus()));
+        for (Request request : requestList) {
+            if (request.getDescription().equals(cancelledRequestDesc)) {
+                assertTrue( "The request we cancelled was not cancelled",
+                        request.getStatus().equals(Request.Status.CANCELLED));
+            }
+        }
     }
 }
