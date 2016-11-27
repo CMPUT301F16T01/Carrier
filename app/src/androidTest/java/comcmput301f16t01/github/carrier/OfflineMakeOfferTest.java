@@ -63,10 +63,11 @@ public class OfflineMakeOfferTest extends ApplicationTest {
         RequestController.addRequest(offlineTestRequest2);
         Thread.sleep(1000);
 
-        // log in driver, online log int wasn't working
+        // log in driver, online log in wasn't working
         UserController.offlineLogInUser(offlineTestUser2.getUsername(), offlineTestUser2);
         Thread.sleep(1000);
 
+        // starting to search now
         RequestController.searchByKeyword(keyword);
         Thread.sleep(1000);
         RequestList onlineSearchResults = RequestController.getResult();

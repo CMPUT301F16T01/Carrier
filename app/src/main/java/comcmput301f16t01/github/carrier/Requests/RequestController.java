@@ -26,8 +26,6 @@ import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
-// TODO when a driver goes back online the status is wrong for a request that they made an offer for
-
 /**
  * Uses a singleton pattern to store information about three types of requests. (Request requested,
  * requests offered to complete, and requests searched for.
