@@ -17,7 +17,6 @@ import java.lang.reflect.Type;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.util.ArrayList;
 import java.util.Collections;
 
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
@@ -56,7 +55,7 @@ public class RequestController {
     private static final String SEARCH_FILENAME = "SearchResults.sav";
 
     /** The file name of the locally saved queue of driver offers. */
-    private static final String DRIVER_QUEUE_FILENAME = "DriverOfferQueue.sav";
+    private static final String OFFLINE_OFFERS_FILENAME = "OfflineOffers.sav";
 
     /** The maximum number of search results returned. */
     public static final int MAX_SEARCH_RESULTS = 50;
@@ -123,6 +122,8 @@ public class RequestController {
 
     /**
      * Cancels a request using elastic search.
+     *
+     * @param request The request to cancel
      */
     public static void cancelRequest( Request request ) {
         ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
@@ -156,6 +157,7 @@ public class RequestController {
             ElasticRequestController.AddOfferTask aot = new ElasticRequestController.AddOfferTask();
             aot.execute( newOffer );
         } else {
+            // if there is no network connection, add the offline offer command to the queue
             request.addOfferingDriver( driver );
             OfferCommand offerCommand = new OfferCommand(request, driver);
             offlineDriverOfferCommands.add(offerCommand);
@@ -201,6 +203,8 @@ public class RequestController {
 
     /**
      * Marks a request as complete in elastic search.
+     *
+     * @param request The request to complete.
      */
     public static void completeRequest(Request request) {
         // If there is internet update elastic search with the completed request
@@ -217,7 +221,9 @@ public class RequestController {
     }
 
     /**
-     * Sets a request as paid for
+     * Sets a request as paid for.
+     *
+     * @param request The request to mark as paid
      */
     public static void payForRequest(Request request) {
         // If there is internet update elastic search with the paid request
@@ -236,7 +242,7 @@ public class RequestController {
     /**
      * Search requests by the keyword, will set it so the singleton contains the information for
      * this query. Use getResults() to get the information.
-     * @param keyword This is the keyword that the user wants to look for requests with. We use to Query.
+     * @param keyword The keyword the user wants to query for requests with
      */
     public static void searchByKeyword(String keyword) {
         // If the user is offline, load from search results from file rather than from elastic search
@@ -257,6 +263,7 @@ public class RequestController {
     /**
      * Search requests by a location. This sets it so the singleton contains the information for
      * this query. Use getResults() to get the information.
+     * @param location The location the user wants to query for requests with
      */
     public static void searchByLocation(Location location) {
         // If the user is offline, load from search results from file rather than from elastic search
@@ -320,7 +327,9 @@ public class RequestController {
     }
 
     /**
-     * Clears out all the requested requests for a user in elastic search
+     * Clears out all the requested requests for a user in elastic search.
+     *
+     * @param rider The rider whose requests should be cleared
      */
     public static void clearAllRiderRequests(User rider) {
         ElasticRequestController.ClearRiderRequestsTask crrt = new ElasticRequestController.ClearRiderRequestsTask();
@@ -400,7 +409,11 @@ public class RequestController {
         return foundRequests;
     }
 
-
+    /**
+     * Retrieves the list of offline offer commands.
+     *
+     * @return OfferCommandList
+     */
     public static OfferCommandList getOfflineDriverOfferCommands() {
         return offlineDriverOfferCommands;
     }
@@ -409,7 +422,6 @@ public class RequestController {
      * Updates the requestsWhereRider and requestsWhereOffered lists in the background (do not need
      * to wait on the main UI thread at all).
      *
-     * @see ElasticRequestController.AddOfferTask
      * @see ElasticRequestController.FetchRiderRequestsTask
      * @see ElasticRequestController.GetOfferedRequestsTask
      */
@@ -424,12 +436,12 @@ public class RequestController {
     }
 
     /**
-     * Caches the queue of driver offers to make once we regain connection.
+     * Caches the queue of driver offer commands to perform once we regain connection.
      */
     public static void saveDriverOfferCommands() {
         Gson gson = new Gson();
         try {
-            FileOutputStream fos = saveContext.openFileOutput(DRIVER_QUEUE_FILENAME, 0);
+            FileOutputStream fos = saveContext.openFileOutput(OFFLINE_OFFERS_FILENAME, 0);
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
             // Append new request to add to queue
 
@@ -443,11 +455,11 @@ public class RequestController {
     }
 
     /**
-     * For offline functionality. Loads the cached driver offers queue.
+     * For offline functionality. Loads the cached driver offer commands queue.
      */
     public static void loadDriverOfferCommands() {
         try {
-            FileInputStream fis = saveContext.openFileInput(DRIVER_QUEUE_FILENAME);
+            FileInputStream fis = saveContext.openFileInput(OFFLINE_OFFERS_FILENAME);
             BufferedReader in = new BufferedReader(new InputStreamReader(fis));
             Gson gson = new Gson();
             Type listType = new TypeToken<OfferCommandList>() {}.getType();

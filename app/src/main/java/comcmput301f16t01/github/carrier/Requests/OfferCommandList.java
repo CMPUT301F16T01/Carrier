@@ -13,7 +13,7 @@ public class OfferCommandList extends ArrayList<OfferCommand> {
     }
 
     /**
-     * Appends new offers to the end of the list.
+     * Appends new offer commands to the end of the list.
      * @param offerCommands The RequestList to append to this RequestList
      */
     public void append(OfferCommandList offerCommands) {
@@ -25,7 +25,7 @@ public class OfferCommandList extends ArrayList<OfferCommand> {
         }
     }
 
-    /** Checks if the request is already contained in the requestList. */
+    /** Checks if the request (based on the id from elasticsearch) is already contained in the OfferCommandList. */
     public boolean contains(String id) {
         for(OfferCommand offerCommand : this) {
             if(offerCommand.getRequest().getId().equals(id)) {
@@ -35,6 +35,7 @@ public class OfferCommandList extends ArrayList<OfferCommand> {
         return false;
     }
 
+    /** Removes the request (based on the id from elasticsearch) from the OfferCommandList. */
     public boolean remove(String id) {
         for(OfferCommand offerCommand : this) {
             if(offerCommand.getRequest().getId().equals(id)) {
