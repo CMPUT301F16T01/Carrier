@@ -66,12 +66,12 @@ import static comcmput301f16t01.github.carrier.Requests.Request.Status.PAID;
  * <p>Retrieved on: November 24th, 2016</p>
  */
 public class RiderRequestActivity extends AppCompatActivity {
-    Activity activity = RiderRequestActivity.this;
-    GeoPoint startPoint = null;
-    GeoPoint endPoint = null;
-    Road[] roadList = null;
-    MapView map;
-    IMapController mapController;
+    private Activity activity = RiderRequestActivity.this;
+    private GeoPoint startPoint = null;
+    private GeoPoint endPoint = null;
+    private Road[] roadList = null;
+    private MapView map;
+    private IMapController mapController;
     private Request request;
 
     @Override
@@ -120,7 +120,7 @@ public class RiderRequestActivity extends AppCompatActivity {
      * @param end GeoPoint for end location
      * @return BoundingBox that holds both location points
      */
-    public BoundingBox getBoundingBox(GeoPoint start, GeoPoint end) {
+    private BoundingBox getBoundingBox(GeoPoint start, GeoPoint end) {
         double north;
         double south;
         double east;
@@ -149,7 +149,7 @@ public class RiderRequestActivity extends AppCompatActivity {
      * @param box BoundingBox for start and end points
      */
     // see code attribution
-    public void zoomToBounds(final BoundingBox box) {
+    private void zoomToBounds(final BoundingBox box) {
         if (map.getHeight() > 0) {
             map.zoomToBoundingBox(box, false);
             map.zoomToBoundingBox(box, false);
@@ -194,7 +194,7 @@ public class RiderRequestActivity extends AppCompatActivity {
      * Asynchronous task to get the route between the two points
      */
     // see code attribution
-    public void getRoadAsync() {
+    private void getRoadAsync() {
         roadList = null;
 
         GeoPoint roadStartPoint = startPoint;
@@ -269,7 +269,7 @@ public class RiderRequestActivity extends AppCompatActivity {
      *
      * @return GeoPoint
      */
-    public GeoPoint getCenter() {
+    private GeoPoint getCenter() {
         double startLat = startPoint.getLatitude();
         double startLong = startPoint.getLongitude();
         double endLat = endPoint.getLatitude();
@@ -314,7 +314,7 @@ public class RiderRequestActivity extends AppCompatActivity {
     /**
      * Given the request passed in by the user, set the views in the layout.
      */
-    public void setViews() {
+    private void setViews() {
         // Set up the fare
         Currency localCurrency = Currency.getInstance( Locale.getDefault() );
         String price = localCurrency.getSymbol() + FareCalculator.toString(request.getFare());

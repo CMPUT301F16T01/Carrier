@@ -2,22 +2,15 @@ package comcmput301f16t01.github.carrier.Requests;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.ColorFilter;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Toast;
-
 import com.google.gson.Gson;
-
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
@@ -59,15 +52,15 @@ import comcmput301f16t01.github.carrier.R;
  * <p>Retrieved on: November 24th, 2016</p>
  */
 public class ViewLocationsActivity extends AppCompatActivity {
-    final Activity activity = ViewLocationsActivity.this;
+    private final Activity activity = ViewLocationsActivity.this;
     private CarrierLocation start = null;
     private CarrierLocation end = null;
-    String type = null;
-    GeoPoint startPoint = null;
-    GeoPoint endPoint = null;
-    Road[] roadList = null;
-    MapView map;
-    Bundle bundle = new Bundle();
+    private String type = null;
+    private GeoPoint startPoint = null;
+    private GeoPoint endPoint = null;
+    private Road[] roadList = null;
+    private MapView map;
+    private Bundle bundle = new Bundle();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

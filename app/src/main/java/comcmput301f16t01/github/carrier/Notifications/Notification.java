@@ -14,16 +14,16 @@ import io.searchbox.annotations.JestId;
  */
 public class Notification implements Comparable<Notification> {
     /** The username of the user to be notified */
-    protected String username;
+    private String username;
 
     /** The JestId of the request this notification references */
-    protected String requestID;
+    private String requestID;
 
     /** True if the notification is marked as read */
-    protected boolean read;
+    private boolean read;
 
     /** True if the person to be notified is the rider of the request */
-    protected boolean isRider;
+    private boolean isRider;
 
     /** The time the notification was created (for sorting purposes) */
     protected Date date;
@@ -71,16 +71,16 @@ public class Notification implements Comparable<Notification> {
     /** @return The string representation of a notification. */
     @Override
     public String toString() {
-        String notifString = "";
+        String notifyString = "";
         if (!read) {
-            notifString += "New!\n";
+            notifyString += "New!\n";
         }
         if (isRider) {
-            notifString += "A driver has offered to accept your request!";
+            notifyString += "A driver has offered to accept your request!";
         } else {
-            notifString += "A rider has accepted your offer to drive!";
+            notifyString += "A rider has accepted your offer to drive!";
         }
-        return notifString;
+        return notifyString;
     }
 
     /**

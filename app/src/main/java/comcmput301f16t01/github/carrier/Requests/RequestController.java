@@ -546,7 +546,7 @@ public class RequestController {
      * Caches the requests that the driver has searched for.
      * @param append Boolean to tell us if we want to append or replace the saved search results
      */
-    public static void saveSearchResults(boolean append) {
+    private static void saveSearchResults(boolean append) {
         RequestList saveList = new RequestList();
         // we only want to save the 50 most recent search results
         saveList.setMaxArraySize(50);
@@ -583,7 +583,7 @@ public class RequestController {
     /**
      * For offline functionality. Loads the cached search results.
      */
-    public static void loadSearchResults() {
+    private static void loadSearchResults() {
         try {
             FileInputStream fis = saveContext.openFileInput(SEARCH_FILENAME);
             BufferedReader in = new BufferedReader(new InputStreamReader(fis));
@@ -658,7 +658,7 @@ public class RequestController {
     /**
      * For offline functionality. Loads the cached rider requests.
      */
-    public static void loadRiderRequests() {
+    private static void loadRiderRequests() {
         FileInputStream fis = null;
         try {
             fis = saveContext.openFileInput(RIDER_FILENAME);
@@ -677,7 +677,7 @@ public class RequestController {
     /**
      * Append to the cached rider requests.
      */
-    public static void appendRiderRequests(Request request) {
+    private static void appendRiderRequests(Request request) {
         Gson gson = new Gson();
         try {
             FileOutputStream fos = saveContext.openFileOutput(OFFLINE_REQUEST_FILENAME, 0);
@@ -712,7 +712,7 @@ public class RequestController {
     /**
      * For offline functionality. Loads the cached driver offered requests.
      */
-    public static void loadDriverOfferedRequests() {
+    private static void loadDriverOfferedRequests() {
         try {
             FileInputStream fis = saveContext.openFileInput(DRIVER_FILENAME);
             BufferedReader in = new BufferedReader(new InputStreamReader(fis));
@@ -748,7 +748,7 @@ public class RequestController {
     /**
      * For offline functionality. Loads the offlineRiderRequests from file into the controller.
      */
-    public static void loadOfflineRiderRequests() {
+    private static void loadOfflineRiderRequests() {
         try {
             FileInputStream fis = saveContext.openFileInput(OFFLINE_REQUEST_FILENAME);
             BufferedReader in = new BufferedReader(new InputStreamReader(fis));

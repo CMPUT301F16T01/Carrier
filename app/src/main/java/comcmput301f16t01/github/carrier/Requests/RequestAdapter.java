@@ -44,7 +44,7 @@ public class RequestAdapter extends ArrayAdapter<Request> {
         final Request request = requestList.get(position);
 
         if (request != null) {
-            // Get all sub views of requestlist_item
+            // Get all sub views of requestList_item
             TextView endLocTextView = (TextView) v.findViewById(R.id.textView_endLocation);
             TextView startLocTextView = (TextView) v.findViewById(R.id.textView_startLocation);
             TextView priceTextView = (TextView) v.findViewById(R.id.textView_price);
