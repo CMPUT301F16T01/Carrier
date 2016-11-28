@@ -40,13 +40,13 @@ public class LoginActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         try {
-            // If someone is already loggedIn we will enter the app immediatly. If not
+            // If someone is already logged in we will enter the app immediately. If not
             // an IllegalAccessError will be thrown meaning no one is logged in allowing us
             // to tryQuickLogin.
             enterApp(UserController.getLoggedInUser().getUsername());
+        } catch (IllegalAccessError e) {
             // Will check if someone is logged in.
             // If someone is not logged in we can do a tryQuickLogin()
-        } catch (IllegalAccessError e) {
             tryQuickLogin();
         }
     }
