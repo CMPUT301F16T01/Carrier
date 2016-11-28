@@ -56,7 +56,6 @@ public class ElasticRequestController extends ElasticController {
      */
     public static class AddRequestTask extends AsyncTask<Request, Void, Void> {
 
-
         @Override
         protected Void doInBackground(Request... requests) {
             verifySettings();

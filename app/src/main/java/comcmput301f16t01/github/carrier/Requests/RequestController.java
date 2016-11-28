@@ -486,11 +486,14 @@ public class RequestController {
                     request.getStart().setAddress(getAddress(saveContext, request.getStart().getLatitude(), request.getEnd().getLongitude()));
                     request.getEnd().setAddress(getAddress(saveContext, request.getEnd().getLatitude(), request.getEnd().getLongitude()));
                     requestsToPass[i] = request;
-                    RequestController.getRiderInstance().add(request);
                 }
                 art.execute(requestsToPass);
-                Log.i("ALL REQS", String.valueOf(RequestController.getRiderInstance().size()));
-                RequestController.getOfflineRiderRequests().clear();
+
+                for(Request request : requestsToPass) {
+                    if(request.getOfferedDrivers().size() > 0) {
+                        RequestController.getOfflineRiderRequests().clear();
+                    }
+                }
             }
 
             ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
