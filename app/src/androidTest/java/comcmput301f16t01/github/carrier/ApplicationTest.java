@@ -54,11 +54,9 @@ import android.test.ApplicationTestCase;
  * Searching =======================================================================================
  * US 04.01.01 [Browse reqeusts by geo-location]
  * @see SearchingTests#testDriverSearchByLocation()
- * @see SearchingTests#testDriverSearchByKeywordWithConfirmed()
  *
  * US 04.02.01 [Browse by keyword]
  * @see SearchingTests#testDriverSearchByKeyword()
- * @see SearchingTests#testDriverSearchByKeywordWithConfirmed()
  *
  * US 04.03.01
  * @see SearchingTests#testPriceFiltering()
