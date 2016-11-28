@@ -1,6 +1,8 @@
 package comcmput301f16t01.github.carrier.Requests;
 
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.util.Log;
 
@@ -24,8 +26,15 @@ import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
 /**
- * Uses a singleton pattern to store information about three types of requests. (Request requested,
- * requests offered to complete, and requests searched for.
+ * <p>Uses a singleton pattern to store information about three types of requests. (Request requested,
+ * requests offered to complete, and requests searched for.</p>
+ * </br>
+ * <p>See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#requestcontroller">RequestController</a></p>
+ * </br>
+ * <p>Based on: <a href="http://stackoverflow.com/questions/26217983/osmdroid-bonus-pack-reverse-geolocation">osmdroid bonus pack reverse geolocation</a></p>
+ * <p>Author: <a href="http://stackoverflow.com/users/4095382/cristina">cristina</a></p>
+ * <p>Posted on: October 6th, 2014</p>
+ * <p>Retrieved on: November 11th, 2016</p>
  */
 public class RequestController {
     /** Holds requests where the rider has requested a ride. */
@@ -383,7 +392,10 @@ public class RequestController {
                 // Convert to an array since async tasks don't take in array lists as arguments.
                 Request[] requestsToPass = new Request[RequestController.getOfflineRiderRequests().size()];
                 for (int i = 0; i < RequestController.getOfflineRiderRequests().size(); i++) {
-                    requestsToPass[i] = RequestController.getOfflineRiderRequests().get(i);
+                    Request request = RequestController.getOfflineRiderRequests().get(i);
+                    request.getStart().setAddress(getAddress(saveContext, request.getStart().getLatitude(), request.getEnd().getLongitude()));
+                    request.getEnd().setAddress(getAddress(saveContext, request.getEnd().getLatitude(), request.getEnd().getLongitude()));
+                    requestsToPass[i] = request;
                 }
                 art.execute(requestsToPass);
                 // Empty the offline RequestList and save an empty file
@@ -400,6 +412,38 @@ public class RequestController {
             gort.withAsync = true;
             gort.execute( UserController.getLoggedInUser().getUsername());
         }
+    }
+
+
+    /**
+     * Get address string from a geo point
+     *
+     * @return the address as a string.
+     */
+    // see code attribution
+    public static String getAddress(Context context, double latitude, double longitude) {
+        String pointAddress;
+        try {
+            Geocoder geocoder = new Geocoder(context);
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            StringBuilder sb = new StringBuilder();
+            if(addresses.size() > 0) {
+                Address address = addresses.get(0);
+                int n = address.getMaxAddressLineIndex();
+                for(int i = 0; i <= n; i++) {
+                    if(i != 0) {
+                        sb.append("\n");
+                    }
+                    sb.append(address.getAddressLine(i));
+                }
+                pointAddress = new String(sb);
+            } else {
+                pointAddress = "";
+            }
+        } catch (Exception e) {
+            pointAddress = "";
+        }
+        return pointAddress;
     }
 
     /**
