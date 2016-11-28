@@ -79,8 +79,6 @@ public class MainActivity extends AppCompatActivity {
     // TODO please comment this. Why is it here?
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -394,6 +392,7 @@ public class MainActivity extends AppCompatActivity {
 
                     // We first check if there is connection, if not, we stop refreshing and
                     // inform them that we cannot perform a live update.
+
                     if(!ConnectionChecker.isConnected(getContext())) {
                         Toast.makeText(getContext(), "You have no network connection!", Toast.LENGTH_SHORT ).show();
                         srl.setRefreshing( false );
@@ -427,7 +426,6 @@ public class MainActivity extends AppCompatActivity {
 
                     // Perform the async update with the listener in place to stop the refresh
                     // symbol when the async tasks have finished.
-
                     RequestController.performAsyncUpdate();
                 }
             });
@@ -545,5 +543,4 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
-
 }

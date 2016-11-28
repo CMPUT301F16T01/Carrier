@@ -82,7 +82,6 @@ public class LoginActivity extends AppCompatActivity {
                 adb.setPositiveButton( "OK", null );
             } else {
                 enterApp( username );
-                Toast.makeText(this, "Logged in online", Toast.LENGTH_LONG).show();
             }
             /*
             If the user is offline, login the user from file.
@@ -91,7 +90,6 @@ public class LoginActivity extends AppCompatActivity {
             User cachedUser = lm.loadUser();
             UserController.offlineLogInUser(cachedUser.getUsername(), cachedUser);
             enterApp(cachedUser.getUsername());
-            Toast.makeText(this, "Logged in offline", Toast.LENGTH_LONG).show();
         }
     }
 

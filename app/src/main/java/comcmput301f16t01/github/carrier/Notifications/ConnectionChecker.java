@@ -55,10 +55,9 @@ public class ConnectionChecker {
          * false.
          */
         protected Boolean doInBackground(Void... params) {
-            URL team1URL = null;
             // Try making an http request to our index on elastic search
             try {
-                team1URL = new URL("http://cmput301.softwareprocess.es:8080/cmput301f16t01");
+                URL team1URL = new URL("http://cmput301.softwareprocess.es:8080/cmput301f16t01");
                 HttpURLConnection urlConnection = (HttpURLConnection) team1URL.openConnection();
                 // Websites return status code 200 (HTTP_OK in this API) when you've successfully connected to them
                 return urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK;
@@ -84,4 +83,6 @@ public class ConnectionChecker {
         }
         return isInternet;
     }
+
+
 }

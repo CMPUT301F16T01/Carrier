@@ -55,6 +55,7 @@ public class ElasticRequestController {
      */
     public static class AddRequestTask extends AsyncTask<Request, Void, Void> {
 
+
         @Override
         protected Void doInBackground(Request... requests) {
             verifySettings();
@@ -300,6 +301,15 @@ public class ElasticRequestController {
             // Perform our update on the UI thread
             if (withAsync) {
                 RequestController.getRiderInstance().replaceList( requests );
+                if (RequestController.getOfflineRiderRequests().size() > 0) {
+                    for (Request request : RequestController.getOfflineRiderRequests()) {
+                        if (!RequestController.getRiderInstance().contains(request.getId())) {
+                            RequestController.getRiderInstance().add(request);
+                        }
+                    }
+                }
+                RequestController.getOfflineRiderRequests().clear();
+                RequestController.saveOfflineRiderRequests();
                 // Save any updated rider requests
                 RequestController.saveRiderRequests();
                 notifyListener();

@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -36,6 +37,7 @@ import org.osmdroid.views.overlay.OverlayItem;
 
 import java.util.List;
 
+import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.ViewLocationsActivity;
 import comcmput301f16t01.github.carrier.Searching.SearchResultsActivity;
@@ -66,11 +68,6 @@ import static com.google.android.gms.common.api.GoogleApiClient.*;
  * <p>Author: <a href="http://stackoverflow.com/users/4558709/antonio">antonio</a></p>
  * <p>Posted on: June 23rd, 2016</p>
  * <p>Retrieved on: November 9th, 2016</p>
- * </br>
- * <p>Based on: <a href="http://stackoverflow.com/questions/26217983/osmdroid-bonus-pack-reverse-geolocation">osmdroid bonus pack reverse geolocation</a></p>
- * <p>Author: <a href="http://stackoverflow.com/users/4095382/cristina">cristina</a></p>
- * <p>Posted on: October 6th, 2014</p>
- * <p>Retrieved on: November 11th, 2016</p>
  */
 public class SetLocationsActivity extends AppCompatActivity implements ConnectionCallbacks,
         OnConnectionFailedListener, MapEventsReceiver {
@@ -122,6 +119,15 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
             if(intent.hasExtra("endLocation")) {
                 lastBundle.putString("endLocation",bundle.getString("endLocation"));
             }
+        }
+
+        // If the user is offline and the point is start, tell them that the map is a bit slow
+        if (!ConnectionChecker.isThereInternet() && (point.equals("start")) || point.equals("search")) {
+            AlertDialog.Builder adb = new AlertDialog.Builder(this);
+            adb.setTitle("Offline");
+            adb.setMessage("While you're offline the speed of some functionality may be limited.");
+            adb.setPositiveButton("Okay", null);
+            adb.show();
         }
 
         // Create an instance of GoogleAPIClient.
@@ -185,8 +191,7 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
             public void onMarkerDragEnd(Marker marker) {
                 locationPoint.setLatitude(marker.getPosition().getLatitude());
                 locationPoint.setLongitude(marker.getPosition().getLongitude());
-                locationPoint.setAddress(getAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
-                locationPoint.setShortAddress(getShortAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
+                locationPoint.setAddress(RequestController.getAddress(activity, locationPoint.getLatitude(), locationPoint.getLongitude()));
             }
 
             @Override
@@ -248,8 +253,7 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         }
         locationPoint.setLatitude(geoPoint.getLatitude());
         locationPoint.setLongitude(geoPoint.getLongitude());
-        locationPoint.setAddress(getAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
-        locationPoint.setShortAddress(getShortAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
+        locationPoint.setAddress(RequestController.getAddress(activity, locationPoint.getLatitude(), locationPoint.getLongitude()));
         setLocationMarker(map, geoPoint);
         return true;
     }
@@ -273,8 +277,7 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         }
         locationPoint.setLatitude(geoPoint.getLatitude());
         locationPoint.setLongitude(geoPoint.getLongitude());
-        locationPoint.setAddress(getAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
-        locationPoint.setShortAddress(getShortAddress(locationPoint.getLatitude(), locationPoint.getLongitude()));
+        locationPoint.setAddress(RequestController.getAddress(activity, locationPoint.getLatitude(), locationPoint.getLongitude()));
         setLocationMarker(map, geoPoint);
         return true;
     }
@@ -304,7 +307,6 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
                 lastBundle.putString("endLocation", intent.getStringExtra("endLocation"));
                 forwardIntent.putExtras(lastBundle);
                 activity.finish();
-                Toast.makeText(activity, "Route set", Toast.LENGTH_LONG).show();
                 startActivity(forwardIntent);
             }
         }
@@ -348,61 +350,6 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         } else {
             Toast.makeText(activity, "You must first choose a location", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    /**
-     * Get address string from a geo point
-     *
-     * @return the address as a string.
-     */
-    // see code attribution
-    private String getAddress(double latitude, double longitude) {
-        String pointAddress;
-        try {
-            Geocoder geocoder = new Geocoder(activity);
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            StringBuilder sb = new StringBuilder();
-            if(addresses.size() > 0) {
-                Address address = addresses.get(0);
-                int n = address.getMaxAddressLineIndex();
-                for(int i = 0; i <= n; i++) {
-                    if(i != 0) {
-                        sb.append("\n");
-                    }
-                    sb.append(address.getAddressLine(i));
-                }
-                pointAddress = new String(sb);
-            } else {
-                pointAddress = null;
-            }
-        } catch (Exception e) {
-            pointAddress = null;
-        }
-        return pointAddress;
-    }
-
-    /**
-     * Get short address string from a geo point
-     *
-     * @see #getAddress(double, double)
-     *
-     * @return A shorter version of the address (compared to getAddress)
-     */
-    private String getShortAddress(double latitude, double longitude) {
-        String pointAddress;
-        try {
-            Geocoder geocoder = new Geocoder(activity);
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            StringBuilder sb = new StringBuilder();
-            if(addresses.size() > 0) {
-                Address address = addresses.get(0);
-                sb.append(address.getAddressLine(0));
-            }
-            pointAddress = new String(sb);
-        } catch (Exception e) {
-            pointAddress = null;
-        }
-        return pointAddress;
     }
 
     /**

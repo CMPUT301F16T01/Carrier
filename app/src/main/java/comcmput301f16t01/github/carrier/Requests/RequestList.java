@@ -39,4 +39,13 @@ public class RequestList extends ArrayList<Request> {
         this.addAll( newList );
         notifyListeners();
     }
+
+    public boolean contains(String id) {
+        for (Request request : this) {
+            if (request.getId().equals(id)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
