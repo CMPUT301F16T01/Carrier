@@ -122,7 +122,7 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         }
 
         // If the user is offline and the point is start, tell them that the map is a bit slow
-        if (!ConnectionChecker.isThereInternet() && (point.equals("start")) || point.equals("search")) {
+        if (!ConnectionChecker.isThereInternet() && (point.equals("start") || point.equals("search"))) {
             AlertDialog.Builder adb = new AlertDialog.Builder(this);
             adb.setTitle("Offline");
             adb.setMessage("While you're offline the speed of some functionality may be limited.");
