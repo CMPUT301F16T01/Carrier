@@ -13,7 +13,7 @@ import android.widget.TextView;
 import comcmput301f16t01.github.carrier.R;
 
 /**
- * This TextView is specifically used for usernames. It contains logic that highlights on touch
+ * This TextView is specifically used for username. It contains logic that highlights on touch
  * and redirects the user to the profile of the username that was touched.
  */
 public class UsernameTextView extends TextView {
@@ -60,7 +60,7 @@ public class UsernameTextView extends TextView {
     public void toProfile(User userToProfile) {
         Intent intent = new Intent(getContext(), UserProfileActivity.class);
         Bundle bundle = new Bundle();
-        // packs the parcel with a user so that userprofile knows which to load.
+        // packs the parcel with a user so that userProfile knows which to load.
         bundle.putParcelable("user", userToProfile);
         intent.putExtras(bundle);
         // onward!

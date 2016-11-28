@@ -109,7 +109,7 @@ public class UserProfileActivity extends AppCompatActivity {
         usernameTextView.setKeyListener(null);
 
         /*If profile being viewed is not the logged in user's, the edit buttons are hidden and are
-        unclickable.
+         * unClickable.
          */
         if (!user.getUsername().equals(UserController.getLoggedInUser().getUsername())) {
             ImageButton phoneEditButton = (ImageButton) findViewById(R.id.ImageButton_phoneEditIcon);

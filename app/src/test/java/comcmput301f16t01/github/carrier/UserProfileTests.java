@@ -9,7 +9,7 @@ import comcmput301f16t01.github.carrier.Users.UserController;
 import static org.junit.Assert.*;
 
 /**
- * Created by meind on 2016-10-11.
+ * This will test things about user proifle
  */
 
 public class UserProfileTests {
@@ -115,7 +115,7 @@ public class UserProfileTests {
      * As a user, I want to, when a username is presented for a thing, retrieve and show its contact information.
      * Related: US 03.03.01
      *
-     * a rider will only ever see other drivers usernames. Therefore when they are going through
+     * A rider will see a driver username. Therefore when they are going through
      * the request we just have to find the first driver and give up that info
      */
     @Test
