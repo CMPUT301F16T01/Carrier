@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
+import comcmput301f16t01.github.carrier.Requests.RequestList;
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
@@ -57,6 +58,14 @@ public class TestDataGenerator extends ApplicationTest {
 
         RequestController.addRequest( requestOne );
 
+        RequestList requestList = RequestController.fetchAllRequestsWhereRider( userOne );
+        int pass = 0;
+        while (requestList.size() == 0) {
+            requestList = RequestController.fetchAllRequestsWhereRider( userOne );
+            pass++;
+            if (pass > 5) { fail(); }
+        }
+
     }
 
     /**
@@ -67,5 +76,7 @@ public class TestDataGenerator extends ApplicationTest {
         for ( User user : userList ) {
             UserController.deleteUser( user.getUsername() );
         }
+
+        RequestController.clearAllRiderRequests( userOne );
     }
 }
