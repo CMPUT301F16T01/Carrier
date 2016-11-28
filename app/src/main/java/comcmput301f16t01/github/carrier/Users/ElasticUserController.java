@@ -9,6 +9,7 @@ import com.searchly.jestdroid.JestDroidClient;
 
 import java.io.IOException;
 
+import comcmput301f16t01.github.carrier.ElasticController;
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 import io.searchbox.core.DeleteByQuery;
@@ -19,12 +20,10 @@ import io.searchbox.core.SearchResult;
 import io.searchbox.core.Update;
 
 /**
- * Created by Ben on 2016-10-27.
+ * Handles user operations in elastic search.
+ * @see ElasticController
  */
-
-public class ElasticUserController {
-    private static JestDroidClient client;
-
+public class ElasticUserController extends ElasticController {
     /** Called to add a user to elastic search */
     public static class AddUserTask extends AsyncTask<User, Void, Void> {
 
@@ -144,18 +143,5 @@ public class ElasticUserController {
             return null;
         }
 
-    }
-
-    /** Sets up the client to be used for Elastic Search */
-    private static void verifySettings() {
-        if (client == null) {
-            DroidClientConfig.Builder builder =
-                    new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");
-            DroidClientConfig config = builder.build();
-
-            JestClientFactory factory = new JestClientFactory();
-            factory.setDroidClientConfig(config);
-            client = (JestDroidClient) factory.getObject();
-        }
     }
 }

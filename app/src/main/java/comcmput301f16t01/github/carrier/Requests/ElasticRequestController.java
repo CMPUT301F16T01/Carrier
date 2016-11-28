@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
+import comcmput301f16t01.github.carrier.ElasticController;
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Listener;
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
@@ -30,10 +31,9 @@ import io.searchbox.core.Update;
 
 /**
  * Handles elastic search tasks with requests.
+ * @see ElasticController
  */
-public class ElasticRequestController {
-    private static JestDroidClient client;
-
+public class ElasticRequestController extends ElasticController {
     /**
      * This listener listens to the two major fetch request tasks (offered requests, and requested
      * requests). When either of the tasks are finished in async mode, it will notify this listener.
@@ -563,7 +563,7 @@ public class ElasticRequestController {
             }
             // Now we get a list of requests where the driver is the confirmed driver since
             // there is no offer for a request that has been confirmed.
-            List<Request> requests = result.getSourceAsObjectList(Request.class);
+            /*List<Request> requests = result.getSourceAsObjectList(Request.class);
             if (requests != null) {
                 for(Request request: requests) {
                     // Make sure the the request does not have null objects.
@@ -572,7 +572,7 @@ public class ElasticRequestController {
                         foundRequests.add(request);
                     }
                 }
-            }
+            }*/
             return foundRequests;
         }
 
@@ -588,8 +588,8 @@ public class ElasticRequestController {
                     // TODO prune ones that no longer relate to a driver? (i.e. cancelled)
                     String query =
                             "{ \"from\": 0, \"size\": 1,\n" +
-                                    "    \"query\": { \"match\": { \"_id\": \"" + offer.getRequestID() + "\" } }\n" +
-                                    "}";
+                            "    \"query\": { \"match\": { \"_id\": \"" + offer.getRequestID() + "\" } }\n" +
+                            "}";
 
                     Search search = new Search.Builder(query)
                             .addIndex("cmput301f16t01")
@@ -600,6 +600,8 @@ public class ElasticRequestController {
                         SearchResult result = client.execute(search);
                         if (result.isSucceeded()) {
                             requestList.add(result.getSourceAsObject(Request.class));
+                            Log.i("Offer ID", offer.getRequestID());
+                            Log.i("RL from ES", String.valueOf(requestList.contains(offer.getRequestID())));
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -607,11 +609,23 @@ public class ElasticRequestController {
                     }
                 }
             }
-            return requestList;
+            RequestList filteredRequests = new RequestList();
+            Log.i("REQUEST SIZE", String.valueOf(requestList.size()));
+            for(Request request : requestList) {
+                Log.i("REQUEST", request.toString());
+                if (request.getConfirmedDriver() == null) {
+                    filteredRequests.add(request);
+                } else if (request.getConfirmedDriver().getUsername().equals(UserController.getLoggedInUser().getUsername())) {
+                    filteredRequests.add(request);
+                }
+            }
+            Log.i("FILTER REQUEST", filteredRequests.toString());
+            return filteredRequests;
         }
 
         @Override
         protected void onPostExecute(RequestList requests) {
+            Log.i("REQUESTS INSIDE", requests.toString());
             // Perform result update on UI thread if there is internet
             if (ConnectionChecker.isThereInternet()) {
                 if (withAsync) {
@@ -621,6 +635,7 @@ public class ElasticRequestController {
                     RequestController.loadDriverOfferCommands();
                     // if there are offline offer commands that must be posted, post them
                     if(RequestController.getOfflineDriverOfferCommands().size() > 0) {
+                        Log.i("Offline requests", String.valueOf(RequestController.getOfflineDriverOfferCommands().size()));
                         RequestList offlineRequests = new RequestList();
                         Iterator<OfferCommand> iterator = RequestController.getOfflineDriverOfferCommands().iterator();
                         while(iterator.hasNext()) {
@@ -635,6 +650,7 @@ public class ElasticRequestController {
                         RequestController.getOfflineDriverOfferCommands().clear();
                         RequestController.saveDriverOfferCommands();
                     }
+                    Log.i("Requests", String.valueOf(RequestController.getOffersInstance().size()));
                     // Save any updated driver requests
                     RequestController.saveDriverOfferedRequests();
                     notifyListener();
@@ -769,20 +785,5 @@ public class ElasticRequestController {
             filteredRequests.add( request );
         }
         foundRequests.replaceList( filteredRequests );
-    }
-
-    /**
-     * Opens a connection to the elastic search server.
-     */
-    static void verifySettings() {
-        if (client == null) {
-            DroidClientConfig.Builder builder =
-                    new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");
-            DroidClientConfig config = builder.build();
-
-            JestClientFactory factory = new JestClientFactory();
-            factory.setDroidClientConfig(config);
-            client = (JestDroidClient) factory.getObject();
-        }
     }
 }
