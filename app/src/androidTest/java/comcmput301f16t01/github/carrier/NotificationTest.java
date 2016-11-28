@@ -35,15 +35,8 @@ public class NotificationTest extends ApplicationTest {
 
     // Set up a test user to receive notifications
     private void setUpUser() {
-        String result = UserController.checkValidInputs(loggedInUser.getUsername(),
-                loggedInUser.getEmail(), loggedInUser.getPhone());
-
-        if (result == null) {
-            System.out.print( "null line" );
-        } else {
-            UserController.createNewUser(loggedInUser.getUsername(),
-                    loggedInUser.getEmail(), loggedInUser.getPhone(), loggedInUser.getVehicleDescription());
-        }
+        UserController.createNewUser(loggedInUser.getUsername(),
+                loggedInUser.getEmail(), loggedInUser.getPhone(), loggedInUser.getVehicleDescription());
     }
 
     /**
@@ -59,6 +52,8 @@ public class NotificationTest extends ApplicationTest {
         ElasticRequestController.RemoveOffersTask rot = new ElasticRequestController.RemoveOffersTask();
         rot.setMode( rot.MODE_USERNAME );
         rot.execute(loggedInUser.getUsername(), driverOne.getUsername(), anotherUser.getUsername());
+
+        UserController.deleteUser(loggedInUser.getUsername());
 
         UserController.logOutUser();
 
@@ -250,7 +245,7 @@ public class NotificationTest extends ApplicationTest {
 
         nc.clearAllNotifications( driverOne );
 
-        Request newRequest = new Request( UserController.getLoggedInUser(),
+        Request newRequest = new Request( loggedInUser,
                 new CarrierLocation(), new CarrierLocation(), "testDriverGetNotified" );
 
         // Unnecessary clutter for request elastic search, and irrelevant to this test (?)
@@ -270,16 +265,16 @@ public class NotificationTest extends ApplicationTest {
 
         // wait for async tasks to finish loop.
         int pass = 0;
-        while( notificationList.size() == 0 ) {
-            chillabit();
+        while( notificationList.size() != 1 ) {
             notificationList = nc.fetchNotifications( driverOne );
+            chillabit();
             pass++;
             if (pass > 5) { break; }
         }
 
         //nc.clearAllNotifications( driverOne );
 
-        assertTrue( "The driver should have one and only one notification.",
+        assertTrue( "The driver should have one and only one notification. Got:" + notificationList.size(),
                 notificationList.size() == 1);
     }
 
@@ -342,8 +337,8 @@ public class NotificationTest extends ApplicationTest {
             if ( notificationList.get(0).isRead() != notificationList.get(1).isRead() ) {
                 break;
             }
-            chillabit();
             notificationList = nc.fetchNotifications( loggedInUser );
+            chillabit();
             pass++;
             if (pass > 5) { break; }
         }
@@ -356,7 +351,7 @@ public class NotificationTest extends ApplicationTest {
         }
     }
 
-    /** TESTt * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+    /** TEST6 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      * Test that we can delete or get more than 10 notifications in one call
      */

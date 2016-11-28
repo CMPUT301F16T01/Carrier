@@ -1,0 +1,129 @@
+package comcmput301f16t01.github.carrier;
+
+import android.location.Address;
+import android.location.Geocoder;
+
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Locale;
+
+import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
+import comcmput301f16t01.github.carrier.Requests.Request;
+import comcmput301f16t01.github.carrier.Requests.RequestController;
+import comcmput301f16t01.github.carrier.Requests.RequestList;
+import comcmput301f16t01.github.carrier.Users.User;
+import comcmput301f16t01.github.carrier.Users.UserController;
+
+/**
+ * You may generate test data to have while using the app using the top test. To remove the data
+ * you can use the second test.
+ */
+
+public class TestDataGenerator extends ApplicationTest {
+    private User userOne = new User( "BriskBen95", "Ben_H@gmail.com", "(526)-989-2501", "Clean sky blue coupe with a sunroof.");
+    private User userTwo = new User( "JLynch", "jim.lynch75@yahoo.ca", "(342)-861-7675", "Pale gold convertible with a lowered body and tinted windows." );
+    private User userThree = new User( "C_Bradley", "celi_b27@gmail.com", "(213)-700-9383", "Green sedan, license plate: 'TONI JO'" );
+    private User userFour = new User( "FPerkins", "perkins78@hotmail.com", "(584)-655-5126", "Yellow crossover with a silver artsy decal. Hula dancer bobble head on dashboard." );
+    private User userFive = new User( "Lillie.E", "evans_lillie@yahoo.co.jp", "(916)-343-4874", "Black 2015 Fiat 500C convertible, just washed" );
+    private User userSix = new User( "Eli_G", "e.gilbert72@hotmail.ca", "(822)-277-6434", "Red Porsche Cayenne GTS" );
+    private User userSeven = new User( "J.Welch", "JWelch@EdmontonHousingLtd.ca", "(207)-746-8954", "The little blue Volkswagen bus" );
+    private User userEight = new User( "Wade", "whopkins51@gmail.com", "(824)-535-5663", "White and black 1988 Porsche 911 g50" );
+    private User userNine = new User( "Riveras", "a_rivera@hotmail.com", "(560)-210-4866", "Brownish Ford F-150" );
+    private User userTen = new User( "WillardD", "davis_w@gmail.com", "(867)-437-3270", "1971 burnt orange Buick Skylark" );
+    private User userEleven = new User( "SWallace", "swallace15@yahoo.ca", "(309)-537-6899", "White Daihatsu truck" );
+    private User userTwelve = new User( "Jamie_W", "watkins87@gmail.com", "(362)-338-6168", "2012 Bugatti Veyron Grand Sport" );
+    private User[] userList = { userOne, userTwo, userThree, userFour, userFive, userSix, userSeven,
+            userEight, userNine, userTen, userEleven, userTwelve };
+
+    /* Edmonton Locations */
+    CarrierLocation epcorTower = new CarrierLocation( 53.5475, -113.4928 );
+    CarrierLocation universityOfAlberta = new CarrierLocation( 53.5232, -113.5263 );
+    CarrierLocation centuryPark = new CarrierLocation( 53.4577, -113.5164 );
+    CarrierLocation westEdmontonMall = new CarrierLocation( 53.5225, -113.6242 );
+    CarrierLocation rogerPlace = new CarrierLocation( 53.5469, -113.6242 );
+    CarrierLocation collegePlaza = new CarrierLocation( 53.5187, -113.5202 );
+    CarrierLocation southGate = new CarrierLocation( 53.4855, -113.5140 );
+    CarrierLocation kingswayMall = new CarrierLocation( 53.5627, -113.5055 );
+    CarrierLocation thePearl = new CarrierLocation( 53.5406, -113.5287 );
+    CarrierLocation japaneseRestaurant = new CarrierLocation( 53.5413, -113.5254 );
+    CarrierLocation macewan = new CarrierLocation( 53.5471, -113.5066 );
+    CarrierLocation churchillSquare = new CarrierLocation( 53.5442, -113.4898 );
+    CarrierLocation oldStrathcona = new CarrierLocation( 53.5178, -113.4967 );
+    CarrierLocation edmIntlAirport = new CarrierLocation( 53.3075, -113.5844 );
+    CarrierLocation fortEdmontonPark = new CarrierLocation( 53.5038, -113.5729 );
+
+    /* Requests we generate during the test */
+    private ArrayList<Request> requests = new ArrayList<>();
+
+    /**
+     * Generates a request with the given data, adds it to the request arraylist.
+     */
+    private Request generateRequest( User user, CarrierLocation start, CarrierLocation end, String description ) {
+        float[] floatDistance = new float[1];
+        CarrierLocation.distanceBetween( start.getLatitude(), start.getLongitude(), end.getLatitude(), end.getLongitude(), floatDistance);
+        Request request = new Request( user, start, end, description );
+        request.setDistance( floatDistance[0]/1000 );
+        request.getStart().setAddress( RequestController.getAddress( getSystemContext(), start.getLatitude(), start.getLongitude()));
+        request.getEnd().setAddress( RequestController.getAddress( getSystemContext(), end.getLatitude(), end.getLongitude()));
+        request.setFare( FareCalculator.getEstimate( floatDistance[0]/1000, floatDistance[0] * 60 * 60 / (1000 * 45)  ));
+        requests.add(request);
+        return request;
+    }
+
+    /**
+     * Removes the data generated by testPostData.
+     */
+    public void testRemoveData() {
+        // remove generated profiles
+        for (User user : userList) {
+            ElasticRequestController.ClearRiderRequestsTask crrt = new ElasticRequestController.ClearRiderRequestsTask();
+            crrt.execute( user.getUsername() );
+            UserController.deleteUser(user.getUsername());
+        }
+
+        RequestList requestList = RequestController.fetchAllRequestsWhereRider( userTwelve );
+        int pass = 0;
+        while (requestList.size() != 0 ) {
+            requestList = RequestController.fetchAllRequestsWhereRider( userTwelve );
+            pass++;
+            if (pass > 5) { fail(); }
+        }
+
+    }
+
+    /**
+     * Generates data for use with a live demo.
+     */
+    public void testPostData() throws IOException {
+        // create profile for all users.
+        for ( User user : userList ) {
+            UserController.createNewUser( user.getUsername(), user.getEmail(), user.getPhone(), user.getVehicleDescription() );
+            UserController.logOutUser();
+        }
+
+        RequestController.addRequest(generateRequest(userOne, epcorTower, thePearl, "I want to go home from from working in downtown Edmonton" ));
+        RequestController.addRequest(generateRequest(userTwo, centuryPark, churchillSquare, "I want to go to downtown Edmonton to see the festivals"));
+        RequestController.addRequest(generateRequest(userTwo, japaneseRestaurant, centuryPark, "After my night out I want a ride home from downtown Edmonton :)"));
+        RequestController.addRequest(generateRequest(userThree, macewan, westEdmontonMall, "After university I want to go to the mall and do some shopping at west Edmonton mall ( WEM )"));
+        RequestController.addRequest(generateRequest(userFour, universityOfAlberta, collegePlaza, "I need some caffeine to stay awake for university. Can I get a ride to Starbucks?"));
+        RequestController.addRequest(generateRequest(userFive, kingswayMall, westEdmontonMall, "I need to go do some more shopping at the biggest mall in Canada: WEM!"));
+        RequestController.addRequest(generateRequest(userSix, oldStrathcona, centuryPark, "I want to grab Starbucks before I go home today!"));
+        RequestController.addRequest(generateRequest(userSix, epcorTower, rogerPlace, "I wanna go with my team to see the next big event downtown"));
+        RequestController.addRequest(generateRequest(userSeven, southGate, westEdmontonMall, "I want to go to the better mall of Edmonton. WEM"));
+        RequestController.addRequest(generateRequest(userEight, westEdmontonMall, centuryPark, "I want to get a ride to home from WEM"));
+        RequestController.addRequest(generateRequest(userNine, epcorTower, centuryPark, "I just bombed my interview in downtown Edmonton, can someone give me a ride home?"));
+        RequestController.addRequest(generateRequest(userTen, epcorTower, edmIntlAirport, "I want a ride from work to the Edmonton international airport"));
+        RequestController.addRequest(generateRequest(userEleven, universityOfAlberta, fortEdmontonPark, "I want to go from university to fort Edmonton park for a relaxing day to forget about the depressing reality of school."));
+        RequestController.addRequest(generateRequest(userTwelve, universityOfAlberta, japaneseRestaurant, "I want to go eat some great Japanese food downtown, I need a ride from the university."));
+
+        RequestList requestList = RequestController.fetchAllRequestsWhereRider( userOne );
+        int pass = 0;
+        while (requestList.size() == 0) {
+            requestList = RequestController.fetchAllRequestsWhereRider( userOne );
+            pass++;
+            if (pass > 5) { fail(); }
+        }
+
+    }
+}
