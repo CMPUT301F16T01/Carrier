@@ -31,8 +31,15 @@ import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
 /**
- * Uses a singleton pattern to store information about three types of requests. (Request requested,
- * requests offered to complete, and requests searched for.
+ * <p>Uses a singleton pattern to store information about three types of requests. (Request requested,
+ * requests offered to complete, and requests searched for.</p>
+ * </br>
+ * <p>See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#requestcontroller">RequestController</a></p>
+ * </br>
+ * <p>Based on: <a href="http://stackoverflow.com/questions/26217983/osmdroid-bonus-pack-reverse-geolocation">osmdroid bonus pack reverse geolocation</a></p>
+ * <p>Author: <a href="http://stackoverflow.com/users/4095382/cristina">cristina</a></p>
+ * <p>Posted on: October 6th, 2014</p>
+ * <p>Retrieved on: November 11th, 2016</p>
  */
 public class RequestController {
     /** Holds requests where the rider has requested a ride. */

@@ -66,11 +66,6 @@ import static com.google.android.gms.common.api.GoogleApiClient.*;
  * <p>Author: <a href="http://stackoverflow.com/users/4558709/antonio">antonio</a></p>
  * <p>Posted on: June 23rd, 2016</p>
  * <p>Retrieved on: November 9th, 2016</p>
- * </br>
- * <p>Based on: <a href="http://stackoverflow.com/questions/26217983/osmdroid-bonus-pack-reverse-geolocation">osmdroid bonus pack reverse geolocation</a></p>
- * <p>Author: <a href="http://stackoverflow.com/users/4095382/cristina">cristina</a></p>
- * <p>Posted on: October 6th, 2014</p>
- * <p>Retrieved on: November 11th, 2016</p>
  */
 public class SetLocationsActivity extends AppCompatActivity implements ConnectionCallbacks,
         OnConnectionFailedListener, MapEventsReceiver {
