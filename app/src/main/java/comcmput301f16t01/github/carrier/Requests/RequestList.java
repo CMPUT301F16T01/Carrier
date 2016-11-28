@@ -1,5 +1,7 @@
 package comcmput301f16t01.github.carrier.Requests;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
@@ -108,7 +110,8 @@ public class RequestList extends ArrayList<Request> {
     }
 
     /** Checks if the request is already contained in the requestList. */
-    private boolean contains(String id) {
+    boolean contains(String id) {
+        Log.i("TEST", this.toString());
         for(Request request : this) {
             if(request.getId().equals(id)) {
                 return true;

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
+import comcmput301f16t01.github.carrier.ElasticController;
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Listener;
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
@@ -30,10 +31,9 @@ import io.searchbox.core.Update;
 
 /**
  * Handles elastic search tasks with requests.
+ * @see ElasticController
  */
-public class ElasticRequestController {
-    private static JestDroidClient client;
-
+public class ElasticRequestController extends ElasticController {
     /**
      * This listener listens to the two major fetch request tasks (offered requests, and requested
      * requests). When either of the tasks are finished in async mode, it will notify this listener.
@@ -55,7 +55,6 @@ public class ElasticRequestController {
      * @see RequestController#addRequest(Request)
      */
     public static class AddRequestTask extends AsyncTask<Request, Void, Void> {
-
 
         @Override
         protected Void doInBackground(Request... requests) {
@@ -249,6 +248,13 @@ public class ElasticRequestController {
                 e.printStackTrace();
                 Log.i("Error", "Something went wrong when we tried to talk to elastic search");
             }
+
+            // Load all the offers from these requests
+            getOffers( foundRequests );
+
+            // Filter the requests so that we can't see
+            filterOutLoggedInUser( foundRequests );
+
             return foundRequests;
         }
     }
@@ -450,7 +456,6 @@ public class ElasticRequestController {
                     e.printStackTrace();
                 }
             }
-
             return null;
         }
     }
@@ -555,18 +560,6 @@ public class ElasticRequestController {
             if (offers.size() > 0) {
                 foundRequests = getRequests( offers );
             }
-            // Now we get a list of requests where the driver is the confirmed driver since
-            // there is no offer for a request that has been confirmed.
-            List<Request> requests = result.getSourceAsObjectList(Request.class);
-            if (requests != null) {
-                for(Request request: requests) {
-                    // Make sure the the request does not have null objects.
-                    // This will happen if we try to turn an offer found in the result into a request.
-                    if (request.getStatus() != null && request.getStart() != null) {
-                        foundRequests.add(request);
-                    }
-                }
-            }
             return foundRequests;
         }
 
@@ -582,8 +575,8 @@ public class ElasticRequestController {
                     // TODO prune ones that no longer relate to a driver? (i.e. cancelled)
                     String query =
                             "{ \"from\": 0, \"size\": 1,\n" +
-                                    "    \"query\": { \"match\": { \"_id\": \"" + offer.getRequestID() + "\" } }\n" +
-                                    "}";
+                            "    \"query\": { \"match\": { \"_id\": \"" + offer.getRequestID() + "\" } }\n" +
+                            "}";
 
                     Search search = new Search.Builder(query)
                             .addIndex("cmput301f16t01")
@@ -601,7 +594,15 @@ public class ElasticRequestController {
                     }
                 }
             }
-            return requestList;
+            RequestList filteredRequests = new RequestList();
+            for(Request request : requestList) {
+                if (request.getConfirmedDriver() == null) {
+                    filteredRequests.add(request);
+                } else if (request.getConfirmedDriver().getUsername().equals(UserController.getLoggedInUser().getUsername())) {
+                    filteredRequests.add(request);
+                }
+            }
+            return filteredRequests;
         }
 
         @Override
@@ -763,20 +764,5 @@ public class ElasticRequestController {
             filteredRequests.add( request );
         }
         foundRequests.replaceList( filteredRequests );
-    }
-
-    /**
-     * Opens a connection to the elastic search server.
-     */
-    private static void verifySettings() {
-        if (client == null) {
-            DroidClientConfig.Builder builder =
-                    new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");
-            DroidClientConfig config = builder.build();
-
-            JestClientFactory factory = new JestClientFactory();
-            factory.setDroidClientConfig(config);
-            client = (JestDroidClient) factory.getObject();
-        }
     }
 }

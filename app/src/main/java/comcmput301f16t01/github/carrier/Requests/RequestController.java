@@ -477,6 +477,7 @@ public class RequestController {
              elastic search
               */
             if (RequestController.getOfflineRiderRequests().size() > 0) {
+                Log.i("OFFLINE REQS", String.valueOf(RequestController.getOfflineRiderRequests().size()));
                 ElasticRequestController.AddRequestTask art = new ElasticRequestController.AddRequestTask();
                 // Convert to an array since async tasks don't take in array lists as arguments.
                 Request[] requestsToPass = new Request[RequestController.getOfflineRiderRequests().size()];
@@ -487,8 +488,13 @@ public class RequestController {
                     requestsToPass[i] = request;
                 }
                 art.execute(requestsToPass);
-            }
 
+                for(Request request : requestsToPass) {
+                    if(request.getOfferedDrivers().size() > 0) {
+                        RequestController.getOfflineRiderRequests().clear();
+                    }
+                }
+            }
 
             ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
             frrt.withAsync = true;
