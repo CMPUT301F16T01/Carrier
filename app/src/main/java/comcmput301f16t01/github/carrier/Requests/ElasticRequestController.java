@@ -362,6 +362,9 @@ public class ElasticRequestController {
                 }
                 RequestController.getOfflineRiderRequests().clear();
                 RequestController.saveOfflineRiderRequests();
+                // Save any updated rider requests
+                RequestController.saveRiderRequests();
+                notifyListener();
             }
             super.onPostExecute(requests);
         }
