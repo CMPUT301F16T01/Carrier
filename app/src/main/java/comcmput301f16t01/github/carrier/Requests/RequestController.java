@@ -16,11 +16,9 @@ import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import java.util.ArrayList;
 
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
-import comcmput301f16t01.github.carrier.Users.ElasticUserController;
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
@@ -168,7 +166,7 @@ public class RequestController {
             throw new RuntimeException();
         }
         ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
-        request.setChosenDriver( driver );
+        request.confirmDriver( driver );
         request.setStatus( Request.Status.CONFIRMED );
         requestsWhereOffered.notifyListeners();
 

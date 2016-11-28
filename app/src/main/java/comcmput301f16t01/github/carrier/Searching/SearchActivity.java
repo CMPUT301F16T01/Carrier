@@ -226,7 +226,13 @@ public class SearchActivity extends AppCompatActivity {
      */
     public void searchByAddress(View view) {
         Intent intent = new Intent(activity, SearchAddressChoiceActivity.class);
-        bundleFilters( intent );
+        try {
+            bundleFilters(intent);  // attempt to bundle the price filters
+        } catch (Exception e) {
+            // If there is a failure we can toast the error message to the user.
+            Toast.makeText( getBaseContext(), e.getMessage(), Toast.LENGTH_LONG ).show();
+            return; // escape the routine and do not start the new activity.
+        }
         startActivity(intent);
     }
 }

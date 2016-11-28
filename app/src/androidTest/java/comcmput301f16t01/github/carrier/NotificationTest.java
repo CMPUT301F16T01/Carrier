@@ -35,15 +35,8 @@ public class NotificationTest extends ApplicationTest {
 
     // Set up a test user to receive notifications
     private void setUpUser() {
-        String result = UserController.checkValidInputs(loggedInUser.getUsername(),
-                loggedInUser.getEmail(), loggedInUser.getPhone());
-
-        if (result == null) {
-            System.out.print( "null line" );
-        } else {
-            UserController.createNewUser(loggedInUser.getUsername(),
-                    loggedInUser.getEmail(), loggedInUser.getPhone(), loggedInUser.getVehicleDescription());
-        }
+        UserController.createNewUser(loggedInUser.getUsername(),
+                loggedInUser.getEmail(), loggedInUser.getPhone(), loggedInUser.getVehicleDescription());
     }
 
     /**
@@ -59,6 +52,8 @@ public class NotificationTest extends ApplicationTest {
         ElasticRequestController.RemoveOffersTask rot = new ElasticRequestController.RemoveOffersTask();
         rot.setMode( rot.MODE_USERNAME );
         rot.execute(loggedInUser.getUsername(), driverOne.getUsername(), anotherUser.getUsername());
+
+        UserController.deleteUser(loggedInUser.getUsername());
 
         UserController.logOutUser();
 
@@ -356,7 +351,7 @@ public class NotificationTest extends ApplicationTest {
         }
     }
 
-    /** TESTt * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+    /** TEST6 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      * Test that we can delete or get more than 10 notifications in one call
      */

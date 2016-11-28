@@ -117,11 +117,6 @@ public class Request {
         this.fare = fare;
     }
 
-    public void setChosenDriver(User driver) {
-        this.chosenDriver = driver;
-        setStatus(CONFIRMED);
-    }
-
     public User getChosenDriver() {
         return this.chosenDriver;
     }
@@ -169,11 +164,14 @@ public class Request {
     /** @return The string representation of a request, in plain text. */
     @Override
     public String toString() {
-        return "Request From: " + rider.getUsername() + "\n" +
+        String toStr = "Request From: " + rider.getUsername() + "\n" +
                 "Description: " + description + "\n" +
                 "Price: " + FareCalculator.toString( fare ) + "\n" +
-                "Distance: " + distance + "km\n" +
-                "Price per KM: " + FareCalculator.toString((int) (fare/distance));
+                "Distance: " + Math.round(distance*100)/100 + "km\n";
+        if (distance != 0) {
+            toStr += "Price per KM: " + FareCalculator.toString((int) (fare / distance));
+        }
+        return toStr;
     }
 
     /**

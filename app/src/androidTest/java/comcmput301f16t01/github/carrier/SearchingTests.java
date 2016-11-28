@@ -281,7 +281,17 @@ public class SearchingTests extends ApplicationTest {
 
         RequestController.addDriver(requestThree, driverOne);
         RequestController.confirmDriver(requestThree, driverOne);
-        // TODO more with this? It was left like this.
+
+        pass = 0;
+        RequestController.searchByKeyword(keyword3);
+        while ( RequestController.getResult().get(0).getChosenDriver() == null ) {
+            chillabit(1000);
+            pass++;
+            RequestController.searchByKeyword(keyword3);
+            if (pass > 5) {
+                fail("took too long to find request with chosen driver - request never got a chosen driver");
+            }
+        }
     }
 
     /** Test 4
