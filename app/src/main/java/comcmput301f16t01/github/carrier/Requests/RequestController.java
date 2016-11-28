@@ -267,11 +267,8 @@ public class RequestController {
     }
 
     /**
-<<<<<<< HEAD
      * Used for testing. Clears out all the requested requests for a user
-=======
      * Clears out all the requested requests for a user in elastic search
->>>>>>> f7afec64ae10bae0e52699dd9aa33d1fdea9ca35
      */
     public static void clearAllRiderRequests(User rider) {
         ElasticRequestController.ClearRiderRequestsTask crrt = new ElasticRequestController.ClearRiderRequestsTask();
