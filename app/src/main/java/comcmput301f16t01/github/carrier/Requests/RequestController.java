@@ -58,9 +58,6 @@ public class RequestController {
     /** The file name of the locally saved queue of driver offers. */
     private static final String OFFLINE_OFFERS_FILENAME = "OfflineOffers.sav";
 
-    /** The maximum number of search results returned. */
-    public static final int MAX_SEARCH_RESULTS = 50;
-
     /** The context with which to save */
     private static Context saveContext;
 
@@ -489,19 +486,21 @@ public class RequestController {
 
     /**
      * Caches the requests that the driver has searched for.
+     * @param append Boolean to tell us if we want to append or replace the saved search results
      */
     public static void saveSearchResults(boolean append) {
         RequestList saveList = new RequestList();
+        // we only want to save the 50 most recent search results
+        saveList.setMaxArraySize(50);
         Gson gson = new Gson();
         if(append) {
             try {
                 // get previous search results
                 FileInputStream fis = saveContext.openFileInput(SEARCH_FILENAME);
                 BufferedReader in = new BufferedReader(new InputStreamReader(fis));
-                Type listType = new TypeToken<RequestList>() {
-                }.getType();
+                Type listType = new TypeToken<RequestList>() {}.getType();
                 // Append previous search results
-                saveList.append((RequestList) gson.fromJson(in, listType), MAX_SEARCH_RESULTS);
+                saveList.append((RequestList) gson.fromJson(in, listType));
                 // if we have network connection, check our list to remove unavailable requests
                 if (ConnectionChecker.isThereInternet()) {
                     saveList.verifyAll();
@@ -513,7 +512,7 @@ public class RequestController {
         try {
             FileOutputStream fos = saveContext.openFileOutput(SEARCH_FILENAME, 0);
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
-            saveList.append(searchResult, MAX_SEARCH_RESULTS);
+            saveList.append(searchResult);
             Log.i("Saving",String.valueOf(saveList.size()));
             gson.toJson(saveList, out);
             out.flush();
