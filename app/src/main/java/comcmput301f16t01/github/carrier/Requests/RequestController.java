@@ -12,10 +12,12 @@ import com.google.gson.reflect.TypeToken;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
+import java.nio.channels.FileLockInterruptionException;
 import java.util.List;
 
 import android.support.annotation.NonNull;
@@ -165,7 +167,7 @@ public class RequestController {
         nc.addNotification( request.getRider(), request );
         // TODO add addNotification to queue if offline
         requestsWhereOffered.add( request ); // Notifies offerList views
-        saveDriverOfferedRequests();
+        appendRiderRequests(request);
     }
 
     /**
@@ -480,6 +482,24 @@ public class RequestController {
 
             // Load the rider requests into the controller
             requestsWhereRider.replaceList((RequestList) gson.fromJson(in, listType));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Append to the cached rider requests.
+     */
+    public static void appendRiderRequests(Request request) {
+        Gson gson = new Gson();
+        try {
+            FileOutputStream fos = saveContext.openFileOutput(OFFLINE_REQUEST_FILENAME, 0);
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
+            offlineRiderRequests.add(request);
+            gson.toJson(offlineRiderRequests, out);
+            out.flush();
+            fos.close();
 
         } catch (Exception e) {
             e.printStackTrace();
