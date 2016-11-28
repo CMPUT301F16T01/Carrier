@@ -75,7 +75,7 @@ public class SearchAddressChoiceActivity extends AppCompatActivity {
         });
     }
 
-    private void searchAddress(View view) {
+    public void searchAddress(View view) {
         final List<CarrierLocation> locations = getLocation(searchEditText.getText().toString());
         if(locations != null) {
             locationArrayAdapter = new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, locations);
