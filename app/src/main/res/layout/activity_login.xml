@@ -24,7 +24,7 @@
         android:layout_toEndOf="@+id/CarrierTextView" />
 
     <TextView
-        android:text="Need a ride? :)"
+        android:text="Need a ride?"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/TextView_welcomeMessage"
@@ -75,7 +75,7 @@
         android:layout_marginBottom="37dp" />
 
     <Button
-        android:text="Lets Ride"
+        android:text="Let's Ride"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/button_login"

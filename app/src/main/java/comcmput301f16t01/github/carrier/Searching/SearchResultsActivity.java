@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -36,11 +37,12 @@ public class SearchResultsActivity extends AppCompatActivity {
 
         ListView requestListView = (ListView) findViewById( R.id.listView_searchResults );
 
-        unpackBundle( this.getIntent().getBundleExtra("filterBundle"));
-
         // If the user is offline, show dialog to tell them they are seeing a cache
         if (!ConnectionChecker.isThereInternet()) {
             showOfflineDialog();
+        } else {
+            // we only grab this if we are online (for offline we just grab the search cache)
+            unpackBundle( this.getIntent().getBundleExtra("filterBundle"));
         }
 
         // It shouldn't matter what query we used, the singleton will be up to date with the query when we get here
@@ -92,15 +94,8 @@ public class SearchResultsActivity extends AppCompatActivity {
      */
     private void unpackBundle(Bundle filterBundle) {
         // both will be false by default
-        boolean filterByPrice = false;
-        boolean filterByPricePerKM = false;
-        if(getIntent().hasExtra("filterByPrice")) {
-            filterByPrice = filterBundle.getBoolean("filterByPrice");
-        }
-        if(getIntent().hasExtra("filterByPricePerKM")) {
-            filterByPricePerKM = filterBundle.getBoolean("filterByPricePerKM");
-        }
-
+        boolean filterByPrice = filterBundle.getBoolean("filterByPrice");
+        boolean filterByPricePerKM = filterBundle.getBoolean("filterByPricePerKM");
         // Check if we are filtering by price
         if (filterByPrice) {
             Double minPrice = filterBundle.getDouble("minPrice");
