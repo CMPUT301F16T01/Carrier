@@ -220,7 +220,7 @@ public class RequestController {
             throw new RuntimeException();
         }
         ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
-        request.setChosenDriver( driver );
+        request.confirmDriver( driver );
         request.setStatus( Request.Status.CONFIRMED );
         requestsWhereOffered.notifyListeners();
 

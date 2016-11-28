@@ -10,11 +10,8 @@ import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
 /**
- * This test offline functionality
- */
-
-/**
- * Tests offline functionality
+ * Tests offline functionality. You MUST test these on an emulator. If you do not, your ability to
+ * use data will affect the outcome of these tests.
  */
 public class OfflineTests extends ApplicationTest {
     private User offlineTestUser = new User("offlineTestUser", "offline@offline.com", "00000000", "offline car");

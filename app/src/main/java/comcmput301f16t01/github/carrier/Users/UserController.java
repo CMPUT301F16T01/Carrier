@@ -17,6 +17,7 @@ public class UserController {
     private UserController() { /* prevent UserController instantiation */ }
 
     /**
+<<<<<<< HEAD
      * Will return the singleton instance of the current logged in user.
      *
      * @throws IllegalAccessError if there is no currently logged in user.
@@ -27,6 +28,8 @@ public class UserController {
     }
 
     /**
+=======
+>>>>>>> 7f5895939cbd25c4c538f20159d4f83e58cee414
      * Allows the user to log in while offline. Only the last logged in user has the ability to log in.
      * @param usernameToLogin The username attempt to log in
      * @param cachedUser The cached user to compare to
@@ -112,10 +115,15 @@ public class UserController {
      * @param phoneNumber The phone number of the new user
      * @param vehicleDescription The description of the user's vehicle
      */
-    public static void createNewUser(String username, String email, String phoneNumber, String vehicleDescription) {
+    public static String createNewUser(String username, String email, String phoneNumber, String vehicleDescription) {
         // TODO check errors on the vehicle description???
         // TODO testing offline behaviour
         User newUser = new User();
+
+        String value = checkValidInputs( username, email, phoneNumber );
+        if (value != null) {
+            return value;
+        }
 
         // Trim leading and trailing whitespace
         email = email.trim();
@@ -136,6 +144,7 @@ public class UserController {
         }
 
         loggedInUser = newUser; // set the logged in user to be the one we created.
+        return null;
     }
 
     /**
@@ -179,8 +188,10 @@ public class UserController {
      */
     public static void editUser(String newEmail, String newPhone) {
         // TODO this should modify the logged in user here, but it does not?
+        loggedInUser.setEmail( newEmail );
+        loggedInUser.setPhone( newPhone );
         ElasticUserController.EditUserTask eut = new ElasticUserController.EditUserTask();
-        eut.execute(UserController.getLoggedInUser().getId(), newEmail, newPhone);
+        eut.execute(getLoggedInUser().getId(), newEmail, newPhone);
     }
 
     /**
@@ -207,10 +218,6 @@ public class UserController {
      * @return True if the user was successfully logged in, else false.
      */
     public static boolean logInUser(String username) {
-        if ( loggedInUser != null ) {
-            throw new IllegalStateException( "You may not log in a user when one is already logged in" );
-        }
-
         ElasticUserController.FindUserTask fut = new ElasticUserController.FindUserTask();
         fut.execute(username);
         User foundUser = null;

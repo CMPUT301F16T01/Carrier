@@ -42,6 +42,7 @@ import comcmput301f16t01.github.carrier.Requests.RequestList;
 import comcmput301f16t01.github.carrier.Requests.RiderRequestActivity;
 import comcmput301f16t01.github.carrier.Searching.SearchActivity;
 import comcmput301f16t01.github.carrier.Searching.SearchResultsActivity;
+import comcmput301f16t01.github.carrier.Users.ElasticUserController;
 import comcmput301f16t01.github.carrier.Users.LoginActivity;
 import comcmput301f16t01.github.carrier.Users.LoginMemory;
 import comcmput301f16t01.github.carrier.Users.UserController;
