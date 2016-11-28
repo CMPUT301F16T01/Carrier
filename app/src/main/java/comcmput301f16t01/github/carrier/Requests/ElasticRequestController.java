@@ -303,7 +303,9 @@ public class ElasticRequestController {
                 RequestController.getRiderInstance().replaceList( requests );
                 if (RequestController.getOfflineRiderRequests().size() > 0) {
                     for (Request request : RequestController.getOfflineRiderRequests()) {
-                        RequestController.getRiderInstance().add(request);
+                        if (!RequestController.getRiderInstance().contains(request.getId())) {
+                            RequestController.getRiderInstance().add(request);
+                        }
                     }
                 }
                 RequestController.getOfflineRiderRequests().clear();
