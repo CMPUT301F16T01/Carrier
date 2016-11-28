@@ -125,8 +125,7 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
         if (!ConnectionChecker.isThereInternet() && (point.equals("start")) || point.equals("search")) {
             AlertDialog.Builder adb = new AlertDialog.Builder(this);
             adb.setTitle("Offline");
-            adb.setMessage("While you're offline some functionality (like maps) may function more "
-                    + "slowly than usual.");
+            adb.setMessage("While you're offline the speed of some functionality may be limited.");
             adb.setPositiveButton("Okay", null);
             adb.show();
         }

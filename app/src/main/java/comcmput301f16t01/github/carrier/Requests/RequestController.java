@@ -111,12 +111,9 @@ public class RequestController {
             if (internetConnection) {
                 ElasticRequestController.AddRequestTask art = new ElasticRequestController.AddRequestTask();
                 art.execute(request);
-            }
-
-            // If there is no internet, add to the offline request queue and save it
-            if (!internetConnection) {
+            } else {
+                // If there is no internet, add to the offline request queue and save it
                 offlineRiderRequests.add(request);
-                Toast.makeText(saveContext, "Offline saving" + Integer.toString(offlineRiderRequests.size()), Toast.LENGTH_SHORT).show();
                 saveOfflineRiderRequests();
             }
             // Regardless of whether or not there is internet, we add the request to the local requestWhereRider RequestList
