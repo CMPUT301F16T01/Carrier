@@ -488,11 +488,7 @@ public class RequestController {
                 }
                 art.execute(requestsToPass);
                 RequestController.getOfflineRiderRequests().clear();
-                RequestController.saveOfflineRiderRequests();
-                // Save any updated rider requests
-                RequestController.saveRiderRequests();
             }
-
 
             ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
             frrt.withAsync = true;
