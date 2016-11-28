@@ -90,11 +90,11 @@ import android.test.ApplicationTestCase;
  * US 08.02.01 [See requests made while offline]
  * @see OfflineTests#testSavingLoadingOfflineRiderRequests() t
  *
- * US 08.03.01 [make requests offline]
- * TODO
+ * US 08.03.01 [make requests offline] : (proof of backend)
+ * @see OfflineTests
  *
- * US 08.04.01 [make offers offline]
- * TODO
+ * US 08.04.01 [make offers offline] : (proof of backend)
+ * @see OfflineTests
  *
  * Location ========================================================================================
  * US 10.01.01 [Specify on map for request] : (proof of backend)

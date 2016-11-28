@@ -1,8 +1,14 @@
 package comcmput301f16t01.github.carrier;
 
+import android.location.Address;
+import android.location.Geocoder;
+
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Locale;
 
+import comcmput301f16t01.github.carrier.Requests.ElasticRequestController;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestList;
@@ -44,19 +50,25 @@ public class TestDataGenerator extends ApplicationTest {
     CarrierLocation macewan = new CarrierLocation( 53.5471, -113.5066 );
     CarrierLocation churchillSquare = new CarrierLocation( 53.5442, -113.4898 );
 
-    Request requestOne = new Request( userOne, epcorTower, thePearl, "I want to go home from from working downtown." );
+    public Request generateRequest( User user, CarrierLocation start, CarrierLocation end, String description ) {
+        return null;
+    }
 
     /**
      * Generates data for use with a live demo.
      */
-    public void testPostData() {
+    public void testPostData() throws IOException {
         // create profile for all users.
         for ( User user : userList ) {
             UserController.createNewUser( user.getUsername(), user.getEmail(), user.getPhone(), user.getVehicleDescription() );
             UserController.logOutUser();
         }
-
+        Request requestOne = new Request( userOne, epcorTower, thePearl, "I want to go home from from working downtown" );
+        requestOne.setDistance(3.0);
+        requestOne.getStart().setAddress( RequestController.getAddress( getSystemContext(), epcorTower.getLatitude(), epcorTower.getLongitude()));
+        requestOne.getEnd().setAddress( RequestController.getAddress( getSystemContext(), thePearl.getLatitude(), thePearl.getLongitude()));
         RequestController.addRequest( requestOne );
+
 
         RequestList requestList = RequestController.fetchAllRequestsWhereRider( userOne );
         int pass = 0;
@@ -75,8 +87,7 @@ public class TestDataGenerator extends ApplicationTest {
         // remove generated profiles
         for ( User user : userList ) {
             UserController.deleteUser( user.getUsername() );
+            RequestController.clearAllRiderRequests( user );
         }
-
-        RequestController.clearAllRiderRequests( userOne );
     }
 }
