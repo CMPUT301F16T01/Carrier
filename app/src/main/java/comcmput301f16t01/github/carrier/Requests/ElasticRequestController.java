@@ -462,10 +462,7 @@ public class ElasticRequestController {
         @Override
         protected RequestList doInBackground(String... params) {
             verifySettings();
-
-            RequestList foundRequests;
-
-
+            RequestList foundRequests = new RequestList();
             String query =
                     "{ \"from\": 0, \"size\": 500,\n" +
                     "    \"query\": { \"multi_match\": { " +
@@ -490,15 +487,21 @@ public class ElasticRequestController {
                 e.printStackTrace();
                 return null;
             }
-
             List<Offer> offers = result.getSourceAsObjectList(Offer.class);
-
-            foundRequests = getRequests( offers );
+            if (offers.size() > 0) {
+                foundRequests = getRequests( offers );
+            }
             // Now we get a list of requests where the driver is the confirmed driver since
             // there is no offer for a request that has been confirmed.
             List<Request> requests = result.getSourceAsObjectList(Request.class);
             if (requests != null) {
-                foundRequests.addAll(requests);
+                for(Request request: requests) {
+                    // Make sure the the request does not have null objects.
+                    // This will happen if we try to turn an offer found in the result into a request.
+                    if (request.getStatus() != null && request.getStart() != null) {
+                        foundRequests.add(request);
+                    }
+                }
             }
             return foundRequests;
         }
@@ -510,25 +513,28 @@ public class ElasticRequestController {
         private RequestList getRequests(List<Offer> offers) {
             RequestList requestList = new RequestList();
             for (Offer offer : offers ) {
-                // TODO prune ones that no longer relate to a driver? (i.e. cancelled)
-                String query =
-                        "{ \"from\": 0, \"size\": 1,\n" +
-                        "    \"query\": { \"match\": { \"_id\": \"" + offer.getRequestID() + "\" } }\n" +
-                        "}";
+                // Check if an offer contains null values
+                if (offer.getRequestID() != null && offer.getOfferingUser() != null) {
+                    // TODO prune ones that no longer relate to a driver? (i.e. cancelled)
+                    String query =
+                            "{ \"from\": 0, \"size\": 1,\n" +
+                                    "    \"query\": { \"match\": { \"_id\": \"" + offer.getRequestID() + "\" } }\n" +
+                                    "}";
 
-                Search search = new Search.Builder(query)
-                        .addIndex("cmput301f16t01")
-                        .addType("request")
-                        .build();
+                    Search search = new Search.Builder(query)
+                            .addIndex("cmput301f16t01")
+                            .addType("request")
+                            .build();
 
-                try {
-                    SearchResult result = client.execute(search);
-                    if (result.isSucceeded()) {
-                        requestList.add( result.getSourceAsObject(Request.class) );
+                    try {
+                        SearchResult result = client.execute(search);
+                        if (result.isSucceeded()) {
+                            requestList.add(result.getSourceAsObject(Request.class));
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return null;
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;
                 }
             }
             return requestList;
