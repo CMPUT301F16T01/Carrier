@@ -9,7 +9,7 @@ import comcmput301f16t01.github.carrier.Users.UserController;
 import static org.junit.Assert.*;
 
 /**
- * This will test things about user proifle
+ * This will test things about user profile
  */
 
 public class UserProfileTests {

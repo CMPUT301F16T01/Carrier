@@ -11,7 +11,7 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 /**
- * Created by kiete on 10/16/2016.
+ * Written rider tests
  */
 
 public class RiderTests {

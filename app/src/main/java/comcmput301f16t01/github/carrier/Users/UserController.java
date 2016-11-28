@@ -32,7 +32,7 @@ public class UserController {
      * @param cachedUser The cached user to compare to
      * @return True on successful login, otherwise false
      */
-    // Case insensitive comparison of usernames, like elastic search
+    // Case insensitive comparison of username, like elastic search
     public static boolean offlineLogInUser(String usernameToLogin, User cachedUser) {
         // If cached user is null (haven't logged in online yet), cannot log in.
         if (cachedUser == null) {

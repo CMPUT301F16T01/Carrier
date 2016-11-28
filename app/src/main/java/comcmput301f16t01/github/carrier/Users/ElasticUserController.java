@@ -19,7 +19,7 @@ import io.searchbox.core.SearchResult;
 import io.searchbox.core.Update;
 
 /**
- * Created by Ben on 2016-10-27.
+ * This is what handles the elastic user controller
  */
 
 public class ElasticUserController {

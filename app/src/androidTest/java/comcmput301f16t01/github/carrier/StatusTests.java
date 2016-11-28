@@ -8,7 +8,7 @@ import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Users.User;
 
 /**
- * Created by meind on 2016-10-11.
+ * Written status tests
  */
 
 public class StatusTests extends ApplicationTest {

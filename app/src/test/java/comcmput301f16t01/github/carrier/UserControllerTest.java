@@ -8,7 +8,7 @@ import comcmput301f16t01.github.carrier.Users.UserController;
 import static org.junit.Assert.*;
 
 /**
- * Created by michael on 27/10/16.
+ * User Controller tests
  */
 public class UserControllerTest {
     @Test

@@ -28,8 +28,8 @@ public class SearchingTests extends ApplicationTest {
     private final double latitude4 = 35.6852;
     private final double longitude4 = 139.7528;
 
-    private User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234", "Kia, Rio" );
-    private User driverOne = new User( "notifTestDriver", "notifyYou@email.com", "0118-99-112", "Kia, Rio"  );
+    private User loggedInUser = new User( "notifyTestUser", "notify@email.com", "888-999-1234", "Kia, Rio" );
+    private User driverOne = new User( "notifyTestDriver", "notifyYou@email.com", "0118-99-112", "Kia, Rio"  );
 
     /**
      * Clears requests created by searchTestUser and clears request offers made by searchTestDriver

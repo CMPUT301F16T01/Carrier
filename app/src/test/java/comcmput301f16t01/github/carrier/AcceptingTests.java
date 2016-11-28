@@ -8,7 +8,7 @@ import comcmput301f16t01.github.carrier.Users.User;
 
 import static org.junit.Assert.*;
 /**
- * Created by michael on 11/10/16.
+ * Copy and pasted tests and do not do anything new
  */
 @Deprecated
 public class AcceptingTests {
