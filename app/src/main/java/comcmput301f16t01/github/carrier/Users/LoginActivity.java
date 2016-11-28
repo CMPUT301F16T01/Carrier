@@ -115,7 +115,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
     /* Otherwise attempt login by loading the cached user and
-    comparing usernames
+     * comparing the username
      */
         else {
             User cachedUser = lm.loadUser();

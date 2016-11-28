@@ -173,7 +173,7 @@ public class UserProfileActivity extends AppCompatActivity {
         }
         // Since editing was confirmed, overwrite old value of phone number of the current user
         this.oldPhoneNumber = phoneNumber;
-        // The edit button is weirdly dissapearing? This fixes it.
+        // The edit button is weirdly disappearing? This fixes it.
         editButton.setVisibility(View.VISIBLE);
         editingPhone = false;
     }

@@ -27,7 +27,7 @@ public class NewVehicleActivity extends AppCompatActivity {
     }
 
     /**
-     * We will get all the information for the edit text feilds.
+     * We will get all the information for the edit text fields.
      * We will call a function to concatenate the vehicle description
      * We will create a new user with all this information
      * @param v This is the view for the function
@@ -40,7 +40,7 @@ public class NewVehicleActivity extends AppCompatActivity {
         EditText colorEditText = (EditText) findViewById(R.id.editText_vehicleColor);
         EditText otherNotesEditText = (EditText) findViewById(R.id.editText_vehicleOther);
 
-        //This is the funtion that will make a pretty string out of all the info given
+        //This is the function that will make a pretty string out of all the info given
         String vehicleDescription = concatenateVehicleDescription(makeEditText.getText().toString(),
                 modelEditText.getText().toString(), yearEditText.getText().toString(),
                 colorEditText.getText().toString(), otherNotesEditText.getText().toString());
@@ -72,7 +72,7 @@ public class NewVehicleActivity extends AppCompatActivity {
         LoginMemory lm = new LoginMemory( activity );
         lm.saveUsername( username );
 
-        // Log in to CARier
+        // Log in to CARrier
         String welcome = "Welcome to CARrier, " + username + "!";
         Intent intent = new Intent(activity, MainActivity.class);
         Toast.makeText(activity, welcome, Toast.LENGTH_SHORT).show();
@@ -81,7 +81,7 @@ public class NewVehicleActivity extends AppCompatActivity {
     }
 
     /**
-     * This function will take these multiple strings and concatentate them into a nice string that is easy to store and display
+     * This function will take these multiple strings and concatenate them into a nice string that is easy to store and display
      *
      * @param make      The make of the user's vehicle
      * @param model     The model of the user's vehicle

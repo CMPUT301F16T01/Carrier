@@ -29,9 +29,9 @@ import static java.security.AccessController.getContext;
 public class LoginMemory {
     /** The context to save in **/
     Context saveContext;
-    /** The filename for logging in usernames while online **/
+    /** The filename for logging in username while online **/
     final String FILENAME = "LoginMemory.sav";
-    /** The filename for loggin in while offline **/
+    /** The filename for login in while offline **/
     final String USER_FILENAME = "User.sav";
 
     public LoginMemory( Context ctx ) {

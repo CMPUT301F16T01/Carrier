@@ -29,9 +29,9 @@ import comcmput301f16t01.github.carrier.Users.UserController;
  * @see Notification
  */
 public class NotificationTest extends ApplicationTest {
-    private User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234", "Kia, Rio"  );
-    private User driverOne = new User( "notifTestDriver", "notifyYou@email.com", "0118-99-112", "Kia, Rio"  );
-    private User anotherUser = new User( "notifThirdUser", "notifyMe@gmail.com", "887112233", "Kia, Rio"  );
+    private User loggedInUser = new User( "notifyTestUser", "notify@email.com", "888-999-1234", "Kia, Rio"  );
+    private User driverOne = new User( "notifyTestDriver", "notifyYou@email.com", "0118-99-112", "Kia, Rio"  );
+    private User anotherUser = new User( "notifyThirdUser", "notifyMe@gmail.com", "887112233", "Kia, Rio"  );
 
     // Set up a test user to receive notifications
     private void setUpUser() {

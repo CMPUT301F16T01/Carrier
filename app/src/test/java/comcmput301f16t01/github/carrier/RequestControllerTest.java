@@ -33,7 +33,7 @@ public class RequestControllerTest {
         rc.addRequest(cancelledRequest);
         rc.addRequest(paidRequest);
         rc.addRequest(completedRequest);
-        // Cancel the different reqeusts
+        // Cancel the different requests
         rc.cancelRequest(openRequest);
         rc.cancelRequest(paidRequest);
         rc.cancelRequest(cancelledRequest);
@@ -69,7 +69,7 @@ public class RequestControllerTest {
         // Make sure the driver is added the request
         assertTrue("Get offered requests is not returning the correct request", rc.getOfferedRequests(offeringDriver).contains(request));
         // Make sure that the driver is only added to one request.
-        assertTrue("The driver is added to more than one reqeust", rc.getOfferedRequests(offeringDriver).size() == 1);
+        assertTrue("The driver is added to more than one request", rc.getOfferedRequests(offeringDriver).size() == 1);
     }
     @Test
     public void getUserRequests() {

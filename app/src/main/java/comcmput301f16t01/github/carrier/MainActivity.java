@@ -31,8 +31,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.concurrent.ExecutionException;
-
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
 import comcmput301f16t01.github.carrier.Notifications.NotificationActivity;
@@ -384,7 +382,7 @@ public class MainActivity extends AppCompatActivity {
                 fillDriverRequests( requestListView );
             }
 
-            final SwipeRefreshLayout srl = (SwipeRefreshLayout) rootView.findViewById( R.id.swiperefresh );
+            final SwipeRefreshLayout srl = (SwipeRefreshLayout) rootView.findViewById( R.id.swipeRefresh);
 
             // Set up a scroll listener to turn off swipe to refresh if the view is not at the top.
             requestListView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
@@ -450,14 +448,14 @@ public class MainActivity extends AppCompatActivity {
          * @param requestListView The view that will contain the request items to be presented
          */
         private void fillDriverRequests(final ListView requestListView) {
-            // Get the reference to the list of offered requests and adapt it to the listview
+            // Get the reference to the list of offered requests and adapt it to the listView
             final RequestList requestList = RequestController.getOffersInstance();
             final RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
                     R.layout.requestlist_item,
                     requestList);
             requestListView.setAdapter(requestArrayAdapter);
 
-            // Add a listener to listen and update the view when the arraylist changes
+            // Add a listener to listen and update the view when the arrayList changes
             requestList.addListener(new Listener() {
                 @Override
                 public void update() {
@@ -474,7 +472,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent intent = new Intent(getActivity(), DriverViewRequestActivity.class);
                     Bundle bundle = new Bundle();
-                    // We give the position it is in the arraylist so that it can pull it up later
+                    // We give the position it is in the arrayList so that it can pull it up later
                     bundle.putInt( "position", position );
                     intent.putExtras(bundle);
                     startActivity(intent);
@@ -488,14 +486,14 @@ public class MainActivity extends AppCompatActivity {
          * @param requestListView The view that will contain the request items to be presented
          */
         private void fillRiderRequests(final ListView requestListView) {
-            // Get the reference to the list of requested requests and adapt it to the listview
+            // Get the reference to the list of requested requests and adapt it to the listView
             final RequestList requestList = RequestController.getRiderInstance();
             final RequestAdapter requestArrayAdapter = new RequestAdapter(this.getContext(),
                     R.layout.requestlist_item,
                     requestList);
             requestListView.setAdapter(requestArrayAdapter);
 
-            // Add a listener to listen and update the view when the arraylist changes
+            // Add a listener to listen and update the view when the arrayList changes
             requestList.addListener(new Listener() {
                 @Override
                 public void update() {
@@ -512,7 +510,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent intent = new Intent(getActivity(), RiderRequestActivity.class);
                     Bundle bundle = new Bundle();
-                    // We give the position it is in the arraylist so that it can pull it up later
+                    // We give the position it is in the arrayList so that it can pull it up later
                     bundle.putInt( "position", position );
                     intent.putExtras(bundle);
                     startActivity(intent);

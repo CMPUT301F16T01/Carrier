@@ -71,16 +71,16 @@ public class Notification implements Comparable<Notification> {
     /** @return The string representation of a notification. */
     @Override
     public String toString() {
-        String notifString = "";
+        String notifyString = "";
         if (!read) {
-            notifString += "New!\n";
+            notifyString += "New!\n";
         }
         if (isRider) {
-            notifString += "A driver has offered to accept your request!";
+            notifyString += "A driver has offered to accept your request!";
         } else {
-            notifString += "A rider has accepted your offer to drive!";
+            notifyString += "A rider has accepted your offer to drive!";
         }
-        return notifString;
+        return notifyString;
     }
 
     /**

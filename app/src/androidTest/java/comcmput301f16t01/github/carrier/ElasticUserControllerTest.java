@@ -1,7 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
 /**
- * Created by kiete on 11/13/2016.
+ * This is what will interact with elastic search
  */
 import java.util.concurrent.ExecutionException;
 

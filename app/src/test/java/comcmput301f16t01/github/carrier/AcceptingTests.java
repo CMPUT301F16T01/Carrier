@@ -56,7 +56,7 @@ public class AcceptingTests {
         assertTrue("Get open request is not returning any open requests", rc.getOpenRequests().size() == 1);
         rc.addDriver(request, driver);
         // Add another driver to compare
-        User driver1 = new User("WASD");
+        User driver1 = new User("Mandy");
         Request request1 = new Request(rider, new CarrierLocation(), new CarrierLocation());
         rc.addRequest(request1);
         rc.addDriver(request1,driver1);

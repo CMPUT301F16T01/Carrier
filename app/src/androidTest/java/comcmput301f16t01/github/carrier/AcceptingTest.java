@@ -22,7 +22,7 @@ public class AcceptingTest extends ApplicationTest {
     private User basicRider = new User( "reqTestUser", "giveMeRide@carrier.com", "41534153", "Kia, Rio"  );
     private User anotherUser = new User( "reqTestUser2", "loveSia@hotmail.com", "514514514", "Kia, Rio"  );
     private User basicDriver = new User( "offeringDriver", "wannaDriveYou@gmail.com", "1323123", "Kia, Rio"  );
-    private User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234", "Kia, Rio"  );
+    private User loggedInUser = new User( "notifyTestUser", "notify@email.com", "888-999-1234", "Kia, Rio"  );
 
 
     // abstracts reused code to prevent mistakes and aid in readability of tests

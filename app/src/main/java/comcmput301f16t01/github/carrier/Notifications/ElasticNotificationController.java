@@ -49,10 +49,10 @@ public class ElasticNotificationController {
                     if (result.isSucceeded()) {
                         aNotification.setID(result.getId());
                     } else {
-                        Log.i("Add Notif. Unsuccessful", "Failed to add user to elastic search?");
+                        Log.i("Add Notification bad", "Failed to add user to elastic search?");
                     }
                 } catch (IOException e) {
-                    Log.i("Add Notif. Failure", "Something went wrong adding a user to elastic search.");
+                    Log.i("Add Notification bad", "Something went wrong adding a user to elastic search.");
                     e.printStackTrace();
                 }
             }

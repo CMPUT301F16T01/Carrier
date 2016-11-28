@@ -79,7 +79,7 @@ public class NotificationController {
         try {
             cat.get();
         } catch (Exception e) {
-            // Make the Async insync
+            // Make the Async in sync
             e.printStackTrace();
         }
         if (notificationList != null) {

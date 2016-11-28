@@ -119,7 +119,7 @@ public class UserProfileTests {
      * the request we just have to find the first driver and give up that info
      */
     @Test
-    public void showUsernameIfyouAreRider() {
+    public void showUsernameIfYouAreRider() {
         User you = new User("you");
         String description = "thing";
         Request request = new Request(you, new CarrierLocation(), new CarrierLocation(), description);
@@ -145,11 +145,11 @@ public class UserProfileTests {
      * As a user, I want to, when a username is presented for a thing, retrieve and show its contact information.
      * Related: US 03.03.01
      *
-     * a driver will only ever see other riders usernames. Therefore when they are going through
+     * a driver will only ever see other riders username. Therefore when they are going through
      * the request we just have to find the rider and give up that info
      */
     @Test
-    public void showUsernameIfyouAreDriver() {
+    public void showUsernameIfYouAreDriver() {
         User rider = new User("Sarah");
         String description = "thing";
         Request request = new Request(rider, new CarrierLocation(), new CarrierLocation(), description);

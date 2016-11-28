@@ -12,7 +12,7 @@ import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
 /**
- * Created by kiete on 11/23/2016.
+ * This test offline functionallity
  */
 
 /**
