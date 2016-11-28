@@ -1,6 +1,7 @@
 package comcmput301f16t01.github.carrier;
 
 import android.location.Location;
+import android.widget.Toast;
 
 import org.osmdroid.util.GeoPoint;
 
@@ -33,7 +34,7 @@ public class CarrierLocation extends Location {
 
     // see code attribution
     public void setAddress(String address) {
-        if(address != null) {
+        if(!address.equals("")) {
             this.address = address;
             // short address is just the first line of the address string
             this.shortAddress = address.split("\\r?\\n")[0];
@@ -56,7 +57,11 @@ public class CarrierLocation extends Location {
     @Override
     public String toString() {
         if(address != null) {
-            return getAddress();
+            if(!address.equals("")) {
+                return getAddress();
+            } else {
+                return getLatLong();
+            }
         } else {
             return getLatLong();
         }
