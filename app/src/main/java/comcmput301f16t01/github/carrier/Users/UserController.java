@@ -17,19 +17,6 @@ public class UserController {
     private UserController() { /* prevent UserController instantiation */ }
 
     /**
-<<<<<<< HEAD
-     * Will return the singleton instance of the current logged in user.
-     *
-     * @throws IllegalAccessError if there is no currently logged in user.
-     * @see #logInUser(String)
-     */
-    public void setLoggedInUser(User user) {
-        loggedInUser = user;
-    }
-
-    /**
-=======
->>>>>>> 7f5895939cbd25c4c538f20159d4f83e58cee414
      * Allows the user to log in while offline. Only the last logged in user has the ability to log in.
      * @param usernameToLogin The username attempt to log in
      * @param cachedUser The cached user to compare to
