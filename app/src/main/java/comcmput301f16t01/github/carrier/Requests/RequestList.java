@@ -1,7 +1,5 @@
 package comcmput301f16t01.github.carrier.Requests;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ExecutionException;

@@ -1,6 +1,8 @@
 package comcmput301f16t01.github.carrier.Requests;
 
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.util.Log;
 
@@ -10,17 +12,18 @@ import com.google.gson.reflect.TypeToken;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Type;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
+import java.lang.reflect.Type;
+
+import java.util.List;
 import java.util.Collections;
 import java.util.Iterator;
+
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Notifications.NotificationController;
@@ -28,8 +31,15 @@ import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
 /**
- * Uses a singleton pattern to store information about three types of requests. (Request requested,
- * requests offered to complete, and requests searched for.
+ * <p>Uses a singleton pattern to store information about three types of requests. (Request requested,
+ * requests offered to complete, and requests searched for.</p>
+ * </br>
+ * <p>See code attribution in Wiki: <a href="https://github.com/CMPUT301F16T01/Carrier/wiki/Code-Re-Use#requestcontroller">RequestController</a></p>
+ * </br>
+ * <p>Based on: <a href="http://stackoverflow.com/questions/26217983/osmdroid-bonus-pack-reverse-geolocation">osmdroid bonus pack reverse geolocation</a></p>
+ * <p>Author: <a href="http://stackoverflow.com/users/4095382/cristina">cristina</a></p>
+ * <p>Posted on: October 6th, 2014</p>
+ * <p>Retrieved on: November 11th, 2016</p>
  */
 public class RequestController {
     /** Holds requests where the rider has requested a ride. */
@@ -42,6 +52,10 @@ public class RequestController {
      * when there is connection.
      */
     private static final OfferCommandList offlineDriverOfferCommands = new OfferCommandList();
+
+    /** Requests that are made while offline that are put on elastic search when there
+     * there is connection. */
+    private static final RequestList offlineRiderRequests = new RequestList();
 
     /** Holds requests that have been searched for by the user. */
     private static final RequestList searchResult = new RequestList();
@@ -57,6 +71,8 @@ public class RequestController {
 
     /** The file name of the locally saved queue of driver offers. */
     private static final String OFFLINE_OFFERS_FILENAME = "OfflineOffers.sav";
+    /** The file name of the locally saved offline rider requests. */
+    private static final String OFFLINE_REQUEST_FILENAME = "OfflineRequests.sav";
 
     /** The context with which to save */
     private static Context saveContext;
@@ -105,10 +121,15 @@ public class RequestController {
         } else if (request.getFare() == -1) {
             return "You must first estimate the fare";
         } else {
+            boolean internetConnection = ConnectionChecker.isThereInternet();
             // If there is internet we update ElasticSearch with the new request.
-            if (ConnectionChecker.isThereInternet()) {
+            if (internetConnection) {
                 ElasticRequestController.AddRequestTask art = new ElasticRequestController.AddRequestTask();
                 art.execute(request);
+            } else {
+                // If there is no internet, add to the offline request queue and save it
+                offlineRiderRequests.add(request);
+                saveOfflineRiderRequests();
             }
             // Regardless of whether or not there is internet, we add the request to the local requestWhereRider RequestList
             requestsWhereRider.add( request ); // Add new request to requestList (will notify riderList views)
@@ -172,8 +193,9 @@ public class RequestController {
         // Regardless of whether or not there is internet, create a notification and add the offer to the local requestsWhereOffered RequestList
         // Add a notification
         NotificationController nc = new NotificationController();
-        nc.addNotification(request.getRider(), request);
-        requestsWhereOffered.add(request); // Notifies offerList views
+        nc.addNotification( request.getRider(), request );
+        requestsWhereOffered.add( request ); // Notifies offerList views
+        appendRiderRequests(request);
         saveDriverOfferedRequests();
     }
 
@@ -205,6 +227,10 @@ public class RequestController {
         // If there is internet, update the request on ElasticSearch with confirmed driver.
         if (ConnectionChecker.isThereInternet()) {
             urt.execute( request );
+            ElasticRequestController.RemoveOffersTask rot = new ElasticRequestController.RemoveOffersTask();
+            // Remove all offers
+            rot.setMode(rot.MODE_REQUEST_ID);
+            rot.execute(request.getId());
         }
 
         // Regardless of whether or not there is internet, create a notification and save the modified requestsWhereOffered
@@ -340,8 +366,7 @@ public class RequestController {
     }
 
     /**
-     * Clears out all the requested requests for a user in elastic search.
-     *
+     * Used for testing. Clears out all the requested requests for a user in elastic search.
      * @param rider The rider whose requests should be cleared
      */
     public static void clearAllRiderRequests(User rider) {
@@ -369,6 +394,7 @@ public class RequestController {
             return requestsWhereRider;
         }
         // Open a fetch task for the user
+        loadOfflineRiderRequests();
         ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
 
         // Convert the parameters of this method to a string array for the execution of the task
@@ -408,6 +434,7 @@ public class RequestController {
             loadRiderRequests();
             return requestsWhereRider;
         }
+        loadOfflineRiderRequests();
         ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
         frrt.execute( rider.getUsername() );
         RequestList foundRequests = new RequestList();
@@ -422,6 +449,10 @@ public class RequestController {
         return foundRequests;
     }
 
+    public static RequestList getOfflineRiderRequests() {
+        return offlineRiderRequests;
+    }
+
     /**
      * Retrieves the list of offline offer commands.
      *
@@ -433,19 +464,40 @@ public class RequestController {
 
     /**
      * Updates the requestsWhereRider and requestsWhereOffered lists in the background (do not need
-     * to wait on the main UI thread at all).
+     * to wait on the main UI thread at all). If a rider had made requests while offline and they
+     * regain connectivity, also adds their offline requests to elastic search.
      *
      * @see ElasticRequestController.FetchRiderRequestsTask
      * @see ElasticRequestController.GetOfferedRequestsTask
      */
     public static void performAsyncUpdate() {
-        ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
-        frrt.withAsync = true;
-        frrt.execute(UserController.getLoggedInUser().getUsername());
+        // If there is connectivity, perform updates
+        if (ConnectionChecker.isThereInternet()) {
+            /* If the size of the list of requests made offline is greater than 0, add them to
+             elastic search
+              */
+            if (RequestController.getOfflineRiderRequests().size() > 0) {
+                ElasticRequestController.AddRequestTask art = new ElasticRequestController.AddRequestTask();
+                // Convert to an array since async tasks don't take in array lists as arguments.
+                Request[] requestsToPass = new Request[RequestController.getOfflineRiderRequests().size()];
+                for (int i = 0; i < RequestController.getOfflineRiderRequests().size(); i++) {
+                    Request request = RequestController.getOfflineRiderRequests().get(i);
+                    request.getStart().setAddress(getAddress(saveContext, request.getStart().getLatitude(), request.getEnd().getLongitude()));
+                    request.getEnd().setAddress(getAddress(saveContext, request.getEnd().getLatitude(), request.getEnd().getLongitude()));
+                    requestsToPass[i] = request;
+                }
+                art.execute(requestsToPass);
+            }
 
-        ElasticRequestController.GetOfferedRequestsTask gort = new ElasticRequestController.GetOfferedRequestsTask();
-        gort.withAsync = true;
-        gort.execute( UserController.getLoggedInUser().getUsername());
+
+            ElasticRequestController.FetchRiderRequestsTask frrt = new ElasticRequestController.FetchRiderRequestsTask();
+            frrt.withAsync = true;
+            frrt.execute(UserController.getLoggedInUser().getUsername());
+
+            ElasticRequestController.GetOfferedRequestsTask gort = new ElasticRequestController.GetOfferedRequestsTask();
+            gort.withAsync = true;
+            gort.execute( UserController.getLoggedInUser().getUsername());
+        }
     }
 
     /**
@@ -530,13 +582,14 @@ public class RequestController {
             FileInputStream fis = saveContext.openFileInput(SEARCH_FILENAME);
             BufferedReader in = new BufferedReader(new InputStreamReader(fis));
             Gson gson = new Gson();
-            Type listType = new TypeToken<RequestList>() {}.getType();
+            Type listType = new TypeToken<RequestList>() {
+            }.getType();
 
             // Load the search results into the controller
             searchResult.replaceList((RequestList) gson.fromJson(in, listType));
             // Reverse the list so we see the most recent searches first
             Collections.reverse(searchResult);
-            Log.i("Loading",String.valueOf(searchResult.size()));
+            Log.i("Loading", String.valueOf(searchResult.size()));
             // if we have network connection, check our list to remove unavailable requests
             if (ConnectionChecker.isThereInternet()) {
                 searchResult.verifyAll();
@@ -544,6 +597,37 @@ public class RequestController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Get address string from a geo point
+     *
+     * @return the address as a string.
+     */
+    // see code attribution
+    public static String getAddress(Context context, double latitude, double longitude) {
+        String pointAddress;
+        try {
+            Geocoder geocoder = new Geocoder(context);
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            StringBuilder sb = new StringBuilder();
+            if(addresses.size() > 0) {
+                Address address = addresses.get(0);
+                int n = address.getMaxAddressLineIndex();
+                for(int i = 0; i <= n; i++) {
+                    if(i != 0) {
+                        sb.append("\n");
+                    }
+                    sb.append(address.getAddressLine(i));
+                }
+                pointAddress = new String(sb);
+            } else {
+                pointAddress = "";
+            }
+        } catch (Exception e) {
+            pointAddress = "";
+        }
+        return pointAddress;
     }
 
     /**
@@ -585,6 +669,24 @@ public class RequestController {
     }
 
     /**
+     * Append to the cached rider requests.
+     */
+    public static void appendRiderRequests(Request request) {
+        Gson gson = new Gson();
+        try {
+            FileOutputStream fos = saveContext.openFileOutput(OFFLINE_REQUEST_FILENAME, 0);
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
+            offlineRiderRequests.add(request);
+            gson.toJson(offlineRiderRequests, out);
+            out.flush();
+            fos.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Caches the requests that the driver offered to fulfill.
      */
     public static void saveDriverOfferedRequests() {
@@ -605,14 +707,51 @@ public class RequestController {
      * For offline functionality. Loads the cached driver offered requests.
      */
     public static void loadDriverOfferedRequests() {
-        FileInputStream fis = null;
         try {
-            fis = saveContext.openFileInput(DRIVER_FILENAME);
+            FileInputStream fis = saveContext.openFileInput(DRIVER_FILENAME);
             BufferedReader in = new BufferedReader(new InputStreamReader(fis));
             Gson gson = new Gson();
             Type listType = new TypeToken<RequestList>() {}.getType();
             // Load the driver requests into the controller
             requestsWhereOffered.replaceList((RequestList) gson.fromJson(in, listType));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * For offline functionality. Saves the offline rider requests from the controller to file.
+     */
+    public static void saveOfflineRiderRequests() {
+        try {
+            FileOutputStream fos = saveContext.openFileOutput(OFFLINE_REQUEST_FILENAME, 0);
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
+
+            Gson gson = new Gson();
+            gson.toJson(offlineRiderRequests, out);
+            out.flush();
+            fos.close();
+
+            Log.i("Saving offline: ", "Size of offline save " + Integer.toString(offlineRiderRequests.size()));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * For offline functionality. Loads the offlineRiderRequests from file into the controller.
+     */
+    public static void loadOfflineRiderRequests() {
+        try {
+            FileInputStream fis = saveContext.openFileInput(OFFLINE_REQUEST_FILENAME);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+            Gson gson = new Gson();
+            Type listType = new TypeToken<RequestList>() {}.getType();
+            // Load the offline requests into the controller
+            offlineRiderRequests.replaceList((RequestList) gson.fromJson(in, listType));
+
+            Log.i("Loading offline: ", "Size of offline load " + Integer.toString(offlineRiderRequests.size()));
         } catch (Exception e) {
             e.printStackTrace();
         }

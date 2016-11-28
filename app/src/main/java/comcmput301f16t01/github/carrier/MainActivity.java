@@ -404,6 +404,7 @@ public class MainActivity extends AppCompatActivity {
 
                     // We first check if there is connection, if not, we stop refreshing and
                     // inform them that we cannot perform a live update.
+
                     if(!ConnectionChecker.isConnected(getContext())) {
                         Toast.makeText(getContext(), "You have no network connection!", Toast.LENGTH_SHORT ).show();
                         srl.setRefreshing( false );
@@ -554,5 +555,4 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
-
 }
