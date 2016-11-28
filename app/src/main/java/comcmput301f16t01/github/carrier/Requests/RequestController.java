@@ -199,6 +199,10 @@ public class RequestController {
         // If there is internet, update the request on ElasticSearch with confirmed driver.
         if (ConnectionChecker.isThereInternet()) {
             urt.execute( request );
+            ElasticRequestController.RemoveOffersTask rot = new ElasticRequestController.RemoveOffersTask();
+            // Remove all offers
+            rot.setMode(rot.MODE_REQUEST_ID);
+            rot.execute(request.getId());
         }
 
         // Regardless of whether or not there is internet, create a notification and save the modified requestsWhereOffered
