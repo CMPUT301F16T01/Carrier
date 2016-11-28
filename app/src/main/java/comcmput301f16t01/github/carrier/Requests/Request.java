@@ -1,6 +1,7 @@
 package comcmput301f16t01.github.carrier.Requests;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -174,6 +175,25 @@ public class Request {
                 "Price: " + FareCalculator.toString( fare ) + "\n" +
                 "Distance: " + distance + "km\n" +
                 "Price per KM: " + FareCalculator.toString((int) (fare/distance));
+    }
+
+    /**
+     * Will remove the driver from the list of offering drivers. This method is used for offline
+     * functionality to ensure that the driver has not offered twice.
+     *
+     * @param driver The driver to be removed from the request
+     */
+    public boolean removeOfferingDriver(User driver) {
+        if(hasOfferingDriver(driver)) {
+            for(User offeringDriver : offeringDrivers ) {
+                if(offeringDriver.getId().equals(driver.getId())) {
+                    offeringDrivers.remove(offeringDriver);
+                    setStatus(Status.OPEN);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

@@ -12,6 +12,7 @@ import com.searchly.jestdroid.JestDroidClient;
 import org.osmdroid.bonuspack.location.GeocoderNominatim;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 import comcmput301f16t01.github.carrier.Users.User;
@@ -77,6 +78,54 @@ public class ElasticRequestController {
             return null;
         }
     } // AddRequestTask
+
+    /**
+     * Verifies that request is available, which means that the status is either "OPEN" or "OFFERED".
+     * @see RequestController#verifyRequestAvailable(String)
+     */
+    public static class VerifyRequestAvailableTask extends AsyncTask<String, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(String... ids) {
+            verifySettings();
+
+            String query =
+                    "{ \"from\" : 0, \"size\" : 500,\n" +
+                    "  \"query\": {\n" +
+                    "    \"bool\": {\n" +
+                    "      \"must\": { \"match\": { \"_id\": \"" + ids[0] + "\" }},\n" +
+                    "      \"should\": [\n" +
+                    "              { \"match\": { \"status\": \"" + Request.Status.OPEN + "\" }},\n" +
+                    "              { \"match\": { \"status\": \"" + Request.Status.OFFERED + "\" }}\n" +
+                    "      ],\n" +
+                    "      \"minimum_should_match\": \"1\"\n" +
+                    "    }\n" +
+                    "  }\n" +
+                    "}";
+
+            Search search = new Search.Builder(query)
+                    .addIndex("cmput301f16t01")
+                    .addType("request")
+                    .build();
+
+            RequestList foundRequests = new RequestList();
+
+            try {
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()) {
+                    List<Request> notificationList = result.getSourceAsObjectList(Request.class);
+                    foundRequests.addAll( notificationList );
+                } else {
+                    return null;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.i("Error", "Something went wrong when we tried to talk to elastic search");
+            }
+
+            return foundRequests.size() != 0;
+        }
+    }
 
     /**
      * Searches by a keyword/string based phrase.
@@ -190,7 +239,6 @@ public class ElasticRequestController {
 
             try {
                 SearchResult result = client.execute(search);
-                Log.i("Result", result.toString());
                 if (result.isSucceeded()) {
                     List<Request> notificationList = result.getSourceAsObjectList(Request.class);
                     foundRequests.addAll( notificationList );
@@ -391,12 +439,14 @@ public class ElasticRequestController {
                 try {
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
-                        //offer.setId(result.getId());
+                        if (RequestController.getOfflineDriverOfferCommands().contains(offer.getRequestID())) {
+                            RequestController.getOfflineDriverOfferCommands().remove(offer.getRequestID());
+                        }
                     } else {
-                        Log.i("Add Request Failure", "Failed to add request to elastic search");
+                        Log.i("Add Offer Failure", "Failed to add offer to elastic search");
                     }
                 } catch (IOException e) {
-                    Log.i("Add Request Failure", "Something went wrong adding a request to elastic search.");
+                    Log.i("Add Offer Failure", "Something went wrong adding a offer to elastic search.");
                     e.printStackTrace();
                 }
             }
@@ -462,7 +512,9 @@ public class ElasticRequestController {
 
 
     /**
-     * Get requests where the driver has offered to complete them.
+     * Get requests where the driver has offered to complete them. On completion, if there is
+     * a network connection, it loads any offline requests, adds the driver to the request and
+     * updates the lists in the RequestController.
      * @see RequestController#getOfferedRequests(User)
      */
     public static class GetOfferedRequestsTask extends AsyncTask<String, Void, RequestList> {
@@ -472,7 +524,9 @@ public class ElasticRequestController {
         @Override
         protected RequestList doInBackground(String... params) {
             verifySettings();
+
             RequestList foundRequests = new RequestList();
+
             String query =
                     "{ \"from\": 0, \"size\": 500,\n" +
                     "    \"query\": { \"multi_match\": { " +
@@ -555,7 +609,26 @@ public class ElasticRequestController {
             // Perform result update on UI thread if there is internet
             if (ConnectionChecker.isThereInternet()) {
                 if (withAsync) {
+                    // replace list of offered requests with those we just got from elasticsearch
                     RequestController.getOffersInstance().replaceList( requests );
+                    // load in any offline requests
+                    RequestController.loadDriverOfferCommands();
+                    // if there are offline offer commands that must be posted, post them
+                    if(RequestController.getOfflineDriverOfferCommands().size() > 0) {
+                        RequestList offlineRequests = new RequestList();
+                        Iterator<OfferCommand> iterator = RequestController.getOfflineDriverOfferCommands().iterator();
+                        while(iterator.hasNext()) {
+                            OfferCommand tempOfferCommand = iterator.next();
+                            iterator.remove();
+                            Request request = RequestController.addOfflineOffer(tempOfferCommand);
+                            offlineRequests.add(request);
+                        }
+                        // add the offline request to the list we just grabbed from elasticsearch
+                        RequestController.getOffersInstance().append(offlineRequests);
+                        // get rid of all the offline requests, since they now live on elasticsearch
+                        RequestController.getOfflineDriverOfferCommands().clear();
+                        RequestController.saveDriverOfferCommands();
+                    }
                     // Save any updated driver requests
                     RequestController.saveDriverOfferedRequests();
                     notifyListener();
