@@ -561,18 +561,6 @@ public class ElasticRequestController extends ElasticController {
             if (offers.size() > 0) {
                 foundRequests = getRequests( offers );
             }
-            // Now we get a list of requests where the driver is the confirmed driver since
-            // there is no offer for a request that has been confirmed.
-            /*List<Request> requests = result.getSourceAsObjectList(Request.class);
-            if (requests != null) {
-                for(Request request: requests) {
-                    // Make sure the the request does not have null objects.
-                    // This will happen if we try to turn an offer found in the result into a request.
-                    if (request.getStatus() != null && request.getStart() != null) {
-                        foundRequests.add(request);
-                    }
-                }
-            }*/
             return foundRequests;
         }
 
@@ -600,8 +588,6 @@ public class ElasticRequestController extends ElasticController {
                         SearchResult result = client.execute(search);
                         if (result.isSucceeded()) {
                             requestList.add(result.getSourceAsObject(Request.class));
-                            Log.i("Offer ID", offer.getRequestID());
-                            Log.i("RL from ES", String.valueOf(requestList.contains(offer.getRequestID())));
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -610,22 +596,18 @@ public class ElasticRequestController extends ElasticController {
                 }
             }
             RequestList filteredRequests = new RequestList();
-            Log.i("REQUEST SIZE", String.valueOf(requestList.size()));
             for(Request request : requestList) {
-                Log.i("REQUEST", request.toString());
                 if (request.getConfirmedDriver() == null) {
                     filteredRequests.add(request);
                 } else if (request.getConfirmedDriver().getUsername().equals(UserController.getLoggedInUser().getUsername())) {
                     filteredRequests.add(request);
                 }
             }
-            Log.i("FILTER REQUEST", filteredRequests.toString());
             return filteredRequests;
         }
 
         @Override
         protected void onPostExecute(RequestList requests) {
-            Log.i("REQUESTS INSIDE", requests.toString());
             // Perform result update on UI thread if there is internet
             if (ConnectionChecker.isThereInternet()) {
                 if (withAsync) {
@@ -635,7 +617,6 @@ public class ElasticRequestController extends ElasticController {
                     RequestController.loadDriverOfferCommands();
                     // if there are offline offer commands that must be posted, post them
                     if(RequestController.getOfflineDriverOfferCommands().size() > 0) {
-                        Log.i("Offline requests", String.valueOf(RequestController.getOfflineDriverOfferCommands().size()));
                         RequestList offlineRequests = new RequestList();
                         Iterator<OfferCommand> iterator = RequestController.getOfflineDriverOfferCommands().iterator();
                         while(iterator.hasNext()) {
@@ -650,7 +631,6 @@ public class ElasticRequestController extends ElasticController {
                         RequestController.getOfflineDriverOfferCommands().clear();
                         RequestController.saveDriverOfferCommands();
                     }
-                    Log.i("Requests", String.valueOf(RequestController.getOffersInstance().size()));
                     // Save any updated driver requests
                     RequestController.saveDriverOfferedRequests();
                     notifyListener();
