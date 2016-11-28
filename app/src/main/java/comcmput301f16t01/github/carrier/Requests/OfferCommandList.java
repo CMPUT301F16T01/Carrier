@@ -25,7 +25,7 @@ public class OfferCommandList extends ArrayList<OfferCommand> {
         }
     }
 
-    /** Checks if the request (based on the id from elasticsearch) is already contained in the OfferCommandList. */
+    /** Checks if the request (based on the id from elastic search) is already contained in the OfferCommandList. */
     public boolean contains(String id) {
         for(OfferCommand offerCommand : this) {
             if(offerCommand.getRequest().getId().equals(id)) {
@@ -35,7 +35,7 @@ public class OfferCommandList extends ArrayList<OfferCommand> {
         return false;
     }
 
-    /** Removes the request (based on the id from elasticsearch) from the OfferCommandList. */
+    /** Removes the request (based on the id from elastic search) from the OfferCommandList. */
     public boolean remove(String id) {
         for(OfferCommand offerCommand : this) {
             if(offerCommand.getRequest().getId().equals(id)) {

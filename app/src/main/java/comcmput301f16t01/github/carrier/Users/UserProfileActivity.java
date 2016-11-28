@@ -11,7 +11,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
 import android.text.method.KeyListener;
 import android.util.Log;
 import android.view.View;
@@ -109,7 +108,7 @@ public class UserProfileActivity extends AppCompatActivity {
         usernameTextView.setKeyListener(null);
 
         /*If profile being viewed is not the logged in user's, the edit buttons are hidden and are
-        unclickable.
+         * unClickable.
          */
         if (!user.getUsername().equals(UserController.getLoggedInUser().getUsername())) {
             ImageButton phoneEditButton = (ImageButton) findViewById(R.id.ImageButton_phoneEditIcon);
@@ -173,7 +172,7 @@ public class UserProfileActivity extends AppCompatActivity {
         }
         // Since editing was confirmed, overwrite old value of phone number of the current user
         this.oldPhoneNumber = phoneNumber;
-        // The edit button is weirdly dissapearing? This fixes it.
+        // The edit button is weirdly disappearing? This fixes it.
         editButton.setVisibility(View.VISIBLE);
         editingPhone = false;
     }
@@ -283,7 +282,7 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     // see code attribution
-    public void hideKeyboard(View v) {
+    private void hideKeyboard(View v) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
     }

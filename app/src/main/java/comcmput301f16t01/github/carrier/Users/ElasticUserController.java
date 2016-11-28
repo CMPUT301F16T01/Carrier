@@ -19,7 +19,7 @@ import io.searchbox.core.SearchResult;
 import io.searchbox.core.Update;
 
 /**
- * Created by Ben on 2016-10-27.
+ * This is what handles the elastic user controller
  */
 
 public class ElasticUserController {
@@ -31,8 +31,7 @@ public class ElasticUserController {
         /**
          * Async task to add user to elastic search.
          *
-         * @param users
-         * @return
+         * @param users these are the users that we will add in elastic search
          */
         @Override
         protected Void doInBackground(User... users) {
@@ -114,8 +113,6 @@ public class ElasticUserController {
 
             try {
                 client.execute(update);
-                UserController.getLoggedInUser().setEmail(update_params[1]);
-                UserController.getLoggedInUser().setPhone(update_params[2]);
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -1,32 +1,27 @@
 package comcmput301f16t01.github.carrier.Searching;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
 import com.google.gson.Gson;
-
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.R;
 import comcmput301f16t01.github.carrier.Requests.DriverViewRequestActivity;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestList;
-import comcmput301f16t01.github.carrier.Users.LoginActivity;
-import comcmput301f16t01.github.carrier.Users.LoginMemory;
-import comcmput301f16t01.github.carrier.Users.UserController;
 
 /**
  * SearchResultsActivity handles displaying and linking to new requests for a driver to choose from.
  */
 public class SearchResultsActivity extends AppCompatActivity {
-    ArrayAdapter<Request> requestArrayAdapter;
+    private ArrayAdapter<Request> requestArrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +31,12 @@ public class SearchResultsActivity extends AppCompatActivity {
 
         ListView requestListView = (ListView) findViewById( R.id.listView_searchResults );
 
-        unpackBundle( this.getIntent().getBundleExtra("filterBundle"));
-
         // If the user is offline, show dialog to tell them they are seeing a cache
         if (!ConnectionChecker.isThereInternet()) {
             showOfflineDialog();
+        } else {
+            // we only grab this if we are online (for offline we just grab the search cache)
+            unpackBundle( this.getIntent().getBundleExtra("filterBundle"));
         }
 
         // It shouldn't matter what query we used, the singleton will be up to date with the query when we get here
@@ -92,15 +88,8 @@ public class SearchResultsActivity extends AppCompatActivity {
      */
     private void unpackBundle(Bundle filterBundle) {
         // both will be false by default
-        boolean filterByPrice = false;
-        boolean filterByPricePerKM = false;
-        if(getIntent().hasExtra("filterByPrice")) {
-            filterByPrice = filterBundle.getBoolean("filterByPrice");
-        }
-        if(getIntent().hasExtra("filterByPricePerKM")) {
-            filterByPricePerKM = filterBundle.getBoolean("filterByPricePerKM");
-        }
-
+        boolean filterByPrice = filterBundle.getBoolean("filterByPrice");
+        boolean filterByPricePerKM = filterBundle.getBoolean("filterByPricePerKM");
         // Check if we are filtering by price
         if (filterByPrice) {
             Double minPrice = filterBundle.getDouble("minPrice");

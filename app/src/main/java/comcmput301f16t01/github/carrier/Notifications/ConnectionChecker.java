@@ -1,19 +1,11 @@
 package comcmput301f16t01.github.carrier.Notifications;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.widget.Toast;
-
-import org.apache.http.impl.client.HttpClientBuilder;
-
-import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.concurrent.ExecutionException;
 
 /**
  * <p>Call to the static function ConnectionChecker.isConnected( context ) to check if you have

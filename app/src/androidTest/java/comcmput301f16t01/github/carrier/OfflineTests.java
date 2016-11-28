@@ -2,8 +2,6 @@ package comcmput301f16t01.github.carrier;
 
 import android.content.Context;
 import android.net.wifi.WifiManager;
-import android.util.Log;
-
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
@@ -12,11 +10,8 @@ import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
 /**
- * Created by kiete on 11/23/2016.
- */
-
-/**
- * Tests offline functionality
+ * Tests offline functionality. You MUST test these on an emulator. If you do not, your ability to
+ * use data will affect the outcome of these tests.
  */
 public class OfflineTests extends ApplicationTest {
     private User offlineTestUser = new User("offlineTestUser", "offline@offline.com", "00000000", "offline car");

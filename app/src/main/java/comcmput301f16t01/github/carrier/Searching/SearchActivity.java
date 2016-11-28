@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -30,7 +31,7 @@ import comcmput301f16t01.github.carrier.SetLocationsActivity;
  * <p>Retrieved on: October 28th, 2016</p>
  */
 public class SearchActivity extends AppCompatActivity {
-    final Activity activity = SearchActivity.this;
+    private final Activity activity = SearchActivity.this;
 
     /** Helps determine what extra filtering is needed if the user has specified */
     private Boolean filterByPrice = false;
@@ -226,7 +227,13 @@ public class SearchActivity extends AppCompatActivity {
      */
     public void searchByAddress(View view) {
         Intent intent = new Intent(activity, SearchAddressChoiceActivity.class);
-        bundleFilters( intent );
+        try {
+            bundleFilters(intent);  // attempt to bundle the price filters
+        } catch (Exception e) {
+            // If there is a failure we can toast the error message to the user.
+            Toast.makeText( getBaseContext(), e.getMessage(), Toast.LENGTH_LONG ).show();
+            return; // escape the routine and do not start the new activity.
+        }
         startActivity(intent);
     }
 }

@@ -44,7 +44,7 @@ public class ElasticRequestController {
     public static void setListener( Listener newListener ) {
         listener = newListener;
     }
-    public static void notifyListener() {
+    private static void notifyListener() {
         if (listener != null) {
             listener.update();
         }
@@ -609,7 +609,7 @@ public class ElasticRequestController {
             // Perform result update on UI thread if there is internet
             if (ConnectionChecker.isThereInternet()) {
                 if (withAsync) {
-                    // replace list of offered requests with those we just got from elasticsearch
+                    // replace list of offered requests with those we just got from elastic search
                     RequestController.getOffersInstance().replaceList( requests );
                     // load in any offline requests
                     RequestController.loadDriverOfferCommands();
@@ -623,9 +623,9 @@ public class ElasticRequestController {
                             Request request = RequestController.addOfflineOffer(tempOfferCommand);
                             offlineRequests.add(request);
                         }
-                        // add the offline request to the list we just grabbed from elasticsearch
+                        // add the offline request to the list we just grabbed from elastic search
                         RequestController.getOffersInstance().append(offlineRequests);
-                        // get rid of all the offline requests, since they now live on elasticsearch
+                        // get rid of all the offline requests, since they now live on elastic search
                         RequestController.getOfflineDriverOfferCommands().clear();
                         RequestController.saveDriverOfferCommands();
                     }
@@ -768,7 +768,7 @@ public class ElasticRequestController {
     /**
      * Opens a connection to the elastic search server.
      */
-    static void verifySettings() {
+    private static void verifySettings() {
         if (client == null) {
             DroidClientConfig.Builder builder =
                     new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");

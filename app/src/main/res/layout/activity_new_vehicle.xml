@@ -16,12 +16,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="20sp"
-        android:id="@+id/textView_vehiclePropt"
+        android:id="@+id/textView_vehiclePrompt"
         android:paddingBottom="15dp"/>
 
     <View
         android:id="@+id/topDivider"
-        android:layout_below="@+id/textView_vehiclePropt"
+        android:layout_below="@+id/textView_vehiclePrompt"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="@color/colorPrimaryLighter" />

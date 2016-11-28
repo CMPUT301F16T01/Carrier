@@ -17,8 +17,8 @@ public class LocationTests extends ApplicationTest {
     private final double latitude2 = 42.9870;
     private final double longitude2 = 81.2432;
 
-    private final User loggedInUser = new User( "notifTestUser", "notify@email.com", "888-999-1234", "your mom" );
-    private final User driverOne = new User( "notifTestDriver", "notifyYou@email.com", "0118-99-112", "my mom" );
+    private final User loggedInUser = new User( "notifyTestUser", "notify@email.com", "888-999-1234", "your mom" );
+    private final User driverOne = new User( "notifyTestDriver", "notifyYou@email.com", "0118-99-112", "my mom" );
 
     // Set up a test user to receive notifications
     private void setUpUser() {

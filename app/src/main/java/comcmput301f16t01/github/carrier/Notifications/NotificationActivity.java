@@ -20,7 +20,7 @@ import comcmput301f16t01.github.carrier.Users.UserController;
  * in a requester's requests. Here the user can choose to mark them as read or delete them.
  */
 public class NotificationActivity extends AppCompatActivity {
-    ArrayAdapter<Notification> notificationArrayAdapter;
+    private ArrayAdapter<Notification> notificationArrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,7 @@ public class NotificationActivity extends AppCompatActivity {
         notificationArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, notificationList ); // TODO create a unique array adapter for this?
         notificationListView.setAdapter( notificationArrayAdapter );
 
-        final SwipeRefreshLayout srl = (SwipeRefreshLayout) findViewById( R.id.swiperefresh );
+        final SwipeRefreshLayout srl = (SwipeRefreshLayout) findViewById( R.id.swipeRefresh);
         // Set up a scroll listener to turn off swipe to refresh if the view is not at the top.
         notificationListView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override

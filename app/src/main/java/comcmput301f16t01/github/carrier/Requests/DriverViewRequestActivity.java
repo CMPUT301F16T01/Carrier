@@ -66,12 +66,12 @@ import static comcmput301f16t01.github.carrier.Requests.Request.Status.PAID;
  * <p>Retrieved on: November 24th, 2016</p>
  */
 public class DriverViewRequestActivity extends AppCompatActivity {
-    Activity activity = DriverViewRequestActivity.this;
-    GeoPoint startPoint = null;
-    GeoPoint endPoint = null;
-    Road[] roadList = null;
-    MapView map;
-    IMapController mapController;
+    private final Activity activity = DriverViewRequestActivity.this;
+    private GeoPoint startPoint = null;
+    private GeoPoint endPoint = null;
+    private Road[] roadList = null;
+    private MapView map;
+    private IMapController mapController;
     private Request request;
     private User loggedInUser;
 
@@ -139,7 +139,7 @@ public class DriverViewRequestActivity extends AppCompatActivity {
      * @param end GeoPoint for end location
      * @return BoundingBox that holds both location points
      */
-    public BoundingBox getBoundingBox(GeoPoint start, GeoPoint end) {
+    private BoundingBox getBoundingBox(GeoPoint start, GeoPoint end) {
         double north;
         double south;
         double east;
@@ -168,7 +168,7 @@ public class DriverViewRequestActivity extends AppCompatActivity {
      * @param box BoundingBox for start and end points
      */
     // see code attribution
-    public void zoomToBounds(final BoundingBox box) {
+    private void zoomToBounds(final BoundingBox box) {
         if (map.getHeight() > 0) {
             map.zoomToBoundingBox(box, false);
             map.zoomToBoundingBox(box, false);
@@ -214,7 +214,7 @@ public class DriverViewRequestActivity extends AppCompatActivity {
      * Asynchronous task to get the route between the two points
      */
     // see code attribution
-    public void getRoadAsync() {
+    private void getRoadAsync() {
         roadList = null;
 
         GeoPoint roadStartPoint = startPoint;
@@ -299,7 +299,7 @@ public class DriverViewRequestActivity extends AppCompatActivity {
      *
      * @return GeoPoint that specifies center between start and end points
      */
-    public GeoPoint getCenter() {
+    private GeoPoint getCenter() {
         double startLat = startPoint.getLatitude();
         double startLong = startPoint.getLongitude();
         double endLat = endPoint.getLatitude();
@@ -325,7 +325,7 @@ public class DriverViewRequestActivity extends AppCompatActivity {
     /**
      * Given the request the user is viewing, set the views in the layout.
      */
-    public void setViews() {
+    private void setViews() {
         // Set up the fare
         Currency localCurrency = Currency.getInstance( Locale.getDefault() );
         String price = localCurrency.getSymbol() + FareCalculator.toString(request.getFare());
