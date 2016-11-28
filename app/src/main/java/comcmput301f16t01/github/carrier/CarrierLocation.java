@@ -1,9 +1,6 @@
 package comcmput301f16t01.github.carrier;
 
 import android.location.Location;
-import android.widget.Toast;
-
-import org.osmdroid.util.GeoPoint;
 
 /**
  * <p>Represents a geo-location on the globe. Includes an address string.</p>

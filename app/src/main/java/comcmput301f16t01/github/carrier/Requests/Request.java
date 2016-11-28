@@ -1,10 +1,7 @@
 package comcmput301f16t01.github.carrier.Requests;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
-
 import java.util.ArrayList;
-
 import comcmput301f16t01.github.carrier.CarrierLocation;
 import comcmput301f16t01.github.carrier.FareCalculator;
 import comcmput301f16t01.github.carrier.Users.User;

@@ -24,7 +24,7 @@
     <TextView
         android:layout_width="240dp"
         android:layout_height="wrap_content"
-        android:text="End: location brap brap 101010108 long long long long long street"
+        android:text="End: location 101010108 long long long long long street"
         android:textSize="15sp"
         android:id="@+id/textView_endLocation"
         android:layout_row="1"
