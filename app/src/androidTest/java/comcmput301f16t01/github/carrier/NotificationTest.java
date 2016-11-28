@@ -245,7 +245,7 @@ public class NotificationTest extends ApplicationTest {
 
         nc.clearAllNotifications( driverOne );
 
-        Request newRequest = new Request( UserController.getLoggedInUser(),
+        Request newRequest = new Request( loggedInUser,
                 new CarrierLocation(), new CarrierLocation(), "testDriverGetNotified" );
 
         // Unnecessary clutter for request elastic search, and irrelevant to this test (?)
@@ -265,16 +265,16 @@ public class NotificationTest extends ApplicationTest {
 
         // wait for async tasks to finish loop.
         int pass = 0;
-        while( notificationList.size() == 0 ) {
-            chillabit();
+        while( notificationList.size() != 1 ) {
             notificationList = nc.fetchNotifications( driverOne );
+            chillabit();
             pass++;
             if (pass > 5) { break; }
         }
 
         //nc.clearAllNotifications( driverOne );
 
-        assertTrue( "The driver should have one and only one notification.",
+        assertTrue( "The driver should have one and only one notification. Got:" + notificationList.size(),
                 notificationList.size() == 1);
     }
 
@@ -337,8 +337,8 @@ public class NotificationTest extends ApplicationTest {
             if ( notificationList.get(0).isRead() != notificationList.get(1).isRead() ) {
                 break;
             }
-            chillabit();
             notificationList = nc.fetchNotifications( loggedInUser );
+            chillabit();
             pass++;
             if (pass > 5) { break; }
         }
