@@ -12,13 +12,15 @@ import com.google.gson.reflect.TypeToken;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+
 import java.lang.reflect.Type;
-import java.nio.channels.FileLockInterruptionException;
+
 import java.util.List;
+import java.util.Collections;
+import java.util.Iterator;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -46,6 +48,11 @@ public class RequestController {
     /** Holds requests where the rider has offered to ride. */
     private static final RequestList requestsWhereOffered = new RequestList();
 
+    /** Offer commands that drivers make on a request while offline that are put on elastic search
+     * when there is connection.
+     */
+    private static final OfferCommandList offlineDriverOfferCommands = new OfferCommandList();
+
     /** Requests that are made while offline that are put on elastic search when there
      * there is connection. */
     private static final RequestList offlineRiderRequests = new RequestList();
@@ -59,6 +66,11 @@ public class RequestController {
     /** The file name of the locally saved offered driver requests. */
     private static final String DRIVER_FILENAME = "DriverRequests.sav";
 
+    /** The file name of the locally saved driver search results (50 most recent). */
+    private static final String SEARCH_FILENAME = "SearchResults.sav";
+
+    /** The file name of the locally saved queue of driver offers. */
+    private static final String OFFLINE_OFFERS_FILENAME = "OfflineOffers.sav";
     /** The file name of the locally saved offline rider requests. */
     private static final String OFFLINE_REQUEST_FILENAME = "OfflineRequests.sav";
 
@@ -95,6 +107,10 @@ public class RequestController {
      *  @see #pruneByPricePerKM(Double, Double)
      */
     public static RequestList getResult() {
+        // If the user is offline, load from search results from file rather than from elastic search
+        if (!ConnectionChecker.isThereInternet()) {
+            loadSearchResults();
+        }
         return searchResult;
     }
 
@@ -125,6 +141,8 @@ public class RequestController {
 
     /**
      * Cancels a request using elastic search.
+     *
+     * @param request The request to cancel
      */
     public static void cancelRequest( Request request ) {
         ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
@@ -141,40 +159,51 @@ public class RequestController {
      * @see Offer
      */
     public static void addDriver(Request request, User driver) {
-        try {
-            request.addOfferingDriver( driver );
-        } catch ( Exception e ) {
-            return; // If the driver is already offered we shouldn't do this action.
-        }
-
         // remove the request from the search results because we are making an offer to it
-        for ( Request searchResultRequest : searchResult ) {
-            if ( searchResultRequest.getId().equals(request.getId())) {
-                searchResult.remove( searchResultRequest );
+        Iterator<Request> iterator = searchResult.iterator();
+        while(iterator.hasNext()) {
+            if ( iterator.next().getId().equals(request.getId())) {
+                iterator.remove();
+                saveSearchResults(false);
             }
         }
-
         // If there is internet update the request on elastic search with the new accepting driver.
         if (ConnectionChecker.isThereInternet()) {
-            // create an offer object [[ potentially throws IllegalArgumentException if called wrong ]]
+            try {
+                request.addOfferingDriver( driver );
+            } catch ( Exception e ) {
+                return; // If the driver is already offered we shouldn't do this action.
+            }
+            // Create an offer object [[ potentially throws IllegalArgumentException if called wrong ]]
             Offer newOffer = new Offer(request, driver);
-
             // Add offer to elastic search
             ElasticRequestController.AddOfferTask aot = new ElasticRequestController.AddOfferTask();
             aot.execute( newOffer );
+
+            // update status of request
             ElasticRequestController.UpdateRequestTask urt = new ElasticRequestController.UpdateRequestTask();
             urt.execute(request);
+        } else {
+            request.addOfferingDriver( driver );
+            // if there is no network connection, add the offline offer command to the queue
+            OfferCommand offerCommand = new OfferCommand(request, driver);
+            offlineDriverOfferCommands.add(offerCommand);
+            saveDriverOfferCommands();
         }
-        
-        // TODO add addOffer task to queue if offline
-
         // Regardless of whether or not there is internet, create a notification and add the offer to the local requestsWhereOffered RequestList
         // Add a notification
         NotificationController nc = new NotificationController();
         nc.addNotification( request.getRider(), request );
-        // TODO add addNotification to queue if offline
         requestsWhereOffered.add( request ); // Notifies offerList views
         appendRiderRequests(request);
+        saveDriverOfferedRequests();
+    }
+
+    public static Request addOfflineOffer(OfferCommand offerCommand) {
+        // remove the offering driver since we need to "overwrite" the offering driver
+        offerCommand.getRequest().removeOfferingDriver(offerCommand.getDriver());
+        RequestController.addDriver(offerCommand.getRequest(), offerCommand.getDriver());
+        return offerCommand.getRequest();
     }
 
     /**
@@ -213,6 +242,8 @@ public class RequestController {
 
     /**
      * Marks a request as complete in elastic search.
+     *
+     * @param request The request to complete.
      */
     public static void completeRequest(Request request) {
         // If there is internet update elastic search with the completed request
@@ -221,7 +252,7 @@ public class RequestController {
             request.setStatus( Request.Status.COMPLETE );
             urt.execute( request );
         }
-        // Regardles so of whether or not there is internet update the UI statuses and save the request lists.
+        // Regardless so of whether or not there is internet update the UI statuses and save the request lists.
         requestsWhereOffered.notifyListeners();
         requestsWhereRider.notifyListeners();
         saveDriverOfferedRequests();
@@ -229,7 +260,9 @@ public class RequestController {
     }
 
     /**
-     * Sets a request as paid for
+     * Sets a request as paid for.
+     *
+     * @param request The request to mark as paid
      */
     public static void payForRequest(Request request) {
         // If there is internet update elastic search with the paid request
@@ -248,13 +281,19 @@ public class RequestController {
     /**
      * Search requests by the keyword, will set it so the singleton contains the information for
      * this query. Use getResults() to get the information.
-     * @param keyword This is the keyword that the user wants to look for requests with. We use to Query.
+     * @param keyword The keyword the user wants to query for requests with
      */
     public static void searchByKeyword(String keyword) {
+        // If the user is offline, load from search results from file rather than from elastic search
+        if (!ConnectionChecker.isThereInternet()) {
+            loadSearchResults();
+            return;
+        }
         ElasticRequestController.SearchByKeywordTask sbkt = new ElasticRequestController.SearchByKeywordTask();
         sbkt.execute(keyword);
         try {
             searchResult.replaceList( sbkt.get() );
+            saveSearchResults(true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -263,15 +302,41 @@ public class RequestController {
     /**
      * Search requests by a location. This sets it so the singleton contains the information for
      * this query. Use getResults() to get the information.
+     * @param location The location the user wants to query for requests with
      */
     public static void searchByLocation(Location location) {
+        // If the user is offline, load from search results from file rather than from elastic search
+        if (!ConnectionChecker.isThereInternet()) {
+            loadSearchResults();
+            return;
+        }
         ElasticRequestController.SearchByLocationTask sblt = new ElasticRequestController.SearchByLocationTask();
         sblt.execute(location);
         try {
             searchResult.replaceList(sblt.get());
+            saveSearchResults(true);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Verifies that request status is available, which means that it is either "OPEN" or "OFFERED".
+     *
+     * @param requestId The request whose status we want to verify to be available.
+     *
+     * @return boolean The boolean indicates whether or not the request is still available
+     */
+    public static boolean verifyRequestAvailable(String requestId) {
+        ElasticRequestController.VerifyRequestAvailableTask vrat = new ElasticRequestController.VerifyRequestAvailableTask();
+        vrat.execute(requestId);
+        Boolean result = false;
+        try {
+            result = vrat.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     /**
@@ -301,8 +366,8 @@ public class RequestController {
     }
 
     /**
-     * Used for testing. Clears out all the requested requests for a user
-     * Clears out all the requested requests for a user in elastic search
+     * Used for testing. Clears out all the requested requests for a user in elastic search.
+     * @param rider The rider whose requests should be cleared
      */
     public static void clearAllRiderRequests(User rider) {
         ElasticRequestController.ClearRiderRequestsTask crrt = new ElasticRequestController.ClearRiderRequestsTask();
@@ -389,6 +454,15 @@ public class RequestController {
     }
 
     /**
+     * Retrieves the list of offline offer commands.
+     *
+     * @return OfferCommandList
+     */
+    public static OfferCommandList getOfflineDriverOfferCommands() {
+        return offlineDriverOfferCommands;
+    }
+
+    /**
      * Updates the requestsWhereRider and requestsWhereOffered lists in the background (do not need
      * to wait on the main UI thread at all). If a rider had made requests while offline and they
      * regain connectivity, also adds their offline requests to elastic search.
@@ -413,9 +487,6 @@ public class RequestController {
                     requestsToPass[i] = request;
                 }
                 art.execute(requestsToPass);
-                // Empty the offline RequestList and save an empty file
-//                RequestController.getOfflineRiderRequests().clear();
-//                saveOfflineRiderRequests();
             }
 
 
@@ -429,6 +500,104 @@ public class RequestController {
         }
     }
 
+    /**
+     * Caches the queue of driver offer commands to perform once we regain connection.
+     */
+    public static void saveDriverOfferCommands() {
+        Gson gson = new Gson();
+        try {
+            FileOutputStream fos = saveContext.openFileOutput(OFFLINE_OFFERS_FILENAME, 0);
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
+            // Append new request to add to queue
+
+            Log.i("Saving", String.valueOf(offlineDriverOfferCommands.size()));
+            gson.toJson(offlineDriverOfferCommands, out);
+            out.flush();
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * For offline functionality. Loads the cached driver offer commands queue.
+     */
+    public static void loadDriverOfferCommands() {
+        try {
+            FileInputStream fis = saveContext.openFileInput(OFFLINE_OFFERS_FILENAME);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+            Gson gson = new Gson();
+            Type listType = new TypeToken<OfferCommandList>() {}.getType();
+            // Load the search results into the controller
+            offlineDriverOfferCommands.replaceList((OfferCommandList) gson.fromJson(in, listType));
+            Log.i("Loading", String.valueOf(offlineDriverOfferCommands.size()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Caches the requests that the driver has searched for.
+     * @param append Boolean to tell us if we want to append or replace the saved search results
+     */
+    public static void saveSearchResults(boolean append) {
+        RequestList saveList = new RequestList();
+        // we only want to save the 50 most recent search results
+        saveList.setMaxArraySize(50);
+        Gson gson = new Gson();
+        if(append) {
+            try {
+                // get previous search results
+                FileInputStream fis = saveContext.openFileInput(SEARCH_FILENAME);
+                BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+                Type listType = new TypeToken<RequestList>() {}.getType();
+                // Append previous search results
+                saveList.append((RequestList) gson.fromJson(in, listType));
+                // if we have network connection, check our list to remove unavailable requests
+                if (ConnectionChecker.isThereInternet()) {
+                    saveList.verifyAll();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            FileOutputStream fos = saveContext.openFileOutput(SEARCH_FILENAME, 0);
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
+            saveList.append(searchResult);
+            Log.i("Saving",String.valueOf(saveList.size()));
+            gson.toJson(saveList, out);
+            out.flush();
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * For offline functionality. Loads the cached search results.
+     */
+    public static void loadSearchResults() {
+        try {
+            FileInputStream fis = saveContext.openFileInput(SEARCH_FILENAME);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+            Gson gson = new Gson();
+            Type listType = new TypeToken<RequestList>() {
+            }.getType();
+
+            // Load the search results into the controller
+            searchResult.replaceList((RequestList) gson.fromJson(in, listType));
+            // Reverse the list so we see the most recent searches first
+            Collections.reverse(searchResult);
+            Log.i("Loading", String.valueOf(searchResult.size()));
+            // if we have network connection, check our list to remove unavailable requests
+            if (ConnectionChecker.isThereInternet()) {
+                searchResult.verifyAll();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Get address string from a geo point
@@ -517,7 +686,6 @@ public class RequestController {
         }
     }
 
-
     /**
      * Caches the requests that the driver offered to fulfill.
      */
@@ -539,9 +707,8 @@ public class RequestController {
      * For offline functionality. Loads the cached driver offered requests.
      */
     public static void loadDriverOfferedRequests() {
-        FileInputStream fis = null;
         try {
-            fis = saveContext.openFileInput(DRIVER_FILENAME);
+            FileInputStream fis = saveContext.openFileInput(DRIVER_FILENAME);
             BufferedReader in = new BufferedReader(new InputStreamReader(fis));
             Gson gson = new Gson();
             Type listType = new TypeToken<RequestList>() {}.getType();
@@ -576,9 +743,8 @@ public class RequestController {
      * For offline functionality. Loads the offlineRiderRequests from file into the controller.
      */
     public static void loadOfflineRiderRequests() {
-        FileInputStream fis = null;
         try {
-            fis = saveContext.openFileInput(OFFLINE_REQUEST_FILENAME);
+            FileInputStream fis = saveContext.openFileInput(OFFLINE_REQUEST_FILENAME);
             BufferedReader in = new BufferedReader(new InputStreamReader(fis));
             Gson gson = new Gson();
             Type listType = new TypeToken<RequestList>() {}.getType();

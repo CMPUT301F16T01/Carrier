@@ -2,9 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="comcmput301f16t01.github.carrier">
 
-    <!-- FOUR BELOW ARE USED FOR ELASTIC SEARCH -->
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <!-- USED FOR ELASTIC SEARCH -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -19,7 +18,7 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <!-- USED TO MAKE PHONE CALLS -->
-    <uses-permission android:name="android.permission.CALL_PHONE"></uses-permission>
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <!-- USED TO TEST CONNECTIVITY -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -58,21 +57,7 @@
         <activity
             android:name=".Users.UserProfileActivity"
             android:label="Carrier"
-            android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait"/>
-
-        <!--
-             The API key for Google Maps-based APIs is defined as a string resource.
-             (See the file "res/values/google_maps_api.xml").
-             Note that the API key is linked to the encryption key used to sign the APK.
-             You need a different API key for each encryption key, including the release key that is used to
-             sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/.
-        -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="0" />
-
 
         <activity
         android:name=".Searching.SearchActivity"
@@ -96,18 +81,11 @@
         <activity
             android:name=".SetLocationsActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".RiderViewOfferingDriversActivity"></activity>
+        <activity android:name=".RiderViewOfferingDriversActivity" />
         <activity
-        android:name=".Requests.ViewLocationsActivity"
-        android:screenOrientation="portrait" />
-        <activity android:name=".Searching.SearchAddressChoiceActivity"></activity>
+            android:name=".Requests.ViewLocationsActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Searching.SearchAddressChoiceActivity" />
 
     </application>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
-    <!-- USED TO TEST CONNECTIVITY -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
 </manifest>
