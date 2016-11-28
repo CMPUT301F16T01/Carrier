@@ -1,6 +1,8 @@
 package comcmput301f16t01.github.carrier.Searching;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,16 +12,21 @@ import android.widget.ListView;
 
 import com.google.gson.Gson;
 
+import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.R;
 import comcmput301f16t01.github.carrier.Requests.DriverViewRequestActivity;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestList;
+import comcmput301f16t01.github.carrier.Users.LoginActivity;
+import comcmput301f16t01.github.carrier.Users.LoginMemory;
+import comcmput301f16t01.github.carrier.Users.UserController;
 
 /**
  * SearchResultsActivity handles displaying and linking to new requests for a driver to choose from.
  */
 public class SearchResultsActivity extends AppCompatActivity {
+    ArrayAdapter<Request> requestArrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,10 +38,15 @@ public class SearchResultsActivity extends AppCompatActivity {
 
         unpackBundle( this.getIntent().getBundleExtra("filterBundle"));
 
+        // If the user is offline, show dialog to tell them they are seeing a cache
+        if (!ConnectionChecker.isThereInternet()) {
+            showOfflineDialog();
+        }
+
         // It shouldn't matter what query we used, the singleton will be up to date with the query when we get here
         final RequestList requestList = RequestController.getResult();
 
-        ArrayAdapter<Request> requestArrayAdapter = new ArrayAdapter<>( this, android.R.layout.simple_list_item_1, requestList );
+        requestArrayAdapter = new ArrayAdapter<>( this, android.R.layout.simple_list_item_1, requestList );
         requestListView.setAdapter( requestArrayAdapter );
 
         // Create an onClickListener for the items to take them to a "make offer" page.
@@ -56,14 +68,38 @@ public class SearchResultsActivity extends AppCompatActivity {
         });
     }
 
+    private void showOfflineDialog() {
+        AlertDialog.Builder adb = new AlertDialog.Builder(this);
+        adb.setTitle("No network connection");
+        adb.setMessage("You are seeing a cache of your previously searched requests. " +
+                "You can still make offers on these requests, which will be sent once " +
+                "you regain a network connection.");
+        adb.setPositiveButton("Okay", null);
+        adb.show();
+    }
+
+    @Override
+    protected void onResume() {
+        /** we update the list view to remove requests if the user made an offer to it */
+        requestArrayAdapter.notifyDataSetChanged();
+        super.onResume();
+    }
+
     /**
      * Unpacks the bundle that contains the filters for the request, then asks the request controller
      * to prune by those values if it has been requested.
      * @param filterBundle the bundle containing all the values to filter by.
      */
     private void unpackBundle(Bundle filterBundle) {
-        Boolean filterByPrice = filterBundle.getBoolean("filterByPrice");
-        Boolean filterByPricePerKM = filterBundle.getBoolean("filterByPricePerKM");
+        // both will be false by default
+        boolean filterByPrice = false;
+        boolean filterByPricePerKM = false;
+        if(getIntent().hasExtra("filterByPrice")) {
+            filterByPrice = filterBundle.getBoolean("filterByPrice");
+        }
+        if(getIntent().hasExtra("filterByPricePerKM")) {
+            filterByPricePerKM = filterBundle.getBoolean("filterByPricePerKM");
+        }
 
         // Check if we are filtering by price
         if (filterByPrice) {

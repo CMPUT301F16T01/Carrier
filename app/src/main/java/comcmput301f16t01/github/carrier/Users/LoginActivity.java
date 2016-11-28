@@ -27,12 +27,29 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        tryQuickLogin();
-
         // TODO grab their username based on their ID?
         // TODO alert them if they cannot log in because they are offline
     }
 
+    /**
+     * Called when the activity is resumed. Attempts to log users in by checking if a user is already
+     * logged in. If no one is currently logged in it will execute tryQuickLogin which will look in
+     * the internal memory to see if we can log a user in.
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            // If someone is already logged in we will enter the app immediately. If not
+            // an IllegalAccessError will be thrown meaning no one is logged in allowing us
+            // to tryQuickLogin.
+            enterApp(UserController.getLoggedInUser().getUsername());
+        } catch (IllegalAccessError e) {
+            // Will check if someone is logged in.
+            // If someone is not logged in we can do a tryQuickLogin()
+            tryQuickLogin();
+        }
+    }
     /**
      * If there is internet connection, attempts to login a user through
      * elastic search, otherwise attempts to login a cached user from
@@ -65,7 +82,6 @@ public class LoginActivity extends AppCompatActivity {
                 adb.setPositiveButton( "OK", null );
             } else {
                 enterApp( username );
-                Toast.makeText(this, "Logged in online", Toast.LENGTH_LONG).show();
             }
             /*
             If the user is offline, login the user from file.
@@ -74,7 +90,6 @@ public class LoginActivity extends AppCompatActivity {
             User cachedUser = lm.loadUser();
             UserController.offlineLogInUser(cachedUser.getUsername(), cachedUser);
             enterApp(cachedUser.getUsername());
-            Toast.makeText(this, "Logged in offline", Toast.LENGTH_LONG).show();
         }
     }
 

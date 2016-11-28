@@ -135,7 +135,7 @@ public class SearchingTests extends ApplicationTest {
      * Addressing Use Case Searching #2.
      */
     public void testDriverSearchByKeyword() {
-        // We use gibbersih so that "live" requests do not interfere with tests
+        // We use gibberish so that "live" requests do not interfere with tests
         String keyword1 = "dkfjlasb";
         String keyword2 = "ksjdahfk";
         String keyword3 = "sjdjakfk";

@@ -1,13 +1,17 @@
 package comcmput301f16t01.github.carrier.Notifications;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import comcmput301f16t01.github.carrier.Listener;
 import comcmput301f16t01.github.carrier.R;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
@@ -22,17 +26,61 @@ public class NotificationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
+
+        // Set up the notification list view
+        final ListView notificationListView = (ListView) findViewById( R.id.ListView_notifications );
+        final ArrayList<Notification> notificationList = NotificationController.getNotificationListInstance();
+        notificationArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, notificationList ); // TODO create a unique array adapter for this?
+        notificationListView.setAdapter( notificationArrayAdapter );
+
+        final SwipeRefreshLayout srl = (SwipeRefreshLayout) findViewById( R.id.swiperefresh );
+        // Set up a scroll listener to turn off swipe to refresh if the view is not at the top.
+        notificationListView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                int scrollY = notificationListView.getScrollY();
+                if(scrollY == 0) notificationListView.setEnabled(true);
+                else srl.setEnabled(false);
+            }
+        });
+
+        // Swipe to refresh calls the async update and shows the user visually that the list view
+        // may be updating
+        srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if(!ConnectionChecker.isConnected(getBaseContext())) {
+                    Toast.makeText(getBaseContext(), "You have no network connection!", Toast.LENGTH_LONG ).show();
+                    srl.setRefreshing( false );
+                    return;
+                }
+
+                // Listens for unread notifications/the list to be updated
+                NotificationController nc = new NotificationController();
+                nc.asyncUnreadNotification( UserController.getLoggedInUser(), new Listener() {
+                    @Override
+                    public void update() {
+                        notificationArrayAdapter.notifyDataSetChanged();
+                        srl.setRefreshing(false);
+                        Toast.makeText( getBaseContext(), "You have a new notification!", Toast.LENGTH_SHORT ).show();
+                    }
+                });
+                srl.setRefreshing( false );
+            }
+        });
     }
 
     @Override
     protected void onResume() {
-        super.onResume();
-        ListView notificationListView = (ListView) findViewById( R.id.ListView_notifications );
+        // Create a listener on the async task to update the list view when new unread notifications come in when resuming
         NotificationController nc = new NotificationController();
-        ArrayList<Notification> notificationList = nc.fetchNotifications( UserController.getLoggedInUser() );
-        // TODO create a unique array adapter for this?
-        notificationArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, notificationList );
-        notificationListView.setAdapter( notificationArrayAdapter );
+        nc.asyncUnreadNotification(UserController.getLoggedInUser(), new Listener() {
+            @Override
+            public void update() {
+                notificationArrayAdapter.notifyDataSetChanged();
+            }
+        });
+        super.onResume();
     }
 
     /**

@@ -1,12 +1,17 @@
 package comcmput301f16t01.github.carrier;
 
 import android.location.Location;
+import android.widget.Toast;
 
 import org.osmdroid.util.GeoPoint;
 
 /**
- * Represents a geo-location on the globe.
- * Includes an address string.
+ * <p>Represents a geo-location on the globe. Includes an address string.</p>
+ * </br>
+ * <p>Based on: <a href="http://stackoverflow.com/questions/454908/split-java-string-by-new-line">Split Java String by New Line</a></p>
+ * <p>Author: <a href="http://stackoverflow.com/users/18393/cletus">cletus</a></p>
+ * <p>Posted on: January 18th, 2016</p>
+ * <p>Retrieved on: November 27th, 2016</p>
  */
 public class CarrierLocation extends Location {
     private String address;
@@ -27,16 +32,17 @@ public class CarrierLocation extends Location {
         return address;
     }
 
+    // see code attribution
     public void setAddress(String address) {
-        this.address = address;
+        if(!address.equals("")) {
+            this.address = address;
+            // short address is just the first line of the address string
+            this.shortAddress = address.split("\\r?\\n")[0];
+        }
     }
 
     public String getShortAddress() {
         return shortAddress;
-    }
-
-    public void setShortAddress(String shortAddress) {
-        this.shortAddress = shortAddress;
     }
 
     /**
@@ -44,14 +50,18 @@ public class CarrierLocation extends Location {
      * @return String
      */
     public String getLatLong() {
-        return "(" + String.valueOf(getLatitude()) + ", " +
-                String.valueOf(getLongitude()) + ")";
+        return "(" + String.format("%.4f",getLatitude()) + ", " +
+                String.format("%.4f",getLongitude()) + ")";
     }
 
     @Override
     public String toString() {
         if(address != null) {
-            return getAddress();
+            if(!address.equals("")) {
+                return getAddress();
+            } else {
+                return getLatLong();
+            }
         } else {
             return getLatLong();
         }

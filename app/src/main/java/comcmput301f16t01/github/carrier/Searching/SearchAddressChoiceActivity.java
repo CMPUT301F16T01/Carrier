@@ -121,19 +121,7 @@ public class SearchAddressChoiceActivity extends AppCompatActivity {
             CarrierLocation location = new CarrierLocation();
             location.setLatitude(address.getLatitude());
             location.setLongitude(address.getLongitude());
-            // Based on: https://goo.gl/iMJdJX
-            // Author: cristina
-            // Retrieved on: November 11th, 2016
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
-                if (i != 0) {
-                    sb.append("\n");
-                } else {
-                    location.setShortAddress(address.getAddressLine(i));
-                }
-                sb.append(address.getAddressLine(i));
-            }
-            location.setAddress(sb.toString());
+            location.setAddress(RequestController.getAddress(activity, address.getLatitude(), address.getLongitude()));
             locations.add(location);
         }
         return locations;

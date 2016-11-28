@@ -59,7 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="none|textEmailAddress"
-                android:text="name@name.com"
+                android:text=""
                 android:ems="10"
                 android:id="@+id/EditText_email"
                 android:textColor="@android:color/white"
@@ -91,7 +91,7 @@
                 android:id="@+id/EditText_phone"
                 android:textSize="24sp"
                 android:textColor="@android:color/white"
-                android:text="1234567"
+                android:text=""
                 android:onClick="callPhone"
                 android:layout_marginBottom="20dp"
                 android:focusable="false"
@@ -114,7 +114,7 @@
                 android:layout_alignEnd="@+id/ImageView_emailIcon" />
 
             <TextView
-                android:text="Kia Rio"
+                android:text=""
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/imageView_car"
@@ -194,7 +194,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Name"
+                android:text=""
                 android:layout_marginBottom="20dp"
                 android:ems="10"
                 android:id="@+id/TextView_name"
@@ -219,7 +219,7 @@
                 android:layout_alignEnd="@+id/ImageView_emailIcon" />
 
             <TextView
-                android:text="Kia Rio"
+                android:text=""
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/imageView_car"
