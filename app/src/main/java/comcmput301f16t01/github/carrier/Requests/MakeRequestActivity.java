@@ -52,11 +52,11 @@ public class MakeRequestActivity extends AppCompatActivity {
 
     // result code for when we return to an instance of this activity
     private static final int PASS_ACTIVITY_BACK = 1;
-    final Activity activity = MakeRequestActivity.this;
+    private final Activity activity = MakeRequestActivity.this;
     /**
      * Determines how fast the arrows increment/decrement the estimated fare.
      */
-    final int REPEATED_DELAY = 25;
+    private final int REPEATED_DELAY = 25;
 
     private CarrierLocation start = null;
     private CarrierLocation end = null;
@@ -73,7 +73,7 @@ public class MakeRequestActivity extends AppCompatActivity {
      * to the estimated fare.
      */
     // see code attribution
-    class RepeatUpdater implements Runnable {
+    private class RepeatUpdater implements Runnable {
         public void run() {
             if(autoIncrement) {
                 incrementFare(null);
@@ -263,7 +263,7 @@ public class MakeRequestActivity extends AppCompatActivity {
      * Increase fare by 1 when up arrow is pressed.
      * @param view Up arrow button
      */
-    public void incrementFare(View view) {
+    private void incrementFare(View view) {
         if(fareEstimated != -1) {
             fareEstimated++;
             TextView fareTextView = (TextView) findViewById(R.id.textView_fareEstimate);
@@ -275,7 +275,7 @@ public class MakeRequestActivity extends AppCompatActivity {
      * Decrease fare by 1 when down arrow is pressed.
      * @param view Down arrow button
      */
-    public void decrementFare(View view) {
+    private void decrementFare(View view) {
         if(fareEstimated > 0) {
             fareEstimated--;
             TextView fareTextView = (TextView) findViewById(R.id.textView_fareEstimate);

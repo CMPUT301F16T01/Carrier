@@ -4,9 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,13 +16,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
-
 import org.osmdroid.api.IMapController;
 import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -33,10 +28,6 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
-import org.osmdroid.views.overlay.OverlayItem;
-
-import java.util.List;
-
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.ViewLocationsActivity;
@@ -76,15 +67,15 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
     private static final int PASS_ACTIVITY_FORWARD = 2;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private GoogleApiClient googleApiClient = null;
-    public final Activity activity = SetLocationsActivity.this;
-    Location lastLocation = null;
-    CarrierLocation locationPoint = null;
-    Marker marker = null;
-    double latitude = 0;
-    double longitude = 0;
-    String point = "";
-    String type = "";
-    Bundle lastBundle = new Bundle();
+    private final Activity activity = SetLocationsActivity.this;
+    private Location lastLocation = null;
+    private CarrierLocation locationPoint = null;
+    private Marker marker = null;
+    private double latitude = 0;
+    private double longitude = 0;
+    private String point = "";
+    private String type = "";
+    private Bundle lastBundle = new Bundle();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -356,7 +347,7 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
      * Sets up the map to be pinpointed on the user's location.
      */
     // see code attribution
-    public void getCurrentLocation() {
+    private void getCurrentLocation() {
         if(ContextCompat.checkSelfPermission(activity,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity,

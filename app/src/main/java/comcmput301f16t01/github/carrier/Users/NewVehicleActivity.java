@@ -18,7 +18,7 @@ import comcmput301f16t01.github.carrier.R;
  */
 
 public class NewVehicleActivity extends AppCompatActivity {
-    final Activity activity = NewVehicleActivity.this;
+    private final Activity activity = NewVehicleActivity.this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +67,7 @@ public class NewVehicleActivity extends AppCompatActivity {
      * It toasts that they have logged in successfully
      * @param username The user we are trying to create
      */
-    public void submitNewUser( String username) {
+    private void submitNewUser( String username) {
         // Save username to file
         LoginMemory lm = new LoginMemory( activity );
         lm.saveUsername( username );

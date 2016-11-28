@@ -1,12 +1,6 @@
 package comcmput301f16t01.github.carrier;
 
-import android.content.Context;
-import android.widget.Toast;
-
 import java.util.Locale;
-import java.util.Random;
-
-import static java.security.AccessController.getContext;
 
 /**
  * <p>Calculates an estimated fare between two locations and provides a method for converting

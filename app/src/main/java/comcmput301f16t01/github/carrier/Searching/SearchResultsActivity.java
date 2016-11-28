@@ -1,6 +1,5 @@
 package comcmput301f16t01.github.carrier.Searching;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -9,24 +8,19 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
 import com.google.gson.Gson;
-
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.R;
 import comcmput301f16t01.github.carrier.Requests.DriverViewRequestActivity;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;
 import comcmput301f16t01.github.carrier.Requests.RequestList;
-import comcmput301f16t01.github.carrier.Users.LoginActivity;
-import comcmput301f16t01.github.carrier.Users.LoginMemory;
-import comcmput301f16t01.github.carrier.Users.UserController;
 
 /**
  * SearchResultsActivity handles displaying and linking to new requests for a driver to choose from.
  */
 public class SearchResultsActivity extends AppCompatActivity {
-    ArrayAdapter<Request> requestArrayAdapter;
+    private ArrayAdapter<Request> requestArrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

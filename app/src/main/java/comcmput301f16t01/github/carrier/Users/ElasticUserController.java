@@ -31,8 +31,7 @@ public class ElasticUserController {
         /**
          * Async task to add user to elastic search.
          *
-         * @param users
-         * @return
+         * @param users these are the users that we will add in elastic search
          */
         @Override
         protected Void doInBackground(User... users) {

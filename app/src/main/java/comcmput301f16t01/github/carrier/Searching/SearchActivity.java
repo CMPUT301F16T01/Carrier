@@ -30,7 +30,7 @@ import comcmput301f16t01.github.carrier.SetLocationsActivity;
  * <p>Retrieved on: October 28th, 2016</p>
  */
 public class SearchActivity extends AppCompatActivity {
-    final Activity activity = SearchActivity.this;
+    private final Activity activity = SearchActivity.this;
 
     /** Helps determine what extra filtering is needed if the user has specified */
     private Boolean filterByPrice = false;

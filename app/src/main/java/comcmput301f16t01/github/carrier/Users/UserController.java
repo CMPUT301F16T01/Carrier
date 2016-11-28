@@ -19,7 +19,6 @@ public class UserController {
     /**
      * Will return the singleton instance of the current logged in user.
      *
-     * @return Returns the currently logged in user
      * @throws IllegalAccessError if there is no currently logged in user.
      * @see #logInUser(String)
      */

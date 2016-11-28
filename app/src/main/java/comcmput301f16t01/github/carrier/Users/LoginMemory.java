@@ -2,7 +2,6 @@ package comcmput301f16t01.github.carrier.Users;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -10,17 +9,11 @@ import com.google.gson.reflect.TypeToken;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
-
-import comcmput301f16t01.github.carrier.Users.User;
-import comcmput301f16t01.github.carrier.Users.UserController;
-
-import static java.security.AccessController.getContext;
 
 /**
  * Creates a save file to tie a user's phone to their account after creating or logging in
@@ -28,11 +21,11 @@ import static java.security.AccessController.getContext;
  */
 public class LoginMemory {
     /** The context to save in **/
-    Context saveContext;
+    private Context saveContext;
     /** The filename for logging in username while online **/
-    final String FILENAME = "LoginMemory.sav";
+    private final String FILENAME = "LoginMemory.sav";
     /** The filename for login in while offline **/
-    final String USER_FILENAME = "User.sav";
+    private final String USER_FILENAME = "User.sav";
 
     public LoginMemory( Context ctx ) {
         saveContext = ctx;

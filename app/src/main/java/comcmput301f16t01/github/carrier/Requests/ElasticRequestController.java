@@ -44,7 +44,7 @@ public class ElasticRequestController {
     public static void setListener( Listener newListener ) {
         listener = newListener;
     }
-    public static void notifyListener() {
+    private static void notifyListener() {
         if (listener != null) {
             listener.update();
         }
@@ -768,7 +768,7 @@ public class ElasticRequestController {
     /**
      * Opens a connection to the elastic search server.
      */
-    static void verifySettings() {
+    private static void verifySettings() {
         if (client == null) {
             DroidClientConfig.Builder builder =
                     new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");

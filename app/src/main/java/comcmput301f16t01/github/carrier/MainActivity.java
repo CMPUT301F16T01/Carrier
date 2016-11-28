@@ -202,10 +202,9 @@ public class MainActivity extends AppCompatActivity {
      * we don't need to do anything. If they do not grant the permissions, we should tell
      * them that they are required for the map to be displayed and the app to function.
      *
-     * TODO these need to be filled out
-     * @param requestCode
-     * @param permissions
-     * @param grantResults
+     * @param requestCode This is the variable we use to request permission
+     * @param permissions The permission string for external storage
+     * @param grantResults The result of the request
      */
     // see code attribution
     @Override
@@ -295,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
      * If they do indeed what to log out: open a new LoginActivity, while closing the current MainActivity
      * otherwise remain in MainActivity.
      */
-    public void logout() {
+    private void logout() {
         AlertDialog.Builder adb = new AlertDialog.Builder(this);
         adb.setTitle("Are you sure?");
         adb.setMessage("Log out and return to the login screen?");

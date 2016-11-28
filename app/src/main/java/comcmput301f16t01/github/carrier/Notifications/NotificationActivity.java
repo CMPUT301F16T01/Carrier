@@ -20,7 +20,7 @@ import comcmput301f16t01.github.carrier.Users.UserController;
  * in a requester's requests. Here the user can choose to mark them as read or delete them.
  */
 public class NotificationActivity extends AppCompatActivity {
-    ArrayAdapter<Notification> notificationArrayAdapter;
+    private ArrayAdapter<Notification> notificationArrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

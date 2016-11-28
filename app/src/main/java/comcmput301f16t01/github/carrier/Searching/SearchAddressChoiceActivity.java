@@ -39,10 +39,10 @@ import comcmput301f16t01.github.carrier.Requests.RequestController;
  * <p>Retrieved on: November 24th, 2016</p>
  */
 public class SearchAddressChoiceActivity extends AppCompatActivity {
-    final Activity activity = SearchAddressChoiceActivity.this;
-    ArrayAdapter<CarrierLocation> locationArrayAdapter;
-    ListView locationListView;
-    EditText searchEditText;
+    private final Activity activity = SearchAddressChoiceActivity.this;
+    private ArrayAdapter<CarrierLocation> locationArrayAdapter;
+    private ListView locationListView;
+    private EditText searchEditText;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -75,7 +75,7 @@ public class SearchAddressChoiceActivity extends AppCompatActivity {
         });
     }
 
-    public void searchAddress(View view) {
+    private void searchAddress(View view) {
         final List<CarrierLocation> locations = getLocation(searchEditText.getText().toString());
         if(locations != null) {
             locationArrayAdapter = new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, locations);
@@ -96,7 +96,7 @@ public class SearchAddressChoiceActivity extends AppCompatActivity {
     }
 
     // see code attribution
-    public void hideKeyboard(View v) {
+    private void hideKeyboard(View v) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
     }

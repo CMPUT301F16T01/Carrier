@@ -17,7 +17,7 @@ import comcmput301f16t01.github.carrier.R;
  * and redirects the user to the profile of the username that was touched.
  */
 public class UsernameTextView extends TextView {
-    User user;
+    private User user;
 
     /**
      * Constructor
@@ -57,7 +57,7 @@ public class UsernameTextView extends TextView {
      * Creates an intent with a bundle that redirects to the touched username's profile.
      * @param userToProfile The username of the profile to view.
      */
-    public void toProfile(User userToProfile) {
+    private void toProfile(User userToProfile) {
         Intent intent = new Intent(getContext(), UserProfileActivity.class);
         Bundle bundle = new Bundle();
         // packs the parcel with a user so that userProfile knows which to load.

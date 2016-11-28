@@ -2,8 +2,6 @@ package comcmput301f16t01.github.carrier;
 
 import android.content.Context;
 import android.net.wifi.WifiManager;
-import android.util.Log;
-
 import comcmput301f16t01.github.carrier.Notifications.ConnectionChecker;
 import comcmput301f16t01.github.carrier.Requests.Request;
 import comcmput301f16t01.github.carrier.Requests.RequestController;

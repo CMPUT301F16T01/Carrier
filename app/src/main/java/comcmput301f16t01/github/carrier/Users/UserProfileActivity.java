@@ -11,7 +11,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
 import android.text.method.KeyListener;
 import android.util.Log;
 import android.view.View;
@@ -283,7 +282,7 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     // see code attribution
-    public void hideKeyboard(View v) {
+    private void hideKeyboard(View v) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
     }

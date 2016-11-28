@@ -1,13 +1,11 @@
 package comcmput301f16t01.github.carrier;
 
-/**
- * This is what will interact with elastic search
- */
-import java.util.concurrent.ExecutionException;
-
 import comcmput301f16t01.github.carrier.Users.User;
 import comcmput301f16t01.github.carrier.Users.UserController;
 
+/**
+ * This is what will interact with elastic search
+ */
 public class ElasticUserControllerTest extends ApplicationTest {
 
     @Override

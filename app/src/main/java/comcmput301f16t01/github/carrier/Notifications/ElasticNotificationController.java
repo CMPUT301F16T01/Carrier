@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.List;
 
 import comcmput301f16t01.github.carrier.Listener;
-import io.searchbox.core.Delete;
 import io.searchbox.core.DeleteByQuery;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
