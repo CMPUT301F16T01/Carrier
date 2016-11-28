@@ -301,6 +301,13 @@ public class ElasticRequestController {
             // Perform our update on the UI thread
             if (withAsync) {
                 RequestController.getRiderInstance().replaceList( requests );
+                if (RequestController.getOfflineRiderRequests().size() > 0) {
+                    for (Request request : RequestController.getOfflineRiderRequests()) {
+                        RequestController.getRiderInstance().add(request);
+                    }
+                }
+                RequestController.getOfflineRiderRequests().clear();
+                RequestController.saveOfflineRiderRequests();
                 // Save any updated rider requests
                 RequestController.saveRiderRequests();
                 notifyListener();

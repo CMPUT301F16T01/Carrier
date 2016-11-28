@@ -387,8 +387,8 @@ public class RequestController {
                 }
                 art.execute(requestsToPass);
                 // Empty the offline RequestList and save an empty file
-                RequestController.getOfflineRiderRequests().clear();
-                saveOfflineRiderRequests();
+//                RequestController.getOfflineRiderRequests().clear();
+//                saveOfflineRiderRequests();
             }
 
 
