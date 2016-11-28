@@ -117,11 +117,9 @@ public class LocationTests extends ApplicationTest {
         startLocation.setLatitude(latitude1);
         startLocation.setLongitude(longitude1);
         startLocation.setAddress(startAddress);
-        startLocation.setShortAddress(startShortAddress);
         endLocation.setLatitude(latitude2);
         endLocation.setLongitude(longitude2);
         endLocation.setAddress(endAddress);
-        endLocation.setShortAddress(endShortAddress);
 
         Request request = new Request(loggedInUser, startLocation, endLocation, "");
 

@@ -54,7 +54,11 @@ public class RequestAdapter extends ArrayAdapter<Request> {
             if (startLocTextView != null) {
                 String startLoc;
                 if (request.getStart().getShortAddress() != null) {
-                    startLoc = "Start: " + request.getStart().getShortAddress();
+                    if(!request.getStart().getShortAddress().equals("")) {
+                        startLoc = "Start: " + request.getStart().getShortAddress();
+                    } else {
+                        startLoc = "Start: " + request.getStart().getLatLong();
+                    }
                 } else {
                     startLoc = "Start: " + request.getStart().getLatLong();
                 }
@@ -65,7 +69,11 @@ public class RequestAdapter extends ArrayAdapter<Request> {
             if (endLocTextView != null) {
                 String endLoc;
                 if (request.getEnd().getShortAddress() != null) {
-                    endLoc = "End: " + request.getEnd().getShortAddress();
+                    if(!request.getEnd().getShortAddress().equals("")) {
+                        endLoc = "End: " + request.getEnd().getShortAddress();
+                    } else {
+                        endLoc = "End: " + request.getEnd().getLatLong();
+                    }
                 } else {
                     endLoc = "End: " + request.getEnd().getLatLong();
                 }
