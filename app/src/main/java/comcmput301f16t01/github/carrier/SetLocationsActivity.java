@@ -308,7 +308,6 @@ public class SetLocationsActivity extends AppCompatActivity implements Connectio
                 lastBundle.putString("endLocation", intent.getStringExtra("endLocation"));
                 forwardIntent.putExtras(lastBundle);
                 activity.finish();
-                Toast.makeText(activity, "Route set", Toast.LENGTH_LONG).show();
                 startActivity(forwardIntent);
             }
         }
