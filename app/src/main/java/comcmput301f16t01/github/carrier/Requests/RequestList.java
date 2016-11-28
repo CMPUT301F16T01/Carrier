@@ -108,7 +108,7 @@ public class RequestList extends ArrayList<Request> {
     }
 
     /** Checks if the request is already contained in the requestList. */
-    private boolean contains(String id) {
+    boolean contains(String id) {
         for(Request request : this) {
             if(request.getId().equals(id)) {
                 return true;

@@ -249,6 +249,13 @@ public class ElasticRequestController {
                 e.printStackTrace();
                 Log.i("Error", "Something went wrong when we tried to talk to elastic search");
             }
+            
+            // Load all the offers from these requests
+            getOffers( foundRequests );
+
+            // Filter the requests so that we can't see
+            filterOutLoggedInUser( foundRequests );
+
             return foundRequests;
         }
     }
@@ -358,9 +365,6 @@ public class ElasticRequestController {
                 }
                 RequestController.getOfflineRiderRequests().clear();
                 RequestController.saveOfflineRiderRequests();
-                // Save any updated rider requests
-                RequestController.saveRiderRequests();
-                notifyListener();
             }
             super.onPostExecute(requests);
         }
@@ -450,7 +454,6 @@ public class ElasticRequestController {
                     e.printStackTrace();
                 }
             }
-
             return null;
         }
     }
