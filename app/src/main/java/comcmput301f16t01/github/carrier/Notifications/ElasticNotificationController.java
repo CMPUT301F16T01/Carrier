@@ -3,15 +3,12 @@ package comcmput301f16t01.github.carrier.Notifications;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.searchly.jestdroid.DroidClientConfig;
-import com.searchly.jestdroid.JestClientFactory;
-import com.searchly.jestdroid.JestDroidClient;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import comcmput301f16t01.github.carrier.ElasticController;
 import comcmput301f16t01.github.carrier.Listener;
 import io.searchbox.core.DeleteByQuery;
 import io.searchbox.core.DocumentResult;
@@ -21,10 +18,10 @@ import io.searchbox.core.SearchResult;
 import io.searchbox.core.Update;
 
 /**
- * Maintains a user's notifications in elastic search
+ * Maintains a user's notifications in elastic search.
+ * @see ElasticController
  */
-public class ElasticNotificationController {
-    private static JestDroidClient client;
+public class ElasticNotificationController extends ElasticController {
 
     /** Adds a notification to Elastic Search */
     public static class AddNotificationTask extends AsyncTask<Notification, Void, Void> {
@@ -176,20 +173,6 @@ public class ElasticNotificationController {
                 e.printStackTrace();
             }
             return null;
-        }
-    }
-
-
-    /** Sets up the client to be used for Elastic Search */
-    private static void verifySettings() {
-        if (client == null) {
-            DroidClientConfig.Builder builder =
-                    new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");
-            DroidClientConfig config = builder.build();
-
-            JestClientFactory factory = new JestClientFactory();
-            factory.setDroidClientConfig(config);
-            client = (JestDroidClient) factory.getObject();
         }
     }
 }
