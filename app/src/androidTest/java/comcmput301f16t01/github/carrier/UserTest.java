@@ -68,6 +68,7 @@ public class UserTest extends ApplicationTest {
         String newPhone = "000000000";
         UserController.editUser(newEmail, newPhone);
         UserController.logOutUser();
+        chillabit();
         User user = UserController.findUser( testUserUsername ); // elastic search component
         assertTrue( "Email did not change",
                 user.getEmail().equals(newEmail));
